@@ -7,3 +7,4 @@ dist/
 .superpowers/brainstorm/.last-*
 .superpowers/brainstorm/*/state/
 .vercel
+.env.local

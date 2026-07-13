@@ -15,51 +15,67 @@ const groups = groupBricksByFamily(bricks);
 ---
 
 <BaseLayout
-  title="Briques pédagogiques"
-  description="Inventaire éditorial des 24 briques de la formation IA."
+  title="Les 24 briques"
+  description="Le programme complet de la formation IA, organisé en six blocs et 24 briques pédagogiques."
 >
-  <header>
-    <p class="eyebrow">Espace éditorial</p>
-    <h1>Les briques pédagogiques</h1>
-    <p class="lede">
-      La structure est prête. Choisissez une brique, attribuez-la, puis faites-la
-      progresser de la rédaction à la validation.
-    </p>
+  <header class="catalog-hero">
+    <div>
+      <p class="eyebrow">Le plan de construction</p>
+      <h1>Les 24 briques pédagogiques</h1>
+      <p class="lede">
+        Six blocs pour passer des fondamentaux à un projet livré. Choisissez une
+        brique, attribuez-la, puis faites-la progresser de la rédaction à la validation.
+      </p>
+    </div>
+    <aside class="catalog-counter" aria-label="24 briques réparties en 6 blocs">
+      <strong>24</strong>
+      <span>briques</span>
+      <small>6 blocs · 1 parcours</small>
+    </aside>
   </header>
 
-  {groups.map((group) => (
-    <section aria-labelledby={`family-${group.family}`}>
-      <h2 id={`family-${group.family}`}>
-        Bloc {group.family.toUpperCase()} · {group.label}
-      </h2>
-      <ol class="brick-list">
-        {group.entries.map((brick) => {
-          const structure = getStructureCompletion(brick.body ?? '', brick.data.type);
-          return (
-            <li>
-              <article class="brick-card">
-                <p class="card-kicker">
-                  {brick.data.id.toUpperCase()} · ordre {brick.data.order}
-                </p>
-                <h3><a href={`/briques/${brick.data.id}/`}>{brick.data.title}</a></h3>
-                <p class="meta-line">
-                  <span class="badge" data-priority={brick.data.priority}>
-                    {PRIORITY_LABELS[brick.data.priority]}
-                  </span>
-                  <span>{brick.data.durationMinutes ? `${brick.data.durationMinutes} min` : 'Durée à définir'}</span>
-                </p>
-                <p class="meta-line">
-                  <span>{STATUS_LABELS[brick.data.status]}</span>
-                  <span>· {OWNER_LABELS[brick.data.owner]}</span>
-                </p>
-                <p class="structure-status">
-                  Structure {structure.complete}/{structure.total}
-                </p>
-              </article>
-            </li>
-          );
-        })}
-      </ol>
-    </section>
-  ))}
+  <div class="catalog-groups">
+    {groups.map((group, groupIndex) => (
+      <section
+        class="family-section"
+        data-family={group.family}
+        aria-labelledby={`family-${group.family}`}
+      >
+        <header class="family-heading">
+          <span class="family-index" aria-hidden="true">0{groupIndex + 1}</span>
+          <div>
+            <p>Bloc {group.family.toUpperCase()}</p>
+            <h2 id={`family-${group.family}`}>{group.label}</h2>
+          </div>
+          <span class="family-count">{group.entries.length} briques</span>
+        </header>
+        <ol class="brick-list" role="list">
+          {group.entries.map((brick) => {
+            const structure = getStructureCompletion(brick.body ?? '', brick.data.type);
+            return (
+              <li>
+                <article class="brick-card" data-family={brick.data.family}>
+                  <p class="card-kicker">
+                    <span>{brick.data.id.toUpperCase()}</span>
+                    <span>ordre {brick.data.order}</span>
+                  </p>
+                  <h3><a href={`/briques/${brick.data.id}/`}>{brick.data.title}</a></h3>
+                  <p class="meta-line">
+                    <span class="badge" data-priority={brick.data.priority}>
+                      {PRIORITY_LABELS[brick.data.priority]}
+                    </span>
+                    <span>{brick.data.durationMinutes ? `${brick.data.durationMinutes} min` : 'Durée à définir'}</span>
+                  </p>
+                  <div class="card-footer">
+                    <p>{STATUS_LABELS[brick.data.status]} · {OWNER_LABELS[brick.data.owner]}</p>
+                    <p class="structure-status">Structure {structure.complete}/{structure.total}</p>
+                  </div>
+                </article>
+              </li>
+            );
+          })}
+        </ol>
+      </section>
+    ))}
+  </div>
 </BaseLayout>
