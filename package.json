@@ -1,0 +1,25 @@
+{
+  "name": "formation-ia",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "npm run content:check && astro build",
+    "preview": "astro preview",
+    "content:check": "tsx scripts/check-content.ts",
+    "test": "tsx --test tests/**/*.test.ts"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^7.0.2",
+    "astro": "^7.0.7",
+    "gray-matter": "^4.0.3"
+  },
+  "devDependencies": {
+    "tsx": "^4.23.1",
+    "typescript": "^7.0.2"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}
