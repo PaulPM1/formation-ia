@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Page introuvable"
+  description="Cette page n’existe pas ou cette brique a été déplacée."
+>
+  <section class="error-page" aria-labelledby="error-title">
+    <div class="error-code" aria-hidden="true"><span>4</span><span>0</span><span>4</span></div>
+    <div class="error-copy">
+      <p class="eyebrow">Brique manquante</p>
+      <h1 id="error-title">Page introuvable</h1>
+      <p>Cette brique a peut-être changé de place. Reprenez depuis l’accueil ou retrouvez-la dans le programme complet.</p>
+      <div class="hero-actions">
+        <a class="button button-primary" href="/">Retour à l’accueil</a>
+        <a class="text-link" href="/briques/">Voir les 24 briques</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

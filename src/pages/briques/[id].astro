@@ -28,53 +28,61 @@ const { Content } = await render(brick);
 const structure = getStructureCompletion(brick.body ?? '', brick.data.type);
 ---
 
-<BaseLayout title={`${brick.data.id.toUpperCase()} · ${brick.data.title}`}>
-  <a class="back-link" href="/briques/">← Toutes les briques</a>
+<BaseLayout
+  title={`${brick.data.id.toUpperCase()} · ${brick.data.title}`}
+  description={`${brick.data.title}, une brique du bloc ${FAMILY_LABELS[brick.data.family]} de la formation IA.`}
+>
+  <div class="detail-page" data-family={brick.data.family}>
+    <a class="back-link" href="/briques/"><span aria-hidden="true">←</span> Toutes les briques</a>
 
-  <header class="detail-header">
-    <p class="eyebrow">
-      Bloc {brick.data.family.toUpperCase()} · {FAMILY_LABELS[brick.data.family]}
-    </p>
-    <h1>{brick.data.id.toUpperCase()} · {brick.data.title}</h1>
+    <header class="detail-header">
+      <div class="detail-title">
+        <p class="eyebrow">
+          Bloc {brick.data.family.toUpperCase()} · {FAMILY_LABELS[brick.data.family]}
+        </p>
+        <h1><span>{brick.data.id.toUpperCase()}</span>{brick.data.title}</h1>
+      </div>
 
-    <dl class="metadata">
-      <div>
-        <dt>Priorité</dt>
-        <dd>{PRIORITY_LABELS[brick.data.priority]}</dd>
-      </div>
-      <div>
-        <dt>Format</dt>
-        <dd>{TYPE_LABELS[brick.data.type]}</dd>
-      </div>
-      <div>
-        <dt>Durée</dt>
-        <dd>{brick.data.durationMinutes ? `${brick.data.durationMinutes} min` : 'À définir'}</dd>
-      </div>
-      <div>
-        <dt>Statut</dt>
-        <dd>{STATUS_LABELS[brick.data.status]}</dd>
-      </div>
-      <div>
-        <dt>Responsable</dt>
-        <dd>{OWNER_LABELS[brick.data.owner]}</dd>
-      </div>
-    </dl>
+      <dl class="metadata">
+        <div>
+          <dt>Priorité</dt>
+          <dd>{PRIORITY_LABELS[brick.data.priority]}</dd>
+        </div>
+        <div>
+          <dt>Format</dt>
+          <dd>{TYPE_LABELS[brick.data.type]}</dd>
+        </div>
+        <div>
+          <dt>Durée</dt>
+          <dd>{brick.data.durationMinutes ? `${brick.data.durationMinutes} min` : 'À définir'}</dd>
+        </div>
+        <div>
+          <dt>Statut</dt>
+          <dd>{STATUS_LABELS[brick.data.status]}</dd>
+        </div>
+        <div>
+          <dt>Responsable</dt>
+          <dd>{OWNER_LABELS[brick.data.owner]}</dd>
+        </div>
+      </dl>
 
-    <div class="structure-meter">
-      <label for="structure-progress">
-        Structure : {structure.complete} rubrique{structure.complete > 1 ? 's' : ''} sur {structure.total}
-      </label>
-      <progress
-        id="structure-progress"
-        value={structure.complete}
-        max={structure.total}
-      >
-        {structure.percentage}%
-      </progress>
-    </div>
-  </header>
+      <div class="structure-meter">
+        <div>
+          <label for="structure-progress">Structure de la brique</label>
+          <span>{structure.complete}/{structure.total}</span>
+        </div>
+        <progress
+          id="structure-progress"
+          value={structure.complete}
+          max={structure.total}
+        >
+          {structure.percentage}%
+        </progress>
+      </div>
+    </header>
 
-  <article class="brick-content">
-    <Content />
-  </article>
+    <article class="brick-content">
+      <Content />
+    </article>
+  </div>
 </BaseLayout>
