@@ -1,0 +1,83 @@
+<style>
+  .directions { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+  .direction { border:1px solid #d9d5cc; border-radius:15px; overflow:hidden; cursor:pointer; background:#fff; transition:.2s ease; }
+  .direction:hover { transform:translateY(-3px); box-shadow:0 16px 38px rgba(20,28,24,.12); }
+  .direction.selected { outline:3px solid #2d7754; outline-offset:3px; }
+  .preview { aspect-ratio:4/3; position:relative; overflow:hidden; }
+  .caption { padding:14px; }
+  .caption h3 { margin:0 0 5px; font-size:17px; }
+  .caption p { margin:0; color:#6f756f; font-size:12px; }
+  .badge { position:absolute; top:12px; right:12px; padding:5px 8px; border-radius:99px; font-size:8px; font-weight:850; letter-spacing:.08em; }
+  .editorial { background:#f1ede2; color:#1b2923; font-family:Georgia,serif; }
+  .editorial .grid { position:absolute; inset:0; background-image:linear-gradient(rgba(27,41,35,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(27,41,35,.07) 1px,transparent 1px); background-size:28px 28px; }
+  .editorial .mark { position:absolute; left:18px; top:15px; font:800 9px/1 Arial,sans-serif; letter-spacing:.1em; }
+  .editorial .big { position:absolute; left:18px; top:62px; width:80%; font-size:29px; line-height:.92; font-weight:800; }
+  .editorial .big em { color:#db5a31; font-style:normal; }
+  .editorial .equation { position:absolute; left:18px; right:18px; bottom:18px; display:grid; grid-template-columns:1fr auto 1fr auto 1fr; align-items:center; gap:6px; font:700 10px/1.2 Arial,sans-serif; }
+  .editorial .box { padding:9px 5px; text-align:center; border:1px solid #1b2923; background:#f7f4ec; }
+  .editorial .badge { background:#1b2923; color:#fff; font-family:Arial,sans-serif; }
+  .terminal { background:#0b0e0c; color:#d8ff49; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+  .terminal:before { content:""; position:absolute; inset:0; background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(216,255,73,.025) 3px 4px); }
+  .terminal .crumb { position:absolute; left:16px; top:16px; color:#7e8f7d; font-size:8px; }
+  .terminal .command { position:absolute; left:16px; top:55px; font-size:11px; color:#fff; }
+  .terminal .command i { color:#d8ff49; font-style:normal; }
+  .terminal .big { position:absolute; left:16px; top:87px; font-size:25px; line-height:1; font-weight:800; text-transform:uppercase; }
+  .terminal .log { position:absolute; left:16px; right:16px; bottom:16px; padding:10px; border:1px solid #405139; background:#111712; color:#8b9d89; font-size:8px; line-height:1.6; }
+  .terminal .log strong { color:#d8ff49; }
+  .terminal .badge { border:1px solid #d8ff49; color:#d8ff49; }
+  .blocks { background:#f7f4ed; color:#16221d; font-family:Arial,sans-serif; }
+  .blocks .shape1,.blocks .shape2,.blocks .shape3 { position:absolute; border:2px solid #16221d; }
+  .blocks .shape1 { width:95px; height:95px; right:-18px; top:-18px; background:#ffbf3f; transform:rotate(9deg); }
+  .blocks .shape2 { width:60px; height:60px; left:-14px; bottom:-12px; border-radius:50%; background:#72c1e5; }
+  .blocks .shape3 { width:42px; height:42px; right:25px; bottom:20px; background:#ed6a46; transform:rotate(45deg); }
+  .blocks .mark { position:absolute; left:17px; top:16px; font-size:9px; font-weight:900; }
+  .blocks .big { position:absolute; left:17px; top:62px; width:75%; font-size:27px; line-height:.96; font-weight:900; }
+  .blocks .steps { position:absolute; left:17px; right:17px; bottom:20px; display:flex; gap:5px; }
+  .blocks .step { padding:7px 8px; border:2px solid #16221d; background:#fff; font-size:8px; font-weight:800; box-shadow:3px 3px 0 #16221d; }
+  .blocks .badge { background:#fff; border:2px solid #16221d; color:#16221d; }
+  .principles { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:16px; }
+  .principle { padding:12px; border-radius:10px; background:#f1efe9; }
+  .principle b { display:block; margin-bottom:4px; }
+  .principle span { color:#6f756f; font-size:12px; }
+  @media(max-width:900px){.directions,.principles{grid-template-columns:1fr}}
+</style>
+
+<h2>Quel univers visuel doit porter la formation ?</h2>
+<p class="subtitle">Même message, trois personnalités. Clique sur la direction qui doit guider les slides, le parcours et la bibliothèque.</p>
+
+<div class="directions">
+  <div class="direction" data-choice="editorial" onclick="toggleSelect(this)">
+    <div class="preview editorial">
+      <div class="grid"></div><span class="mark">BRIQUE A2 · COMPRENDRE</span><span class="badge">RECOMMANDÉ</span>
+      <div class="big">Un LLM <em>répond.</em><br>Un agent agit.</div>
+      <div class="equation"><span class="box">LLM</span><span>+</span><span class="box">OUTILS</span><span>+</span><span class="box">BOUCLE</span></div>
+    </div>
+    <div class="caption"><h3>A — Manuel éditorial</h3><p>Chaleureux, structuré et durable. Sérieux sans être scolaire, accessible aux débutants.</p></div>
+  </div>
+
+  <div class="direction" data-choice="terminal" onclick="toggleSelect(this)">
+    <div class="preview terminal">
+      <span class="crumb">~/formation/bloc-a/brique-02</span><span class="badge">AGENT_MODE</span>
+      <div class="command"><i>›</i> expliquer la différence</div>
+      <div class="big">LLM = RÉPONDRE<br>AGENT = AGIR_</div>
+      <div class="log"><strong>[tool]</strong> liste les fichiers<br><strong>[action]</strong> crée les dossiers<br><strong>[check]</strong> vérifie le résultat<br><strong>[loop]</strong> recommence si nécessaire</div>
+    </div>
+    <div class="caption"><h3>B — Terminal immersif</h3><p>Très typé « code » et spectaculaire sur scène, mais plus intimidant pour un public mixte.</p></div>
+  </div>
+
+  <div class="direction" data-choice="construction" onclick="toggleSelect(this)">
+    <div class="preview blocks">
+      <div class="shape1"></div><div class="shape2"></div><div class="shape3"></div>
+      <span class="mark">LES BRIQUES DU VIBE CODING</span><span class="badge">A2</span>
+      <div class="big">Du texte<br>à l’action.</div>
+      <div class="steps"><span class="step">LLM</span><span class="step">OUTILS</span><span class="step">BOUCLE</span></div>
+    </div>
+    <div class="caption"><h3>C — Kit de construction</h3><p>Énergique, mémorable et littéral autour des « briques ». Risque de paraître plus jeune ou événementiel.</p></div>
+  </div>
+</div>
+
+<div class="principles">
+  <div class="principle"><b>Lisible sur vidéoprojecteur</b><span>Contrastes forts, peu de texte et hiérarchie immédiate.</span></div>
+  <div class="principle"><b>Distinctif sans dater</b><span>Pas d’imitation d’interface Claude ni d’effets « IA » génériques.</span></div>
+  <div class="principle"><b>Adapté au wiki</b><span>La même identité doit rester confortable pour une lecture longue.</span></div>
+</div>
