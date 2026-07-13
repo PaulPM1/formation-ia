@@ -1,0 +1,80 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import {
+  FAMILY_LABELS,
+  getStructureCompletion,
+  OWNER_LABELS,
+  PRIORITY_LABELS,
+  STATUS_LABELS,
+  TYPE_LABELS,
+} from '../../content/brick-view';
+
+export async function getStaticPaths() {
+  const bricks = await getCollection('briques');
+  return bricks.map((brick) => ({
+    params: { id: brick.data.id },
+    props: { brick },
+  }));
+}
+
+interface Props {
+  brick: CollectionEntry<'briques'>;
+}
+
+const { brick } = Astro.props;
+const { Content } = await render(brick);
+const structure = getStructureCompletion(brick.body ?? '', brick.data.type);
+---
+
+<BaseLayout title={`${brick.data.id.toUpperCase()} · ${brick.data.title}`}>
+  <a class="back-link" href="/briques/">← Toutes les briques</a>
+
+  <header class="detail-header">
+    <p class="eyebrow">
+      Bloc {brick.data.family.toUpperCase()} · {FAMILY_LABELS[brick.data.family]}
+    </p>
+    <h1>{brick.data.id.toUpperCase()} · {brick.data.title}</h1>
+
+    <dl class="metadata">
+      <div>
+        <dt>Priorité</dt>
+        <dd>{PRIORITY_LABELS[brick.data.priority]}</dd>
+      </div>
+      <div>
+        <dt>Format</dt>
+        <dd>{TYPE_LABELS[brick.data.type]}</dd>
+      </div>
+      <div>
+        <dt>Durée</dt>
+        <dd>{brick.data.durationMinutes ? `${brick.data.durationMinutes} min` : 'À définir'}</dd>
+      </div>
+      <div>
+        <dt>Statut</dt>
+        <dd>{STATUS_LABELS[brick.data.status]}</dd>
+      </div>
+      <div>
+        <dt>Responsable</dt>
+        <dd>{OWNER_LABELS[brick.data.owner]}</dd>
+      </div>
+    </dl>
+
+    <div class="structure-meter">
+      <label for="structure-progress">
+        Structure : {structure.complete} rubrique{structure.complete > 1 ? 's' : ''} sur {structure.total}
+      </label>
+      <progress
+        id="structure-progress"
+        value={structure.complete}
+        max={structure.total}
+      >
+        {structure.percentage}%
+      </progress>
+    </div>
+  </header>
+
+  <article class="brick-content">
+    <Content />
+  </article>
+</BaseLayout>

@@ -1,0 +1,65 @@
+---
+import { getCollection } from 'astro:content';
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import {
+  getStructureCompletion,
+  groupBricksByFamily,
+  OWNER_LABELS,
+  PRIORITY_LABELS,
+  STATUS_LABELS,
+} from '../../content/brick-view';
+
+const bricks = await getCollection('briques');
+const groups = groupBricksByFamily(bricks);
+---
+
+<BaseLayout
+  title="Briques pédagogiques"
+  description="Inventaire éditorial des 24 briques de la formation IA."
+>
+  <header>
+    <p class="eyebrow">Espace éditorial</p>
+    <h1>Les briques pédagogiques</h1>
+    <p class="lede">
+      La structure est prête. Choisissez une brique, attribuez-la, puis faites-la
+      progresser de la rédaction à la validation.
+    </p>
+  </header>
+
+  {groups.map((group) => (
+    <section aria-labelledby={`family-${group.family}`}>
+      <h2 id={`family-${group.family}`}>
+        Bloc {group.family.toUpperCase()} · {group.label}
+      </h2>
+      <ol class="brick-list">
+        {group.entries.map((brick) => {
+          const structure = getStructureCompletion(brick.body ?? '', brick.data.type);
+          return (
+            <li>
+              <article class="brick-card">
+                <p class="card-kicker">
+                  {brick.data.id.toUpperCase()} · ordre {brick.data.order}
+                </p>
+                <h3><a href={`/briques/${brick.data.id}/`}>{brick.data.title}</a></h3>
+                <p class="meta-line">
+                  <span class="badge" data-priority={brick.data.priority}>
+                    {PRIORITY_LABELS[brick.data.priority]}
+                  </span>
+                  <span>{brick.data.durationMinutes ? `${brick.data.durationMinutes} min` : 'Durée à définir'}</span>
+                </p>
+                <p class="meta-line">
+                  <span>{STATUS_LABELS[brick.data.status]}</span>
+                  <span>· {OWNER_LABELS[brick.data.owner]}</span>
+                </p>
+                <p class="structure-status">
+                  Structure {structure.complete}/{structure.total}
+                </p>
+              </article>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+  ))}
+</BaseLayout>
