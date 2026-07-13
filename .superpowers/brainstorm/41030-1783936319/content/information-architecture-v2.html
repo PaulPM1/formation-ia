@@ -1,0 +1,98 @@
+<style>
+  .architecture { display:grid; grid-template-columns:minmax(0,1.45fr) minmax(300px,.8fr); gap:22px; align-items:start; }
+  .product { border:1px solid #d9d5cc; border-radius:16px; overflow:hidden; background:#fff; box-shadow:0 18px 50px rgba(27,37,31,.08); }
+  .browser-bar { height:32px; display:flex; align-items:center; gap:6px; padding:0 12px; background:#ece9e2; border-bottom:1px solid #d9d5cc; }
+  .dot { width:8px; height:8px; border-radius:50%; background:#c7c1b7; }
+  .appbar { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:14px 18px; border-bottom:1px solid #e6e2da; font-size:12px; }
+  .brand { font-weight:850; letter-spacing:.04em; }
+  .tabs { display:flex; gap:3px; padding:3px; border-radius:10px; background:#f0eee8; }
+  .tab { padding:7px 11px; border-radius:8px; color:#6f746f; }
+  .tab.active { background:#18231e; color:#fff; }
+  .present { padding:7px 11px; border:1px solid #d8d4ca; border-radius:9px; font-weight:700; }
+  .body { padding:26px 22px 22px; background:#fbfaf7; }
+  .eyebrow { color:#2e7554; font-size:10px; font-weight:800; letter-spacing:.09em; }
+  .body h3 { margin:5px 0 7px; font-size:27px; line-height:1.04; }
+  .intro { color:#70766f; max-width:510px; margin-bottom:19px; }
+  .resume { display:grid; grid-template-columns:1.15fr .85fr; gap:12px; }
+  .primary, .secondary { border-radius:13px; padding:16px; min-height:138px; }
+  .primary { color:#fff; background:#235e43; }
+  .secondary { background:#fff; border:1px solid #dfdacf; }
+  .card-label { font-size:9px; font-weight:850; letter-spacing:.08em; opacity:.8; }
+  .card-title { font-size:18px; line-height:1.1; font-weight:850; margin:8px 0 5px; }
+  .progress { height:6px; margin:15px 0 8px; border-radius:5px; background:rgba(255,255,255,.25); overflow:hidden; }
+  .progress span { display:block; width:38%; height:100%; background:#fff; }
+  .resource-row { display:flex; gap:7px; margin-top:13px; flex-wrap:wrap; }
+  .chip { padding:5px 7px; border-radius:7px; background:#f0eee8; font-size:9px; }
+  .flow { display:grid; gap:9px; }
+  .source { padding:15px; border:2px solid #1d6a49; border-radius:12px; background:#eaf6ef; text-align:center; }
+  .source b { display:block; font-size:15px; }
+  .arrow { text-align:center; font-size:22px; color:#8a8f89; line-height:1; }
+  .outputs { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+  .output { min-height:115px; padding:13px; border:1px solid #dad6cc; border-radius:11px; background:#fff; }
+  .output b { display:block; margin-bottom:5px; }
+  .output small { color:#747a74; }
+  .rule { margin-top:12px; padding:13px; border-radius:10px; background:#18231e; color:#fff; font-size:12px; line-height:1.45; }
+  .legend { margin-top:18px; display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  .legend-item { padding:12px; border-radius:10px; background:#f3f1eb; }
+  .legend-item b { display:block; margin-bottom:4px; }
+  .legend-item span { color:#6f756f; font-size:12px; }
+  .validation { margin-top:20px; padding:14px 16px; border:1px solid #cfded5; border-radius:12px; background:#f1f8f4; }
+  @media(max-width:900px){ .architecture,.resume{grid-template-columns:1fr}.legend{grid-template-columns:1fr}.outputs{grid-template-columns:1fr 1fr} }
+</style>
+
+<h2>Une seule base de connaissances, deux façons d’y entrer</h2>
+<p class="subtitle">Le parcours reste la porte d’entrée pendant le camp. La bibliothèque devient la carte complète, consultable à tout moment et explicitement annoncée par les formateurs.</p>
+
+<div class="architecture">
+  <div class="product">
+    <div class="browser-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+    <div class="appbar">
+      <span class="brand">VIBE CODING CAMP</span>
+      <div class="tabs"><span class="tab active">Parcours</span><span class="tab">Bibliothèque</span></div>
+      <span class="present">Présenter ↗</span>
+    </div>
+    <div class="body">
+      <span class="eyebrow">TON PARCOURS · 38 % TERMINÉ</span>
+      <h3>Construis ton assistant IA</h3>
+      <p class="intro">Avance brique par brique. Chaque mission produit un livrable et enrichit ton projet personnel.</p>
+      <div class="resume">
+        <div class="primary">
+          <div class="card-label">REPRENDRE LE PARCOURS</div>
+          <div class="card-title">B2 · Fabrique ton premier outil interactif</div>
+          <div>Créer un Artifact adapté à ton propre cas d’usage.</div>
+          <div class="progress"><span></span></div>
+          <small>Étape 2 sur 5 · environ 25 min</small>
+        </div>
+        <div class="secondary">
+          <div class="card-label">EXPLORER LIBREMENT</div>
+          <div class="card-title">Toute la bibliothèque</div>
+          <div style="color:#747a74">Concepts, fiches pratiques, exercices et ressources.</div>
+          <div class="resource-row"><span class="chip">Agents</span><span class="chip">Prompts</span><span class="chip">GitHub</span><span class="chip">Sécurité</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow">
+    <div class="source"><span class="eyebrow">SOURCE CANONIQUE</span><b>Briques MDX dans GitHub</b><small>Un contenu, un historique, une version</small></div>
+    <div class="arrow">↓</div>
+    <div class="outputs">
+      <div class="output"><b>① Parcours</b><small>Ordre pédagogique, progression, ateliers, livrables et défis optionnels.</small></div>
+      <div class="output"><b>② Bibliothèque</b><small>Classement par thèmes, recherche, références et consultation libre.</small></div>
+    </div>
+    <div class="arrow">↓</div>
+    <div class="outputs">
+      <div class="output"><b>Mode présentation</b><small>Version condensée d’une brique, plein écran, pilotée par le formateur.</small></div>
+      <div class="output"><b>Mode apprenant</b><small>Consignes détaillées, progression locale et ressources complémentaires.</small></div>
+    </div>
+    <div class="rule"><b>Principe :</b> aucune duplication éditoriale. Une brique définit ses idées clés, ses slides, son atelier et ses ressources ; chaque vue n’affiche que la profondeur utile.</div>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><b>Pendant la formation</b><span>Le formateur guide tout le monde dans le parcours.</span></div>
+  <div class="legend-item"><b>Au moment choisi</b><span>Vous annoncez que chaque notion est aussi documentée dans la bibliothèque.</span></div>
+  <div class="legend-item"><b>Après la formation</b><span>La bibliothèque devient la porte d’entrée principale pour réviser et partager.</span></div>
+</div>
+
+<div class="validation">Est-ce bien cette relation entre <b>parcours</b>, <b>bibliothèque</b> et <b>mode présentation</b> que tu imagines ?</div>

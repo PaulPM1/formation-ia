@@ -1,0 +1,87 @@
+<style>
+  .timeline { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; align-items:start; }
+  .day { border:1px solid #dcd8cf; border-radius:15px; overflow:hidden; background:#fff; }
+  .day-head { padding:16px; color:#fff; background:#17231d; }
+  .day:nth-child(2) .day-head { background:#285f45; }
+  .day:nth-child(3) .day-head { background:#a14e30; }
+  .day-head small { display:block; opacity:.7; font-weight:800; letter-spacing:.08em; }
+  .day-head strong { display:block; margin-top:4px; font-size:20px; }
+  .stages { padding:10px; background:#f7f5ef; }
+  .stage { position:relative; padding:12px 12px 12px 41px; margin-bottom:8px; border:1px solid #e0dcd3; border-radius:11px; background:#fff; }
+  .stage:last-child { margin-bottom:0; }
+  .n { position:absolute; left:11px; top:12px; display:grid; place-items:center; width:21px; height:21px; border-radius:50%; background:#e8e4db; font-size:10px; font-weight:900; }
+  .stage b { display:block; font-size:13px; margin-bottom:3px; }
+  .stage span { color:#6f756f; font-size:11px; line-height:1.35; }
+  .stage.method { border-color:#9cc2ae; background:#edf7f1; }
+  .stage.method .n { color:#fff; background:#2b7653; }
+  .stage.output { border-color:#e1af9c; background:#fff4ef; }
+  .stage.output .n { color:#fff; background:#b95b38; }
+  .deliverable { margin-top:7px; padding-top:7px; border-top:1px dashed #d7d2c9; color:#26372f !important; font-weight:750; }
+  .principle { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:18px 0; }
+  .rule { padding:13px; border-radius:11px; background:#f0eee8; }
+  .rule b { display:block; margin-bottom:4px; }
+  .rule span { color:#6c726c; font-size:12px; }
+  .changes { margin-top:18px; padding:16px; border-radius:13px; background:#17231d; color:#fff; }
+  .changes h3 { margin:0 0 8px; color:#fff; }
+  .changes ul { margin:0; padding-left:20px; columns:2; gap:26px; }
+  .changes li { margin:5px 0; color:#d6dfda; }
+  .validation { margin-top:18px; padding:14px 16px; border:1px solid #cddfd5; border-radius:12px; background:#f0f8f3; }
+  @media(max-width:900px){.timeline,.principle{grid-template-columns:1fr}.changes ul{columns:1}}
+</style>
+
+<h2>Progression proposée sur 2,5 jours</h2>
+<p class="subtitle">La méthode n’est plus un bloc théorique tardif : chaque principe arrive juste avant le moment où les participants en ont besoin.</p>
+
+<div class="timeline">
+  <section class="day">
+    <div class="day-head"><small>JOUR 1 · COMPRENDRE & CRÉER</small><strong>De « l’IA répond » à « je fabrique »</strong></div>
+    <div class="stages">
+      <div class="stage"><i class="n">1</i><b>Accueil et setup</b><span>Claude Max, diagnostic Mac/Windows, outils communs et binômes.</span></div>
+      <div class="stage"><i class="n">2</i><b>LLM → agent</b><span>Tokens, contexte, hallucinations puis démo « dit vs fait ».</span></div>
+      <div class="stage method"><i class="n">3</i><b>Bien briefer Claude</b><span>Contexte, spécificité, format, contraintes et exemples.</span></div>
+      <div class="stage"><i class="n">4</i><b>Chat puis Artifacts</b><span>Première tâche personnelle, puis premier mini-outil interactif.</span><span class="deliverable">Livrables : prompt utile + Artifact personnalisé</span></div>
+    </div>
+  </section>
+
+  <section class="day">
+    <div class="day-head"><small>JOUR 2 · AGIR & CONSTRUIRE</small><strong>De l’outil isolé à la vraie mini-app</strong></div>
+    <div class="stages">
+      <div class="stage"><i class="n">5</i><b>Cowork : agir sur ses fichiers</b><span>Mission indépendante courte, concrète et non-dev.</span></div>
+      <div class="stage method"><i class="n">6</i><b>Cadrer avant de coder</b><span>MVP, petite étape testable, timeboxing et signaux d’enlisement.</span></div>
+      <div class="stage"><i class="n">7</i><b>Terrain du développeur</b><span>IDE, terminal, repo ; setup GitHub et VS Code juste à temps.</span></div>
+      <div class="stage output"><i class="n">8</i><b>Claude Code</b><span>Transformer l’Artifact ou son concept en application locale.</span><span class="deliverable">Livrable : mini-app personnalisée + dépôt GitHub</span></div>
+      <div class="stage method"><i class="n">9</i><b>Lire la carte du projet</b><span>Architecture simple, rôle des fichiers et sécurité essentielle.</span></div>
+    </div>
+  </section>
+
+  <section class="day">
+    <div class="day-head"><small>JOUR 3 · CONNECTER & LIVRER</small><strong>De l’app locale au projet partageable</strong></div>
+    <div class="stages">
+      <div class="stage"><i class="n">10</i><b>Skills et MCP</b><span>Ajouter un savoir-faire et connecter l’assistant à ses données.</span></div>
+      <div class="stage output"><i class="n">11</i><b>Mettre en ligne</b><span>Vercel si pertinent et poste compatible ; sinon validation locale.</span><span class="deliverable">Livrable cible : URL Vercel + dépôt GitHub</span></div>
+      <div class="stage"><i class="n">12</i><b>Ouverture avancée</b><span>Hooks, tâches planifiées, embeddings : démonstrations et défis.</span></div>
+      <div class="stage output"><i class="n">13</i><b>Restitution</b><span>Démo, faisabilité du prochain projet et recommandations.</span></div>
+      <div class="stage"><i class="n">14</i><b>Révélation de la bibliothèque</b><span>Tout le contenu, les ressources et les prolongements sont réutilisables.</span></div>
+    </div>
+  </section>
+</div>
+
+<div class="principle">
+  <div class="rule"><b>Théorie courte</b><span>Une notion existe pour débloquer l’action suivante.</span></div>
+  <div class="rule"><b>Validation visible</b><span>Chaque mission finit par une preuve simple que cela fonctionne.</span></div>
+  <div class="rule"><b>Avance différenciée</b><span>Défis optionnels pendant que les formateurs débloquent le socle commun.</span></div>
+</div>
+
+<div class="changes">
+  <h3>Ce que cela change par rapport à Notion</h3>
+  <ul>
+    <li>E1 Prompt passe avant les premiers ateliers.</li>
+    <li>E3 Cadrage arrive juste avant Claude Code.</li>
+    <li>E2 Code design vient après la création du projet.</li>
+    <li>Le lexique dev et les setups arrivent « juste à temps ».</li>
+    <li>Skills, MCP et automatisation deviennent l’extension du projet.</li>
+    <li>La bibliothèque clôt la formation comme ressource durable.</li>
+  </ul>
+</div>
+
+<div class="validation">Cette progression est volontairement structurée par les <b>transformations vécues par l’apprenant</b>, plutôt que par les familles théoriques. Est-ce la bonne direction ?</div>

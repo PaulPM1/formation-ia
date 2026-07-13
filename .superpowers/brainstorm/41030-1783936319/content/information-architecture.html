@@ -1,0 +1,110 @@
+<style>
+  .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch; }
+  .card { display: flex; flex-direction: column; }
+  .card-image { padding: 0; overflow: hidden; min-height: 410px; background: #f5f3ee; }
+  .card-body { flex: 1; }
+  .browser-bar { height: 30px; display: flex; align-items: center; gap: 5px; padding: 0 10px; border-bottom: 1px solid #d8d4cb; background: #ebe8e1; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: #c9c3b7; }
+  .screen { min-height: 380px; background: #fff; color: #17221d; font-size: 10px; text-align: left; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid #e6e2d9; font-weight: 700; }
+  .mode { padding: 4px 7px; border-radius: 20px; background: #17221d; color: white; font-size: 8px; }
+  .hero { padding: 18px 14px 12px; }
+  .hero strong { display: block; font-size: 17px; line-height: 1.05; margin-bottom: 6px; }
+  .muted { color: #6f756f; }
+  .journey { padding: 4px 14px 18px; display: grid; gap: 7px; }
+  .step { display: grid; grid-template-columns: 25px 1fr auto; gap: 8px; align-items: center; padding: 9px; border: 1px solid #e1ded6; border-radius: 9px; background: #fbfaf7; }
+  .step.active { border-color: #2f7654; background: #edf7f0; }
+  .num { display: grid; place-items: center; width: 23px; height: 23px; border-radius: 50%; background: #e7e3da; font-weight: 800; }
+  .active .num { color: white; background: #2f7654; }
+  .challenge { color: #8b5e12; font-size: 8px; font-weight: 700; }
+  .wiki { display: grid; grid-template-columns: 88px 1fr; min-height: 380px; }
+  .sidebar { padding: 12px 8px; background: #18221e; color: #cfd8d2; }
+  .side-title { color: #fff; font-weight: 800; margin-bottom: 13px; }
+  .side-item { padding: 6px 5px; margin: 3px 0; border-radius: 5px; }
+  .side-item.active { color: #fff; background: #31423a; }
+  .article { padding: 18px 15px; }
+  .article h4 { margin: 0 0 7px; font-size: 18px; }
+  .callout { margin: 12px 0; padding: 10px; border-left: 3px solid #2f7654; background: #edf7f0; }
+  .line { height: 5px; background: #e7e4dd; border-radius: 4px; margin: 7px 0; }
+  .line.short { width: 64%; }
+  .agenda { padding: 14px; background: #f7f4ed; min-height: 380px; }
+  .day-tabs { display: flex; gap: 5px; margin: 10px 0 14px; }
+  .day { padding: 5px 9px; border-radius: 14px; background: #e7e2d8; }
+  .day.active { background: #ce5c35; color: #fff; }
+  .mission { padding: 11px; margin-bottom: 8px; border-radius: 9px; background: #fff; border: 1px solid #ded9cf; }
+  .mission.current { border: 2px solid #ce5c35; }
+  .mission-head { display: flex; justify-content: space-between; font-weight: 800; margin-bottom: 5px; }
+  .progress { height: 5px; margin-top: 7px; border-radius: 4px; background: #e7e2d8; overflow: hidden; }
+  .progress span { display: block; width: 58%; height: 100%; background: #ce5c35; }
+  .recommend { display:inline-block; margin-left:8px; padding:3px 7px; border-radius:20px; background:#edf7f0; color:#276347; font-size:11px; vertical-align:middle; }
+  @media (max-width: 900px) { .cards { grid-template-columns: 1fr; } }
+</style>
+
+<h2>Quelle architecture doit guider le support unique ?</h2>
+<p class="subtitle">Les trois options utilisent le même contenu pour le mode présentation et le mode apprenant. Clique sur celle qui correspond le mieux à l’expérience souhaitée.</p>
+
+<div class="cards">
+  <div class="card" data-choice="parcours" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="browser-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+      <div class="screen">
+        <div class="topbar"><span>LES BRIQUES DU VIBE CODING</span><span class="mode">Mode présentation ↗</span></div>
+        <div class="hero"><strong>Construis ton assistant IA</strong><span class="muted">Un parcours progressif, du premier prompt à la mise en ligne.</span></div>
+        <div class="journey">
+          <div class="step"><span class="num">1</span><span><b>Comprendre</b><br><span class="muted">LLM, agents et coûts</span></span><span>✓</span></div>
+          <div class="step active"><span class="num">2</span><span><b>Utiliser Claude</b><br><span class="muted">Chat → Artifact → Cowork → Code</span></span><span>42 min</span></div>
+          <div class="step"><span class="num">3</span><span><b>Donner des super-pouvoirs</b><br><span class="muted">Skills, MCP et automatisations</span></span><span class="challenge">+ défis</span></div>
+          <div class="step"><span class="num">4</span><span><b>Comprendre le terrain</b><br><span class="muted">GitHub, architecture, sécurité</span></span><span>6 briques</span></div>
+          <div class="step"><span class="num">5</span><span><b>Livrer</b><br><span class="muted">MVP, Vercel et restitution</span></span><span>final</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Parcours progressif <span class="recommend">Recommandé</span></h3>
+      <p>L’apprenant suit une histoire continue. Chaque brique débloque la suivante et enrichit le même assistant.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="bibliotheque" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="browser-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+      <div class="screen wiki">
+        <aside class="sidebar">
+          <div class="side-title">FORMATION IA</div>
+          <div class="side-item">Accueil</div><div class="side-item">Comprendre</div><div class="side-item active">Interfaces</div><div class="side-item">Étendre</div><div class="side-item">Écosystème</div><div class="side-item">Méthode</div><div class="side-item">Ateliers</div><div class="side-item">Ressources</div>
+        </aside>
+        <main class="article">
+          <span class="muted">BLOC B · BRIQUE 2</span>
+          <h4>Créer un Artifact</h4>
+          <p>Un objet interactif directement utilisable depuis la conversation.</p>
+          <div class="callout"><b>À retenir</b><br>Le même moteur, une nouvelle surface.</div>
+          <b>Exercice</b><div class="line"></div><div class="line"></div><div class="line short"></div>
+          <br><b>Ressources</b><div class="line"></div><div class="line short"></div>
+        </main>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Bibliothèque / wiki</h3>
+      <p>Excellente consultation après la formation et navigation libre, mais le fil narratif du week-end est moins perceptible.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="camp" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="browser-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+      <div class="screen agenda">
+        <div class="topbar" style="padding:0 0 9px;border:0;background:transparent"><span>VIBE CODING CAMP</span><span class="mode">Présenter</span></div>
+        <strong style="font-size:18px">Bonjour Paul 👋</strong><br><span class="muted">Ton week-end de construction</span>
+        <div class="day-tabs"><span class="day">Vendredi</span><span class="day active">Samedi</span><span class="day">Dimanche</span></div>
+        <div class="mission"><div class="mission-head"><span>09:00 · Comprendre les agents</span><span>✓</span></div><span class="muted">Démo « dit vs fait »</span></div>
+        <div class="mission current"><div class="mission-head"><span>10:15 · Fabrique ton outil</span><span>EN COURS</span></div><span class="muted">Livrable : un Artifact personnalisé</span><div class="progress"><span></span></div></div>
+        <div class="mission"><div class="mission-head"><span>11:30 · Défi avancé</span><span>OPTIONNEL</span></div><span class="muted">Ajoute des données et un export</span></div>
+        <div class="mission"><div class="mission-head"><span>14:00 · Passe au code</span><span>À VENIR</span></div><span class="muted">Transforme l’outil en mini-app</span></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Tableau de bord du camp</h3>
+      <p>Très opérationnel pendant le week-end, avec agenda et missions. Moins durable comme ressource publique après l’événement.</p>
+    </div>
+  </div>
+</div>
