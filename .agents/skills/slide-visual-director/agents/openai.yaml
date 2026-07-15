@@ -1,0 +1,4 @@
+interface:
+  display_name: "Directeur visuel des slides"
+  short_description: "Conçoit des slides visuelles et interactives"
+  default_prompt: "Use $slide-visual-director to create or adapt the visual for this training slide."
