@@ -202,10 +202,69 @@ test('les états interactifs du bloc B restent déterministes et bloquent les po
   assert.equal(state.commandForPlatform('windows', { mac: 'pwd', windows: 'Get-Location' }), 'Get-Location');
 
   const closed = { permission: false, test: false, diff: false };
+  assert.deepEqual(state.advanceIpmtr(0, closed), { index: 1, blockedBy: null });
   assert.deepEqual(state.advanceIpmtr(1, closed), { index: 1, blockedBy: 'permission' });
-  assert.deepEqual(state.advanceIpmtr(2, { ...closed, permission: true }), { index: 2, blockedBy: 'test' });
-  assert.deepEqual(state.advanceIpmtr(3, { permission: true, test: true, diff: false }), { index: 3, blockedBy: 'diff' });
-  assert.deepEqual(state.advanceIpmtr(3, { permission: true, test: true, diff: true }), { index: 4, blockedBy: null });
+  assert.deepEqual(state.advanceIpmtr(1, { ...closed, permission: true }), { index: 2, blockedBy: null });
+  assert.deepEqual(state.advanceIpmtr(2, closed), { index: 3, blockedBy: null });
+  assert.deepEqual(state.advanceIpmtr(3, { ...closed, permission: true }), { index: 3, blockedBy: 'test' });
+  assert.deepEqual(state.advanceIpmtr(3, { ...closed, test: true }), { index: 4, blockedBy: null });
+  assert.deepEqual(state.advanceIpmtr(4, { ...closed, test: true }), { index: 4, blockedBy: 'diff' });
+  assert.deepEqual(state.advanceIpmtr(4, { permission: true, test: true, diff: true }), { index: 0, blockedBy: null });
+
+  assert.equal(state.ipmtrGateAfter(1), 'permission');
+  assert.equal(state.ipmtrGateAfter(2), null);
+  assert.equal(state.ipmtrGateAfter(3), 'test');
+  assert.equal(state.ipmtrGateAfter(4), 'diff');
+  let loopIndex = 0;
+  for (const expected of [1, 2, 3, 4, 0, 1]) {
+    loopIndex = state.advanceIpmtr(loopIndex, { permission: true, test: true, diff: true }).index;
+    assert.equal(loopIndex, expected);
+  }
+
+  assert.deepEqual(state.artifactViewState(3, null), {
+    active: null,
+    panels: [true, true, true],
+    nodes: [true, true, true],
+  });
+  assert.deepEqual(state.artifactViewState(3, 1), {
+    active: 1,
+    panels: [false, true, false],
+    nodes: [false, true, false],
+  });
+});
+
+test('le triptyque sépare la destination de transition du chemin partagé', async () => {
+  const state = await import('../src/components/presentation/visuals/b/visual-state').catch(() => null);
+  assert.ok(state, "les helpers d’état du bloc B doivent exister");
+  const slides = B_DECKS.flatMap((deck) => deck.slides);
+  const data = (id: string) => slides.find((slide) => slide.id === id)?.visual.data ?? {};
+
+  assert.equal(state.workspaceSharedPath(data('b4-transition')), 'atelier-ia/bonjour.txt');
+  assert.equal(state.workspaceSharedPath(data('b4bis-triptych')), 'atelier-ia');
+  assert.notEqual(state.workspaceSharedPath(data('b4-transition')), data('b4-transition').destination);
+});
+
+test('Artifact route chaque claim vers un visuel central distinct et synchronisable', async () => {
+  const artifact = await read('src/components/presentation/visuals/b/ArtifactTestLoop.astro');
+  assert.match(artifact, /variant === 'transfer'/);
+  assert.match(artifact, /variant === 'anatomy'/);
+  assert.match(artifact, /variant === 'mvp'/);
+  assert.match(artifact, /isLoopVariant/);
+  assert.match(artifact, /data-artifact-node/);
+  assert.match(artifact, /data-artifact-overview/);
+  assert.match(artifact, /Vue d’ensemble/);
+  assert.match(artifact, /node\.classList\.toggle/);
+  assert.match(artifact, /document\.querySelectorAll<HTMLElement>\('\[data-artifact-loop\]'\)/);
+  assert.match(artifact, /scene\.querySelectorAll<HTMLButtonElement>\('\[data-artifact-stage\]'\)/);
+});
+
+test('I.P.M.T.R. annonce les trois portes sur une boucle non terminale', async () => {
+  const ipmtr = await read('src/components/presentation/visuals/b/IpmtrLoop.astro');
+  assert.match(ipmtr, /data-ipmtr-gate-label="permission"/);
+  assert.match(ipmtr, /data-ipmtr-gate-label="test"/);
+  assert.match(ipmtr, /data-ipmtr-gate-label="diff"/);
+  assert.doesNotMatch(ipmtr, /index === panels\.length - 1/);
+  assert.match(ipmtr, /Vers \$\{nextName\}/);
 });
 
 test('les visuels du bloc B gardent un état final sans JS et des contrôles natifs', async () => {

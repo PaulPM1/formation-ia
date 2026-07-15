@@ -62,9 +62,29 @@ export const commandForPlatform = (
 ) => commands[platform];
 
 export interface IpmtrGates { permission: boolean; test: boolean; diff: boolean; }
+export type IpmtrGate = keyof IpmtrGates;
+
+export const ipmtrGateAfter = (index: number): IpmtrGate | null => {
+  const current = ((index % 5) + 5) % 5;
+  return ([null, 'permission', null, 'test', 'diff'] as const)[current];
+};
+
 export const advanceIpmtr = (index: number, gates: IpmtrGates) => {
-  const blockers = [null, 'permission', 'test', 'diff', null] as const;
-  const blockedBy = blockers[Math.min(Math.max(index, 0), 4)];
+  const current = ((index % 5) + 5) % 5;
+  const blockedBy = ipmtrGateAfter(current);
   if (blockedBy && !gates[blockedBy]) return { index, blockedBy };
-  return { index: Math.min(index + 1, 4), blockedBy: null };
+  return { index: (current + 1) % 5, blockedBy: null };
+};
+
+export const artifactViewState = (count: number, active: number | null) => ({
+  active,
+  panels: Array.from({ length: count }, (_, index) => active === null || index === active),
+  nodes: Array.from({ length: count }, (_, index) => active === null || index === active),
+});
+
+export const workspaceSharedPath = (data: VisualData) => {
+  if (typeof data.sharedContext === 'string') return data.sharedContext;
+  if (typeof data.explorerPath === 'string') return data.explorerPath;
+  if (typeof data.folder === 'string') return data.folder;
+  return 'atelier-ia/bonjour.txt';
 };

@@ -1,7 +1,7 @@
 ---
 import type { RoutedSlide } from '../../../../presentation/presentation-model';
 import SceneFrame from '../../scenes/SceneFrame.astro';
-import { getWorkspaceVariant } from './visual-state';
+import { getWorkspaceVariant, workspaceSharedPath } from './visual-state';
 
 interface Props { slide: RoutedSlide; }
 interface Pane { name: string; role?: string; evidence?: string; }
@@ -10,6 +10,8 @@ interface CommandItem { shell: string; command: string; expectedSuffix: string; 
 const { slide } = Astro.props;
 const data = slide.visual.data;
 const variant = getWorkspaceVariant(data);
+const sharedPath = workspaceSharedPath(data);
+const destination = typeof data.destination === 'string' ? data.destination : '';
 const panes = (Array.isArray(data.panes) ? data.panes : []) as Pane[];
 const contents = Array.isArray(data.contents) ? data.contents.map(String) : [];
 const commands = (Array.isArray(data.commands) ? data.commands : []) as CommandItem[];
@@ -44,7 +46,10 @@ const windowsExpected = commands.find((item) => /Windows/i.test(item.shell))?.ex
         <text class="triptych__pane-title" x="645" y="87">TERMINAL</text>
         <text x="645" y="125">$ pwd</text><text x="645" y="153">…/atelier-ia</text>
       </svg>
-      <p class="triptych__shared"><span>Chemin partagé</span>{String(data.sharedContext ?? data.explorerPath ?? data.destination ?? data.folder ?? 'atelier-ia')}</p>
+      <div class="triptych__context-labels">
+        <p class="triptych__shared"><span>Chemin partagé</span>{sharedPath}</p>
+        {destination && <p class="triptych__destination"><span>Transition suivante</span>{destination}</p>}
+      </div>
     </section>
 
     <section class="triptych__detail">
@@ -134,8 +139,10 @@ const windowsExpected = commands.find((item) => /Windows/i.test(item.shell))?.ex
   .triptych__workspace text { fill: var(--presentation-ink); font: 650 13px var(--font-mono); }
   .triptych__workspace g text { font: 800 15px var(--font-display); }
   .triptych__workspace .triptych__pane-title { font: 760 14px var(--font-display); }
-  .triptych__shared { display: grid; gap: .18rem; margin: 0; padding-inline-start: .65rem; border-inline-start: .3rem solid var(--family-accent); font: 750 .72rem/1.1 var(--display-font); overflow-wrap: anywhere; }
-  .triptych__shared span { color: var(--presentation-muted); font: .56rem var(--font-mono); text-transform: uppercase; }
+  .triptych__context-labels { display: grid; gap: .5rem; }
+  .triptych__shared, .triptych__destination { display: grid; gap: .18rem; margin: 0; padding-inline-start: .65rem; border-inline-start: .3rem solid var(--family-accent); font: 750 .72rem/1.1 var(--display-font); overflow-wrap: anywhere; }
+  .triptych__destination { border-color: #ed6a46; }
+  .triptych__shared span, .triptych__destination span { color: var(--presentation-muted); font: .56rem var(--font-mono); text-transform: uppercase; }
   .triptych__panes { display: grid; grid-template-columns: minmax(7rem, .42fr) 1fr; gap: .55rem; }
   .triptych__pane-buttons { display: grid; align-content: center; }
   .triptych__pane-buttons button { display: grid; grid-template-columns: 1.4rem 1fr; gap: .35rem; min-block-size: 2.6rem; padding: .35rem; border: 0; border-block-start: 1px solid var(--presentation-line); background: transparent; color: var(--presentation-ink); font: 720 .68rem var(--font-display); text-align: start; cursor: pointer; }

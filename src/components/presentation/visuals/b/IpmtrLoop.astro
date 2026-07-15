@@ -34,6 +34,9 @@ const canonicalSteps: Step[] = steps.length ? steps : [
         <title id={`${slide.id}-ipmtr-title`}>Boucle I.P.M.T.R.</title>
         <desc id={`${slide.id}-ipmtr-desc`}>Inspecter mène à Planifier, Modifier, Tester et Relire. Une anomalie dans le diff renvoie à Inspecter.</desc>
         <path data-ipmtr-path d="M105 170 C105 74 650 46 660 160 C668 260 520 292 380 274 C235 256 101 249 105 170 Z" />
+        <g class="ipmtr__gate-marker" data-ipmtr-gate-label="permission" transform="translate(326 68)"><rect x="-42" y="-12" width="84" height="24" rx="12" /><text y="4" text-anchor="middle">permission</text></g>
+        <g class="ipmtr__gate-marker" data-ipmtr-gate-label="test" transform="translate(638 178)"><rect x="-27" y="-12" width="54" height="24" rx="12" /><text y="4" text-anchor="middle">test</text></g>
+        <g class="ipmtr__gate-marker" data-ipmtr-gate-label="diff" transform="translate(330 273)"><rect x="-25" y="-12" width="50" height="24" rx="12" /><text y="4" text-anchor="middle">diff</text></g>
         {[[105,170],[240,84],[410,70],[584,104],[592,246]].map(([x,y], index) => (
           <g transform={`translate(${x} ${y})`} data-ipmtr-node={index}>
             <circle r="30" />
@@ -79,7 +82,7 @@ const canonicalSteps: Step[] = steps.length ? steps : [
 </SceneFrame>
 
 <script>
-  import { advanceIpmtr, resolvePanelVisibility } from './visual-state';
+  import { advanceIpmtr, ipmtrGateAfter, resolvePanelVisibility } from './visual-state';
 
   document.querySelectorAll<HTMLElement>('[data-ipmtr-loop]').forEach((scene) => {
     scene.dataset.enhanced = 'true';
@@ -100,17 +103,26 @@ const canonicalSteps: Step[] = steps.length ? steps : [
     const panels = Array.from(scene.querySelectorAll<HTMLElement>('[data-ipmtr-panel]'));
     const nodes = Array.from(scene.querySelectorAll<SVGGElement>('[data-ipmtr-node]'));
     const gates = Array.from(scene.querySelectorAll<HTMLInputElement>('[data-ipmtr-gate]'));
+    const gateMarkers = Array.from(scene.querySelectorAll<SVGGElement>('[data-ipmtr-gate-label]'));
     const advance = scene.querySelector<HTMLButtonElement>('[data-ipmtr-advance]');
     const status = scene.querySelector<HTMLOutputElement>('[data-ipmtr-status]');
     if (!panels.length || !advance || !status) return;
     let index = 0;
     gates.forEach((gate) => { gate.disabled = false; gate.checked = false; });
     advance.disabled = false;
+    const stepNames = ['Inspecter', 'Planifier', 'Modifier', 'Tester', 'Relire'];
+    const gateLabels = { permission: 'permission comprise', test: 'test exécuté', diff: 'diff relu' };
+    const canonicalStepName = (stepIndex: number) => stepNames[stepIndex] ?? '';
     const render = () => {
       resolvePanelVisibility(panels.length, index, true).forEach((visible, panelIndex) => { panels[panelIndex].hidden = !visible; });
       nodes.forEach((node, nodeIndex) => node.classList.toggle('is-active', nodeIndex === index));
-      advance.disabled = index === panels.length - 1;
-      if (index === panels.length - 1) status.textContent = 'Relire · la boucle est complète, accepter ou revenir à Inspecter.';
+      const requiredGate = ipmtrGateAfter(index);
+      const nextName = canonicalStepName((index + 1) % panels.length);
+      gateMarkers.forEach((marker) => marker.classList.toggle('is-required', marker.dataset.ipmtrGateLabel === requiredGate));
+      advance.textContent = requiredGate ? `Vers ${nextName} · ${gateLabels[requiredGate]} requise` : `Vers ${nextName}`;
+      status.textContent = requiredGate
+        ? `${canonicalStepName(index)} · prochaine porte : ${gateLabels[requiredGate]}.`
+        : `${canonicalStepName(index)} · passage direct vers ${nextName}.`;
     };
     advance.addEventListener('click', () => {
       const gateState = { permission: false, test: false, diff: false };
@@ -122,11 +134,9 @@ const canonicalSteps: Step[] = steps.length ? steps : [
         return;
       }
       index = next.index;
-      status.textContent = `${canonicalStepName(index)} · progression autorisée.`;
       render();
     });
-    const canonicalStepName = (stepIndex: number) => ['Inspecter', 'Planifier', 'Modifier', 'Tester', 'Relire'][stepIndex] ?? '';
-    status.textContent = 'Inspecter · cartographiez avant de modifier.';
+    gates.forEach((gate) => gate.addEventListener('change', render));
     render();
   });
 </script>
@@ -136,8 +146,11 @@ const canonicalSteps: Step[] = steps.length ? steps : [
   .ipmtr__diagram { display: grid; grid-template-columns: 1fr minmax(7rem, .32fr); align-items: center; }
   .ipmtr__diagram svg { inline-size: 100%; max-block-size: 9.2rem; overflow: visible; }
   .ipmtr__diagram path { fill: none; stroke: var(--presentation-ink); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+  .ipmtr__gate-marker rect { fill: var(--presentation-surface); stroke: var(--presentation-ink); stroke-width: 2; transition: fill 160ms ease; }
+  .ipmtr__gate-marker text { font: 700 10px var(--font-mono); text-transform: uppercase; }
+  .ipmtr__gate-marker.is-required rect { fill: #ed6a46; }
   .ipmtr__diagram circle { fill: var(--presentation-surface); stroke: var(--presentation-ink); stroke-width: 4; transition: fill 160ms ease, transform 160ms ease; }
-  .ipmtr__diagram g:first-of-type circle, .ipmtr__diagram g.is-active circle { fill: var(--family-accent); }
+  .ipmtr[data-enhanced='false'] [data-ipmtr-node='0'] circle, .ipmtr__diagram g.is-active circle { fill: var(--family-accent); }
   .ipmtr__diagram text { fill: var(--presentation-ink); font: 800 19px var(--font-display); }
   .ipmtr__diagram .ipmtr__node-label { font: 700 13px var(--font-display); }
   .ipmtr__loopback { display: grid; gap: .18rem; margin: 0; padding-inline-start: .65rem; border-inline-start: .3rem solid #ed6a46; font: 700 .67rem/1.15 var(--font-display); }
@@ -185,5 +198,5 @@ const canonicalSteps: Step[] = steps.length ? steps : [
     .ipmtr__diagram svg { max-block-size: 11rem; }
   }
   @media (max-width: 34rem) { .ipmtr__permission, .ipmtr__advance { grid-template-columns: 1fr; } }
-  @media (prefers-reduced-motion: reduce) { .ipmtr__diagram circle { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .ipmtr__diagram circle, .ipmtr__gate-marker rect { transition: none; } }
 </style>
