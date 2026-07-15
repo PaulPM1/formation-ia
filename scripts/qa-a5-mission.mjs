@@ -84,6 +84,25 @@ const inspectLayout = async (page, label, { expectDocumentFlow, requireCorrectio
         .filter((element) => !hidden(element) && [...element.childNodes].some((node) => node.nodeType === Node.TEXT_NODE && node.textContent.trim()))
         .map((element) => Number.parseFloat(getComputedStyle(element).fontSize))
       : [];
+    const visibleInteractive = (selector) => [...document.querySelectorAll(selector)]
+      .filter((element) => !hidden(element) && element.getClientRects().length > 0);
+    const siteNavigation = visibleInteractive('.presentation-site-nav a');
+    const slideControls = visibleInteractive('.presentation-controls :is(a, button)');
+    const navigationIntersections = [];
+    for (const siteLink of siteNavigation) {
+      const siteRect = siteLink.getBoundingClientRect();
+      for (const control of slideControls) {
+        const controlRect = control.getBoundingClientRect();
+        const overlapWidth = Math.min(siteRect.right, controlRect.right) - Math.max(siteRect.left, controlRect.left);
+        const overlapHeight = Math.min(siteRect.bottom, controlRect.bottom) - Math.max(siteRect.top, controlRect.top);
+        if (overlapWidth > 1 && overlapHeight > 1) {
+          navigationIntersections.push(`${siteLink.textContent.trim()} × ${control.textContent.trim()} (${Math.round(overlapWidth)}×${Math.round(overlapHeight)} px)`);
+        }
+      }
+    }
+    const controlsFollowSiteNavigation = siteNavigation.every((siteLink) => slideControls.every((control) => (
+      Boolean(siteLink.compareDocumentPosition(control) & Node.DOCUMENT_POSITION_FOLLOWING)
+    )));
     return {
       figureHeight: figure?.getBoundingClientRect().height ?? 0,
       contentClientHeight: content?.clientHeight ?? 0,
@@ -97,6 +116,11 @@ const inspectLayout = async (page, label, { expectDocumentFlow, requireCorrectio
       clipped: [...new Set(clipped)],
       correctionText,
       correctionMinFont: correctionFonts.length ? Math.min(...correctionFonts) : 0,
+      navigationIntersections,
+      siteNavigationCount: siteNavigation.length,
+      slideControlCount: slideControls.length,
+      navigationTabOrderValid: controlsFollowSiteNavigation
+        && [...siteNavigation, ...slideControls].every((element) => element.tabIndex >= 0),
     };
   });
 
@@ -108,11 +132,14 @@ const inspectLayout = async (page, label, { expectDocumentFlow, requireCorrectio
   if (result.clipped.length) failures.push(`${label} clipping ${result.clipped.join(', ')}`);
   if (requireCorrection && categories.some((category) => !result.correctionText.includes(category))) failures.push(`${label} correction incomplète`);
   if (requireCorrection && result.correctionMinFont < 11.99) failures.push(`${label} correction à ${result.correctionMinFont}px`);
+  if (result.navigationIntersections.length) failures.push(`${label} chevauchement navigation ${result.navigationIntersections.join(', ')}`);
+  if (result.siteNavigationCount !== 3 || result.slideControlCount !== 5) failures.push(`${label} contrôles de navigation absents ${result.siteNavigationCount}/3 + ${result.slideControlCount}/5`);
+  if (!result.navigationTabOrderValid) failures.push(`${label} ordre clavier des navigations invalide`);
   return result;
 };
 
-const exerciseDisclosure = async ({ javaScriptEnabled, zoom, label, capture }) => {
-  const context = await browser.newContext({ viewport: { width: 1280, height: 720 }, javaScriptEnabled });
+const exerciseDisclosure = async ({ javaScriptEnabled, zoom, label, capture, viewport = { width: 1280, height: 720 } }) => {
+  const context = await browser.newContext({ viewport, javaScriptEnabled });
   const page = await context.newPage();
   await page.goto(`${baseURL}${route}`, { waitUntil: 'load' });
   await page.evaluate((factor) => { document.documentElement.style.zoom = String(factor); }, zoom);
@@ -153,6 +180,21 @@ try {
   await exerciseDisclosure({ javaScriptEnabled: true, zoom: 1, label: 'normal js', capture: false });
   zoomResult = await exerciseDisclosure({ javaScriptEnabled: true, zoom: 2, label: 'zoom 200 js', capture: true });
   await exerciseDisclosure({ javaScriptEnabled: false, zoom: 2, label: 'zoom 200 no-js', capture: false });
+  await exerciseDisclosure({ javaScriptEnabled: true, zoom: 1, label: 'mobile js', capture: false, viewport: { width: 390, height: 844 } });
+  await exerciseDisclosure({ javaScriptEnabled: true, zoom: 2, label: 'mobile zoom 200 js', capture: false, viewport: { width: 390, height: 844 } });
+
+  const fullscreenContext = await browser.newContext({ viewport: { width: 1280, height: 720 } });
+  const fullscreenPage = await fullscreenContext.newPage();
+  await fullscreenPage.goto(`${baseURL}${route}`, { waitUntil: 'load' });
+  await fullscreenPage.locator('html').evaluate((element) => element.requestFullscreen());
+  await stabilize(fullscreenPage);
+  const fullscreenState = await fullscreenPage.evaluate(() => ({
+    siteNavigation: getComputedStyle(document.querySelector('.presentation-site-nav')).display,
+    slideControls: getComputedStyle(document.querySelector('.presentation-controls')).display,
+  }));
+  if (fullscreenState.siteNavigation !== 'none' || fullscreenState.slideControls === 'none') failures.push(`plein écran ${JSON.stringify(fullscreenState)}`);
+  await fullscreenPage.evaluate(() => document.exitFullscreen());
+  await fullscreenContext.close();
 
   const printContext = await browser.newContext({ viewport: { width: 1280, height: 720 }, javaScriptEnabled: false });
   const printPage = await printContext.newPage();
@@ -162,8 +204,10 @@ try {
   const printState = await printPage.evaluate(() => ({
     summary: getComputedStyle(document.querySelector('.mission-board__correction summary')).display,
     correction: getComputedStyle(document.querySelector('.mission-board__correction-list')).display,
+    siteNavigation: getComputedStyle(document.querySelector('.presentation-site-nav')).display,
+    slideControls: getComputedStyle(document.querySelector('.presentation-controls')).display,
   }));
-  if (printState.summary !== 'none' || printState.correction === 'none') failures.push(`print ${JSON.stringify(printState)}`);
+  if (printState.summary !== 'none' || printState.correction === 'none' || printState.siteNavigation !== 'none' || printState.slideControls !== 'none') failures.push(`print ${JSON.stringify(printState)}`);
   await printContext.close();
 } finally {
   await browser.close();
@@ -174,5 +218,5 @@ if (failures.length) {
   console.error(failures.join('\n'));
   process.exitCode = 1;
 } else {
-  console.log(`Mission A5 : fermé/ouvert, clavier, zoom 200 %, no-JS, impression, reflow, clipping et plancher 12 px validés. Figure zoom ${Math.round(zoomResult.open.figureHeight)} px ; contenu ${zoomResult.open.contentClientHeight}/${zoomResult.open.contentScrollHeight} px.`);
+  console.log(`Mission A5 : fermé/ouvert, clavier, zoom 200 %, mobile, no-JS, plein écran, impression, reflow, clipping, navigation et plancher 12 px validés. Figure zoom ${Math.round(zoomResult.open.figureHeight)} px ; contenu ${zoomResult.open.contentClientHeight}/${zoomResult.open.contentScrollHeight} px ; overlap navigation 0.`);
 }

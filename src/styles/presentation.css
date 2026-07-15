@@ -32,6 +32,7 @@ html {
 }
 
 body {
+  container-type: inline-size;
   min-block-size: 100dvh;
   margin: 0;
   overflow-x: hidden;
@@ -1101,6 +1102,38 @@ dialog button,
   display: none;
 }
 
+/* La largeur du conteneur suit le zoom CSS contrairement aux media queries.
+   Sous 75 rem effectifs, la navigation du site revient donc dans le flux et
+   ne peut plus recouvrir les contrôles de présentation collés en bas. */
+@container (max-width: 74.99rem) {
+  .presentation-site-nav {
+    position: relative;
+    inset: auto;
+    max-inline-size: none;
+    padding: 0.5rem 0.75rem;
+    border: 0;
+    border-block-end: 1px solid var(--presentation-line);
+    background: rgb(255 250 241 / 96%);
+    font-size: 0.78rem;
+  }
+
+  .presentation-site-nav a {
+    padding-inline: 0.65rem;
+  }
+
+  .presentation-site-nav ul {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .presentation-site-nav__return {
+    border-color: var(--presentation-ink);
+    background: var(--presentation-surface);
+    box-shadow: none;
+  }
+}
+
 @media (min-width: 52.01rem) and (min-aspect-ratio: 4 / 3) {
   .presentation-stage {
     inline-size: min(100%, calc((100dvh - 4.3rem) * 16 / 9));
@@ -1153,6 +1186,16 @@ dialog button,
 
   .presentation-visual {
     min-block-size: 42dvh;
+    overflow: visible;
+  }
+
+  .scene-frame__content {
+    overflow: visible;
+  }
+
+  .mission-board__header {
+    flex-wrap: wrap;
+    gap: 0.35rem 0.75rem;
   }
 
   .mission-board__outcome,
@@ -1190,9 +1233,14 @@ dialog button,
 
 @media (max-width: 38rem) {
   .presentation-controls {
-    grid-template-columns: repeat(5, minmax(7.25rem, auto));
-    justify-content: start;
-    overflow-x: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    justify-content: stretch;
+    overflow: visible;
+  }
+
+  .presentation-controls :where(a, button, span) {
+    min-inline-size: 0;
+    padding-inline: 0.45rem;
   }
 
   .checkpoint-scene__checklist li {

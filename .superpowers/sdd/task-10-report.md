@@ -1,7 +1,7 @@
 # Task 10 — Vérification complète et corrections visuelles
 
-Date : 15 juillet 2026  
-Base vérifiée : `000109d`  
+Date : 15 juillet 2026
+Base vérifiée : `000109d`
 Périmètre : 76 slides, blocs A1 à C3
 
 ## Résultat
@@ -28,7 +28,7 @@ La livraison A1–C3 est validée sur le fond, la forme, les interactions et la 
 | Impression | slides représentatives A/B/C | valide |
 | Lisibilité | texte pédagogique sous 12 px | 0/76 |
 | Liens HTTPS uniques | 72 | 71 réponses HTTP 200 + 1 validation anti-robot officielle |
-| Mission A5 | fermé/ouvert, clavier, zoom 200 %, sans JS, impression | valide — figure 931 px, contenu 407/407 px |
+| Mission A5 | fermé/ouvert, clavier, zoom 200 %, mobile, sans JS, plein écran, impression | valide — figure 931 px, contenu 407/407 px, overlap navigation 0 |
 
 ## Revue visuelle silencieuse
 
@@ -51,6 +51,7 @@ Les captures individuelles des 76 routes se trouvent dans `.context/qa-slides/{a
 7. La hausse typographique faisait dépasser B1-builder de 4 px, B2-mission de 2 px, C1-tests de 2 px et C3-schedule de 6 px. Les espacements verticaux B/C ont été recomposés ; les sweeps B, C et général ne détectent plus aucun débordement.
 8. Les hôtes Anthropic historiques ont été remplacés dans les manifestes et les sources MDX associées par leurs URL officielles actuelles. La validation de contenu rejette désormais les anciens domaines.
 9. Au zoom 200 %, la correction A5 repliait la figure à 4 px et enfermait 407 px de contenu dans une zone de 14 px. Le cadre suit maintenant le flux vertical du document sans scroll interne ni clipping. La capture corrigée est prise après chargement des fontes et deux cycles `requestAnimationFrame` ; la recette durable mesure une figure de 931 px et un contenu de 407/407 px.
+10. Au zoom 200 %, la navigation du site recouvrait jusqu'à cinq contrôles de présentation. Une requête de conteneur replace désormais la navigation du site dans le flux sous 75 rem effectifs, tandis que les contrôles mobiles se replient sur deux colonnes. La QA durable mesure les rectangles de chaque lien et bouton : overlap navigation 0 à l'état fermé comme ouvert, en desktop et mobile.
 
 Chaque correction fonctionnelle ou visuelle ci-dessus a été précédée d'un contrôle reproductible en échec, puis confirmée par la suite de tests et les audits navigateur.
 
@@ -97,7 +98,7 @@ La passe finale a exécuté successivement la suite complète, le contrôle de c
 - QA bloc C : 19/19 ;
 - QA générale : 76/76 ;
 - plancher typographique : 76/76 routes, HTML/SVG/pseudo-contenus à au moins 12 px en desktop, mobile et zoom 200 % ;
-- mission A5 : états fermé/ouvert, ouverture clavier, zoom 200 %, sans JS, impression et reflow validés — figure 931 px, contenu 407/407 px, capture stabilisée après fontes et deux frames ;
+- mission A5 : états fermé/ouvert, ouverture clavier, zoom 200 %, mobile, sans JS, plein écran, impression et reflow validés — figure 931 px, contenu 407/407 px, overlap navigation 0, capture stabilisée après fontes et deux frames ;
 - layout : 76/76 routes desktop/mobile, ressources, plein écran et impression ;
 - présentateur : 77 fichiers `index.html` ;
 - diff : aucune erreur d'espacement.

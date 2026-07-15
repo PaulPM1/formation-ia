@@ -122,6 +122,10 @@ test('la QA durable A5 ouvre la correction au clavier et exige un reflow au zoom
   assert.match(qa, /page\.keyboard\.press\('Enter'\)/);
   assert.match(qa, /contentScrollHeight > result\.contentClientHeight/);
   assert.match(qa, /documentScrollHeight <= result\.documentClientHeight/);
+  assert.match(qa, /\.presentation-site-nav a/);
+  assert.match(qa, /\.presentation-controls :is\(a, button\)/);
+  assert.match(qa, /navigationIntersections\.length/);
+  assert.match(qa, /viewport:\s*\{ width: 390, height: 844 \}/);
   assert.match(qa, /requestAnimationFrame\(\(\) => requestAnimationFrame/);
 });
 
