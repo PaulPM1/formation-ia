@@ -233,6 +233,58 @@ test('les états interactifs du bloc B restent déterministes et bloquent les po
   });
 });
 
+test('I.P.M.T.R. consomme les portes et rebloque au second tour', async () => {
+  const state = await import('../src/components/presentation/visuals/b/visual-state').catch(() => null);
+  assert.ok(state, "les helpers d’état du bloc B doivent exister");
+  let cycle = {
+    index: 0,
+    gates: { permission: true, test: true, diff: true },
+    blockedBy: null as null | string,
+  };
+
+  for (let step = 0; step < 5; step += 1) cycle = state.advanceIpmtrCycle(cycle.index, cycle.gates);
+  assert.deepEqual(cycle, {
+    index: 0,
+    gates: { permission: false, test: false, diff: false },
+    blockedBy: null,
+  });
+
+  cycle = state.advanceIpmtrCycle(cycle.index, cycle.gates);
+  assert.equal(cycle.index, 1);
+  assert.deepEqual(state.advanceIpmtrCycle(cycle.index, cycle.gates), {
+    index: 1,
+    gates: { permission: false, test: false, diff: false },
+    blockedBy: 'permission',
+  });
+  cycle = state.advanceIpmtrCycle(cycle.index, { ...cycle.gates, permission: true });
+  cycle = state.advanceIpmtrCycle(cycle.index, cycle.gates);
+  assert.deepEqual(state.advanceIpmtrCycle(cycle.index, cycle.gates), {
+    index: 3,
+    gates: { permission: false, test: false, diff: false },
+    blockedBy: 'test',
+  });
+  cycle = state.advanceIpmtrCycle(cycle.index, { ...cycle.gates, test: true });
+  assert.deepEqual(state.advanceIpmtrCycle(cycle.index, cycle.gates), {
+    index: 4,
+    gates: { permission: false, test: false, diff: false },
+    blockedBy: 'diff',
+  });
+});
+
+test('le comparatif de prompt conserve toujours le vrai état après du manifeste', async () => {
+  const state = await import('../src/components/presentation/visuals/b/visual-state').catch(() => null);
+  assert.ok(state, "les helpers d’état du bloc B doivent exister");
+  const vague = B_DECKS.flatMap((deck) => deck.slides).find((slide) => slide.id === 'b1-vague');
+  assert.ok(vague);
+  const target = String(vague.visual.data.after);
+  const questions = (vague.visual.data.assumptions as string[]) ?? [];
+
+  assert.equal(state.promptOutputForVariant('comparison', target, questions, [false, false, false, false]), target);
+  assert.equal(state.promptOutputForVariant('comparison', target, questions, [true, false, true, false]), target);
+  assert.notEqual(target, questions.join(' · '));
+  assert.doesNotMatch(target, /Sélectionnez/);
+});
+
 test('le triptyque sépare la destination de transition du chemin partagé', async () => {
   const state = await import('../src/components/presentation/visuals/b/visual-state').catch(() => null);
   assert.ok(state, "les helpers d’état du bloc B doivent exister");
@@ -256,6 +308,14 @@ test('Artifact route chaque claim vers un visuel central distinct et synchronisa
   assert.match(artifact, /node\.classList\.toggle/);
   assert.match(artifact, /document\.querySelectorAll<HTMLElement>\('\[data-artifact-loop\]'\)/);
   assert.match(artifact, /scene\.querySelectorAll<HTMLButtonElement>\('\[data-artifact-stage\]'\)/);
+});
+
+test('la vue d’ensemble Artifact compacte les contrôles et panneaux sur une rangée', async () => {
+  const artifact = await read('src/components/presentation/visuals/b/ArtifactTestLoop.astro');
+  assert.match(artifact, /--artifact-panel-count/);
+  assert.match(artifact, /repeat\(var\(--artifact-panel-count\),\s*minmax\(0,\s*1fr\)\)/);
+  assert.match(artifact, /\.artifact__stage-buttons \.artifact__overview\s*{[^}]*grid-column:\s*auto/s);
+  assert.match(artifact, /\.artifact__panels article\s*{[^}]*min-block-size:\s*0/s);
 });
 
 test('I.P.M.T.R. annonce les trois portes sur une boucle non terminale', async () => {

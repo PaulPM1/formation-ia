@@ -82,7 +82,7 @@ const canonicalSteps: Step[] = steps.length ? steps : [
 </SceneFrame>
 
 <script>
-  import { advanceIpmtr, ipmtrGateAfter, resolvePanelVisibility } from './visual-state';
+  import { advanceIpmtrCycle, ipmtrGateAfter, resolvePanelVisibility } from './visual-state';
 
   document.querySelectorAll<HTMLElement>('[data-ipmtr-loop]').forEach((scene) => {
     scene.dataset.enhanced = 'true';
@@ -127,13 +127,14 @@ const canonicalSteps: Step[] = steps.length ? steps : [
     advance.addEventListener('click', () => {
       const gateState = { permission: false, test: false, diff: false };
       gates.forEach((gate) => { gateState[gate.dataset.ipmtrGate as keyof typeof gateState] = gate.checked; });
-      const next = advanceIpmtr(index, gateState);
+      const next = advanceIpmtrCycle(index, gateState);
       if (next.blockedBy) {
         const labels = { permission: 'la permission', test: 'le test', diff: 'la relecture du diff' };
         status.textContent = `Progression arrêtée : activez ${labels[next.blockedBy]}.`;
         return;
       }
       index = next.index;
+      gates.forEach((gate) => { gate.checked = next.gates[gate.dataset.ipmtrGate as keyof typeof next.gates]; });
       render();
     });
     gates.forEach((gate) => gate.addEventListener('change', render));

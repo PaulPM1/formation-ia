@@ -56,6 +56,16 @@ export const resolvePanelVisibility = (count: number, active: number, enhanced: 
 export const assemblePrompt = (blocks: string[], active: boolean[]) =>
   blocks.filter((_, index) => active[index]).join(' · ');
 
+export const promptOutputForVariant = (
+  variant: PromptVariant,
+  target: string,
+  blocks: string[],
+  active: boolean[],
+) => {
+  if (variant === 'comparison') return target;
+  return assemblePrompt(blocks, active) || 'Sélectionnez un bloc pour commencer le brief.';
+};
+
 export const commandForPlatform = (
   platform: 'mac' | 'windows',
   commands: { mac: string; windows: string },
@@ -69,11 +79,18 @@ export const ipmtrGateAfter = (index: number): IpmtrGate | null => {
   return ([null, 'permission', null, 'test', 'diff'] as const)[current];
 };
 
-export const advanceIpmtr = (index: number, gates: IpmtrGates) => {
+export const advanceIpmtrCycle = (index: number, gates: IpmtrGates) => {
   const current = ((index % 5) + 5) % 5;
+  const nextGates = { ...gates };
   const blockedBy = ipmtrGateAfter(current);
-  if (blockedBy && !gates[blockedBy]) return { index, blockedBy };
-  return { index: (current + 1) % 5, blockedBy: null };
+  if (blockedBy && !nextGates[blockedBy]) return { index: current, gates: nextGates, blockedBy };
+  if (blockedBy) nextGates[blockedBy] = false;
+  return { index: (current + 1) % 5, gates: nextGates, blockedBy: null };
+};
+
+export const advanceIpmtr = (index: number, gates: IpmtrGates) => {
+  const next = advanceIpmtrCycle(index, gates);
+  return { index: next.index, blockedBy: next.blockedBy };
 };
 
 export const artifactViewState = (count: number, active: number | null) => ({

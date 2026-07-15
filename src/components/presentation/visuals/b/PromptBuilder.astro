@@ -33,7 +33,7 @@ const staticResult = variant === 'comparison' ? String(data.after ?? '') : promp
         {variant === 'comparison' && <blockquote><span>Demande initiale</span>{String(data.before ?? '')}</blockquote>}
         <div class="prompt__blocks" role="group" aria-label={String(data.interaction ?? 'Assembler le brief')}>
           {promptBlocks.map((block, index) => (
-            <button type="button" disabled aria-pressed="true" data-prompt-block data-content={block.content}>
+            <button type="button" disabled aria-pressed="true" data-prompt-block data-content={block.content} data-name={block.name}>
               <span>{String(index + 1).padStart(2, '0')}</span>
               <strong>{block.name}</strong>
               <small>{block.content}</small>
@@ -42,7 +42,8 @@ const staticResult = variant === 'comparison' ? String(data.after ?? '') : promp
           ))}
         </div>
         <div class="prompt__join" aria-hidden="true"><span></span><b>Brief assemblé</b><span></span></div>
-        <output class="prompt__result" data-prompt-result aria-live="polite">{staticResult}</output>
+        <output class="prompt__result" data-prompt-result data-prompt-target={staticResult} aria-live="polite">{staticResult}</output>
+        {variant === 'comparison' && <p class="prompt__relation-status" data-prompt-relation-status aria-live="polite">Le brief final répond aux quatre ambiguïtés rendues visibles.</p>}
         {variant === 'builder' && <ol class="prompt__preview" aria-label="Aperçu du résultat">{preview.map((item, index) => <li><span>{String(index + 1).padStart(2, '0')}</span>{item}</li>)}</ol>}
       </section>
     )}
@@ -70,18 +71,26 @@ const staticResult = variant === 'comparison' ? String(data.after ?? '') : promp
 </SceneFrame>
 
 <script>
-  import { assemblePrompt } from './visual-state';
+  import { promptOutputForVariant } from './visual-state';
 
   document.querySelectorAll<HTMLElement>('[data-prompt-builder]').forEach((scene) => {
     scene.dataset.enhanced = 'true';
     const blocks = Array.from(scene.querySelectorAll<HTMLButtonElement>('[data-prompt-block]'));
     const result = scene.querySelector<HTMLOutputElement>('[data-prompt-result]');
+    const relationStatus = scene.querySelector<HTMLElement>('[data-prompt-relation-status]');
     if (!blocks.length || !result) return;
-    const active = blocks.map(() => false);
+    const variant = scene.dataset.variant === 'comparison' ? 'comparison' : scene.dataset.variant === 'blocks' ? 'blocks' : 'builder';
+    const target = result.dataset.promptTarget ?? result.textContent ?? '';
+    const active = blocks.map(() => variant === 'comparison');
     const render = () => {
       blocks.forEach((block, index) => block.setAttribute('aria-pressed', String(active[index])));
-      const assembled = assemblePrompt(blocks.map((block) => block.dataset.content ?? ''), active);
-      result.textContent = assembled || 'Sélectionnez un bloc pour commencer le brief.';
+      result.textContent = promptOutputForVariant(variant, target, blocks.map((block) => block.dataset.content ?? ''), active);
+      if (relationStatus) {
+        const selected = blocks.filter((_, index) => active[index]).map((block) => block.dataset.name ?? '');
+        relationStatus.textContent = selected.length
+          ? `Ambiguïtés reliées au brief final : ${selected.join(', ')}.`
+          : 'Le brief final reste la cible ; aucune ambiguïté n’est isolée.';
+      }
     };
     blocks.forEach((block, index) => {
       block.disabled = false;
@@ -110,6 +119,7 @@ const staticResult = variant === 'comparison' ? String(data.after ?? '') : promp
   .prompt__join { display: grid; grid-template-columns: 1fr auto 1fr; gap: .55rem; align-items: center; color: var(--presentation-muted); font: 600 .58rem var(--font-mono); text-transform: uppercase; }
   .prompt__join span { block-size: 1px; background: var(--presentation-line); }
   .prompt__result { display: block; min-block-size: 3rem; padding: .65rem .8rem; border: 1px solid var(--presentation-ink); background: color-mix(in srgb, var(--family-accent), var(--presentation-surface) 88%); font: 720 clamp(.72rem, 1.2vw, .9rem)/1.25 var(--font-display); }
+  .prompt__relation-status { grid-column: 2; margin: -.15rem 0 0; color: var(--presentation-muted); font: .57rem/1.15 var(--font-mono); }
   .prompt__preview { grid-column: 2; display: grid; grid-template-columns: repeat(5, 1fr); margin: 0; padding: 0; list-style: none; }
   .prompt__preview li { display: grid; gap: .1rem; padding: .3rem; border-inline-start: 1px solid var(--presentation-line); font-size: .61rem; font-weight: 700; }
   .prompt__preview li span { color: var(--presentation-muted); font: .55rem var(--font-mono); }
@@ -130,6 +140,7 @@ const staticResult = variant === 'comparison' ? String(data.after ?? '') : promp
     .prompt__construction > blockquote { grid-row: auto; }
     .prompt__blocks { grid-template-columns: 1fr 1fr; }
     .prompt__preview { grid-column: 1; }
+    .prompt__relation-status { grid-column: 1; }
   }
   @media (max-width: 32rem) { .prompt__preview { grid-template-columns: 1fr 1fr; } }
   @media (prefers-reduced-motion: reduce) { .prompt__blocks button { transition: none; } }

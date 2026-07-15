@@ -61,3 +61,23 @@
 - Build final frais : `npm run build` — contenu valide et 104 pages générées.
 - Inspection des routes générées : aucune boucle sur `b2-object`, `b2-anatomy` et `b2-mvp` ; cinq nœuds sur `b2-tests`, trois sur `b2-correction` ; trois portes présentes sur `b4-ipmtr` ; aucune destination « Setup VS Code » utilisée comme chemin partagé.
 - Le navigateur intégré requis pour la re-vérification visuelle ciblée n’était pas exposé dans cette session. La QA navigateur exhaustive du commit initial reste documentée plus haut ; ce fix pass a donc été contrôlé par tests, build et HTML statique généré, sans nouvelle affirmation de contrôle visuel interactif.
+
+## Fix pass 2 — densité, fidélité du comparatif et portes rejouables
+
+- Root cause Artifact : les cinq panneaux de `b2-tests` formaient trois rangées et « Vue d’ensemble » occupait seul une rangée de contrôles. La vue complète utilise désormais une rangée de contrôles et une rangée de panneaux dimensionnée par `--artifact-panel-count` ; l’état isolé conserve un panneau large, et le repli sans JavaScript conserve l’intégralité de la boucle, des contrôles et des preuves.
+- Root cause Prompt : le renderer commun remplaçait l’output de la variante `comparison` par les questions actives. `promptOutputForVariant` traite maintenant le vrai `after` du manifeste comme cible immuable ; les boutons relient seulement les dimensions d’ambiguïté à ce brief final.
+- Root cause I.P.M.T.R. : les cases cochées n’étaient jamais consommées. `advanceIpmtrCycle` remet à faux la porte franchie ; chaque nouveau tour rebloque donc successivement permission, test et diff.
+
+### TDD et vérification
+
+- RED observé sur trois régressions : helpers absents pour la conservation du `after` et la consommation du cycle, contrat CSS de densité absent.
+- GREEN ciblé : 3/3 tests réussis, y compris le second tour complet de permission/test/diff.
+- Vérification fraîche : `npm test` — 55/55 sous-tests réussis.
+- Build frais : `npm run build` — contenu valide et 104 pages générées.
+- `git diff --check` propre ; seuls quatre fichiers du bloc B et le test de présentation sont modifiés, aucun fichier du bloc C.
+- HTML généré : le vrai brief final est présent comme contenu et cible de `b1-vague` ; les routes Artifact exposent respectivement `--artifact-panel-count: 5` et `3`.
+- QA navigateur ciblée à 1280×720, exécutée par le thread principal sur le workspace partagé :
+  - `b2-tests` : `clientHeight=140`, `scrollHeight=140`, `clientWidth=1045`, `scrollWidth=1045` ;
+  - `b2-correction` : mêmes métriques `140/140` et `1045/1045` ;
+  - `b1-vague` : l’output reste strictement égal à `data-prompt-target` à l’état initial et après chacun des quatre toggles, soit 5/5 états fidèles au manifeste ;
+  - `b4-ipmtr` : le premier cycle bloque puis consomme permission, test et diff ; au second cycle, `I → P` rebloque permission et les trois checkboxes sont à `false`.

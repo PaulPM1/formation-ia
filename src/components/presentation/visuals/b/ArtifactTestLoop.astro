@@ -51,7 +51,7 @@ const loopPath = panels.length === 5
 ---
 
 <SceneFrame title={slide.claim} description={slide.accessibleDescription} visualKey={slide.visual.key} class="artifact-test-loop">
-  <div class="artifact" data-artifact-loop data-variant={variant} data-enhanced="false">
+  <div class="artifact" data-artifact-loop data-variant={variant} data-enhanced="false" style={isLoopVariant ? `--artifact-panel-count: ${panels.length}` : undefined}>
     {variant === 'transfer' && (
       <section class="artifact__transfer" aria-label="Passage de la conversation à un objet autonome">
         <svg viewBox="0 0 760 300" role="img" aria-labelledby={`${slide.id}-transfer-title ${slide.id}-transfer-desc`}>
@@ -175,7 +175,7 @@ const loopPath = panels.length === 5
 
 <style>
   .artifact { min-block-size: 0; }
-  .artifact[data-variant='tests'], .artifact[data-variant='correction'] { display: grid; grid-template-columns: minmax(18rem, 1.05fr) minmax(16rem, .95fr); gap: clamp(.8rem, 2.2vw, 2rem); align-items: center; }
+  .artifact[data-variant='tests'], .artifact[data-variant='correction'] { display: grid; grid-template-columns: minmax(14rem, .65fr) minmax(22rem, 1.35fr); gap: clamp(.65rem, 1.5vw, 1.2rem); align-items: center; }
   .artifact__transfer, .artifact__anatomy { display: grid; grid-template-columns: minmax(22rem, 1.4fr) minmax(12rem, .6fr); gap: clamp(.8rem, 2vw, 1.7rem); align-items: center; }
   .artifact__transfer svg, .artifact__anatomy svg { inline-size: 100%; max-block-size: 12rem; overflow: visible; }
   .artifact__transfer > svg > path, .artifact__anatomy > svg > path { fill: none; stroke: var(--presentation-ink); stroke-width: 7; stroke-linecap: round; }
@@ -214,20 +214,20 @@ const loopPath = panels.length === 5
   .artifact__orbit .artifact__orbit-label { font: 750 14px var(--font-display); }
   .artifact__rule { display: grid; gap: .25rem; margin: 0; padding-inline-start: .7rem; border-inline-start: .3rem solid var(--family-accent); font: 720 .74rem/1.18 var(--font-display); }
   .artifact__rule span { color: var(--presentation-muted); font: 600 .56rem var(--font-mono); text-transform: uppercase; }
-  .artifact__inspection { display: grid; gap: .35rem; }
-  .artifact__stage-buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(4.8rem, 1fr)); align-content: center; }
-  .artifact__stage-buttons button { display: grid; grid-template-columns: auto 1fr; gap: .18rem; min-block-size: 2.15rem; padding: .22rem; border: 0; border-block-start: 1px solid var(--presentation-line); background: transparent; color: var(--presentation-ink); font: 710 .57rem var(--font-display); text-align: start; cursor: pointer; }
-  .artifact__stage-buttons .artifact__overview { grid-column: 1 / -1; display: block; min-block-size: 1.8rem; text-align: center; }
+  .artifact__inspection { display: grid; gap: .22rem; min-block-size: 0; }
+  .artifact__stage-buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(4rem, 1fr)); align-content: center; }
+  .artifact__stage-buttons button { display: grid; grid-template-columns: auto 1fr; gap: .14rem; min-block-size: 1.8rem; padding: .16rem .2rem; border: 0; border-block-start: 1px solid var(--presentation-line); background: transparent; color: var(--presentation-ink); font: 710 .54rem var(--font-display); text-align: start; cursor: pointer; }
+  .artifact__stage-buttons .artifact__overview { grid-column: auto; display: block; min-block-size: 1.8rem; text-align: center; }
   .artifact__stage-buttons button[aria-pressed='true'] { border-block-start-width: .28rem; border-color: var(--family-accent); background: color-mix(in srgb, var(--family-accent), transparent 86%); }
   .artifact__stage-buttons button:disabled { cursor: default; }
   .artifact__stage-buttons span { color: var(--presentation-muted); font: .56rem var(--font-mono); }
-  .artifact__panels { display: grid; grid-template-columns: 1fr 1fr; gap: .45rem; align-content: center; }
+  .artifact__panels { display: grid; grid-template-columns: repeat(var(--artifact-panel-count), minmax(0, 1fr)); gap: .25rem; align-content: center; }
   [data-enhanced='true'][data-artifact-view='isolated'] .artifact__panels { grid-template-columns: 1fr; }
-  .artifact__panels article { display: grid; gap: .15rem; align-content: center; min-block-size: 4.6rem; padding: .4rem .55rem; border: 1px solid var(--presentation-line); border-block-start: .3rem solid var(--family-accent); background: var(--presentation-surface); }
+  .artifact__panels article { display: grid; gap: .1rem; align-content: center; min-block-size: 0; padding: .3rem .38rem; border: 1px solid var(--presentation-line); border-block-start: .25rem solid var(--family-accent); background: var(--presentation-surface); }
   .artifact__panels article p, .artifact__panels article h3, .artifact__panels article strong { margin: 0; }
-  .artifact__panels article p { color: var(--presentation-muted); font: .58rem var(--font-mono); text-transform: uppercase; }
-  .artifact__panels article h3 { font: 750 clamp(.85rem, 1.4vw, 1.1rem)/1.08 var(--font-display); }
-  .artifact__panels article strong { font-size: .7rem; line-height: 1.14; }
+  .artifact__panels article p { color: var(--presentation-muted); font: .52rem var(--font-mono); text-transform: uppercase; }
+  .artifact__panels article h3 { font: 750 clamp(.7rem, .9vw, .82rem)/1.05 var(--font-display); }
+  .artifact__panels article strong { font-size: .61rem; line-height: 1.1; }
   .artifact__panels article small { color: var(--presentation-muted); font: .6rem var(--font-mono); }
   .artifact__inspection output { color: var(--presentation-muted); font: .58rem var(--font-mono); }
   [data-artifact-panel][hidden] { display: none !important; }
@@ -238,6 +238,7 @@ const loopPath = panels.length === 5
     .artifact__orbit svg { max-block-size: 11rem; }
     .artifact__inspection { grid-template-columns: 1fr; }
     .artifact__stage-buttons { grid-template-columns: repeat(3, 1fr); }
+    .artifact__panels { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   @media (prefers-reduced-motion: reduce) { .artifact * { transition: none !important; animation: none !important; } }
 </style>
