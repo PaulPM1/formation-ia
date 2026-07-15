@@ -1,6 +1,6 @@
 # Contenu pédagogique A1 à C3 — Spécification de conception
 
-Date : 13 juillet 2026  
+Date : 13 juillet 2026
 Statut : conception validée par Paul
 
 ## 1. Objectif
