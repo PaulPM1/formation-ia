@@ -8,61 +8,123 @@ durationMinutes: 20
 type: demonstration
 platforms:
   - commun
-prerequisites: []
-status: a-rediger
+prerequisites:
+  - a2
+  - b0
+status: a-relire
 owner: a-attribuer
-learningObjective: null
-expectedOutcome: null
+learningObjective: "Déléguer une tâche documentaire multiétape dans Cowork avec un périmètre, un plan et une validation explicites."
+expectedOutcome: "Le participant fait traiter des fichiers factices, vérifie le journal des changements et conserve les originaux intacts."
 ---
 
 ## Cap
 
-{/* Renseigner l’objectif, les prérequis, la durée et le résultat attendu. */}
+**Objectif :** utiliser un agent pour produire un résultat documentaire sans abandonner le contrôle sur les fichiers et les actions.
+
+- Durée cible : 20 minutes.
+- Prérequis : A2 et B0.
+- Résultat attendu : un dossier de sortie vérifié, distinct des originaux.
+
+Cowork évolue rapidement et certaines surfaces peuvent être en bêta ou en déploiement progressif. Le formateur vérifie la disponibilité le jour de la session et conserve une démonstration de repli.
 
 ## Concept durable
 
-{/* Présenter la notion indépendamment d’un outil ou d’une interface particulière. */}
+Cowork applique une architecture agentique au travail de connaissance : recherche, synthèse, organisation de fichiers, documents, tableurs ou présentations. Vous décrivez un résultat ; Claude peut planifier plusieurs étapes, utiliser des outils et vous montrer sa progression.
+
+Le cadre **P.A.C.T.E.** sécurise la délégation :
+
+- **Périmètre :** quelles sources, quels dossiers et quelles dates ?
+- **Action :** que peut-il lire, créer, modifier ou envoyer ?
+- **Contrôle :** quelles étapes exigent votre validation ?
+- **Terminaison :** quelle preuve indique que le travail est fini ?
+- **Échappatoire :** comment arrêter, annuler ou revenir aux originaux ?
+
+Selon la surface et la tâche, Cowork peut s'exécuter à distance. L'accès à des fichiers ou applications présents sur votre ordinateur peut nécessiter l'application Desktop ouverte et connectée. Une tâche distante et une tâche locale n'ont donc pas les mêmes dépendances.
 
 ## Pratique avec Claude
 
-{/* Préparer la démonstration ou la manipulation guidée. */}
+Préparez un dossier `atelier-cowork` contenant **des copies** de trois fichiers factices : deux comptes rendus et une liste d'actions. Créez un sous-dossier vide `sortie`.
+
+Demandez :
+
+```text
+Objectif : produire une synthèse unique des trois fichiers de démonstration.
+Périmètre : lis uniquement le dossier atelier-cowork. Ignore tout autre emplacement.
+Actions autorisées : lire les trois fichiers et créer des fichiers dans sortie.
+Actions interdites : modifier, déplacer, renommer ou supprimer les originaux ; envoyer quoi que ce soit.
+Contrôle : présente d'abord ton plan et attends ma validation.
+Terminaison : crée sortie/synthese.md avec décisions, actions, responsable et échéance,
+puis fournis la liste exacte des fichiers lus et créés.
+```
+
+Validez le plan seulement s'il respecte le périmètre. À la fin, ouvrez vous-même les originaux et le fichier de sortie.
 
 ## Mission commune
 
-{/* Définir la consigne commune et sa progression. */}
+Réalisez la même boucle sur un petit lot de documents factices ou non sensibles :
+
+1. dupliquez les sources ;
+2. écrivez votre cadre P.A.C.T.E. ;
+3. faites approuver le plan ;
+4. laissez la tâche s'exécuter en surveillant les étapes ;
+5. vérifiez le résultat et les originaux ;
+6. notez une correction à apporter au brief.
+
+**Critère de réussite :** le résultat attendu existe, les originaux sont inchangés et vous pouvez expliquer chaque fichier créé.
 
 ## Livrable
 
-{/* Décrire la preuve concrète produite par le participant. */}
+Le dossier `sortie`, le brief P.A.C.T.E. et une checklist de contrôle signée par le binôme. Aucun document réel ou sensible n'entre dans le livrable de formation.
 
 ## Notes formateur
 
-{/* Préparer le déroulé, les messages essentiels, les pièges et la transition. */}
+- Préparer à l'avance des fichiers fictifs identiques pour tout le groupe.
+- Montrer le plan avant l'exécution et demander au groupe de trouver une permission trop large.
+- Interrompre volontairement une fois pour montrer que l'on peut rediriger la tâche.
+- Vérifier les fichiers avec un outil indépendant, pas uniquement avec le résumé de Claude.
+
+Message essentiel : **déléguer le travail ne délègue pas la responsabilité.** Transition : Claude Code applique une boucle similaire à un projet logiciel et ajoute l'exécution de commandes et de tests.
 
 ## Défis avancés
 
-{/* Ajouter uniquement les extensions destinées aux participants plus rapides. */}
+- Ajoutez un modèle de sortie imposé et une vérification de complétude.
+- Demandez une liste des contradictions entre les sources sans les résoudre automatiquement.
+- Comparez une exécution locale et distante : dépendances, données disponibles et risques.
 
 ## Variantes
 
-{/* Prévoir les variantes utiles selon les cas d’usage. */}
+- **Cowork indisponible :** le formateur exécute la démonstration ; les participants rédigent le brief et auditent le plan.
+- **Web ou mobile sans accès local :** utiliser uniquement des fichiers factices téléversés ou enregistrés dans l'espace autorisé.
+- **Organisation réglementée :** utiliser l'environnement approuvé, les politiques d'egress et les connecteurs validés par l'administrateur.
 
 ## Dépannage
 
-{/* Lister les blocages prévisibles et leur résolution. */}
+- **Cowork n'apparaît pas :** vérifier forfait, plateforme, version et déploiement ; passer au scénario observateur.
+- **Les fichiers locaux sont inaccessibles :** ouvrir et connecter l'application Desktop, puis accorder uniquement le dossier de démonstration.
+- **Le plan dépasse le périmètre :** ne pas valider ; reformuler les sources et actions interdites.
+- **Une suppression est proposée :** refuser et revenir à la copie de travail. Cowork demande une autorisation explicite pour une suppression permanente, mais cette confirmation ne remplace pas votre jugement.
 
 ## Ressources
 
-{/* Ajouter les liens, commandes et références nécessaires. */}
+- [Bien démarrer avec Claude Cowork](https://support.claude.com/en/articles/13345190-get-started-with-claude-cowork)
+- [Architecture de Claude Cowork](https://support.claude.com/en/articles/14479288-claude-cowork-architecture-overview)
+- [Utiliser Cowork en sécurité](https://support.claude.com/en/articles/13364135-use-cowork-safely)
 
 ## Ouverture
 
-{/* Indiquer le prolongement naturel vers une notion plus avancée. */}
+Le cadre P.A.C.T.E. s'applique maintenant au code : dossier précis, plan relu, petites modifications et tests indépendants.
 
 ## Scénario de démonstration
 
-{/* Décrire le point de départ, les actions montrées et le résultat visible. */}
+Point de départ : trois fichiers de réunion fictifs contiennent des décisions redondantes et deux échéances contradictoires. Cowork doit créer une synthèse sans modifier les sources.
+
+Résultat visible : `sortie/synthese.md` sépare décisions confirmées, contradictions et actions ; la comparaison montre que les trois originaux sont inchangés.
 
 ## Déroulé de démonstration
 
-{/* Découper la démonstration en étapes courtes et vérifiables. */}
+1. Montrer l'arborescence et ouvrir un fichier original.
+2. Coller le brief P.A.C.T.E. et arrêter sur le plan proposé.
+3. Faire auditer le plan par le groupe, puis le valider.
+4. Observer le journal ; intervenir si une action sort du périmètre.
+5. Ouvrir la synthèse et vérifier deux informations contre les sources.
+6. Comparer les originaux, puis afficher la liste des fichiers créés.

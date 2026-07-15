@@ -9,68 +9,132 @@ type: setup
 platforms:
   - commun
 prerequisites: []
-status: a-rediger
+status: a-relire
 owner: a-attribuer
-learningObjective: null
-expectedOutcome: null
+learningObjective: "Accéder à Claude sur une surface disponible, vérifier son compte et réaliser un premier échange sans donnée sensible."
+expectedOutcome: "Le participant ouvre Claude, identifie son mode d'accès et obtient une réponse test dans une nouvelle conversation."
 ---
 
 ## Cap
 
-{/* Renseigner l’objectif, les prérequis, la durée et le résultat attendu. */}
+**Objectif :** rendre chaque participant autonome pour accéder à Claude avant de commencer les exercices.
+
+- Durée indicative : 15 à 30 minutes selon le groupe et les mises à jour nécessaires.
+- Prérequis : un compte Claude et une connexion Internet.
+- Résultat attendu : une conversation de test fonctionne sur le Web ou dans l'application.
+
+Ce setup ne demande aucune clé API. Ne saisissez jamais de mot de passe, de jeton ou de donnée professionnelle sensible dans une conversation de test.
 
 ## Concept durable
 
-{/* Présenter la notion indépendamment d’un outil ou d’une interface particulière. */}
+Un service d'IA comporte plusieurs couches qu'il est utile de distinguer :
+
+- le **compte**, qui porte l'identité et le forfait ;
+- la **surface**, par exemple navigateur, application de bureau ou mobile ;
+- les **fonctionnalités**, dont la disponibilité peut dépendre du forfait, de la plateforme et d'un déploiement progressif ;
+- l'**API**, qui est un accès technique séparé et n'est pas nécessaire pour utiliser Claude Chat.
+
+Quand une fonction manque, ne concluez pas immédiatement à une panne. Vérifiez d'abord le compte actif, la plateforme, la version de l'application et la documentation officielle.
 
 ## Pratique avec Claude
 
-{/* Préparer la démonstration ou la manipulation guidée. */}
+1. Ouvrez [claude.ai](https://claude.ai/) dans un navigateur récent ou lancez l'application Claude déjà installée.
+2. Connectez-vous avec le compte prévu pour la formation.
+3. Ouvrez une nouvelle conversation.
+4. Envoyez ce message sans ajouter d'information personnelle :
+
+```text
+Réponds uniquement par : « Atelier prêt » puis ajoute la date du jour.
+```
+
+5. Vérifiez que la réponse apparaît et que vous savez démarrer un nouveau fil.
+
+La date sert ici de contrôle simple : elle ne valide pas l'exactitude générale de Claude.
 
 ## Mission commune
 
-{/* Définir la consigne commune et sa progression. */}
+Complétez la fiche de diagnostic :
+
+- surface utilisée : Web, macOS, Windows ou mobile ;
+- compte actif vérifié : oui/non ;
+- conversation de test réussie : oui/non ;
+- accès visible à Artifacts : oui/non/à vérifier ;
+- accès visible à Cowork : oui/non/à vérifier ;
+- solution de repli choisie si une fonction manque.
+
+**Critère de réussite :** vous pouvez ouvrir une nouvelle conversation et obtenir « Atelier prêt » sans partager de donnée sensible.
 
 ## Livrable
 
-{/* Décrire la preuve concrète produite par le participant. */}
+Une capture de la réponse de test ou, si les captures sont interdites, la fiche de diagnostic cochée. Masquez l'adresse email et toute information de compte avant un partage.
 
 ## Notes formateur
 
-{/* Préparer le déroulé, les messages essentiels, les pièges et la transition. */}
+- Afficher un QR code et l'adresse `claude.ai` en toutes lettres.
+- Regrouper rapidement les participants par état : prêt, connexion, mise à jour, compte.
+- Faire travailler en binôme pendant les téléchargements, mais ne jamais demander de partager un mot de passe.
+- Garder le navigateur comme repli pour Chat lorsqu'une application pose problème.
+
+Message essentiel : **le setup est réussi lorsqu'une action observable fonctionne, pas lorsqu'un logiciel semble installé.** Transition : la prochaine brique apprend à structurer le dialogue.
 
 ## Défis avancés
 
-{/* Ajouter uniquement les extensions destinées aux participants plus rapides. */}
+- Repérez où consulter l'aide, les paramètres et les informations de forfait sans les modifier.
+- Testez une deuxième surface et vérifiez que vous utilisez le même compte.
+- Consultez la page de statut du service et identifiez où vérifier un incident général.
 
 ## Variantes
 
-{/* Prévoir les variantes utiles selon les cas d’usage. */}
+- **Compte géré par une organisation :** suivre les consignes de l'administrateur et ne pas activer de fonction externe sans accord.
+- **Fonction indisponible :** observer la démonstration du formateur et utiliser le cas de repli indiqué dans chaque brique.
+- **Connexion lente :** conserver un seul onglet Claude et éviter les téléchargements simultanés.
 
 ## Dépannage
 
-{/* Lister les blocages prévisibles et leur résolution. */}
+- **Boucle de connexion :** fermer les onglets Claude, autoriser temporairement les cookies nécessaires ou essayer une fenêtre privée.
+- **Mauvais compte :** se déconnecter puis vérifier l'adresse avant de reprendre ; ne pas afficher l'adresse au vidéoprojecteur.
+- **Page blanche ou réponse bloquée :** recharger, tester un autre navigateur puis consulter la page de statut.
+- **Fonction absente :** mettre l'application à jour, vérifier le forfait et le déploiement ; utiliser le Web ou la démonstration du formateur.
 
 ## Ressources
 
-{/* Ajouter les liens, commandes et références nécessaires. */}
+- [Ouvrir Claude](https://claude.ai/)
+- [Télécharger les applications Claude](https://claude.com/download)
+- [Centre d'aide Claude](https://support.claude.com/)
+- [État des services Anthropic](https://status.anthropic.com/)
 
 ## Ouverture
 
-{/* Indiquer le prolongement naturel vers une notion plus avancée. */}
+Votre accès est validé. Vous pouvez maintenant apprendre à transformer une demande vague en conversation utile et contrôlable.
 
 ## Diagnostic initial
 
-{/* Définir le contrôle qui identifie l’état de départ. */}
+Avant toute installation ou reconnexion, demandez :
+
+1. Claude s'ouvre-t-il déjà dans un navigateur ou une application ?
+2. Une nouvelle conversation accepte-t-elle un message ?
+3. Le compte affiché est-il celui prévu pour la formation ?
+4. Un filtrage réseau, un VPN ou une politique d'entreprise peut-il bloquer le service ?
+
+Ne changez que ce qui empêche le test final.
 
 ## Test final
 
-{/* Définir la vérification qui confirme que l’environnement fonctionne. */}
+Dans une **nouvelle** conversation, envoyez le message de test. Le setup est validé si :
+
+- la réponse « Atelier prêt » apparaît ;
+- vous savez revenir à la liste des conversations ;
+- vous savez ouvrir un nouveau fil ;
+- vous avez identifié une solution de repli.
 
 ## Dépannage Mac
 
-{/* Documenter les écarts propres à macOS. */}
+- Si l'application est bloquée après téléchargement, vérifiez qu'elle se trouve dans `Applications`, puis ouvrez-la depuis ce dossier.
+- Si macOS demande une confirmation de sécurité, lisez l'éditeur affiché avant d'autoriser l'ouverture.
+- Si le navigateur fonctionne mais pas l'application, poursuivez temporairement sur le Web et mettez l'application à jour plus tard.
 
 ## Dépannage Windows
 
-{/* Documenter les écarts propres à Windows. */}
+- Utilisez la version correspondant à l'architecture proposée par la page officielle.
+- Si l'installation est interdite par l'organisation, utilisez Claude sur le Web et contactez l'administrateur au lieu de contourner la règle.
+- Si une protection réseau bloque la connexion, testez sans VPN uniquement si la politique de l'organisation l'autorise.

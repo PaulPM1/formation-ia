@@ -8,61 +8,113 @@ durationMinutes: 10
 type: demonstration
 platforms:
   - commun
-prerequisites: []
-status: a-rediger
+prerequisites:
+  - b0
+status: a-relire
 owner: a-attribuer
-learningObjective: null
-expectedOutcome: null
+learningObjective: "Structurer une demande avec objectif, contexte, contraintes et forme attendue, puis l'améliorer par itération."
+expectedOutcome: "Le participant obtient une réponse exploitable à partir d'un prompt réutilisable et l'évalue avec des critères explicites."
 ---
 
 ## Cap
 
-{/* Renseigner l’objectif, les prérequis, la durée et le résultat attendu. */}
+**Objectif :** passer de « pose une question » à « construis une collaboration vérifiable ».
+
+- Durée cible : 10 minutes.
+- Prérequis : B0, accès à Claude validé.
+- Résultat attendu : un prompt en quatre blocs et une réponse améliorée en une itération.
 
 ## Concept durable
 
-{/* Présenter la notion indépendamment d’un outil ou d’une interface particulière. */}
+Un bon prompt n'est pas une formule magique. C'est un **brief** qui réduit les interprétations inutiles. Quatre blocs suffisent souvent :
+
+1. **Objectif :** quel résultat voulez-vous obtenir et pour quel usage ?
+2. **Contexte :** quelles informations Claude doit-il connaître pour travailler ?
+3. **Contraintes :** que faut-il respecter, éviter ou vérifier ?
+4. **Forme attendue :** tableau, plan, brouillon, longueur, ton ou critères.
+
+La première réponse est un point de départ. Une boucle efficace consiste à évaluer, signaler l'écart le plus important, demander une modification précise puis vérifier à nouveau. Ouvrez un nouveau fil lorsque l'objectif change réellement.
 
 ## Pratique avec Claude
 
-{/* Préparer la démonstration ou la manipulation guidée. */}
+Commencez par une demande vague :
+
+```text
+Aide-moi à mieux m'organiser.
+```
+
+Puis utilisez les quatre blocs :
+
+```text
+Objectif : construire un planning réaliste pour préparer une présentation vendredi.
+Contexte : j'ai 3 créneaux de 45 minutes et le plan existe déjà.
+Contraintes : prévoir une répétition ; pas de travail jeudi soir ; 3 priorités maximum.
+Forme attendue : un tableau créneau / résultat / preuve de fin, puis un risque à surveiller.
+Avant de répondre, pose une seule question si une information indispensable manque.
+```
+
+Évaluez la différence : précision, actions visibles, respect des contraintes et facilité de vérification.
 
 ## Mission commune
 
-{/* Définir la consigne commune et sa progression. */}
+1. Choisissez une tâche réelle mais non sensible.
+2. Rédigez les quatre blocs.
+3. Envoyez le prompt et notez l'écart principal entre la réponse et votre besoin.
+4. Demandez une seule correction ciblée.
+5. Conservez la version finale et le critère qui prouve qu'elle est meilleure.
+
+**Critère de réussite :** une autre personne comprend l'usage de la réponse sans vous demander ce que vous vouliez obtenir.
 
 ## Livrable
 
-{/* Décrire la preuve concrète produite par le participant. */}
+Un prompt réutilisable, la réponse finale et une phrase d'évaluation : « Cette version est meilleure parce que… ».
 
 ## Notes formateur
 
-{/* Préparer le déroulé, les messages essentiels, les pièges et la transition. */}
+- Montrer la demande vague sans la ridiculiser : elle sert à rendre les hypothèses visibles.
+- Faire repérer les quatre blocs à l'écran avec quatre couleurs.
+- Insister sur l'évaluation : un prompt détaillé n'est pas automatiquement un bon prompt.
+- Si le temps manque, réaliser la première itération collectivement.
+
+Transition : lorsqu'une sortie devient un objet autonome à modifier et tester, elle gagne à sortir du simple fil de discussion.
 
 ## Défis avancés
 
-{/* Ajouter uniquement les extensions destinées aux participants plus rapides. */}
+- Demandez à Claude de proposer deux stratégies opposées avant de recommander.
+- Ajoutez une grille d'évaluation avec trois critères et faites auto-critiquer la réponse.
+- Produisez un résumé de passation pour poursuivre dans un nouveau fil sans copier tout l'historique.
 
 ## Variantes
 
-{/* Prévoir les variantes utiles selon les cas d’usage. */}
+- **Écriture :** email, note de synthèse ou plan d'article.
+- **Analyse :** comparaison de trois options selon une grille fournie.
+- **Apprentissage :** explication suivie de trois questions de vérification.
 
 ## Dépannage
 
-{/* Lister les blocages prévisibles et leur résolution. */}
+- **Claude pose trop de questions :** autorisez une seule question indispensable ou demandez des hypothèses explicites.
+- **La réponse ignore une contrainte :** citez la contrainte omise et demandez une révision, sans réécrire tout le brief.
+- **Le fil dérive :** résumez objectif, décisions et reste à faire, puis repartez dans une nouvelle conversation.
 
 ## Ressources
 
-{/* Ajouter les liens, commandes et références nécessaires. */}
+- [Vue d'ensemble de l'ingénierie de prompt — Anthropic](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview)
+- [Centre d'aide Claude](https://support.claude.com/)
 
 ## Ouverture
 
-{/* Indiquer le prolongement naturel vers une notion plus avancée. */}
+Le chat est idéal pour cadrer et itérer. La prochaine brique transforme le brief en contenu ou mini-outil autonome dans un Artifact.
 
 ## Scénario de démonstration
 
-{/* Décrire le point de départ, les actions montrées et le résultat visible. */}
+Point de départ : une participante doit préparer une présentation vendredi et demande seulement « aide-moi à mieux m'organiser ». Le formateur montre la réponse générique, construit le brief en quatre blocs, puis demande une correction sur la charge du dernier créneau.
+
+Résultat visible : un tableau de trois créneaux, chacun associé à un résultat et à une preuve de fin.
 
 ## Déroulé de démonstration
 
-{/* Découper la démonstration en étapes courtes et vérifiables. */}
+1. Envoyer la demande vague et relever deux hypothèses prises par Claude.
+2. Coller le brief structuré.
+3. Vérifier chaque contrainte devant le groupe.
+4. Demander : « Le dernier créneau est trop chargé. Garde les contraintes et déplace la répétition plus tôt. »
+5. Comparer les deux versions et nommer le critère d'amélioration.
