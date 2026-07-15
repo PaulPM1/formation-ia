@@ -1,5 +1,6 @@
 ---
 import type { PresentationLink, RoutedSlide } from '../../../presentation/presentation-model';
+import { getResourceEmptyState } from '../../../presentation/scene-data';
 
 interface Props {
   links?: PresentationLink[];
@@ -8,6 +9,7 @@ interface Props {
 
 const { slide } = Astro.props;
 const links = Astro.props.links ?? slide?.links ?? [];
+const emptyState = slide ? getResourceEmptyState(links, slide.accessibleDescription) : null;
 const kindLabels: Record<PresentationLink['kind'], string> = {
   wiki: 'Wiki de la formation',
   official: 'Documentation officielle',
@@ -24,22 +26,26 @@ const destination = (href: string) => {
 };
 ---
 
-{links.length > 0 && (
+{(links.length > 0 || emptyState) && (
   <nav
     class:list={['resource-rail', { 'resource-rail--scene': Boolean(slide) }]}
     aria-label={slide ? slide.claim : 'Ressources et approfondissements'}
     data-visual-key={slide?.visual.key}
   >
     <p>Ressources</p>
-    <ul>
-      {links.map((link) => (
-        <li>
-          <a href={link.href} target="_blank" rel="noopener noreferrer">
-            <span>{kindLabels[link.kind]} · {destination(link.href)}</span>
-            <strong>{link.label}</strong>
-          </a>
-        </li>
-      ))}
-    </ul>
+    {links.length > 0
+      ? (
+        <ul>
+          {links.map((link) => (
+            <li>
+              <a href={link.href} target="_blank" rel="noopener noreferrer">
+                <span>{kindLabels[link.kind]} · {destination(link.href)}</span>
+                <strong>{link.label}</strong>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+      : <p class="resource-rail__empty">{emptyState}</p>}
   </nav>
 )}

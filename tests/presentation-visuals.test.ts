@@ -39,3 +39,20 @@ test('le shell délègue le visuel et les ressources aux scènes', async () => {
   assert.match(shell, /<ResourceRail links=\{slide\.links\}/);
   assert.doesNotMatch(shell, /<figure class="presentation-visual"/);
 });
+
+test('la sortie imprimée laisse les scènes denses s’écouler', async () => {
+  const css = await read('src/styles/presentation.css');
+  const print = css.slice(css.indexOf('@media print'));
+
+  assert.doesNotMatch(print, /block-size:\s*9in/);
+  assert.doesNotMatch(print, /overflow:\s*hidden/);
+  assert.doesNotMatch(print, /break-after:\s*page/);
+});
+
+test('les repères secondaires restent lisibles au projecteur', async () => {
+  const css = await read('src/styles/presentation.css');
+
+  assert.match(css, /\.resource-rail a span\s*{[^}]*font-size:\s*clamp\(0\.9rem/s);
+  assert.match(css, /\.resource-rail a strong\s*{[^}]*font-size:\s*clamp\(1rem/s);
+  assert.match(css, /\.checkpoint-scene__status\s*{[^}]*font-size:\s*1rem/s);
+});

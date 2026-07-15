@@ -1,83 +1,14 @@
 ---
 import type { RoutedSlide } from '../../../presentation/presentation-model';
+import { normalizeSceneFields } from '../../../presentation/scene-data';
 import SceneFrame from './SceneFrame.astro';
 
 interface Props {
   slide: RoutedSlide;
 }
 
-type ConceptField = {
-  label: string;
-  values: string[];
-};
-
 const { slide } = Astro.props;
-
-const labels: Record<string, string> = {
-  interaction: 'Action proposée',
-  activeStep: 'Étape active',
-  answer: 'Réponse',
-  candidates: 'Possibilités',
-  context: 'Contexte',
-  contexts: 'Contextes comparés',
-  expected: 'Résultat attendu',
-  evidence: 'Preuve',
-  example: 'Exemple',
-  forbidden: 'Actions interdites',
-  legend: 'Repères de lecture',
-  loop: 'Boucle',
-  modes: 'Modes comparés',
-  objective: 'Objectif',
-  observation: 'Observation',
-  output: 'Sortie',
-  prompt: 'Consigne',
-  reason: 'Raison',
-  rule: 'Règle',
-  safety: 'Garde-fou',
-  statement: 'Affirmation',
-  steps: 'Étapes',
-  warning: 'Attention',
-};
-
-const humanize = (key: string) => labels[key] ?? key
-  .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
-  .replace(/^./, (letter) => letter.toUpperCase());
-
-const formatScalar = (value: string | number | boolean | null) => {
-  if (value === true) return 'Oui';
-  if (value === false) return 'Non';
-  if (value === null) return 'Non renseigné';
-  return String(value);
-};
-
-const toValues = (value: unknown): string[] => {
-  if (value === null || ['string', 'number', 'boolean'].includes(typeof value)) {
-    return [formatScalar(value as string | number | boolean | null)];
-  }
-
-  if (Array.isArray(value)) {
-    return value.flatMap((item) => {
-      if (item && typeof item === 'object' && !Array.isArray(item)) {
-        return [Object.entries(item)
-          .flatMap(([key, nested]) => toValues(nested).map((line) => `${humanize(key)} : ${line}`))
-          .join(' · ')];
-      }
-      return toValues(item);
-    });
-  }
-
-  if (typeof value === 'object') {
-    return Object.entries(value as Record<string, unknown>)
-      .flatMap(([key, nested]) => toValues(nested).map((line) => `${humanize(key)} : ${line}`));
-  }
-
-  return [];
-};
-
-const fields: ConceptField[] = Object.entries(slide.visual.data).map(([key, value]) => ({
-  label: humanize(key),
-  values: toValues(value),
-}));
+const fields = normalizeSceneFields(slide.visual.data);
 ---
 
 <SceneFrame

@@ -1,5 +1,9 @@
 ---
 import type { RoutedSlide } from '../../../presentation/presentation-model';
+import {
+  CHECKPOINT_FIELD_GROUPS,
+  partitionSceneFields,
+} from '../../../presentation/scene-data';
 import SceneFrame from './SceneFrame.astro';
 
 interface Props {
@@ -8,16 +12,11 @@ interface Props {
 
 const { slide } = Astro.props;
 const data = slide.visual.data;
-const asStrings = (value: unknown): string[] => {
-  if (Array.isArray(value)) return value.filter((item): item is string => typeof item === 'string');
-  return typeof value === 'string' ? [value] : [];
-};
-const checks = [data.checks, data.rules, data.commands, data.mission]
-  .flatMap(asStrings)
-  .filter(Boolean);
-const successCriterion = typeof data.successCriterion === 'string'
-  ? data.successCriterion
-  : slide.support ?? slide.accessibleDescription;
+const partition = partitionSceneFields(data, CHECKPOINT_FIELD_GROUPS);
+const interaction = partition.groups.interaction[0];
+const checks = partition.groups.checklist.flatMap((field) => field.values);
+const successCriterion = partition.groups.criterion[0];
+const details = partition.details;
 ---
 
 <SceneFrame
@@ -27,7 +26,7 @@ const successCriterion = typeof data.successCriterion === 'string'
   class="checkpoint-scene"
 >
   <fieldset class="checkpoint-scene__checklist">
-    <legend>{typeof data.interaction === 'string' ? data.interaction : 'Checkpoint · éléments à vérifier'}</legend>
+    <legend>{interaction?.values[0] ?? 'Checkpoint · éléments à vérifier'}</legend>
     <ul>
       {checks.map((check, index) => (
         <li>
@@ -38,5 +37,24 @@ const successCriterion = typeof data.successCriterion === 'string'
       ))}
     </ul>
   </fieldset>
-  <p class="checkpoint-scene__criterion"><strong>Validation :</strong> {successCriterion}</p>
+  <div class="checkpoint-scene__outcome">
+    <p class="checkpoint-scene__criterion">
+      <strong>{successCriterion?.label ?? 'Validation'} :</strong>
+      {' '}{successCriterion?.values[0] ?? slide.support ?? slide.accessibleDescription}
+    </p>
+    {details.length > 0 && (
+      <dl class="checkpoint-scene__details">
+        {details.map((detail) => (
+          <div>
+            <dt>{detail.label}</dt>
+            <dd>
+              {detail.values.length > 1
+                ? <ul>{detail.values.map((value) => <li>{value}</li>)}</ul>
+                : detail.values[0]}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    )}
+  </div>
 </SceneFrame>
