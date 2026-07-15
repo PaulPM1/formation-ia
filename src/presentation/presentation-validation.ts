@@ -36,7 +36,10 @@ export function validatePresentation(decks: PresentationDeck[]): string[] {
         }
         if (url.protocol !== 'https:') issues.push(`Lien non HTTPS : ${slide.id}`);
         if (link.kind === 'wiki' && url.origin !== WIKI_BASE_URL) {
-          issues.push(`Lien wiki non canonique : ${slide.id}`);
+          issues.push(
+            `Lien wiki non canonique : ${slide.id} utilise ${url.origin}; `
+            + `origine attendue : ${WIKI_BASE_URL}.`,
+          );
         }
         if (link.kind === 'download' && !allowedDownloadHosts.has(url.hostname)) {
           issues.push(`Téléchargement non officiel : ${slide.id}`);

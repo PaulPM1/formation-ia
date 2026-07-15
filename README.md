@@ -20,7 +20,8 @@ Commandes utiles :
 ```bash
 npm test               # tests du modèle, de l’inventaire et des vues
 npm run content:check  # validation éditoriale des fichiers MDX
-npm run build          # validation puis génération du site statique
+npm run presentation:check # validation des slides et de leurs liens wiki
+npm run build          # validations puis génération du site statique
 ```
 
 ## Organisation du contenu
@@ -46,6 +47,44 @@ ateliers et restitutions.
 6. Exécuter `npm run content:check` et `npm run build` avant de fusionner.
 
 Statuts autorisés : `a-rediger`, `en-cours`, `a-relire`, `validee`.
+
+## Prolonger les slides — blocs D à F
+
+Le mode formateur est disponible sur `/presenter/`. Pour conserver la même
+structure et le même langage visuel quand Mathieu ajoute les blocs D, E et F :
+
+1. Invoquer `$slide-visual-director` avant de concevoir ou de modifier une
+   slide. Le nombre de slides est dicté par la compréhension du concept, jamais
+   par un quota automatique ; chaque slide doit rester claire à survoler.
+2. Ajouter ou modifier le manifeste de la famille dans
+   `src/presentation/manifests/`. Une slide déclare sa thèse, son support, son
+   visuel, ses liens, ses notes formateur et sa description accessible.
+3. Réutiliser un composant visuel existant ou créer celui retenu avec le skill
+   dans `src/components/presentation/visuals/`, puis l’enregistrer dans
+   `VisualRegistry.astro`. Le visuel porte l’explication ; le texte la complète.
+4. Ajouter seulement des états et interactions qui rendent le concept plus
+   compréhensible. Le premier état doit déjà expliquer la slide sans JavaScript.
+5. Construire les liens avec `wikiLink` ou `externalLink` depuis
+   `src/presentation/presentation-links.ts`. Les liens wiki doivent cibler la
+   brique et, si utile, son ancre exacte. Les ressources et téléchargements
+   pointent vers les sites officiels ; le composant commun les ouvre dans un
+   nouvel onglet avec `target="_blank"` et `rel="noopener noreferrer"`.
+6. Contrôler au clavier les boutons, le sommaire, les notes, les liens et les
+   états finaux. Vérifier aussi `prefers-reduced-motion`, le rendu sans
+   JavaScript et l’absence de débordement sur mobile et au projecteur.
+7. Exécuter les contrôles avant de fusionner :
+
+   ```bash
+   npm test
+   npm run presentation:check
+   npm run build
+   npm run qa:block-b
+   npm run qa:block-c
+   ```
+
+`presentation:check` reste local : il valide les 76 slides, l’origine canonique
+du wiki, les identifiants de briques et les ancres produites par le moteur
+Markdown du site, sans requête réseau.
 
 ## Ajouter une brique
 

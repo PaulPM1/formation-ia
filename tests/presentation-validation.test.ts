@@ -55,9 +55,12 @@ test('rejette les domaines qui imitent le wiki canonique', () => {
     })),
   };
 
-  assert.ok(
-    validatePresentation([lookalike]).some((issue) => issue.includes('non canonique')),
-  );
+  const issue = validatePresentation([lookalike]).find((candidate) =>
+    candidate.includes('non canonique'));
+
+  assert.ok(issue);
+  assert.match(issue, /formation-ia-ruby\.vercel\.app\.evil\.example/);
+  assert.match(issue, /attendue.*formation-ia-ruby\.vercel\.app/i);
 });
 
 test('aplatit la séquence et calcule ses voisins', () => {
