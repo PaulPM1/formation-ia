@@ -71,10 +71,11 @@ export const A_DECKS = [
             interaction: 'Lancer la prédiction.',
             prompt: 'Claude est…',
             candidates: [
-              { token: 'un', probability: 0.44 },
-              { token: 'capable', probability: 0.31 },
-              { token: 'toujours', probability: 0.08 },
+              { token: 'un', plausibility: 'la plus forte parmi les exemples' },
+              { token: 'capable', plausibility: 'forte parmi les exemples' },
+              { token: 'toujours', plausibility: 'plus faible parmi les exemples' },
             ],
+            legend: 'Classement qualitatif illustratif, sans score calculé',
             warning: 'Probabilité linguistique ≠ preuve factuelle',
           },
         },
@@ -84,7 +85,7 @@ export const A_DECKS = [
           notes: 'Faire compléter oralement « Claude est… » sans corriger immédiatement. Éviter les analogies du cerveau ou de la personne omnisciente.',
           transition: 'Observons comment la phrase apparaît, fragment après fragment.',
         },
-        accessibleDescription: 'Une phrase inachevée alimente trois prochains tokens pondérés ; un avertissement sépare probabilité et vérité.',
+        accessibleDescription: 'Une phrase inachevée alimente trois prochains tokens classés qualitativement ; un avertissement sépare plausibilité et vérité.',
       }),
       slide({
         id: 'a1-token-loop',
@@ -459,12 +460,16 @@ export const A_DECKS = [
           data: {
             interaction: 'Ajouter ou retirer du contexte.',
             meter: [
-              { item: 'Objectif et critère', size: 2, utility: 5, keep: true },
-              { item: 'Document concerné', size: 4, utility: 5, keep: true },
-              { item: '40 anciens messages', size: 5, utility: 1, keep: false },
-              { item: 'Trois sujets sans rapport', size: 3, utility: 0, keep: false },
-              { item: 'Résumé des décisions', size: 1, utility: 4, keep: true },
+              { item: 'Objectif et critère', contextLoad: 'faible', relevance: 'directe', keep: true },
+              { item: 'Document concerné', contextLoad: 'significative', relevance: 'directe', keep: true },
+              { item: 'Historique long sur plusieurs sujets', contextLoad: 'élevée', relevance: 'faible', keep: false },
+              { item: 'Sujets sans rapport', contextLoad: 'inutile', relevance: 'nulle', keep: false },
+              { item: 'Résumé des décisions', contextLoad: 'faible', relevance: 'forte', keep: true },
             ],
+            legend: {
+              contextLoad: ['faible', 'significative', 'élevée', 'inutile'],
+              relevance: ['nulle', 'faible', 'forte', 'directe'],
+            },
             objective: 'Conserver ce qui sert le résultat ou sa vérification',
           },
         },
@@ -474,7 +479,7 @@ export const A_DECKS = [
           notes: 'Comparer les conversations A et B et faire retirer ce qui consomme sans aider le résultat.',
           transition: 'Une boucle agentique multiplie ces lectures et productions.',
         },
-        accessibleDescription: 'Une jauge compare cinq éléments de contexte selon leur volume, leur utilité et la décision de les conserver.',
+        accessibleDescription: 'Une jauge qualitative compare cinq éléments selon leur charge de contexte, leur pertinence et la décision de les conserver.',
       }),
       slide({
         id: 'a4-agentic',
@@ -486,9 +491,20 @@ export const A_DECKS = [
           data: {
             interaction: 'Comparer question et tâche agentique.',
             comparisons: [
-              { mode: 'Question courte', reads: 1, toolCalls: 0, outputs: 1, loops: 1 },
-              { mode: 'Tâche agentique', reads: 8, toolCalls: 5, outputs: 6, loops: 4 },
+              {
+                mode: 'Question courte',
+                context: 'ciblé',
+                toolUse: 'aucun',
+                progression: 'une réponse directe',
+              },
+              {
+                mode: 'Tâche agentique',
+                context: 'plus étendu et relu au fil de la tâche',
+                toolUse: 'plusieurs appels possibles',
+                progression: 'observations, actions et corrections successives',
+              },
             ],
+            relationship: 'La tâche agentique mobilise généralement davantage de contexte et d’étapes.',
             factors: ['Longueur', 'Complexité', 'Modèle', "Niveau d'effort", 'Fonctions utilisées'],
           },
         },
@@ -498,7 +514,7 @@ export const A_DECKS = [
           notes: 'Expliquer les facteurs de consommation sans transformer l’exemple en estimation tarifaire universelle.',
           transition: 'Le bon objectif n’est pas le prompt le plus court, mais le contexte utile une seule fois.',
         },
-        accessibleDescription: 'Deux compteurs opposent une question à un seul tour et une tâche agentique avec lectures, outils et corrections multiples.',
+        accessibleDescription: 'Une comparaison qualitative oppose une question directe à une tâche agentique qui relit du contexte, appelle des outils et se corrige.',
       }),
       slide({
         id: 'a4-budget',
@@ -572,11 +588,13 @@ export const A_DECKS = [
           key: 'verification-audit',
           data: {
             interaction: 'Révéler les affirmations douteuses.',
-            responseLayers: [
-              { text: 'Deux faits vérifiables', status: 'À sourcer' },
-              { text: 'Une inférence raisonnable', status: 'À expliciter' },
-              { text: 'Une affirmation sans source', status: 'Douteuse' },
-              { text: 'Une recommandation trop sûre', status: 'À calibrer' },
+            exerciseNotice: 'Exemple pédagogique entièrement fictif.',
+            statements: [
+              { text: 'Dans le dossier fictif, 12 réponses ont été recueillies.', category: 'fait vérifiable', fictional: true },
+              { text: 'Sept réponses fictives mentionnent un délai supérieur à trois jours.', category: 'fait vérifiable', fictional: true },
+              { text: "Le délai semble être la principale source d'insatisfaction.", category: 'inférence raisonnable', fictional: true },
+              { text: 'Réduire le délai fidélisera tous les clients.', category: 'affirmation sans source', fictional: true },
+              { text: "Il faut donc réorganiser immédiatement toute l'équipe support.", category: 'recommandation trop sûre', fictional: true },
             ],
             initialSignal: 'Ton fluide et affirmatif',
           },
@@ -587,7 +605,7 @@ export const A_DECKS = [
           notes: 'Montrer une fausse information bien formulée et demander un vote rapide. Ne pas résumer par « l’IA ment ».',
           transition: 'Pourquoi accordons-nous autant de crédit à une réponse fluide ?',
         },
-        accessibleDescription: 'Une réponse apparemment sûre est décomposée en quatre types d’affirmations dont certaines manquent de source ou de nuance.',
+        accessibleDescription: 'Cinq affirmations fictives et concrètes sont révélées comme deux faits, une inférence, une affirmation sans source et une recommandation trop sûre.',
       }),
       slide({
         id: 'a5-biases',
@@ -599,11 +617,11 @@ export const A_DECKS = [
           data: {
             interaction: 'Explorer les cinq biais.',
             biases: [
-              { name: "Biais d'automatisation", effect: 'Préférer la machine à son propre jugement' },
-              { name: "Biais de confirmation", effect: 'Retenir ce qui conforte une croyance' },
-              { name: "Effet d'autorité", effect: 'Confondre assurance et expertise' },
-              { name: 'Ancrage', effect: 'Rester proche de la première réponse' },
-              { name: 'Aisance cognitive', effect: 'Croire davantage ce qui se lit facilement' },
+              { name: "Biais d'automatisation", effect: "Croire la machine parce qu'elle a répondu vite et proprement" },
+              { name: 'Biais de confirmation', effect: 'Retenir surtout ce qui conforte notre idée initiale' },
+              { name: 'Ancrage', effect: 'Laisser la première proposition orienter toutes les suivantes' },
+              { name: 'Anthropomorphisme', effect: 'Attribuer au modèle une intention, une mémoire ou une compréhension humaine' },
+              { name: "Effet d'autorité", effect: 'Confondre ton affirmatif, vocabulaire technique et preuve' },
             ],
           },
         },
@@ -675,7 +693,15 @@ export const A_DECKS = [
           key: 'mission-board',
           data: {
             interaction: 'Ouvrir la mission A5.',
-            input: 'Deux faits vérifiables, une inférence raisonnable, une affirmation sans source et une recommandation trop sûre.',
+            input: 'Réponse courte fictive : deux faits vérifiables, une inférence raisonnable, une affirmation sans source et une recommandation trop sûre.',
+            exerciseNotice: 'Exemple pédagogique entièrement fictif.',
+            statements: [
+              { text: 'Dans le dossier fictif, 12 réponses ont été recueillies.', category: 'fait vérifiable', fictional: true },
+              { text: 'Sept réponses fictives mentionnent un délai supérieur à trois jours.', category: 'fait vérifiable', fictional: true },
+              { text: "Le délai semble être la principale source d'insatisfaction.", category: 'inférence raisonnable', fictional: true },
+              { text: 'Réduire le délai fidélisera tous les clients.', category: 'affirmation sans source', fictional: true },
+              { text: "Il faut donc réorganiser immédiatement toute l'équipe support.", category: 'recommandation trop sûre', fictional: true },
+            ],
             mission: [
               'Surlignez chaque catégorie avec une couleur.',
               'Appliquez Stop — Source — Test — Décision.',
@@ -691,7 +717,7 @@ export const A_DECKS = [
           notes: 'Partager une vérification et faire expliciter les incertitudes restantes dans la version corrigée.',
           transition: 'Ces réflexes accompagneront toutes les interfaces, surtout celles qui peuvent agir.',
         },
-        accessibleDescription: 'Un tableau de mission part de quatre types d’affirmations et impose classification, méthode de contrôle, réécriture et preuve.',
+        accessibleDescription: 'Un tableau de mission présente cinq affirmations fictives déjà classables puis impose couleur, contrôle, réécriture et preuve.',
       }),
     ],
   },
