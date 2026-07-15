@@ -21,6 +21,7 @@ Commandes utiles :
 npm test               # tests du modèle, de l’inventaire et des vues
 npm run content:check  # validation éditoriale des fichiers MDX
 npm run presentation:check # validation des slides et de leurs liens wiki
+npm run typecheck          # contrat TypeScript et composants Astro
 npm run build          # validations puis génération du site statique
 ```
 
@@ -77,7 +78,9 @@ structure et le même langage visuel quand Mathieu ajoute les blocs D, E et F :
    ```bash
    npm test
    npm run presentation:check
+   npm run typecheck
    npm run build
+   npm run qa:presenter
    npm run qa:block-b
    npm run qa:block-c
    ```

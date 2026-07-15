@@ -16,6 +16,14 @@ test('utilise un champ lumineux sans grille permanente', async () => {
   assert.match(css, /prefers-reduced-motion/);
 });
 
+test('les pistes et scènes fluides se contractent sans masquer un débordement mobile', async () => {
+  const css = await read('src/styles/presentation.css');
+  const bodyRule = css.match(/body\s*\{([^}]*)\}/s)?.[1] ?? '';
+  assert.doesNotMatch(bodyRule, /overflow-x:\s*(?:hidden|clip)/);
+  assert.match(css, /#slide-content[^{}]*\.presentation-controls[^{}]*\{[^}]*min-inline-size:\s*0/s);
+  assert.match(css, /\.presentation-slide > \*[^{}]*\{[^}]*max-inline-size:\s*100%/s);
+});
+
 test('conserve un état compréhensible sans JavaScript', async () => {
   const mission = await read('src/components/presentation/scenes/MissionBoard.astro');
   assert.match(mission, /<ol|<dl/);

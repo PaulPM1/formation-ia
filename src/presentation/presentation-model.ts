@@ -22,6 +22,8 @@ export type PresentationLink = {
   kind: 'wiki' | 'official' | 'download' | 'digression';
   label: string;
   href: string;
+  target: '_blank';
+  rel: 'noopener noreferrer';
 };
 
 export type PresentationSlide = {
@@ -38,6 +40,7 @@ export type PresentationSlide = {
 export type PresentationDeck = {
   brickId: string;
   family: PresentationFamily;
+  order: number;
   title: string;
   slides: PresentationSlide[];
 };

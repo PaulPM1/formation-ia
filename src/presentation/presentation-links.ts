@@ -7,6 +7,8 @@ export function wikiLink(brickId: string, anchor: string, label: string): Presen
     kind: 'wiki',
     label,
     href: `${WIKI_BASE_URL}/briques/${brickId}/#${anchor}`,
+    target: '_blank',
+    rel: 'noopener noreferrer',
   };
 }
 
@@ -15,5 +17,5 @@ export function externalLink(
   label: string,
   href: string,
 ): PresentationLink {
-  return { kind, label, href };
+  return { kind, label, href, target: '_blank', rel: 'noopener noreferrer' };
 }

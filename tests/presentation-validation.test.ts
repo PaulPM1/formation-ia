@@ -12,6 +12,7 @@ import type { PresentationDeck } from '../src/presentation/presentation-model';
 const deck: PresentationDeck = {
   brickId: 'a1',
   family: 'a',
+  order: 1,
   title: "C'est quoi un LLM",
   slides: [
     {
@@ -26,13 +27,47 @@ const deck: PresentationDeck = {
   ],
 };
 
+const invalidDeck = (change: Record<string, unknown>): PresentationDeck => ({
+  ...deck,
+  ...change,
+} as PresentationDeck);
+
+const invalidSlide = (change: Record<string, unknown>): PresentationDeck => ({
+  ...deck,
+  slides: [{ ...deck.slides[0], ...change } as PresentationDeck['slides'][number]],
+});
+
 test('valide un deck complet', () => {
   assert.deepEqual(validatePresentation([deck]), []);
 });
 
 test('rejette les identifiants de slides dupliqués', () => {
-  const duplicate = { ...deck, brickId: 'a2', slides: deck.slides };
+  const duplicate = { ...deck, brickId: 'a2', family: 'a' as const, order: 2, slides: deck.slides };
   assert.ok(validatePresentation([deck, duplicate]).some((issue) => issue.includes('dupliqué')));
+});
+
+test('rejette les familles, identifiants et ordres incohérents à l’exécution', () => {
+  assert.ok(validatePresentation([invalidDeck({ family: 'z' })]).some((issue) => issue.includes('Famille invalide')));
+  assert.ok(validatePresentation([invalidDeck({ brickId: '' })]).some((issue) => issue.includes('Identifiant de brique invalide')));
+  assert.ok(validatePresentation([invalidDeck({ brickId: 'b1', family: 'a' })]).some((issue) => issue.includes('Famille incohérente')));
+  assert.ok(validatePresentation([invalidDeck({ order: 0 })]).some((issue) => issue.includes('Ordre invalide')));
+  assert.ok(validatePresentation([deck, { ...deck, brickId: 'a2', order: 1 }]).some((issue) => issue.includes('Ordre de brique dupliqué')));
+});
+
+test('rejette une slide dont l’identité, le rôle ou le contrat visuel sont invalides', () => {
+  assert.ok(validatePresentation([invalidSlide({ id: 'b1-opening' })]).some((issue) => issue.includes('n’appartient pas')));
+  assert.ok(validatePresentation([invalidSlide({ role: 'quiz' })]).some((issue) => issue.includes('Rôle invalide')));
+  assert.ok(validatePresentation([invalidSlide({ visual: { key: 'token-predictor', data: null } })]).some((issue) => issue.includes('Données visuelles invalides')));
+  assert.ok(validatePresentation([invalidSlide({ visual: { key: '', data: {} } })]).some((issue) => issue.includes('Visuel inconnu')));
+});
+
+test('rejette les notes formateur et les liens incomplets', () => {
+  assert.ok(validatePresentation([invalidSlide({ speaker: { durationMinutes: 0, notes: 'Note', transition: 'Suite' } })]).some((issue) => issue.includes('Durée formateur invalide')));
+  assert.ok(validatePresentation([invalidSlide({ speaker: { durationMinutes: 1, notes: ' ', transition: 'Suite' } })]).some((issue) => issue.includes('Notes formateur vides')));
+  assert.ok(validatePresentation([invalidSlide({ speaker: { durationMinutes: 1, notes: 'Note', transition: ' ' } })]).some((issue) => issue.includes('Transition formateur vide')));
+  assert.ok(validatePresentation([invalidSlide({ links: [{ ...wikiLink('a1', 'concept-durable', 'Approfondir'), label: ' ' }] })]).some((issue) => issue.includes('Libellé de lien vide')));
+  assert.ok(validatePresentation([invalidSlide({ links: [{ ...wikiLink('a1', 'concept-durable', 'Approfondir'), target: '_self' }] })]).some((issue) => issue.includes('Cible de lien invalide')));
+  assert.ok(validatePresentation([invalidSlide({ links: [{ ...wikiLink('a1', 'concept-durable', 'Approfondir'), rel: 'noopener' }] })]).some((issue) => issue.includes('Relation de lien invalide')));
 });
 
 test('construit uniquement des liens wiki canoniques', () => {

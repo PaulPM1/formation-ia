@@ -18,7 +18,7 @@ const links = {
 
 export const C_DECKS = [
   {
-    brickId: 'c1', family: 'c', title: 'Skills', slides: [
+    brickId: 'c1', family: 'c', order: 12, title: 'Skills', slides: [
       slide({
         id: 'c1-repeat', role: 'opening',
         claim: 'Une méthode répétée trois fois mérite peut-être un Skill.',
@@ -121,7 +121,7 @@ export const C_DECKS = [
     ],
   },
   {
-    brickId: 'c2', family: 'c', title: 'MCP & API', slides: [
+    brickId: 'c2', family: 'c', order: 13, title: 'MCP & API', slides: [
       slide({
         id: 'c2-api', role: 'opening',
         claim: "Une API est le contrat d'un service ; MCP standardise la connexion à l'IA.",
@@ -237,7 +237,7 @@ export const C_DECKS = [
     ],
   },
   {
-    brickId: 'c3', family: 'c', title: 'Hooks et tâches planifiées', slides: [
+    brickId: 'c3', family: 'c', order: 14, title: 'Hooks et tâches planifiées', slides: [
       slide({
         id: 'c3-trigger', role: 'opening',
         claim: 'Un hook répond à un événement ; une tâche planifiée répond au temps.',

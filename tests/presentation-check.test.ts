@@ -25,7 +25,13 @@ function deckWithWikiLink(link: PresentationLink): PresentationDeck[] {
 }
 
 function wikiLink(href: string): PresentationLink {
-  return { kind: 'wiki', label: 'Ressource', href };
+  return {
+    kind: 'wiki',
+    label: 'Ressource',
+    href,
+    target: '_blank',
+    rel: 'noopener noreferrer',
+  };
 }
 
 test('contrôle les 76 slides et leurs cibles wiki sans accès réseau', async () => {
@@ -63,12 +69,17 @@ test('signale un manifeste rattaché à une brique source inconnue', async () =>
   const documents = await loadBrickDocuments(contentDirectory);
   const sourceDeck = PRESENTATION_DECKS[0];
   const result = await checkPresentation(
-    [{ ...sourceDeck, brickId: 'z9', slides: [{ ...sourceDeck.slides[0], links: [] }] }],
+    [{
+      ...sourceDeck,
+      brickId: 'f9',
+      family: 'f',
+      slides: [{ ...sourceDeck.slides[0], id: 'f9-opening', links: [] }],
+    }],
     documents,
   );
 
   assert.equal(result.issues.length, 1);
-  assert.match(result.issues[0], /manifeste z9/i);
+  assert.match(result.issues[0], /manifeste f9/i);
   assert.match(result.issues[0], /brique source inconnue/i);
 });
 

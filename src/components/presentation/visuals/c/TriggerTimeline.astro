@@ -58,7 +58,7 @@ const laneLabels = triggerLaneLabels(data);
     {variant === 'schedule' && (
       <section class="trigger__schedule" aria-label="Du brouillon à la récurrence validée">
         <article><p>Entrée autorisée</p><strong>{task.source}</strong><p>Sortie</p><strong>{task.output}</strong><small>{task.actionLimit} · {task.missingData}</small></article>
-        <ol>{scheduleStates.map((state, index) => <li data-trigger-panel><button type="button" disabled data-trigger-choice aria-pressed={String(index === 0)}><span>{String(index + 1).padStart(2, '0')}</span>{state.name}</button><p>{state.action}</p></li>)}</ol>
+        <ol>{scheduleStates.map((state, index) => <li data-trigger-panel><button type="button" disabled data-trigger-choice aria-pressed={index === 0}><span>{String(index + 1).padStart(2, '0')}</span>{state.name}</button><p>{state.action}</p></li>)}</ol>
         <p class="trigger__policy">{String(data.sessionPolicy ?? '')}</p>
       </section>
     )}

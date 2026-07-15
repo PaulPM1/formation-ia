@@ -35,11 +35,23 @@ body {
   container-type: inline-size;
   min-block-size: 100dvh;
   margin: 0;
-  overflow-x: hidden;
   background: var(--presentation-ivory);
   color: var(--presentation-ink);
   line-height: 1.45;
   -webkit-font-smoothing: antialiased;
+}
+
+#slide-content,
+#slide-content > *,
+.presentation-stage,
+.presentation-slide > *,
+.presentation-heading > *,
+.presentation-visual,
+.scene-frame__content,
+.scene-frame__content > *,
+.presentation-controls {
+  min-inline-size: 0;
+  max-inline-size: 100%;
 }
 
 button,
@@ -150,6 +162,7 @@ a {
   position: absolute;
   z-index: -1;
   inline-size: clamp(18rem, 42vw, 48rem);
+  max-inline-size: 100%;
   aspect-ratio: 1;
   border-radius: 50%;
   content: "";
@@ -161,12 +174,12 @@ a {
 
 .presentation-stage::before {
   inset-block-start: -24%;
-  inset-inline-end: -14%;
+  inset-inline-end: 0;
 }
 
 .presentation-stage::after {
   inset-block-end: -33%;
-  inset-inline-start: -18%;
+  inset-inline-start: 0;
   animation-delay: -6s;
 }
 
@@ -425,6 +438,8 @@ a {
 
 .mission-board__statements strong,
 .mission-board__statements small {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
   font-size: 0.75rem;
   line-height: 1.08;
 }
@@ -1131,6 +1146,17 @@ dialog button,
     border-color: var(--presentation-ink);
     background: var(--presentation-surface);
     box-shadow: none;
+  }
+}
+
+/* Sous un zoom fort, le flou décoratif ne doit pas élargir la zone de
+   défilement. Le halo radial reste présent, sans débordement de filtre. */
+@container (max-width: 38rem) {
+  .presentation-stage::before,
+  .presentation-stage::after {
+    animation: none;
+    filter: none;
+    opacity: 0.18;
   }
 }
 

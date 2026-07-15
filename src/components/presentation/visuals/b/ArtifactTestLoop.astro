@@ -233,7 +233,7 @@ const loopPath = panels.length === 5
   .artifact__inspection output { color: var(--presentation-muted); font: var(--b-font-control) var(--font-mono); }
   [data-artifact-panel][hidden] { display: none !important; }
   button:focus-visible { outline: .22rem solid var(--presentation-focus); outline-offset: .18rem; }
-  @media (max-width: 50rem) {
+  @container (max-width: 50rem) {
     .artifact[data-variant='tests'], .artifact[data-variant='correction'], .artifact__transfer, .artifact__anatomy, .artifact__scope { grid-template-columns: 1fr; }
     .artifact__orbit { grid-template-columns: 1fr; }
     .artifact__orbit svg { max-block-size: 11rem; }

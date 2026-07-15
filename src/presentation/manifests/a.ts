@@ -58,6 +58,7 @@ export const A_DECKS = [
   {
     brickId: 'a1',
     family: 'a',
+    order: 1,
     title: "C'est quoi un LLM",
     slides: [
       slide({
@@ -189,6 +190,7 @@ export const A_DECKS = [
   {
     brickId: 'a2',
     family: 'a',
+    order: 2,
     title: 'LLM vs Agent',
     slides: [
       slide({
@@ -318,6 +320,7 @@ export const A_DECKS = [
   {
     brickId: 'a3',
     family: 'a',
+    order: 3,
     title: 'Pourquoi Claude pour le code',
     slides: [
       slide({
@@ -423,6 +426,7 @@ export const A_DECKS = [
   {
     brickId: 'a4',
     family: 'a',
+    order: 4,
     title: 'Les coûts',
     slides: [
       slide({
@@ -577,6 +581,7 @@ export const A_DECKS = [
   {
     brickId: 'a5',
     family: 'a',
+    order: 5,
     title: 'Biais cognitifs des IA',
     slides: [
       slide({

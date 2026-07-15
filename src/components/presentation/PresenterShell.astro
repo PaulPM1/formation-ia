@@ -29,7 +29,7 @@ const { slide, previous, next } = Astro.props;
     : <span aria-disabled="true">Précédente</span>}
   <button type="button" data-dialog-target="#presentation-toc">Sommaire</button>
   <button type="button" data-dialog-target="#speaker-notes">Notes</button>
-  <button type="button" data-presenter-fullscreen>Plein écran</button>
+  <button type="button" data-presenter-fullscreen aria-pressed="false">Entrer le plein écran</button>
   {next
     ? <a href={next.route} data-next>Suivante</a>
     : <span aria-disabled="true">Suivante</span>}
