@@ -8,53 +8,112 @@ durationMinutes: 15
 type: concept
 platforms:
   - commun
-prerequisites: []
-status: a-rediger
+prerequisites:
+  - a1
+status: a-relire
 owner: a-attribuer
-learningObjective: null
-expectedOutcome: null
+learningObjective: "Repérer les erreurs plausibles d'un modèle et les biais humains qui conduisent à leur accorder trop de confiance."
+expectedOutcome: "Le participant audite une réponse avec la méthode Stop — Source — Test — Décision et explicite ce qui reste incertain."
 ---
 
 ## Cap
 
-{/* Renseigner l’objectif, les prérequis, la durée et le résultat attendu. */}
+**Objectif :** garder son esprit critique lorsque Claude répond vite, clairement et avec assurance.
+
+- Durée cible : 15 minutes.
+- Prérequis : A1, « C'est quoi un LLM ».
+- Résultat attendu : vous savez ralentir au bon moment et choisir une vérification proportionnée au risque.
 
 ## Concept durable
 
-{/* Présenter la notion indépendamment d’un outil ou d’une interface particulière. */}
+Un modèle peut produire une **hallucination** : une information inventée ou déformée, mais présentée de façon cohérente. Le danger ne vient pas seulement du modèle. Il vient de la rencontre entre cette réponse convaincante et nos propres raccourcis mentaux.
+
+- **Biais d'automatisation :** croire la machine parce qu'elle a répondu vite et proprement.
+- **Biais de confirmation :** retenir surtout ce qui conforte notre idée initiale.
+- **Ancrage :** laisser la première proposition orienter toutes les suivantes.
+- **Anthropomorphisme :** attribuer au modèle une intention, une mémoire ou une compréhension humaine.
+- **Effet d'autorité :** confondre ton affirmatif, vocabulaire technique et preuve.
+
+La prudence dépend de l'enjeu. Une idée de titre peut être testée rapidement. Une décision médicale, juridique, financière, de sécurité ou concernant une personne exige des sources compétentes et une validation humaine qualifiée.
+
+Utilisez la méthode **Stop — Source — Test — Décision** :
+
+1. **Stop :** quelle erreur aurait une conséquence réelle ?
+2. **Source :** quelle affirmation vient d'un document fourni, d'une source externe ou du modèle seul ?
+3. **Test :** quelle vérification indépendante peut réfuter la réponse ?
+4. **Décision :** qui assume le choix final et que reste-t-il d'incertain ?
 
 ## Pratique avec Claude
 
-{/* Préparer la démonstration ou la manipulation guidée. */}
+Demandez :
+
+```text
+Réponds à cette question en séparant clairement :
+1. les faits présents dans mon contexte ;
+2. tes déductions ;
+3. les informations manquantes ;
+4. les vérifications à réaliser avant de décider.
+
+Question : [insérez une question simple de votre domaine]
+```
+
+Puis ajoutez :
+
+```text
+Cherche maintenant l'argument le plus solide contre ta première réponse.
+```
+
+Le but n'est pas de rendre Claude infaillible, mais de rendre l'incertitude visible.
 
 ## Mission commune
 
-{/* Définir la consigne commune et sa progression. */}
+Le formateur fournit une réponse courte contenant : deux faits vérifiables, une inférence raisonnable, une affirmation sans source et une recommandation trop sûre.
+
+En binôme :
+
+1. surlignez chaque catégorie avec une couleur ;
+2. appliquez Stop — Source — Test — Décision ;
+3. réécrivez la réponse pour rendre les limites explicites ;
+4. choisissez une source indépendante ou un test concret.
+
+**Critère de réussite :** votre version corrigée ne masque aucune affirmation incertaine derrière un ton affirmatif.
 
 ## Livrable
 
-{/* Décrire la preuve concrète produite par le participant. */}
+Une fiche d'audit comprenant la réponse annotée, les deux vérifications prioritaires et la décision qui doit rester humaine.
 
 ## Notes formateur
 
-{/* Préparer le déroulé, les messages essentiels, les pièges et la transition. */}
+- **0–3 min :** montrer une fausse information bien formulée et demander un vote rapide.
+- **3–7 min :** nommer hallucination et cinq biais sans culpabiliser les participants.
+- **7–12 min :** réaliser l'audit en binômes.
+- **12–15 min :** partager une vérification et relier son effort au niveau de risque.
+
+Ne pas résumer par « l'IA ment » : mentir suppose une intention. Préférer « le modèle peut générer une information fausse ». Transition : les mêmes réflexes seront appliqués à toutes les interfaces, surtout lorsqu'elles peuvent modifier des fichiers ou utiliser des outils.
 
 ## Défis avancés
 
-{/* Ajouter uniquement les extensions destinées aux participants plus rapides. */}
+- Demandez trois réponses indépendantes, puis vérifiez si leur accord repose réellement sur des sources différentes.
+- Construisez une matrice `probabilité d'erreur × gravité` pour choisir le niveau de contrôle.
+- Créez une grille d'évaluation avant de demander une recommandation afin d'éviter l'ancrage sur la première réponse.
 
 ## Variantes
 
-{/* Prévoir les variantes utiles selon les cas d’usage. */}
+- **Marketing :** audit d'une statistique ou d'une promesse client.
+- **Ressources humaines :** repérage des inférences injustifiées à propos d'un candidat fictif.
+- **Code :** distinguer « le code compile », « les tests passent » et « le besoin est satisfait ».
 
 ## Dépannage
 
-{/* Lister les blocages prévisibles et leur résolution. */}
+- **Claude invente encore des sources :** demandez des liens vérifiables, puis ouvrez-les ; l'existence d'un lien ne garantit pas qu'il soutient l'affirmation.
+- **Le groupe cherche une certitude totale :** reformulez en niveau de confiance, preuve disponible et décision réversible.
+- **Le sujet devient sensible :** arrêtez l'exercice et remplacez-le par un exemple fictif sans donnée personnelle.
 
 ## Ressources
 
-{/* Ajouter les liens, commandes et références nécessaires. */}
+- [Réduire les hallucinations — documentation Anthropic](https://docs.anthropic.com/en/docs/test-and-evaluate/strengthen-guardrails/reduce-hallucinations)
+- [Principes de transparence d'Anthropic](https://www.anthropic.com/transparency)
 
 ## Ouverture
 
-{/* Indiquer le prolongement naturel vers une notion plus avancée. */}
+Vous disposez maintenant d'un modèle mental, d'une distinction LLM/agent et d'une méthode de contrôle. La famille B passe à la pratique dans les interfaces Claude.

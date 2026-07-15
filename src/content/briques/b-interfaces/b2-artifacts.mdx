@@ -8,61 +8,114 @@ durationMinutes: 15
 type: demonstration
 platforms:
   - commun
-prerequisites: []
-status: a-rediger
+prerequisites:
+  - b1
+status: a-relire
 owner: a-attribuer
-learningObjective: null
-expectedOutcome: null
+learningObjective: "Créer, tester et améliorer un contenu autonome ou un mini-outil interactif dans un Artifact."
+expectedOutcome: "Le participant obtient un Artifact fonctionnel, le teste avec trois cas et corrige au moins un écart observable."
 ---
 
 ## Cap
 
-{/* Renseigner l’objectif, les prérequis, la durée et le résultat attendu. */}
+**Objectif :** passer d'une réponse à un objet visible que l'on peut utiliser, modifier et partager.
+
+- Durée cible : 15 minutes.
+- Prérequis : B1, prompt structuré.
+- Résultat attendu : un petit outil autonome testé sur trois cas.
 
 ## Concept durable
 
-{/* Présenter la notion indépendamment d’un outil ou d’une interface particulière. */}
+Un **Artifact** est un contenu substantiel et autonome affiché à côté de la conversation : document, code, diagramme, page Web ou composant interactif. La conversation sert à donner les instructions ; l'Artifact devient l'objet de travail.
+
+Cette séparation facilite trois gestes :
+
+- **voir** le résultat sans le chercher dans l'historique ;
+- **itérer** en demandant une modification ciblée ;
+- **versionner** les essais et revenir à une version précédente.
+
+Un prototype n'est pas encore un produit. Selon le type d'Artifact, le stockage persistant, les appels à des services externes ou certaines capacités peuvent être indisponibles. Ne mettez pas de secret dans le code ou les données. Avant de partager, testez ce que le lien expose et retirez toute information sensible.
 
 ## Pratique avec Claude
 
-{/* Préparer la démonstration ou la manipulation guidée. */}
+Demandez un minuteur de révision simple :
+
+```text
+Crée un Artifact interactif de minuteur de révision.
+
+Fonctions : choisir 5, 15 ou 25 minutes ; démarrer ; mettre en pause ; réinitialiser.
+Affichage : temps restant très lisible et état actuel en texte.
+Contraintes : fonctionnement sans compte, sans API externe et sans stockage de données.
+Accessibilité : boutons nommés clairement et utilisables au clavier.
+
+Avant de construire, résume les critères de réussite en 5 points.
+```
+
+Une fois l'Artifact créé, testez 5 minutes, pause/reprise et réinitialisation. Demandez une correction seulement après avoir décrit un écart observable.
 
 ## Mission commune
 
-{/* Définir la consigne commune et sa progression. */}
+Créez un mini-outil lié à votre fil rouge : quiz de cinq questions, calculateur simple, checklist, générateur de planning ou tableau de décision.
+
+1. Limitez le MVP à une action principale.
+2. Définissez trois tests avant la construction.
+3. Faites créer l'Artifact.
+4. Exécutez les trois tests.
+5. Corrigez l'écart le plus important.
+
+**Critère de réussite :** une autre personne peut utiliser l'action principale sans explication orale.
 
 ## Livrable
 
-{/* Décrire la preuve concrète produite par le participant. */}
+Le lien ou la version conservée de l'Artifact, accompagné de la liste des trois tests et du défaut corrigé. Si le partage public n'est pas approprié, gardez une capture et le prompt.
 
 ## Notes formateur
 
-{/* Préparer le déroulé, les messages essentiels, les pièges et la transition. */}
+- Choisir un exemple assez petit pour que le test soit visible en quinze minutes.
+- Faire écrire les tests avant la génération : le groupe doit savoir ce que « terminé » signifie.
+- Montrer une modification ciblée plutôt qu'une réécriture complète.
+- Rappeler qu'un prototype séduisant peut encore contenir des erreurs de logique.
+
+Transition : un Artifact est un objet autonome ; Cowork, lui, prend en charge une tâche en plusieurs étapes avec des fichiers et des outils.
 
 ## Défis avancés
 
-{/* Ajouter uniquement les extensions destinées aux participants plus rapides. */}
+- Ajouter un état vide, une erreur de saisie et une confirmation de réinitialisation.
+- Faire tester l'Artifact par un binôme sans lui montrer le prompt.
+- Revenir à une version antérieure, créer une variante et comparer les deux chemins.
 
 ## Variantes
 
-{/* Prévoir les variantes utiles selon les cas d’usage. */}
+- **Sans code interactif :** créer une procédure, un diagramme ou une fiche de décision autonome.
+- **Temps court :** personnaliser un Artifact existant au lieu de partir de zéro.
+- **Partage interdit :** tester localement dans le compte et ne pas publier.
 
 ## Dépannage
 
-{/* Lister les blocages prévisibles et leur résolution. */}
+- **Aucun Artifact n'apparaît :** demander explicitement « crée un Artifact » et vérifier que le contenu est autonome.
+- **Le bouton ne fonctionne pas :** décrire l'action, l'état attendu et l'état observé ; demander un diagnostic avant la correction.
+- **La version régresse :** revenir à la dernière version fonctionnelle puis demander une modification plus petite.
+- **Le partage expose trop d'informations :** dépublier, retirer les données et tester le lien dans une fenêtre privée.
 
 ## Ressources
 
-{/* Ajouter les liens, commandes et références nécessaires. */}
+- [Que sont les Artifacts ? — Claude Help Center](https://support.anthropic.com/en/articles/9487310-what-are-artifacts-and-how-do-i-use-them)
+- [Découvrir, personnaliser et partager des Artifacts](https://support.anthropic.com/en/articles/9547008-discovering-publishing-customizing-and-sharing-artifacts)
 
 ## Ouverture
 
-{/* Indiquer le prolongement naturel vers une notion plus avancée. */}
+Vous savez créer un objet interactif. La prochaine étape consiste à confier un résultat plus large à un agent, tout en gardant un périmètre et des points de contrôle.
 
 ## Scénario de démonstration
 
-{/* Décrire le point de départ, les actions montrées et le résultat visible. */}
+Point de départ : un minuteur de révision décrit par cinq critères. Claude construit l'Artifact ; le test révèle que la réinitialisation redémarre immédiatement le compte à rebours. Le formateur demande une correction ciblée.
+
+Résultat visible : le minuteur satisfait les trois scénarios et affiche clairement son état.
 
 ## Déroulé de démonstration
 
-{/* Découper la démonstration en étapes courtes et vérifiables. */}
+1. Montrer le brief et faire voter sur les critères manquants.
+2. Demander à Claude de résumer les critères avant de construire.
+3. Lancer l'Artifact et exécuter les trois tests à voix haute.
+4. Décrire le défaut sans proposer le code de la solution.
+5. Appliquer la correction, rejouer les trois tests et montrer l'historique de versions.

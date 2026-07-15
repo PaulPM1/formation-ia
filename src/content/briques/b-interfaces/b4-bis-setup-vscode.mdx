@@ -8,69 +8,132 @@ durationMinutes: null
 type: setup
 platforms:
   - commun
-prerequisites: []
-status: a-rediger
+prerequisites:
+  - b0
+status: a-relire
 owner: a-attribuer
-learningObjective: null
-expectedOutcome: null
+learningObjective: "Installer ou valider VS Code, ouvrir un dossier de confiance et utiliser l'explorateur, un fichier et le terminal intégré."
+expectedOutcome: "Le participant ouvre le dossier atelier dans VS Code, crée bonjour.txt et exécute une commande simple dans le terminal intégré."
 ---
 
 ## Cap
 
-{/* Renseigner l’objectif, les prérequis, la durée et le résultat attendu. */}
+**Objectif :** disposer d'un espace de travail commun pour voir les fichiers, ouvrir un terminal et suivre les modifications d'un projet.
+
+- Durée indicative : 15 à 30 minutes selon les droits d'installation.
+- Prérequis : accès au Web et droit d'installer VS Code, ou version déjà présente.
+- Résultat attendu : le dossier `atelier-ia` est ouvert, `bonjour.txt` existe et le terminal intégré répond.
+
+VS Code est l'éditeur utilisé pendant la formation. L'installation d'une extension d'IA n'est pas nécessaire pour valider cette brique.
 
 ## Concept durable
 
-{/* Présenter la notion indépendamment d’un outil ou d’une interface particulière. */}
+Un **éditeur de code** travaille sur des fichiers et des dossiers. Dans VS Code :
+
+- l'**Explorateur** montre l'arborescence réelle ;
+- l'**éditeur** affiche le contenu du fichier actif ;
+- le **terminal intégré** exécute les mêmes outils qu'un terminal séparé ;
+- le **workspace** est le dossier ouvert et peut contenir des réglages propres au projet.
+
+Ouvrir un dossier donne du contexte aux outils. N'accordez la confiance qu'aux dossiers dont vous connaissez l'origine : un projet téléchargé peut contenir des tâches ou réglages exécutables.
 
 ## Pratique avec Claude
 
-{/* Préparer la démonstration ou la manipulation guidée. */}
+1. Téléchargez VS Code depuis la page officielle si nécessaire.
+2. Installez la version Stable adaptée à votre système.
+3. Créez un dossier `atelier-ia` dans `Documents`.
+4. Dans VS Code, choisissez **Fichier → Ouvrir le dossier**, puis sélectionnez `atelier-ia`.
+5. Créez `bonjour.txt` avec :
+
+```text
+Mon atelier IA est prêt.
+```
+
+6. Ouvrez **Terminal → Nouveau terminal** et vérifiez que son chemin se termine par `atelier-ia`.
+7. Exécutez `code --version` si la commande `code` est configurée. Sinon, le test du terminal reste valide et la configuration est traitée dans le dépannage.
 
 ## Mission commune
 
-{/* Définir la consigne commune et sa progression. */}
+Sans aide du formateur, fermez puis rouvrez VS Code, ouvrez `atelier-ia`, modifiez `bonjour.txt` et utilisez le terminal pour afficher le dossier courant.
+
+- macOS avec zsh : `pwd`
+- Windows PowerShell : `Get-Location`
+- Git Bash : `pwd`
+
+**Critère de réussite :** le fichier est visible dans l'Explorateur et le terminal indique le même dossier.
 
 ## Livrable
 
-{/* Décrire la preuve concrète produite par le participant. */}
+Le dossier `atelier-ia` contenant `bonjour.txt`, plus la sortie de la commande de localisation. Ce dossier servira de zone de travail non sensible pour les exercices suivants.
 
 ## Notes formateur
 
-{/* Préparer le déroulé, les messages essentiels, les pièges et la transition. */}
+- Séparer les participants par système pendant les cinq minutes d'installation.
+- Demander le test final avant d'ajouter des extensions ou de personnaliser l'interface.
+- Expliquer le triptyque « dossier, fichier, terminal » au vidéoprojecteur.
+- Ne pas utiliser de projet téléchargé pour le premier test de Workspace Trust.
+
+Transition : un environnement visible et un terminal fonctionnel permettent d'aborder les extensions réutilisables, les connexions MCP et les automatisations.
 
 ## Défis avancés
 
-{/* Ajouter uniquement les extensions destinées aux participants plus rapides. */}
+- Configurer la commande `code` puis ouvrir le dossier depuis le terminal avec `code .`.
+- Ouvrir la palette de commandes et retrouver « Terminal: Create New Terminal ».
+- Comparer réglages utilisateur et réglages du workspace sans modifier les fichiers de configuration.
 
 ## Variantes
 
-{/* Prévoir les variantes utiles selon les cas d’usage. */}
+- **Installation interdite :** utiliser la version déjà approuvée par l'organisation ou suivre la démonstration ; ne pas contourner les politiques.
+- **Autre éditeur déjà maîtrisé :** valider malgré tout l'ouverture du dossier et du terminal dans VS Code pour partager les mêmes repères pendant la formation.
+- **Clavier non français :** utiliser les menus plutôt que les raccourcis.
 
 ## Dépannage
 
-{/* Lister les blocages prévisibles et leur résolution. */}
+- **Le dossier n'apparaît pas :** utiliser « Ouvrir le dossier », pas seulement « Ouvrir un fichier ».
+- **Le terminal s'ouvre ailleurs :** fermer le terminal, rouvrir le bon dossier puis créer un nouveau terminal.
+- **Workspace Trust apparaît :** n'accorder la confiance qu'au dossier `atelier-ia` créé par vous-même.
+- **`code` est introuvable :** suivre les étapes propres au système ci-dessous ; cela ne bloque pas l'usage de VS Code par les menus.
 
 ## Ressources
 
-{/* Ajouter les liens, commandes et références nécessaires. */}
+- [Télécharger VS Code](https://code.visualstudio.com/download)
+- [Bien démarrer avec VS Code](https://code.visualstudio.com/docs/getstarted/overview)
+- [Utiliser VS Code en ligne de commande](https://code.visualstudio.com/docs/configure/command-line)
+- [Comprendre Workspace Trust](https://code.visualstudio.com/docs/editing/workspaces/workspace-trust)
 
 ## Ouverture
 
-{/* Indiquer le prolongement naturel vers une notion plus avancée. */}
+Vous disposez maintenant d'un dossier de travail explicite, d'un éditeur et d'un terminal. La famille C montre comment ajouter à Claude des méthodes, des connexions et des déclencheurs.
 
 ## Diagnostic initial
 
-{/* Définir le contrôle qui identifie l’état de départ. */}
+Avant d'installer :
+
+1. recherchez « Visual Studio Code » dans les applications ;
+2. ouvrez-le et consultez **Aide → À propos** sur Windows ou **Code → À propos** sur macOS ;
+3. tentez d'ouvrir un dossier et un terminal ;
+4. n'effectuez une installation que si un de ces tests essentiels échoue.
 
 ## Test final
 
-{/* Définir la vérification qui confirme que l’environnement fonctionne. */}
+Le setup est validé lorsque :
+
+- VS Code ouvre `atelier-ia` comme dossier ;
+- l'Explorateur affiche `bonjour.txt` ;
+- le fichier contient « Mon atelier IA est prêt. » ;
+- le terminal intégré pointe vers `atelier-ia` ;
+- vous savez fermer puis rouvrir ce dossier.
 
 ## Dépannage Mac
 
-{/* Documenter les écarts propres à macOS. */}
+1. Ouvrez le fichier `.dmg` officiel et glissez **Visual Studio Code.app** dans `Applications`.
+2. Lancez VS Code depuis `Applications` ou Spotlight.
+3. Pour ajouter `code` au `PATH`, ouvrez la palette avec `Cmd+Shift+P`, cherchez **Shell Command: Install 'code' command in PATH**, exécutez-la puis ouvrez un nouveau terminal.
+4. Si la commande reste absente, poursuivez avec les menus et redémarrez le terminal après la session.
 
 ## Dépannage Windows
 
-{/* Documenter les écarts propres à Windows. */}
+1. Utilisez de préférence le **User Setup** officiel si vous n'avez pas les droits administrateur.
+2. Fermez puis rouvrez les terminaux après l'installation afin qu'ils récupèrent le `PATH` mis à jour.
+3. Si `code` n'est pas reconnu, vérifiez l'option d'ajout au `PATH` ou réinstallez depuis la source officielle.
+4. En environnement géré, demandez l'installation au support interne au lieu d'utiliser une archive non approuvée.
