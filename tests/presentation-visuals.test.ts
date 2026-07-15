@@ -4,6 +4,7 @@ import test from 'node:test';
 
 import { A_DECKS } from '../src/presentation/manifests/a';
 import { B_DECKS } from '../src/presentation/manifests/b';
+import { C_DECKS } from '../src/presentation/manifests/c';
 import { SLIDE_VISUAL_KEYS } from '../src/presentation/presentation-model';
 
 const read = (path: string) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
@@ -438,4 +439,125 @@ test('le sweep QA B contrôle les descendants calculés et les cinq labels Setup
   assert.match(qa, /overflowX/);
   assert.match(qa, /setup__route-label/);
   assert.match(qa, /Compte.*Surface.*Fonctions.*Test.*Repli/s);
+});
+
+test('enregistre tous les visuels du bloc C', async () => {
+  const registry = await read('src/components/presentation/VisualRegistry.astro');
+  for (const name of ['SkillAnatomy', 'McpConnectionMap', 'TriggerTimeline']) {
+    assert.match(registry, new RegExp(name));
+  }
+});
+
+test('les 16 routes spécialisées du bloc C choisissent leur vraie variante', async () => {
+  const state = await import('../src/components/presentation/visuals/c/visual-state').catch(() => null);
+  assert.ok(state, "les helpers d’état du bloc C doivent exister");
+
+  const specialized = C_DECKS.flatMap((deck) => deck.slides)
+    .filter((slide) => !['mission-board', 'checkpoint'].includes(slide.visual.key));
+  assert.equal(specialized.length, 16);
+
+  const expected = new Map<string, string>([
+    ['c1-repeat', 'repeat'], ['c1-neighbors', 'neighbors'], ['c1-anatomy', 'anatomy'],
+    ['c1-trigger', 'trigger'], ['c1-tests', 'tests'],
+    ['c2-api', 'api'], ['c2-chain', 'chain'], ['c2-tools', 'tools'],
+    ['c2-permissions', 'permissions'], ['c2-readonly', 'readonly'], ['c2-revoke', 'revoke'],
+    ['c3-trigger', 'modes'], ['c3-hook', 'hook'], ['c3-schedule', 'schedule'],
+    ['c3-guardrails', 'guardrails'], ['c3-pause', 'lifecycle'],
+  ]);
+  const resolvers = {
+    'skill-anatomy': state.getSkillVariant,
+    'mcp-connection-map': state.getMcpVariant,
+    'trigger-timeline': state.getTriggerVariant,
+  } as const;
+
+  for (const slide of specialized) {
+    const resolver = resolvers[slide.visual.key as keyof typeof resolvers];
+    assert.equal(resolver?.(slide.visual.data), expected.get(slide.id), slide.id);
+  }
+});
+
+test('les tests de Skill distinguent le bon déclenchement du silence attendu', async () => {
+  const state = await import('../src/components/presentation/visuals/c/visual-state').catch(() => null);
+  assert.ok(state, "les helpers d’état du bloc C doivent exister");
+  const tests = C_DECKS.flatMap((deck) => deck.slides).find((slide) => slide.id === 'c1-tests');
+  assert.ok(tests);
+  const cases = tests.visual.data.cases as Array<{ type: string; expected: string }>;
+
+  assert.deepEqual(state.skillCaseOutcome(cases[0]), {
+    shouldTrigger: true,
+    state: 'Déclenché',
+    correct: true,
+  });
+  assert.deepEqual(state.skillCaseOutcome(cases[1]), {
+    shouldTrigger: false,
+    state: 'Silencieux',
+    correct: true,
+  });
+});
+
+test('la frontière MCP se ferme explicitement après révocation', async () => {
+  const state = await import('../src/components/presentation/visuals/c/visual-state').catch(() => null);
+  assert.ok(state, "les helpers d’état du bloc C doivent exister");
+
+  assert.deepEqual(state.mcpBoundaryState(false, true), {
+    connected: true,
+    permission: 'Lecture seule',
+    boundary: 'Ouverte avec permission minimale',
+  });
+  assert.deepEqual(state.mcpBoundaryState(true, true), {
+    connected: false,
+    permission: 'Aucun accès',
+    boundary: 'Fermée · connexion révoquée',
+  });
+});
+
+test('le cycle d’automatisation rend journal, pause et suppression observables', async () => {
+  const state = await import('../src/components/presentation/visuals/c/visual-state').catch(() => null);
+  assert.ok(state, "les helpers d’état du bloc C doivent exister");
+  const lifecycle = ['Manuel', 'Actif', 'Surveillé', 'En pause', 'Supprimé'];
+
+  assert.deepEqual(state.triggerLifecycleState(lifecycle, 0), {
+    index: 0, state: 'Manuel', logVisible: false, paused: false, deleted: false,
+  });
+  assert.deepEqual(state.triggerLifecycleState(lifecycle, 2), {
+    index: 2, state: 'Surveillé', logVisible: true, paused: false, deleted: false,
+  });
+  assert.deepEqual(state.triggerLifecycleState(lifecycle, 4), {
+    index: 4, state: 'Supprimé', logVisible: true, paused: true, deleted: true,
+  });
+});
+
+test('les visuels du bloc C sont progressifs, accessibles et décrivent leurs SVG', async () => {
+  const files = await Promise.all([
+    'SkillAnatomy', 'McpConnectionMap', 'TriggerTimeline',
+  ].map((name) => read(`src/components/presentation/visuals/c/${name}.astro`))).catch(() => [] as string[]);
+
+  assert.equal(files.length, 3);
+  for (const file of files) {
+    assert.match(file, /data-enhanced/);
+    assert.match(file, /<button[^>]+type="button"[^>]+disabled/);
+    assert.match(file, /<title[^>]*>/);
+    assert.match(file, /<desc[^>]*>/);
+    assert.match(file, /prefers-reduced-motion/);
+    assert.doesNotMatch(file, /onclick=/);
+  }
+  assert.match(files[0], /Frontmatter|Description/);
+  assert.match(files[0], /Procédure/);
+  assert.match(files[0], /Sortie/);
+  assert.match(files[1], /data-mcp-request-path/);
+  assert.match(files[1], /data-mcp-response-path/);
+  assert.match(files[1], /data-mcp-boundary/);
+  assert.match(files[2], /data-trigger-lane="event"/);
+  assert.match(files[2], /data-trigger-lane="calendar"/);
+});
+
+test('le sweep QA C couvre les 19 routes, le no-JS, le clavier et le mouvement réduit', async () => {
+  const qa = await read('scripts/qa-block-c.mjs').catch(() => '');
+  assert.match(qa, /routes\.length.*19|19\/19/s);
+  assert.match(qa, /javaScriptEnabled:\s*false/);
+  assert.match(qa, /reducedMotion:\s*'reduce'/);
+  assert.match(qa, /keyboard|press\('Tab'\)|\.press\(/);
+  assert.match(qa, /getBoundingClientRect/);
+  assert.match(qa, /scrollWidth/);
+  assert.match(qa, /fontSize/);
 });

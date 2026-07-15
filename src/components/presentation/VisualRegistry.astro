@@ -16,6 +16,9 @@ import PacteWorkspace from './visuals/b/PacteWorkspace.astro';
 import PromptBuilder from './visuals/b/PromptBuilder.astro';
 import SetupDiagnostic from './visuals/b/SetupDiagnostic.astro';
 import WorkspaceTriptych from './visuals/b/WorkspaceTriptych.astro';
+import McpConnectionMap from './visuals/c/McpConnectionMap.astro';
+import SkillAnatomy from './visuals/c/SkillAnatomy.astro';
+import TriggerTimeline from './visuals/c/TriggerTimeline.astro';
 
 interface Props {
   slide: RoutedSlide;
@@ -39,9 +42,9 @@ const sceneRegistry = {
   'pacte-workspace': PacteWorkspace,
   'ipmtr-loop': IpmtrLoop,
   'workspace-triptych': WorkspaceTriptych,
-  'skill-anatomy': StaticConceptScene,
-  'mcp-connection-map': StaticConceptScene,
-  'trigger-timeline': StaticConceptScene,
+  'skill-anatomy': SkillAnatomy,
+  'mcp-connection-map': McpConnectionMap,
+  'trigger-timeline': TriggerTimeline,
 } satisfies Record<SlideVisualKey, typeof StaticConceptScene>;
 
 const Scene = sceneRegistry[slide.visual.key];
