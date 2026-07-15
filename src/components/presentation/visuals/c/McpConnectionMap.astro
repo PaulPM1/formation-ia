@@ -1,7 +1,7 @@
 ---
 import type { RoutedSlide } from '../../../../presentation/presentation-model';
 import SceneFrame from '../../scenes/SceneFrame.astro';
-import { getMcpVariant, mcpBoundaryState } from './visual-state';
+import { getMcpVariant, mcpInitialBoundary } from './visual-state';
 
 interface Props { slide: RoutedSlide; }
 interface Definition { definition?: string; elements?: string[]; }
@@ -29,11 +29,21 @@ const tools = (Array.isArray(data.tools) ? data.tools : []) as Tool[];
 const forbidden = Array.isArray(data.forbidden) ? data.forbidden.map(String) : [];
 const expectedEvidence = Array.isArray(data.expectedEvidence) ? data.expectedEvidence.map(String) : [];
 const auditRecord = Array.isArray(data.auditRecord) ? data.auditRecord.map(String) : [];
-const boundary = mcpBoundaryState(false, variant === 'permissions' || variant === 'readonly' || variant === 'revoke');
+const boundary = mcpInitialBoundary(variant);
+const initialBoundaryState = variant === 'revoke'
+  ? 'revoked'
+  : variant === 'permissions' || variant === 'readonly'
+    ? 'minimal'
+    : 'neutral';
+const initialBoundaryLabel = variant === 'revoke'
+  ? 'FRONTIÈRE FERMÉE · RÉVOQUÉE'
+  : variant === 'permissions' || variant === 'readonly'
+    ? 'FRONTIÈRE OUVERTE · LECTURE SEULE'
+    : 'FRONTIÈRE À VÉRIFIER';
 ---
 
 <SceneFrame title={slide.claim} description={slide.accessibleDescription} visualKey={slide.visual.key} class="mcp-connection-map">
-  <div class="mcp-map" data-mcp-map data-variant={variant} data-enhanced="false" data-boundary-state="open">
+  <div class="mcp-map" data-mcp-map data-variant={variant} data-enhanced="false" data-boundary-state={initialBoundaryState}>
     <section class="mcp-map__system" aria-label="Chaîne MCP de bout en bout">
       <svg viewBox="0 0 1000 250" role="img" aria-labelledby={`${slide.id}-mcp-title ${slide.id}-mcp-desc`}>
         <title id={`${slide.id}-mcp-title`}>Demande et réponse à travers la chaîne MCP</title>
@@ -57,13 +67,13 @@ const boundary = mcpBoundaryState(false, variant === 'permissions' || variant ==
         })}
         <text class="mcp-map__direction" x="500" y="61" text-anchor="middle">DEMANDE →</text>
         <text class="mcp-map__direction" x="500" y="211" text-anchor="middle">← RÉPONSE</text>
-        <text data-mcp-boundary-label class="mcp-map__boundary-label" x="760" y="18" text-anchor="middle">FRONTIÈRE OUVERTE</text>
+        <text data-mcp-boundary-label class="mcp-map__boundary-label" x="760" y="18" text-anchor="middle">{initialBoundaryLabel}</text>
       </svg>
       <div class="mcp-map__status-row">
         <output data-mcp-status aria-live="polite"><strong>{boundary.boundary}</strong><span>{boundary.permission}</span></output>
         <div class="mcp-map__controls" role="group" aria-label={String(data.interaction ?? 'Explorer la connexion')}>
           {variant === 'revoke' ? (
-            <><button type="button" disabled data-mcp-connect aria-pressed="true">Connexion active</button><button type="button" disabled data-mcp-revoke aria-pressed="false">Révoquer l’accès</button></>
+            <><button type="button" disabled data-mcp-connect aria-pressed="false">Rétablir une connexion minimale</button><button type="button" disabled data-mcp-revoke aria-pressed="true">Accès révoqué</button></>
           ) : variant === 'permissions' ? (
             <><button type="button" disabled data-mcp-scope="broad" aria-pressed="false">Portée large</button><button type="button" disabled data-mcp-scope="minimal" aria-pressed="true">Permission minimale</button></>
           ) : (
@@ -131,7 +141,9 @@ const boundary = mcpBoundaryState(false, variant === 'permissions' || variant ==
       const state = mcpBoundaryState(revoked, minimal);
       scene.dataset.boundaryState = state.connected ? (minimal ? 'minimal' : 'broad') : 'revoked';
       if (status) status.innerHTML = `<strong>${state.boundary}</strong><span>${state.permission}</span>`;
-      if (label) label.textContent = state.connected ? 'FRONTIÈRE OUVERTE' : 'FRONTIÈRE FERMÉE · RÉVOQUÉE';
+      if (label) label.textContent = state.connected
+        ? `FRONTIÈRE OUVERTE · ${minimal ? 'LECTURE SEULE' : 'PORTÉE LARGE'}`
+        : 'FRONTIÈRE FERMÉE · RÉVOQUÉE';
     };
     scene.querySelectorAll<HTMLButtonElement>('button').forEach((button) => { button.disabled = false; });
     const follow = scene.querySelector<HTMLButtonElement>('[data-mcp-follow]');
@@ -164,6 +176,9 @@ const boundary = mcpBoundaryState(false, variant === 'permissions' || variant ==
   .mcp-map__node circle { fill: var(--presentation-surface); stroke: var(--presentation-ink); stroke-width: 4; }
   .mcp-map__node text { fill: var(--presentation-ink); font: 740 15px var(--font-display); }
   .mcp-map__node .mcp-map__node-index, .mcp-map__direction, .mcp-map__boundary-label { fill: var(--presentation-ink); font: 720 12px var(--font-mono); }
+  .mcp-map[data-boundary-state='minimal'] [data-mcp-boundary] { stroke-width: 7; stroke-dasharray: 9 7; }
+  .mcp-map[data-boundary-state='broad'] [data-mcp-boundary] { stroke-width: 17; stroke-dasharray: 2 5; }
+  .mcp-map[data-boundary-state='broad'] [data-mcp-lock] { transform: scaleX(1.35); transform-origin: center; }
   .mcp-map[data-boundary-state='revoked'] [data-mcp-boundary] { stroke: var(--presentation-ink); stroke-dasharray: none; stroke-width: 14; }
   .mcp-map[data-boundary-state='revoked'] [data-mcp-request-path], .mcp-map[data-boundary-state='revoked'] [data-mcp-response-path] { stroke-dasharray: 5 12; opacity: .28; }
   .mcp-map[data-boundary-state='revoked'] [data-mcp-shackle] { transform: translateY(7px); }

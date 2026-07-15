@@ -6,6 +6,7 @@ const routes = [
   '/presenter/c2/c2-api/', '/presenter/c2/c2-chain/', '/presenter/c2/c2-tools/', '/presenter/c2/c2-permissions/', '/presenter/c2/c2-readonly/', '/presenter/c2/c2-revoke/', '/presenter/c2/c2-mission/',
   '/presenter/c3/c3-trigger/', '/presenter/c3/c3-hook/', '/presenter/c3/c3-schedule/', '/presenter/c3/c3-guardrails/', '/presenter/c3/c3-pause/', '/presenter/c3/c3-mission/',
 ];
+const specializedRoutes = routes.filter((route) => !route.includes('-mission/'));
 const focusRoutes = [
   '/presenter/c1/c1-anatomy/',
   '/presenter/c2/c2-chain/',
@@ -86,16 +87,29 @@ const inspectLayout = async (viewport, mode) => {
 const inspectNoJs = async () => {
   const context = await browser.newContext({ viewport: { width: 1280, height: 720 }, javaScriptEnabled: false });
   const page = await context.newPage();
-  for (const route of focusRoutes) {
+  for (const route of specializedRoutes) {
     await page.goto(`${baseURL}${route}`, { waitUntil: 'load' });
-    const result = await page.locator('.presentation-visual').evaluate((visual) => ({
-      text: visual.textContent.replace(/\s+/g, ' ').trim().length,
-      disabledControls: [...visual.querySelectorAll('button')].every((button) => button.disabled),
-      enhanced: visual.querySelector('[data-enhanced="true"]') !== null,
-    }));
+    const result = await page.locator('.presentation-visual').evaluate((visual) => {
+      const map = visual.querySelector('[data-mcp-map]');
+      const boundaryLabel = visual.querySelector('[data-mcp-boundary-label]')?.textContent?.trim() ?? '';
+      return {
+        text: visual.textContent.replace(/\s+/g, ' ').trim().length,
+        disabledControls: [...visual.querySelectorAll('button')].every((button) => button.disabled),
+        enhanced: visual.querySelector('[data-enhanced="true"]') !== null,
+        boundaryState: map?.getAttribute('data-boundary-state') ?? '',
+        boundaryLabel,
+        status: visual.querySelector('[data-mcp-status]')?.textContent?.replace(/\s+/g, ' ').trim() ?? '',
+      };
+    });
     if (result.text < 120) failures.push(`no-js ${route} contenu statique trop pauvre (${result.text})`);
     if (!result.disabledControls) failures.push(`no-js ${route} contrôle actif sans JavaScript`);
     if (result.enhanced) failures.push(`no-js ${route} enhancement annoncé à tort`);
+    if (route.endsWith('/c2-revoke/')) {
+      if (result.boundaryState !== 'revoked') failures.push(`no-js ${route} frontière initiale=${result.boundaryState}`);
+      if (!result.boundaryLabel.includes('FERMÉE') || !result.boundaryLabel.includes('RÉVOQUÉE')) failures.push(`no-js ${route} label=${result.boundaryLabel}`);
+      if (!result.status.includes('Fermée') || !result.status.includes('Aucun accès')) failures.push(`no-js ${route} statut=${result.status}`);
+      if (/Connexion active|Lecture seule/.test(result.status)) failures.push(`no-js ${route} contradiction=${result.status}`);
+    }
   }
   await context.close();
 };
@@ -120,17 +134,57 @@ const inspectReducedMotion = async () => {
 const inspectKeyboard = async () => {
   const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
   const page = await context.newPage();
-  const keyboardCases = [
-    ['/presenter/c1/c1-tests/', '[data-skill-case]', '[data-skill-case][aria-pressed="true"]'],
-    ['/presenter/c2/c2-revoke/', '[data-mcp-revoke]', '[data-mcp-map][data-boundary-state="revoked"]'],
-    ['/presenter/c3/c3-pause/', '[data-trigger-lifecycle]:last-of-type', '[data-trigger-timeline][data-lifecycle-state="deleted"]'],
+  const pressEnter = async (locator) => { await locator.focus(); await page.keyboard.press('Enter'); };
+
+  await page.goto(`${baseURL}/presenter/c1/c1-tests/`, { waitUntil: 'load' });
+  const positive = page.locator('[data-skill-case]').first();
+  await pressEnter(positive);
+  if (await positive.getAttribute('aria-pressed') !== 'true') failures.push('keyboard c1-tests cas positif non sélectionné');
+
+  await page.goto(`${baseURL}/presenter/c2/c2-permissions/`, { waitUntil: 'load' });
+  const boundary = page.locator('[data-mcp-boundary]');
+  const geometry = () => boundary.evaluate((line) => {
+    const style = getComputedStyle(line);
+    return { strokeWidth: style.strokeWidth, strokeDasharray: style.strokeDasharray };
+  });
+  const minimalGeometry = await geometry();
+  await pressEnter(page.locator('[data-mcp-scope="broad"]'));
+  const broadGeometry = await geometry();
+  const broadLabel = await page.locator('[data-mcp-boundary-label]').textContent();
+  if (JSON.stringify(minimalGeometry) === JSON.stringify(broadGeometry)) failures.push('keyboard c2-permissions géométrie minimale/large identique');
+  if (await page.locator('[data-mcp-map]').getAttribute('data-boundary-state') !== 'broad' || !broadLabel?.includes('PORTÉE LARGE')) failures.push(`keyboard c2-permissions portée large non annoncée: ${broadLabel}`);
+  await pressEnter(page.locator('[data-mcp-scope="minimal"]'));
+  if (!(await page.locator('[data-mcp-boundary-label]').textContent())?.includes('LECTURE SEULE')) failures.push('keyboard c2-permissions lecture seule non restaurée');
+
+  await page.goto(`${baseURL}/presenter/c2/c2-revoke/`, { waitUntil: 'load' });
+  if (await page.locator('[data-mcp-map]').getAttribute('data-boundary-state') !== 'revoked') failures.push('keyboard c2-revoke ne démarre pas révoqué');
+  await pressEnter(page.locator('[data-mcp-connect]'));
+  if (await page.locator('[data-mcp-map]').getAttribute('data-boundary-state') !== 'minimal') failures.push('keyboard c2-revoke reconnexion minimale absente');
+  await pressEnter(page.locator('[data-mcp-revoke]'));
+  if (await page.locator('[data-mcp-map]').getAttribute('data-boundary-state') !== 'revoked') failures.push('keyboard c2-revoke coupure absente');
+
+  await page.goto(`${baseURL}/presenter/c3/c3-hook/`, { waitUntil: 'load' });
+  await pressEnter(page.locator('[data-trigger-hook]'));
+  if (await page.locator('[data-trigger-timeline]').getAttribute('data-hook-state') !== 'triggered' || !(await page.locator('[data-trigger-status]').textContent())?.includes('HOOK_DEMO_TERMINE')) failures.push('keyboard c3-hook exécution non prouvée');
+  await pressEnter(page.locator('[data-trigger-disable]'));
+  if (await page.locator('[data-trigger-timeline]').getAttribute('data-hook-state') !== 'disabled' || !(await page.locator('[data-trigger-status]').textContent())?.includes('silencieux')) failures.push('keyboard c3-hook désactivation non prouvée');
+
+  await page.goto(`${baseURL}/presenter/c3/c3-schedule/`, { waitUntil: 'load' });
+  const manual = page.locator('[data-trigger-choice]').filter({ hasText: 'Manuel' });
+  const recurring = page.locator('[data-trigger-choice]').filter({ hasText: 'Récurrent' });
+  await pressEnter(manual);
+  if (await manual.getAttribute('aria-pressed') !== 'true' || !(await page.locator('[data-trigger-status]').textContent())?.includes('Run now')) failures.push('keyboard c3-schedule Manuel non prouvé');
+  await pressEnter(recurring);
+  if (await recurring.getAttribute('aria-pressed') !== 'true' || !(await page.locator('[data-trigger-status]').textContent())?.includes('Chaque vendredi')) failures.push('keyboard c3-schedule Récurrent non prouvé');
+
+  await page.goto(`${baseURL}/presenter/c3/c3-pause/`, { waitUntil: 'load' });
+  const lifecycleChecks = [
+    ['Manuel', 'Manuel'], ['Surveillé', 'journal visible'], ['En pause', 'pause confirmée'], ['Supprimé', 'suppression confirmée'],
   ];
-  for (const [route, control, expected] of keyboardCases) {
-    await page.goto(`${baseURL}${route}`, { waitUntil: 'load' });
-    const target = page.locator(control).last();
-    await target.focus();
-    await page.keyboard.press('Enter');
-    if (await page.locator(expected).count() === 0) failures.push(`keyboard ${route} état attendu absent après Enter sur ${control}`);
+  for (const [controlName, proof] of lifecycleChecks) {
+    await pressEnter(page.locator('[data-trigger-lifecycle]').filter({ hasText: controlName }));
+    const state = await page.locator('[data-trigger-status]').textContent();
+    if (!state?.includes(proof)) failures.push(`keyboard c3-pause ${controlName} sans preuve ${proof}: ${state}`);
   }
   await context.close();
 };

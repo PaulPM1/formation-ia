@@ -1,7 +1,7 @@
 ---
 import type { RoutedSlide } from '../../../../presentation/presentation-model';
 import SceneFrame from '../../scenes/SceneFrame.astro';
-import { getTriggerVariant } from './visual-state';
+import { getTriggerVariant, triggerLaneLabels } from './visual-state';
 
 interface Props { slide: RoutedSlide; }
 interface TriggerMode { name: string; trigger: string; execution: string; example: string; }
@@ -19,8 +19,7 @@ const task = (data.task ?? {}) as ScheduledTask;
 const scheduleStates = (Array.isArray(data.states) ? data.states : []) as ScheduleState[];
 const guardrails = (Array.isArray(data.guardrails) ? data.guardrails : []) as Guardrail[];
 const lifecycle = (Array.isArray(data.lifecycle) ? data.lifecycle : []) as Lifecycle[];
-const eventExample = modes[0]?.example ?? (String(data.event ?? '') || 'Événement Stop');
-const calendarExample = modes[1]?.example ?? (scheduleStates[2]?.action ?? 'Cadence validée');
+const laneLabels = triggerLaneLabels(data);
 ---
 
 <SceneFrame title={slide.claim} description={slide.accessibleDescription} visualKey={slide.visual.key} class="trigger-timeline">
@@ -32,12 +31,12 @@ const calendarExample = modes[1]?.example ?? (scheduleStates[2]?.action ?? 'Cade
       <g data-trigger-lane="event">
         <text class="trigger__lane-name" x="18" y="73">ÉVÉNEMENT</text><path d="M165 68 H940" marker-end={`url(#${slide.id}-trigger-arrow)`} />
         <circle cx="360" cy="68" r="28" /><text x="360" y="73" text-anchor="middle">Hook</text>
-        <rect x="570" y="39" width="214" height="58" rx="8" /><text x="677" y="73" text-anchor="middle">{eventExample}</text>
+        <rect x="570" y="39" width="214" height="58" rx="8" /><text x="677" y="73" text-anchor="middle">{laneLabels.event}</text>
       </g>
       <g data-trigger-lane="calendar">
         <text class="trigger__lane-name" x="18" y="185">CALENDRIER</text><path d="M165 180 H940" marker-end={`url(#${slide.id}-trigger-arrow)`} />
         <circle cx="360" cy="180" r="28" /><text x="360" y="185" text-anchor="middle">Manuel</text>
-        <rect x="570" y="151" width="214" height="58" rx="8" /><text x="677" y="185" text-anchor="middle">{calendarExample}</text>
+        <rect x="570" y="151" width="214" height="58" rx="8" /><text x="677" y="185" text-anchor="middle">{laneLabels.calendar}</text>
       </g>
     </svg>
 

@@ -47,6 +47,30 @@ export const mcpBoundaryState = (revoked: boolean, minimal: boolean) => revoked
       boundary: minimal ? 'Ouverte avec permission minimale' : 'Ouverte avec permission large',
     };
 
+export const mcpInitialBoundary = (variant: McpVariant) => {
+  if (variant === 'revoke') return mcpBoundaryState(true, true);
+  if (variant === 'permissions' || variant === 'readonly') return mcpBoundaryState(false, true);
+  return { connected: true, permission: 'Permission non précisée', boundary: 'Frontière à vérifier' };
+};
+
+export const triggerLaneLabels = (data: VisualData) => {
+  const variant = getTriggerVariant(data);
+  if (variant === 'modes') {
+    const modes = data.modes as Array<{ example?: unknown }>;
+    return { event: String(modes[0]?.example ?? 'Non applicable'), calendar: String(modes[1]?.example ?? 'Non applicable') };
+  }
+  if (variant === 'hook') return { event: String(data.event), calendar: 'Non applicable' };
+  if (variant === 'schedule') {
+    const states = data.states as Array<{ name?: unknown; action?: unknown }>;
+    const recurring = states.at(-1);
+    return {
+      event: 'Non applicable',
+      calendar: recurring ? String(recurring.name) : 'Non applicable',
+    };
+  }
+  return { event: 'Non applicable', calendar: 'Non applicable' };
+};
+
 export const triggerLifecycleState = (states: string[], index: number) => {
   const safeIndex = Math.max(0, Math.min(index, Math.max(states.length - 1, 0)));
   const state = states[safeIndex] ?? '';
@@ -58,4 +82,3 @@ export const triggerLifecycleState = (states: string[], index: number) => {
     deleted: safeIndex >= 4,
   };
 };
-

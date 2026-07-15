@@ -509,6 +509,57 @@ test('la frontière MCP se ferme explicitement après révocation', async () => 
     permission: 'Aucun accès',
     boundary: 'Fermée · connexion révoquée',
   });
+  assert.deepEqual(state.mcpInitialBoundary('revoke'), {
+    connected: false,
+    permission: 'Aucun accès',
+    boundary: 'Fermée · connexion révoquée',
+  });
+  assert.deepEqual(state.mcpInitialBoundary('permissions'), {
+    connected: true,
+    permission: 'Lecture seule',
+    boundary: 'Ouverte avec permission minimale',
+  });
+});
+
+test('la portée MCP change la géométrie de frontière, pas seulement sa couleur', async () => {
+  const mcp = await read('src/components/presentation/visuals/c/McpConnectionMap.astro');
+  const minimal = mcp.match(/\[data-boundary-state='minimal'\]\s+\[data-mcp-boundary\]\s*\{([^}]*)\}/s)?.[1] ?? '';
+  const broad = mcp.match(/\[data-boundary-state='broad'\]\s+\[data-mcp-boundary\]\s*\{([^}]*)\}/s)?.[1] ?? '';
+
+  assert.match(minimal, /stroke-width/);
+  assert.match(minimal, /stroke-dasharray/);
+  assert.match(broad, /stroke-width/);
+  assert.match(broad, /stroke-dasharray/);
+  assert.notEqual(minimal.replace(/\s+/g, ' '), broad.replace(/\s+/g, ' '));
+  assert.match(mcp, /FRONTIÈRE FERMÉE · RÉVOQUÉE/);
+  assert.match(mcp, /Rétablir une connexion minimale/);
+  assert.doesNotMatch(mcp, /variant === 'revoke'[\s\S]{0,200}Connexion active/);
+});
+
+test('chaque ligne Trigger utilise le payload réel ou un état non applicable', async () => {
+  const state = await import('../src/components/presentation/visuals/c/visual-state').catch(() => null);
+  assert.ok(state, "les helpers d’état du bloc C doivent exister");
+  const slides = C_DECKS.flatMap((deck) => deck.slides);
+  const data = (id: string) => slides.find((slide) => slide.id === id)?.visual.data ?? {};
+
+  assert.deepEqual(state.triggerLaneLabels(data('c3-trigger')), {
+    event: 'Fin d’une tâche', calendar: 'Vendredi 16 h',
+  });
+  assert.deepEqual(state.triggerLaneLabels(data('c3-hook')), {
+    event: 'Stop', calendar: 'Non applicable',
+  });
+  assert.deepEqual(state.triggerLaneLabels(data('c3-schedule')), {
+    event: 'Non applicable', calendar: 'Récurrent',
+  });
+  assert.deepEqual(state.triggerLaneLabels(data('c3-guardrails')), {
+    event: 'Non applicable', calendar: 'Non applicable',
+  });
+  assert.deepEqual(state.triggerLaneLabels(data('c3-pause')), {
+    event: 'Non applicable', calendar: 'Non applicable',
+  });
+
+  const trigger = await read('src/components/presentation/visuals/c/TriggerTimeline.astro');
+  assert.doesNotMatch(trigger, /Événement Stop|Cadence validée|Vendredi 16 h/);
 });
 
 test('le cycle d’automatisation rend journal, pause et suppression observables', async () => {
@@ -560,4 +611,14 @@ test('le sweep QA C couvre les 19 routes, le no-JS, le clavier et le mouvement r
   assert.match(qa, /getBoundingClientRect/);
   assert.match(qa, /scrollWidth/);
   assert.match(qa, /fontSize/);
+  assert.match(qa, /specializedRoutes/);
+  assert.match(qa, /data-mcp-scope/);
+  assert.match(qa, /strokeDasharray/);
+  assert.match(qa, /data-trigger-hook/);
+  assert.match(qa, /data-trigger-disable/);
+  assert.match(qa, /Manuel/);
+  assert.match(qa, /Récurrent/);
+  assert.match(qa, /Surveillé/);
+  assert.match(qa, /En pause/);
+  assert.match(qa, /Supprimé/);
 });
