@@ -1104,9 +1104,26 @@ dialog button,
 @media (min-width: 52.01rem) and (min-aspect-ratio: 4 / 3) {
   .presentation-stage {
     inline-size: min(100%, calc((100dvh - 4.3rem) * 16 / 9));
-    min-block-size: 0;
-    max-block-size: calc(100dvh - 4.3rem);
-    aspect-ratio: 16 / 9;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    min-block-size: calc(100dvh - 4.3rem);
+    max-block-size: none;
+    overflow-x: clip;
+    overflow-y: visible;
+    aspect-ratio: auto;
+  }
+
+  .presentation-visual,
+  .scene-frame__content {
+    overflow: visible;
+  }
+
+  .presentation-stage::before {
+    inset-inline-end: 0;
+  }
+
+  .presentation-stage::after {
+    inset-inline-start: 0;
   }
 }
 

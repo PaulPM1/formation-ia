@@ -111,6 +111,20 @@ test('la QA durable mesure les textes HTML et SVG à 12 px sur 76 routes et au z
   assert.match(qa, /routes\.length[^\n]*76|76[^\n]*routes\.length/);
 });
 
+test('la QA durable A5 ouvre la correction au clavier et exige un reflow au zoom 200 %', async () => {
+  const [qa, packageJson] = await Promise.all([
+    read('scripts/qa-a5-mission.mjs'),
+    read('package.json'),
+  ]);
+
+  assert.match(packageJson, /"qa:a5-mission":\s*"node scripts\/qa-a5-mission\.mjs"/);
+  assert.match(qa, /document\.documentElement\.style\.zoom = String\(factor\)/);
+  assert.match(qa, /page\.keyboard\.press\('Enter'\)/);
+  assert.match(qa, /contentScrollHeight > result\.contentClientHeight/);
+  assert.match(qa, /documentScrollHeight <= result\.documentClientHeight/);
+  assert.match(qa, /requestAnimationFrame\(\(\) => requestAnimationFrame/);
+});
+
 test('registre statiquement toutes les clés et refuse les inconnues', async () => {
   const registry = await read('src/components/presentation/VisualRegistry.astro');
   for (const key of SLIDE_VISUAL_KEYS) assert.match(registry, new RegExp(`['"]?${key}['"]?\\s*:`));
