@@ -107,7 +107,7 @@ const staticResult = variant === 'comparison' ? String(data.after ?? '') : promp
   .prompt[data-variant='builder'] .prompt__construction { grid-template-columns: minmax(0, 1fr); }
   .prompt__construction > blockquote { grid-row: 1 / 4; align-self: center; display: grid; gap: .3rem; margin: 0; padding: .8rem; border-inline-start: .35rem solid #ed6a46; font: 750 clamp(1rem, 2vw, 1.45rem)/1.05 var(--font-display); }
   .prompt__construction > blockquote span { color: var(--presentation-muted); font: 600 var(--b-font-meta) var(--font-mono); text-transform: uppercase; }
-  .prompt__blocks { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .45rem; min-inline-size: 0; }
+  .prompt__blocks { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .45rem; min-inline-size: 0; padding-block-end: .3rem; padding-inline-end: .3rem; }
   .prompt__blocks button { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .1rem .35rem; min-inline-size: 0; min-block-size: 6rem; padding: .45rem .42rem .38rem; overflow-wrap: anywhere; border: 1px solid var(--presentation-ink); border-block-start: .4rem solid var(--family-accent); background: var(--presentation-surface); color: var(--presentation-ink); text-align: start; cursor: pointer; box-shadow: .28rem .28rem 0 color-mix(in srgb, var(--family-accent), transparent 35%); transition: transform 150ms ease, box-shadow 150ms ease, opacity 150ms ease; }
   .prompt__blocks button:nth-child(2) { border-block-start-color: #72af80; }
   .prompt__blocks button:nth-child(3) { border-block-start-color: #ed6a46; }

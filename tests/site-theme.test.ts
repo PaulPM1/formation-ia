@@ -32,14 +32,16 @@ test('expose une entrée publique et les repères du thème kit de construction'
 });
 
 test('expose le mode présentation dans la navigation et le workflow de contribution', async () => {
-  const [layout, packageJson, readme] = await Promise.all([
+  const [layout, presentationLayout, packageJson, readme] = await Promise.all([
     read('src/layouts/BaseLayout.astro'),
+    read('src/layouts/PresentationLayout.astro'),
     read('package.json'),
     read('README.md'),
   ]);
 
   assert.match(layout, /href="\/presenter\//);
   assert.match(layout, /isPresentation/);
+  assert.match(presentationLayout, /presentation-site-nav/);
   assert.match(packageJson, /presentation:check/);
   assert.match(readme, /slide-visual-director/);
   assert.match(readme, /nombre de slides/i);

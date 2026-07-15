@@ -82,9 +82,9 @@ structure et le même langage visuel quand Mathieu ajoute les blocs D, E et F :
    npm run qa:block-c
    ```
 
-`presentation:check` reste local : il valide les 76 slides, l’origine canonique
-du wiki, les identifiants de briques et les ancres produites par le moteur
-Markdown du site, sans requête réseau.
+`presentation:check` reste local : il valide toutes les slides — 76
+actuellement — ainsi que l’origine canonique du wiki, les identifiants de briques
+et les ancres produites par le moteur Markdown du site, sans requête réseau.
 
 ## Ajouter une brique
 

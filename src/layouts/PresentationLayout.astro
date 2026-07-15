@@ -10,6 +10,8 @@ const {
   title,
   description = 'Support de présentation accessible de la formation Les briques du Vibe Coding.',
 } = Astro.props;
+
+const isPresentation = Astro.url.pathname.startsWith('/presenter');
 ---
 
 <!doctype html>
@@ -30,6 +32,19 @@ const {
   </head>
   <body>
     <a class="skip-link" href="#slide-content">Aller au contenu de la slide</a>
+    <nav class="presentation-site-nav" aria-label="Navigation du support">
+      <a class="presentation-site-nav__return" href="/">
+        <span aria-hidden="true">←</span> Retour au site
+      </a>
+      <ul role="list">
+        <li><a href="/briques/">Briques</a></li>
+        <li>
+          <a href="/presenter/" aria-current={isPresentation ? 'page' : undefined}>
+            Présentation
+          </a>
+        </li>
+      </ul>
+    </nav>
     <main id="slide-content" tabindex="-1">
       <slot />
     </main>
