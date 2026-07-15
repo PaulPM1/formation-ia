@@ -1,0 +1,235 @@
+---
+import type { RoutedSlide } from '../../../../presentation/presentation-model';
+import SceneFrame from '../../scenes/SceneFrame.astro';
+
+interface Mode {
+  name: string;
+  path: string;
+  autonomy: string;
+}
+
+interface Props {
+  slide: RoutedSlide;
+}
+
+const { slide } = Astro.props;
+const data = slide.visual.data;
+const suppliedModes = Array.isArray(data.modes) ? data.modes as Mode[] : [];
+const modes: Mode[] = suppliedModes.length > 0 ? suppliedModes : [
+  { name: 'Réponse', path: `${String(data.input ?? 'Contexte')} → ${String(data.operation ?? 'Générer')} → ${String(data.output ?? 'Texte')}`, autonomy: 'Aucune action' },
+  { name: 'Workflow', path: (Array.isArray(data.steps) ? data.steps : ['Étape 1', 'Étape 2', 'Étape 3']).map(String).join(' → '), autonomy: 'Chemin fixé' },
+  { name: 'Agent', path: (Array.isArray(data.loop) ? data.loop : ['Observer', 'Choisir', 'Agir', 'Corriger']).map(String).join(' → '), autonomy: 'Chemin variable' },
+];
+const activeMode = typeof data.activeMode === 'string' ? data.activeMode : modes[0]?.name;
+const activeIndex = Math.max(0, modes.findIndex((mode) => mode.name === activeMode));
+const modePanels = modes.map((mode) => ({ ...mode, steps: mode.path.split(/\s*→\s*/).filter(Boolean) }));
+---
+
+<SceneFrame
+  title={slide.claim}
+  description={slide.accessibleDescription}
+  visualKey={slide.visual.key}
+  class="response-workflow-agent"
+>
+  <div class="rwa__scene" data-rwa-scene>
+    <fieldset class="rwa__lanes">
+      <legend>{String(data.interaction ?? 'Comparer les trois modes')}</legend>
+      {modes.map((mode, index) => (
+        <label class="rwa__lane" data-mode={mode.name}>
+          <input
+            type="radio"
+            name={`${slide.id}-mode`}
+            value={String(index)}
+            checked={index === activeIndex}
+            data-mode-choice
+          />
+          <span class="rwa__shape" aria-hidden="true">{index === 0 ? '→' : index === 1 ? '↦' : '↻'}</span>
+          <strong>{mode.name}</strong>
+          <small>{mode.autonomy}</small>
+        </label>
+      ))}
+    </fieldset>
+
+    <div class="rwa__stage" aria-live="polite">
+      {modePanels.map((mode, modeIndex) => (
+        <section data-mode-panel={modeIndex} hidden={modeIndex !== activeIndex}>
+          <p class="scene-label">{mode.name} · {mode.autonomy}</p>
+          <div class:list={['rwa__path', { 'rwa__path--loop': mode.name === 'Agent' }]}>
+            <svg viewBox="0 0 720 124" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <marker id={`${slide.id}-arrow-${modeIndex}`} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                  <path d="M 0 0 L 10 5 L 0 10 z"></path>
+                </marker>
+              </defs>
+              <path d="M 58 58 H 666" marker-end={`url(#${slide.id}-arrow-${modeIndex})`}></path>
+              {mode.name === 'Agent' && (
+                <path d="M 654 76 C 620 120, 118 120, 72 76" marker-end={`url(#${slide.id}-arrow-${modeIndex})`}></path>
+              )}
+            </svg>
+            <ol style={`--step-count:${mode.steps.length}`}>
+              {mode.steps.map((step, stepIndex) => (
+                <li>
+                  <span>{String(stepIndex + 1).padStart(2, '0')}</span>
+                  <strong>{step}</strong>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          {mode.name === 'Agent' && typeof data.stopCriterion === 'string' && (
+            <div class="rwa__guardrails">
+              <p><span>Arrêt</span>{data.stopCriterion}</p>
+              {Array.isArray(data.confirmations) && <p><span>Confirmations</span>{data.confirmations.map(String).join(' · ')}</p>}
+            </div>
+          )}
+          {mode.name === 'Workflow' && typeof data.example === 'string' && <p class="rwa__example">Cas : {data.example}</p>}
+        </section>
+      ))}
+    </div>
+  </div>
+</SceneFrame>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-rwa-scene]').forEach((scene) => {
+    const choices = Array.from(scene.querySelectorAll<HTMLInputElement>('[data-mode-choice]'));
+    const panels = Array.from(scene.querySelectorAll<HTMLElement>('[data-mode-panel]'));
+    choices.forEach((choice) => {
+      choice.addEventListener('change', () => {
+        panels.forEach((panel) => { panel.hidden = panel.dataset.modePanel !== choice.value; });
+      });
+    });
+  });
+</script>
+
+<style>
+  .rwa__scene {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: clamp(0.7rem, 1.5vw, 1.2rem);
+    min-block-size: 100%;
+  }
+
+  .rwa__lanes {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.45rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .rwa__lanes legend {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .rwa__lane {
+    display: grid;
+    grid-template-columns: auto auto auto 1fr;
+    gap: 0.45rem;
+    align-items: center;
+    min-block-size: 3rem;
+    padding: 0.45rem 0.65rem;
+    border: 1px solid var(--presentation-line);
+    border-block-end: 0.22rem solid var(--presentation-line);
+    cursor: pointer;
+  }
+
+  .rwa__lane:has(input:checked) {
+    border-color: var(--presentation-ink);
+    border-block-end-color: var(--family-accent);
+    background: color-mix(in srgb, var(--family-accent), transparent 86%);
+  }
+
+  .rwa__lane input { inline-size: 1.1rem; block-size: 1.1rem; accent-color: var(--presentation-ink); }
+  .rwa__shape { font-size: 1.25rem; font-weight: 800; }
+  .rwa__lane strong { font-family: var(--font-display); font-size: clamp(0.9rem, 0.8rem + 0.25vw, 1.05rem); }
+  .rwa__lane small { grid-column: 4; color: var(--presentation-muted); font-size: 0.72rem; text-align: end; }
+
+  .rwa__stage,
+  .rwa__stage section { min-block-size: 0; }
+  .rwa__stage section { display: grid; gap: 0.25rem; align-content: center; block-size: 100%; }
+  .rwa__stage section[hidden] { display: none; }
+
+  .rwa__path {
+    position: relative;
+    display: grid;
+    align-items: center;
+    min-block-size: 3.1rem;
+  }
+
+  .rwa__path svg {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    overflow: visible;
+  }
+
+  .rwa__path svg > path {
+    fill: none;
+    stroke: color-mix(in srgb, var(--family-accent), var(--presentation-ink) 25%);
+    stroke-width: 5;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .rwa__path marker path { fill: var(--presentation-ink); }
+
+  .rwa__path ol {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(var(--step-count), minmax(0, 1fr));
+    gap: clamp(0.4rem, 1vw, 0.9rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .rwa__path li {
+    display: grid;
+    gap: 0.25rem;
+    min-block-size: 2.8rem;
+    place-content: center;
+    padding: 0.2rem 0.35rem;
+    border: 1px solid var(--presentation-ink);
+    border-radius: 50%;
+    aspect-ratio: 4.6;
+    background: var(--presentation-surface);
+    text-align: center;
+  }
+
+  .rwa__path li span { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.66rem; }
+  .rwa__path li strong { font-size: clamp(0.67rem, 0.61rem + 0.17vw, 0.8rem); line-height: 1.1; }
+
+  .rwa__guardrails {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
+  }
+
+  .rwa__guardrails p,
+  .rwa__example {
+    margin: 0;
+    padding-block-start: 0.25rem;
+    border-block-start: 1px solid var(--presentation-line);
+    overflow: hidden;
+    font-size: 0.64rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .rwa__guardrails span { margin-inline-end: 0.45rem; font-family: var(--font-mono); font-size: 0.67rem; font-weight: 750; text-transform: uppercase; }
+
+  @media (max-width: 52rem) {
+    .rwa__lanes { grid-template-columns: 1fr; }
+    .rwa__path { overflow: visible; }
+    .rwa__path ol,
+    .rwa__path svg { min-inline-size: 0; }
+    .rwa__path ol { gap: 0.1rem; }
+    .rwa__path li { min-block-size: 3.2rem; padding: 0.12rem; aspect-ratio: auto; }
+    .rwa__path li strong { font-size: 0.57rem; }
+  }
+</style>

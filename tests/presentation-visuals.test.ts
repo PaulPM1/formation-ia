@@ -56,3 +56,67 @@ test('les repères secondaires restent lisibles au projecteur', async () => {
   assert.match(css, /\.resource-rail a strong\s*{[^}]*font-size:\s*clamp\(1rem/s);
   assert.match(css, /\.checkpoint-scene__status\s*{[^}]*font-size:\s*1rem/s);
 });
+
+test('enregistre tous les visuels du bloc A', async () => {
+  const registry = await read('src/components/presentation/VisualRegistry.astro');
+  for (const name of [
+    'TokenPredictor', 'ContextComparison', 'ResponseWorkflowAgent',
+    'InterfaceContinuum', 'ContextBudget', 'VerificationAudit',
+  ]) assert.match(registry, new RegExp(name));
+});
+
+test('les interactions du bloc A produisent des états pédagogiques déterministes', async () => {
+  const state = await import('../src/components/presentation/visuals/a/visual-state').catch(() => null);
+  assert.ok(state, 'les helpers d’état du bloc A doivent exister');
+
+  assert.deepEqual(state.advanceTokenState(0, ['Le', ' chat', ' dort', '.']), {
+    index: 1,
+    sentence: 'Le chat',
+    complete: false,
+  });
+  assert.deepEqual(state.advanceTokenState(3, ['Le', ' chat', ' dort', '.']), {
+    index: 3,
+    sentence: 'Le chat dort.',
+    complete: true,
+  });
+
+  const budgetItems = [
+    { load: 'faible', useful: true },
+    { load: 'élevée', useful: false },
+    { load: 'significative', useful: true },
+  ];
+  assert.deepEqual(state.calculateContextBudget(budgetItems, [true, false, true]), {
+    load: 3,
+    capacity: 6,
+    percentage: 50,
+    useful: 2,
+  });
+
+  assert.equal(state.verificationForRisk('Moyen', [
+    { risk: 'Faible', verification: 'Relecture rapide' },
+    { risk: 'Moyen', verification: 'Source + contre-lecture' },
+  ]), 'Source + contre-lecture');
+});
+
+test('les visuels du bloc A utilisent des contrôles natifs et des relations continues', async () => {
+  const [token, context, workflow, continuum, budget, audit] = await Promise.all([
+    read('src/components/presentation/visuals/a/TokenPredictor.astro'),
+    read('src/components/presentation/visuals/a/ContextComparison.astro'),
+    read('src/components/presentation/visuals/a/ResponseWorkflowAgent.astro'),
+    read('src/components/presentation/visuals/a/InterfaceContinuum.astro'),
+    read('src/components/presentation/visuals/a/ContextBudget.astro'),
+    read('src/components/presentation/visuals/a/VerificationAudit.astro'),
+  ]).catch(() => [] as string[]);
+
+  assert.match(token ?? '', /<button[^>]+type="button"/);
+  assert.match(context ?? '', /aria-pressed/);
+  assert.match(workflow ?? '', /<path[^>]+marker-end/);
+  assert.match(continuum ?? '', /type="radio"/);
+  assert.match(budget ?? '', /type="checkbox"/);
+  assert.match(audit ?? '', /type="radio"/);
+});
+
+test('le prédicteur laisse réellement disparaître les tokens futurs', async () => {
+  const token = await read('src/components/presentation/visuals/a/TokenPredictor.astro');
+  assert.match(token, /\[data-token\]\[hidden\]\s*{[^}]*display:\s*none/s);
+});

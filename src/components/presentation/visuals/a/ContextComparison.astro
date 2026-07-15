@@ -1,0 +1,222 @@
+---
+import type { RoutedSlide } from '../../../../presentation/presentation-model';
+import SceneFrame from '../../scenes/SceneFrame.astro';
+
+interface ContextOption {
+  audience: string;
+  constraints: string;
+  vocabulary: string;
+}
+
+interface Props {
+  slide: RoutedSlide;
+}
+
+const { slide } = Astro.props;
+const data = slide.visual.data;
+const contexts = Array.isArray(data.contexts) ? data.contexts as ContextOption[] : [];
+const laneId = `${slide.id}-prediction-lane`;
+---
+
+<SceneFrame
+  title={slide.claim}
+  description={slide.accessibleDescription}
+  visualKey={slide.visual.key}
+  class="context-comparison"
+>
+  <div class="context-comparison__scene" data-context-comparison data-contexts={JSON.stringify(contexts)}>
+    <div class="context-comparison__source">
+      <p class="scene-label">Même demande</p>
+      <blockquote>{String(data.sharedPrompt ?? slide.claim)}</blockquote>
+      <div class="context-comparison__switch" aria-label={String(data.interaction ?? 'Choisir un contexte')}>
+        {contexts.map((context, index) => (
+          <button
+            type="button"
+            aria-pressed={index === 0 ? 'true' : 'false'}
+            aria-controls={laneId}
+            data-context-option={index}
+          >
+            <span aria-hidden="true">{index === 0 ? '●' : '◆'}</span>
+            {context.audience}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <div class="context-comparison__connector" aria-hidden="true">
+      <span></span>
+    </div>
+
+    <section id={laneId} class="context-comparison__lane" aria-live="polite" aria-atomic="true">
+      <p class="scene-label">Suite orientée par le contexte</p>
+      {contexts[0] && (
+        <>
+          <h2 data-context-audience>{contexts[0].audience}</h2>
+          <dl>
+            <div><dt>Format</dt><dd data-context-constraints>{contexts[0].constraints}</dd></div>
+            <div><dt>Vocabulaire</dt><dd data-context-vocabulary>{contexts[0].vocabulary}</dd></div>
+          </dl>
+          <p class="context-comparison__prediction" data-context-prediction>
+            Une explication en {contexts[0].constraints}, avec « {contexts[0].vocabulary} ».
+          </p>
+        </>
+      )}
+    </section>
+
+    <p class="context-comparison__observation">
+      <span aria-hidden="true">↳</span>{String(data.observation ?? 'Le contexte infléchit la réponse.')}
+    </p>
+
+    <noscript>
+      <ul>
+        {contexts.map((context) => (
+          <li>{context.audience} : {context.constraints} ; vocabulaire « {context.vocabulary} ».</li>
+        ))}
+      </ul>
+    </noscript>
+  </div>
+</SceneFrame>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-context-comparison]').forEach((scene) => {
+    const contexts = JSON.parse(scene.dataset.contexts ?? '[]') as Array<{
+      audience: string;
+      constraints: string;
+      vocabulary: string;
+    }>;
+    const buttons = Array.from(scene.querySelectorAll<HTMLButtonElement>('[data-context-option]'));
+    const audience = scene.querySelector<HTMLElement>('[data-context-audience]');
+    const constraints = scene.querySelector<HTMLElement>('[data-context-constraints]');
+    const vocabulary = scene.querySelector<HTMLElement>('[data-context-vocabulary]');
+    const prediction = scene.querySelector<HTMLElement>('[data-context-prediction]');
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const index = Number(button.dataset.contextOption);
+        const context = contexts[index];
+        if (!context || !audience || !constraints || !vocabulary || !prediction) return;
+        buttons.forEach((candidate) => candidate.setAttribute('aria-pressed', String(candidate === button)));
+        audience.textContent = context.audience;
+        constraints.textContent = context.constraints;
+        vocabulary.textContent = context.vocabulary;
+        prediction.textContent = `Une explication en ${context.constraints}, avec « ${context.vocabulary} ».`;
+      });
+    });
+  });
+</script>
+
+<style>
+  .context-comparison__scene {
+    display: grid;
+    grid-template-columns: minmax(15rem, 0.8fr) clamp(3rem, 7vw, 7rem) minmax(18rem, 1.2fr);
+    grid-template-rows: 1fr auto;
+    gap: 0.8rem 0;
+    align-items: center;
+    min-block-size: 100%;
+  }
+
+  .context-comparison__source,
+  .context-comparison__lane {
+    display: grid;
+    gap: 0.7rem;
+    align-content: center;
+    min-inline-size: 0;
+  }
+
+  .context-comparison__source blockquote {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 1rem + 1vw, 2.35rem);
+    font-weight: 720;
+    letter-spacing: -0.035em;
+    line-height: 1;
+  }
+
+  .context-comparison__switch {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+
+  .context-comparison__switch button {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.45rem;
+    align-items: center;
+    min-block-size: 3rem;
+    padding: 0.5rem 0.65rem;
+    border: 1px solid var(--presentation-ink);
+    border-radius: 0.2rem;
+    background: transparent;
+    color: var(--presentation-ink);
+    font-size: clamp(0.78rem, 0.72rem + 0.16vw, 0.9rem);
+    font-weight: 680;
+    text-align: start;
+  }
+
+  .context-comparison__switch button[aria-pressed='true'] {
+    border-block-end-width: 0.35rem;
+    background: var(--family-accent);
+  }
+
+  .context-comparison__connector {
+    position: relative;
+    inline-size: 100%;
+    block-size: 0.25rem;
+    background: var(--family-accent);
+  }
+
+  .context-comparison__connector::after {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-end: 0;
+    inline-size: 0.85rem;
+    block-size: 0.85rem;
+    border-block-start: 0.25rem solid var(--family-accent);
+    border-inline-end: 0.25rem solid var(--family-accent);
+    content: '';
+    transform: translateY(-50%) rotate(45deg);
+  }
+
+  .context-comparison__lane {
+    padding: clamp(0.85rem, 1.8vw, 1.5rem);
+    border-inline-start: 0.35rem solid var(--family-accent);
+    background: color-mix(in srgb, var(--family-accent), transparent 86%);
+  }
+
+  .context-comparison__lane h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 1.05rem + 0.8vw, 2.1rem);
+    line-height: 1;
+  }
+
+  .context-comparison__lane dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.7rem;
+    margin: 0;
+  }
+
+  .context-comparison__lane dl div { border-block-start: 1px solid var(--presentation-line); padding-block-start: 0.4rem; }
+  .context-comparison__lane dt { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; }
+  .context-comparison__lane dd { margin: 0; font-weight: 680; }
+  .context-comparison__prediction { margin: 0; font-size: clamp(0.9rem, 0.8rem + 0.28vw, 1.05rem); }
+
+  .context-comparison__observation {
+    display: flex;
+    grid-column: 1 / -1;
+    gap: 0.6rem;
+    justify-self: center;
+    margin: 0;
+    font-weight: 750;
+  }
+
+  .context-comparison__observation span { color: color-mix(in srgb, var(--family-accent), var(--presentation-ink) 35%); }
+
+  @media (max-width: 52rem) {
+    .context-comparison__scene { grid-template-columns: 1fr; grid-template-rows: auto; }
+    .context-comparison__connector { inline-size: 0.25rem; block-size: 2.4rem; margin-inline: auto; }
+    .context-comparison__connector::after { inset-block-start: auto; inset-block-end: 0; inset-inline-end: 50%; transform: translateX(50%) rotate(135deg); }
+  }
+</style>
