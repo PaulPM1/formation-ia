@@ -165,3 +165,17 @@ test('chaque slide possède une thèse, une description et une note formateur', 
   }
   assert.deepEqual(validatePresentation(PRESENTATION_DECKS), []);
 });
+
+test('les ressources externes utilisent leurs destinations officielles canoniques', () => {
+  const obsoleteHosts = new Set([
+    'docs.anthropic.com',
+    'status.anthropic.com',
+    'support.anthropic.com',
+  ]);
+
+  for (const slide of PRESENTATION_SLIDES) {
+    for (const link of slide.links.filter((candidate) => candidate.kind !== 'wiki')) {
+      assert.ok(!obsoleteHosts.has(new URL(link.href).hostname), `${slide.id} → ${link.href}`);
+    }
+  }
+});

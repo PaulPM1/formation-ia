@@ -394,6 +394,110 @@ a {
   padding-inline-start: 1.1rem;
 }
 
+.mission-board--statements .mission-board__statements {
+  grid-column: 1 / -1;
+}
+
+.mission-board__statements ol {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 0.65rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mission-board__statements li {
+  display: grid;
+  grid-template-columns: 1.35rem minmax(0, 1fr);
+  gap: 0.05rem 0.35rem;
+  padding-block: 0.18rem;
+  border-block-start: 1px solid var(--presentation-line);
+}
+
+.mission-board__statements li > span {
+  grid-row: 1 / 3;
+  color: var(--presentation-muted);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+}
+
+.mission-board__statements strong,
+.mission-board__statements small {
+  font-size: 0.7rem;
+  line-height: 1.08;
+}
+
+.mission-board__statements small {
+  color: color-mix(in srgb, var(--presentation-ink), var(--family-accent) 36%);
+  font-family: var(--font-mono);
+  font-weight: 720;
+}
+
+/* Le bloc A introduit les concepts avec des missions riches. Elles restent
+   entièrement visibles en 16 / 9 : étapes à gauche, preuve à droite. */
+.presentation-stage[data-family="a"] .scene-frame__content {
+  padding-block: 0.45rem;
+}
+
+.presentation-stage[data-family="a"] .presentation-visual figcaption {
+  padding-block: 0.36rem;
+  font-size: 0.78rem;
+  line-height: 1.18;
+}
+
+.presentation-stage[data-family="a"] .mission-board .scene-frame__content {
+  grid-template-columns: minmax(0, 1.1fr) minmax(19rem, 0.9fr);
+  gap: 0.25rem 0.75rem;
+}
+
+.presentation-stage[data-family="a"] .mission-board__header {
+  padding-block-end: 0.18rem;
+}
+
+.presentation-stage[data-family="a"] .mission-board__duration strong {
+  font-size: 0.95rem;
+}
+
+.presentation-stage[data-family="a"] .mission-board__actions,
+.presentation-stage[data-family="a"] .mission-board__steps,
+.presentation-stage[data-family="a"] .mission-board__outcome {
+  gap: 0.18rem;
+}
+
+.presentation-stage[data-family="a"] .mission-board__steps li {
+  grid-template-columns: 1.35rem minmax(0, 1fr);
+  gap: 0.25rem;
+  font-size: 0.78rem;
+  line-height: 1.12;
+}
+
+.presentation-stage[data-family="a"] .mission-board__outcome {
+  padding-inline-start: 0.6rem;
+  font-size: 0.76rem;
+  line-height: 1.12;
+}
+
+.presentation-stage[data-family="a"] .mission-board__outcome dt {
+  margin-block-end: 0.08rem;
+  font-size: 0.7rem;
+}
+
+.presentation-stage[data-family="a"] .mission-board__outcome ul {
+  gap: 0.05rem;
+  padding-inline-start: 0.8rem;
+}
+
+.presentation-stage[data-family="a"] .mission-board--statements .scene-frame__content {
+  grid-template-columns: minmax(18rem, 0.78fr) minmax(0, 1.22fr);
+}
+
+.presentation-stage[data-family="a"] .mission-board--statements .mission-board__outcome {
+  grid-template-columns: 1fr 1fr;
+  align-content: start;
+  column-gap: 0.65rem;
+}
+
 .checkpoint-scene .scene-frame__content {
   display: grid;
   grid-template-columns: minmax(0, 1.45fr) minmax(17rem, 0.55fr);
@@ -700,20 +804,22 @@ a {
 
 .resource-rail ul {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem clamp(1rem, 2vw, 2rem);
   margin: 0;
   padding: 0;
-  overflow-x: auto;
+  overflow: visible;
   list-style: none;
 }
 
 .resource-rail li {
-  flex: 0 1 auto;
+  flex: 1 1 11rem;
+  min-inline-size: 0;
 }
 
 .resource-rail a {
   display: grid;
-  min-inline-size: max-content;
+  min-inline-size: 0;
   text-decoration: none;
 }
 
@@ -721,6 +827,18 @@ a {
   color: var(--presentation-muted);
   font-family: var(--font-mono);
   font-size: clamp(0.9rem, 0.86rem + 0.12vw, 1rem);
+}
+
+.resource-rail ul:has(li:nth-child(3)) .resource-rail__meta {
+  display: none;
+}
+
+.resource-rail a .resource-rail__external {
+  margin-inline-start: 0.35em;
+  color: currentColor;
+  font-family: var(--font-body);
+  font-size: 0.82em;
+  text-decoration: none;
 }
 
 .resource-rail a strong {
@@ -954,7 +1072,13 @@ dialog button,
 
   .presentation-stage[data-family="b"] .mission-board .scene-frame__content,
   .presentation-stage[data-family="b"] .checkpoint-scene .scene-frame__content,
-  .presentation-stage[data-family="c"] .mission-board .scene-frame__content {
+  .presentation-stage[data-family="c"] .mission-board .scene-frame__content,
+  .presentation-stage[data-family="a"] .mission-board--statements .scene-frame__content,
+  .presentation-stage[data-family="a"] .mission-board--statements .mission-board__outcome {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mission-board__statements ol {
     grid-template-columns: minmax(0, 1fr);
   }
 

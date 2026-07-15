@@ -19,14 +19,27 @@ const steps = partition.groups.steps.flatMap((field) => field.values);
 const deliverables = partition.groups.deliverables;
 const successCriterion = partition.groups.success[0];
 const duration = `${slide.speaker.durationMinutes} min`;
-const details = partition.details;
+const statements = Array.isArray(data.statements)
+  ? data.statements.flatMap((statement) => (
+    statement && typeof statement === 'object' && !Array.isArray(statement)
+      ? [{
+        text: String((statement as Record<string, unknown>).text ?? ''),
+        category: String((statement as Record<string, unknown>).category ?? ''),
+      }]
+      : []
+  )).filter((statement) => statement.text)
+  : [];
+const details = partition.details.filter((detail) => detail.key !== 'statements');
+const missionClass = statements.length > 0
+  ? 'mission-board mission-board--statements'
+  : 'mission-board';
 ---
 
 <SceneFrame
   title={slide.claim}
   description={slide.accessibleDescription}
   visualKey={slide.visual.key}
-  class="mission-board"
+  class={missionClass}
 >
   <header class="mission-board__header">
     <p class="scene-label">Mission{interaction && ` · ${interaction.values.join(' · ')}`}</p>
@@ -52,7 +65,7 @@ const details = partition.details;
           </dd>
         </div>
       ))
-      : (
+      : statements.length === 0 && (
         <div>
           <dt>Livrable</dt>
           <dd>Un résultat transmissible conforme au critère de réussite.</dd>
@@ -72,5 +85,21 @@ const details = partition.details;
         </dd>
       </div>
     ))}
+    {statements.length > 0 && (
+      <div class="mission-board__statements">
+        <dt>Énoncés à traiter</dt>
+        <dd>
+          <ol>
+            {statements.map((statement, index) => (
+              <li>
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <strong>{statement.text}</strong>
+                <small>{statement.category}</small>
+              </li>
+            ))}
+          </ol>
+        </dd>
+      </div>
+    )}
   </dl>
 </SceneFrame>

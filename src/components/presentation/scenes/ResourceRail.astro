@@ -38,9 +38,17 @@ const destination = (href: string) => {
         <ul>
           {links.map((link) => (
             <li>
-              <a href={link.href} target="_blank" rel="noopener noreferrer">
-                <span>{kindLabels[link.kind]} · {destination(link.href)}</span>
-                <strong>{link.label}</strong>
+              <a
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-link-kind={link.kind}
+              >
+                <span class="resource-rail__meta">{kindLabels[link.kind]} · {destination(link.href)}</span>
+                <strong>
+                  {link.label}
+                  {link.kind !== 'wiki' && <span class="resource-rail__external" aria-hidden="true">↗</span>}
+                </strong>
               </a>
             </li>
           ))}

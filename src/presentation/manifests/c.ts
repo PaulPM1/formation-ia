@@ -5,11 +5,11 @@ const slide = (value: PresentationSlide) => value;
 
 const links = {
   skills: externalLink('official', 'Étendre Claude avec des Skills', 'https://code.claude.com/docs/en/skills'),
-  agentSkills: externalLink('official', 'Standard ouvert Agent Skills', 'https://agentskills.io/'),
+  agentSkills: externalLink('official', 'Standard ouvert Agent Skills', 'https://agentskills.io/home'),
   mcpClaude: externalLink('official', 'Connecter Claude Code avec MCP', 'https://code.claude.com/docs/en/mcp'),
-  mcpIntro: externalLink('official', 'Introduction au Model Context Protocol', 'https://modelcontextprotocol.io/introduction'),
+  mcpIntro: externalLink('official', 'Introduction au Model Context Protocol', 'https://modelcontextprotocol.io/docs/getting-started/intro'),
   mcpArchitecture: externalLink('official', 'Architecture MCP', 'https://modelcontextprotocol.io/docs/learn/architecture'),
-  api: externalLink('official', "Référence de l'API Claude", 'https://docs.anthropic.com/en/api/overview'),
+  api: externalLink('official', "Référence de l'API Claude", 'https://platform.claude.com/docs/en/api/overview'),
   hooksGuide: externalLink('official', 'Automatiser avec les hooks Claude Code', 'https://code.claude.com/docs/en/hooks-guide'),
   hooksReference: externalLink('official', 'Référence complète des hooks', 'https://code.claude.com/docs/en/hooks'),
   schedule: externalLink('official', 'Planifier des tâches récurrentes dans Cowork', 'https://support.claude.com/en/articles/13854387-schedule-recurring-tasks-in-claude-cowork'),

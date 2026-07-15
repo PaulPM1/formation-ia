@@ -28,6 +28,56 @@ test('nomme les liens par leur destination', async () => {
   assert.match(rail, /rel="[^"]*noreferrer/);
 });
 
+test('le rail de ressources replie trois liens ou plus sans les masquer', async () => {
+  const css = await read('src/styles/presentation.css');
+  const railList = css.match(/\.resource-rail ul\s*\{([^}]*)\}/s)?.[1] ?? '';
+  const railItem = css.match(/\.resource-rail li\s*\{([^}]*)\}/s)?.[1] ?? '';
+  const railLink = css.match(/\.resource-rail a\s*\{([^}]*)\}/s)?.[1] ?? '';
+
+  assert.match(railList, /flex-wrap:\s*wrap/);
+  assert.match(railList, /overflow(?:-x)?:\s*visible/);
+  assert.match(railItem, /min-inline-size:\s*0/);
+  assert.match(railLink, /min-inline-size:\s*0/);
+});
+
+test('un rail dense conserve le libellé et distingue les liens externes sans métadonnée haute', async () => {
+  const [rail, css] = await Promise.all([
+    read('src/components/presentation/scenes/ResourceRail.astro'),
+    read('src/styles/presentation.css'),
+  ]);
+
+  assert.match(rail, /data-link-kind/);
+  assert.match(rail, /resource-rail__external/);
+  assert.match(css, /\.resource-rail ul:has\(li:nth-child\(3\)\) \.resource-rail__meta/);
+  assert.match(css, /\.resource-rail__external/);
+});
+
+test('les missions denses du bloc A compactent les énoncés au lieu de les faire défiler', async () => {
+  const [mission, css] = await Promise.all([
+    read('src/components/presentation/scenes/MissionBoard.astro'),
+    read('src/styles/presentation.css'),
+  ]);
+
+  assert.match(mission, /data\.statements/);
+  assert.match(mission, /mission-board--statements/);
+  assert.match(mission, /mission-board__statements/);
+  assert.match(css, /\.presentation-stage\[data-family="a"\] \.mission-board \.scene-frame__content/);
+  assert.match(css, /\.mission-board--statements \.mission-board__statements/);
+});
+
+test('les descendants textuels du bloc A gardent un plancher de 0,7 rem', async () => {
+  const sources = await Promise.all([
+    'ContextBudget', 'ContextComparison', 'InterfaceContinuum',
+    'ResponseWorkflowAgent', 'TokenPredictor', 'VerificationAudit',
+  ].map((name) => read(`src/components/presentation/visuals/a/${name}.astro`)));
+
+  for (const source of sources) {
+    for (const match of source.matchAll(/font-size:\s*(?:clamp\()?\s*(0?\.\d+)rem/g)) {
+      assert.ok(Number(match[1]) >= 0.7, `font-size ${match[1]}rem sous le plancher`);
+    }
+  }
+});
+
 test('registre statiquement toutes les clés et refuse les inconnues', async () => {
   const registry = await read('src/components/presentation/VisualRegistry.astro');
   for (const key of SLIDE_VISUAL_KEYS) assert.match(registry, new RegExp(`['"]?${key}['"]?\\s*:`));

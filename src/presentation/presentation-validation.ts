@@ -5,8 +5,8 @@ const allowedDownloadHosts = new Set(['claude.com', 'code.visualstudio.com']);
 const allowedOfficialHosts = new Set([
   'agentskills.io', 'anthropic.com', 'www.anthropic.com', 'claude.ai',
   'claude.com', 'code.claude.com', 'code.visualstudio.com',
-  'docs.anthropic.com', 'modelcontextprotocol.io', 'status.anthropic.com',
-  'support.anthropic.com', 'support.claude.com',
+  'modelcontextprotocol.io', 'platform.claude.com', 'status.claude.com',
+  'support.claude.com',
 ]);
 const visualKeys = new Set<string>(SLIDE_VISUAL_KEYS);
 

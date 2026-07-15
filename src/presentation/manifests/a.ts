@@ -6,7 +6,7 @@ const slide = (value: PresentationSlide) => value;
 const claudeOverview = externalLink(
   'official',
   'Présentation de Claude et de ses capacités',
-  'https://docs.anthropic.com/en/docs/welcome',
+  'https://platform.claude.com/docs/en/intro',
 );
 const usageLimits = externalLink(
   'official',
@@ -16,7 +16,7 @@ const usageLimits = externalLink(
 const agentsGuide = externalLink(
   'official',
   'Building effective agents',
-  'https://www.anthropic.com/research/building-effective-agents',
+  'https://www.anthropic.com/engineering/building-effective-agents',
 );
 const codeOverview = externalLink(
   'official',
@@ -26,7 +26,7 @@ const codeOverview = externalLink(
 const artifactsGuide = externalLink(
   'official',
   'Artifacts — Claude Help Center',
-  'https://support.anthropic.com/en/articles/9487310-what-are-artifacts-and-how-do-i-use-them',
+  'https://support.claude.com/en/articles/9487310-what-are-artifacts-and-how-do-i-use-them',
 );
 const coworkGuide = externalLink(
   'official',
@@ -41,12 +41,12 @@ const planGuide = externalLink(
 const apiPricing = externalLink(
   'official',
   "Tarification de l'API Claude",
-  'https://docs.anthropic.com/en/docs/about-claude/pricing',
+  'https://platform.claude.com/docs/en/about-claude/pricing',
 );
 const hallucinationGuide = externalLink(
   'official',
   'Réduire les hallucinations',
-  'https://docs.anthropic.com/en/docs/test-and-evaluate/strengthen-guardrails/reduce-hallucinations',
+  'https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations',
 );
 const transparencyGuide = externalLink(
   'official',
