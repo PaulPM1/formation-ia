@@ -141,7 +141,7 @@ const windowsExpected = commands.find((item) => /Windows/i.test(item.shell))?.ex
   .triptych__workspace g text { font: 800 15px var(--font-display); }
   .triptych__workspace .triptych__pane-title { font: 760 14px var(--font-display); }
   .triptych__context-labels { display: grid; gap: .5rem; }
-  .triptych__shared, .triptych__destination { display: grid; gap: .18rem; margin: 0; padding-inline-start: .65rem; border-inline-start: .3rem solid var(--family-accent); font: 750 .72rem/1.1 var(--display-font); overflow-wrap: anywhere; }
+  .triptych__shared, .triptych__destination { display: grid; gap: .18rem; margin: 0; padding-inline-start: .65rem; border-inline-start: .3rem solid var(--family-accent); font: 750 var(--b-font-body)/1.1 var(--font-display); overflow-wrap: anywhere; }
   .triptych__destination { border-color: #ed6a46; }
   .triptych__shared span, .triptych__destination span { color: var(--presentation-muted); font: var(--b-font-meta) var(--font-mono); text-transform: uppercase; }
   .triptych__panes { display: grid; grid-template-columns: minmax(7rem, .42fr) 1fr; gap: .55rem; }

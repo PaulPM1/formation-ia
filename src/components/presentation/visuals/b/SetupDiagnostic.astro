@@ -22,18 +22,11 @@ const graph = ['Compte', 'Surface', 'Fonctions', 'Test', 'Repli'];
 
 <SceneFrame title={slide.claim} description={slide.accessibleDescription} visualKey={slide.visual.key} class="setup-diagnostic">
   <div class="setup" data-setup-diagnostic data-variant={variant} data-enhanced="false">
-    <svg class="setup__route" viewBox="0 0 900 92" role="img" aria-labelledby={`${slide.id}-route-title ${slide.id}-route-desc`}>
-      <title id={`${slide.id}-route-title`}>Chaîne de diagnostic de l’atelier</title>
-      <desc id={`${slide.id}-route-desc`}>Le diagnostic suit toujours le compte, la surface, les fonctionnalités, le test observable et le chemin de repli.</desc>
-      <path d="M70 46 H830" />
+    <ol class="setup__route" aria-label="Chaîne de diagnostic : compte, surface, fonctionnalités, test observable et chemin de repli">
       {graph.map((name, index) => (
-        <g transform={`translate(${70 + index * 190} 46)`}>
-          <circle r="19" />
-          <text y="4" text-anchor="middle">{index + 1}</text>
-          <text class="setup__route-label" y="38" text-anchor="middle">{name}</text>
-        </g>
+        <li><span>{index + 1}</span><strong class="setup__route-label">{name}</strong></li>
       ))}
-    </svg>
+    </ol>
 
     {variant === 'layers' && (
       <section class="setup__layers" aria-label="Couches de setup">
@@ -110,13 +103,12 @@ const graph = ['Compte', 'Surface', 'Fonctions', 'Test', 'Repli'];
 
 <style>
   .setup { display: grid; gap: .3rem; align-content: center; min-block-size: 0; }
-  .setup__route { inline-size: 100%; max-block-size: 3rem; overflow: visible; }
-  .setup__route path { fill: none; stroke: var(--presentation-ink); stroke-width: 3; }
-  .setup__route circle { fill: var(--presentation-surface); stroke: var(--presentation-ink); stroke-width: 3; }
-  .setup__route g:nth-of-type(4) circle { fill: var(--family-accent); }
-  /* Exception : texte SVG dimensionné dans le viewBox, pas dans le flux HTML. */
-  .setup__route text { fill: var(--presentation-ink); font: 700 12px var(--font-mono); }
-  .setup__route .setup__route-label { font: 720 14px var(--font-display); }
+  .setup__route { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); inline-size: 100%; margin: 0; padding: 0; list-style: none; }
+  .setup__route::before { content: ''; position: absolute; z-index: 0; inset-block-start: .68rem; inset-inline: 10%; block-size: 2px; background: var(--presentation-ink); }
+  .setup__route li { position: relative; display: grid; gap: .08rem; justify-items: center; min-inline-size: 0; }
+  .setup__route li > span { position: relative; z-index: 1; display: grid; place-items: center; inline-size: 1.4rem; aspect-ratio: 1; border: 2px solid var(--presentation-ink); border-radius: 50%; background: var(--presentation-surface); font: 700 var(--b-font-meta) var(--font-mono); }
+  .setup__route li:nth-child(4) > span { background: var(--family-accent); }
+  .setup__route-label { min-inline-size: 0; font: 720 var(--b-font-control) var(--font-display); overflow-wrap: anywhere; text-align: center; }
   .setup__layers { display: grid; grid-template-columns: repeat(4, 1fr); border-block: 1px solid var(--presentation-line); }
   .setup__layers article { display: grid; grid-template-columns: auto 1fr; gap: .18rem .4rem; padding: .42rem; border-inline-start: 1px solid var(--presentation-line); }
   .setup__layers article:first-child { border-inline-start: 0; }
@@ -167,7 +159,6 @@ const graph = ['Compte', 'Surface', 'Fonctions', 'Test', 'Repli'];
   [data-setup-panel][hidden] { display: none !important; }
   input:focus-visible + span { outline: .2rem solid var(--presentation-focus); outline-offset: .18rem; }
   @media (max-width: 46rem) {
-    .setup__route-label { display: none; }
     .setup__layers { grid-template-columns: 1fr 1fr; }
     .setup__layers article:nth-child(3) { border-inline-start: 0; }
     .setup__checklist ol, .setup__test, .setup__platforms, .setup__fallback { grid-template-columns: 1fr; }

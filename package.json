@@ -7,6 +7,7 @@
     "dev": "astro dev",
     "build": "npm run content:check && astro build",
     "preview": "astro preview",
+    "qa:block-b": "node scripts/qa-block-b.mjs",
     "content:check": "tsx scripts/check-content.ts",
     "test": "tsx --test tests/**/*.test.ts"
   },
@@ -16,6 +17,7 @@
     "gray-matter": "^4.0.3"
   },
   "devDependencies": {
+    "playwright": "^1.61.1",
     "tsx": "^4.23.1",
     "typescript": "^7.0.2"
   },

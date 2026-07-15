@@ -357,6 +357,7 @@ test('le bloc B impose un plancher typographique lisible au vidéoprojecteur', a
     source: await read(`src/components/presentation/visuals/b/${name}.astro`),
   })));
   const presentation = await read('src/styles/presentation.css');
+  const global = await read('src/styles/global.css');
   const familyBStart = presentation.indexOf('.presentation-stage[data-family="b"]');
   const familyB = presentation.slice(
     familyBStart,
@@ -383,6 +384,16 @@ test('le bloc B impose un plancher typographique lisible au vidéoprojecteur', a
   assert.match(familyB, /--b-font-body:\s*0\.80rem/);
 
   const source = Object.fromEntries(components.map((component) => [component.name, component.source]));
+  const definedFontTokens = new Set(
+    Array.from(`${global}\n${presentation}`.matchAll(/(--[\w-]+)\s*:/g), (match) => match[1]),
+  );
+  for (const { name, source: component } of components) {
+    for (const declaration of component.matchAll(/\bfont\s*:\s*([^;}]+)/g)) {
+      for (const token of declaration[1].matchAll(/var\((--[\w-]+)\)/g)) {
+        assert.ok(definedFontTokens.has(token[1]), `${name}: token de font inconnu ${token[1]}`);
+      }
+    }
+  }
   assert.match(familyB, /\.mission-board__steps li\s*{[^}]*font-size:\s*var\(--b-font-body\)/s);
   assert.match(familyB, /\.checkpoint-scene__checklist li\s*{[^}]*font-size:\s*var\(--b-font-body\)/s);
   assert.match(source.ArtifactTestLoop, /\.artifact__stage-buttons button\s*{[^}]*var\(--b-font-control\)/s);
@@ -396,4 +407,35 @@ test('le bloc B impose un plancher typographique lisible au vidéoprojecteur', a
       assert.match(match[1], allowedSvgPxSelectors, `${name}: les tailles px sont réservées au texte SVG`);
     }
   }
+});
+
+test('Prompt, Setup et Triptyque restent intrinsèquement fluides', async () => {
+  const [prompt, setup, triptych] = await Promise.all([
+    read('src/components/presentation/visuals/b/PromptBuilder.astro'),
+    read('src/components/presentation/visuals/b/SetupDiagnostic.astro'),
+    read('src/components/presentation/visuals/b/WorkspaceTriptych.astro'),
+  ]);
+
+  assert.match(prompt, /data-variant='blocks'[^}]*\.prompt__construction[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s);
+  assert.match(prompt, /data-variant='builder'[^}]*\.prompt__construction[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s);
+  assert.match(prompt, /\.prompt__blocks\s*{[^}]*repeat\(4,\s*minmax\(0,\s*1fr\)\)/s);
+  assert.match(prompt, /\.prompt__blocks button\s*{[^}]*min-inline-size:\s*0/s);
+
+  assert.match(setup, /<ol class="setup__route"/);
+  assert.match(setup, /class="setup__route-label"/);
+  assert.doesNotMatch(setup, /\.setup__route-label\s*{[^}]*display:\s*none/s);
+
+  assert.doesNotMatch(triptych, /--display-font/);
+  assert.match(triptych, /\.triptych__shared, \.triptych__destination\s*{[^}]*var\(--font-display\)/s);
+});
+
+test('le sweep QA B contrôle les descendants calculés et les cinq labels Setup', async () => {
+  const qa = await read('scripts/qa-block-b.mjs').catch(() => '');
+  assert.match(qa, /getComputedStyle/);
+  assert.match(qa, /getBoundingClientRect/);
+  assert.match(qa, /scrollWidth/);
+  assert.match(qa, /fontSize/);
+  assert.match(qa, /overflowX/);
+  assert.match(qa, /setup__route-label/);
+  assert.match(qa, /Compte.*Surface.*Fonctions.*Test.*Repli/s);
 });

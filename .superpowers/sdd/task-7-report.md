@@ -101,3 +101,20 @@
   - 33/33 routes à 1280×720 sans overflow horizontal ou vertical sur `.presentation-visual`, `.scene-frame__content` et leurs enfants rendus ;
   - 33/33 routes à 390×844 sans overflow horizontal sur les mêmes surfaces, y compris `b1-builder`, `b1-four-blocks`, `b2-mission` et toutes les missions ;
   - la barre `.presentation-controls` du shell conserve volontairement son propre défilement horizontal sticky à 390 px ; cette navigation globale, identique hors bloc B, ne provient pas des scènes Task 7.
+
+## Fix pass 4 — audit des descendants et labels Setup
+
+- Root cause Prompt : en l’absence du blockquote propre au comparatif, les variantes `blocks` et `builder` s’auto-plaçaient dans la petite première colonne. Elles utilisent désormais une colonne pleine `minmax(0, 1fr)` ; les quatre pistes et leurs boutons peuvent rétrécir sans dépasser, avec les mêmes tailles de police.
+- Root cause Setup mobile : une media query masquait `.setup__route-label`. La chaîne est maintenant un `<ol>` HTML/CSS de cinq étapes ; Compte, Surface, Fonctions, Test et Repli conservent chacun numéro et nom lisible, sans état `display:none` ni dimension nulle.
+- Root cause Triptyque : `var(--display-font)` n’existait pas et invalidait le raccourci `font`. Il est remplacé par `var(--font-display)` ; un test vérifie désormais tous les tokens utilisés dans les raccourcis `font` des six composants B.
+- Les connecteurs Setup et P.A.C.T.E. sont portés par leur liste plutôt que par des pseudo-éléments sortant de chaque item ; ils n’augmentent plus le `scrollWidth` de leurs descendants.
+
+### QA calculée reproductible
+
+- `npm run qa:block-b` lance Chrome headless sur les 33 routes à 1280×720 et 390×844.
+- Pour chaque descendant HTML visible et non masqué de `.presentation-visual`, le script vérifie les tailles calculées, le plancher de police, `scrollWidth/clientWidth`, `scrollHeight/clientHeight` sur desktop et le clipping par tout ancêtre `overflow:hidden|clip`.
+- Les conteneurs qui débordent ne sont tolérés que s’ils sont explicitement scrollables et accessibles par focus ou nom accessible.
+- Le script exige en plus les cinq labels Setup visibles et nommés sur chaque route concernée.
+- Résultat final : 33/33 routes desktop et 33/33 routes mobile, sans texte sous le plancher, overflow descendant ni clipping.
+- Vérification fraîche : `npm test` — 58/58 sous-tests réussis ; `npm run build` — contenu valide et 104 pages générées ; `git diff --check` propre.
+- Le correctif reste limité aux composants B, à leur QA et au rapport Task 7 ; aucun fichier du bloc C n’est modifié.

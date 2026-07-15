@@ -115,9 +115,9 @@ const reported = Array.isArray(data.reported) ? data.reported.map(String) : [];
   .pacte__responsibilities h3 { margin: 0; font: 750 .9rem var(--font-display); }
   .pacte__responsibilities ul { margin: .2rem 0 0; padding-inline-start: .9rem; font-size: var(--b-font-body); }
   .pacte__letters, .pacte__timeline ol, .pacte__check ol { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
-  .pacte__letters { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .pacte__letters { position: relative; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .pacte__letters::before { content: ''; position: absolute; z-index: 0; inset-block-start: 1rem; inset-inline: 1.1rem; block-size: .25rem; background: var(--presentation-ink); }
   .pacte__letters li { position: relative; display: grid; gap: .18rem; align-content: start; min-block-size: 0; padding-inline: .14rem; }
-  .pacte__letters li:not(:last-child)::before { content: ''; position: absolute; z-index: 0; inset-block-start: 1rem; inset-inline-start: 2rem; inset-inline-end: -1rem; block-size: .25rem; background: var(--presentation-ink); }
   .pacte__letters li > span { position: relative; z-index: 1; display: grid; place-items: center; align-self: start; inline-size: 2.2rem; aspect-ratio: 1; border: 3px solid var(--presentation-ink); border-radius: 50%; background: var(--family-accent); font: 800 .9rem var(--font-display); }
   .pacte__letters div { padding-block: .1rem .25rem; border-block-start: 1px solid var(--presentation-line); }
   .pacte__letters strong { font: 750 var(--b-font-body) var(--font-display); }
@@ -154,8 +154,8 @@ const reported = Array.isArray(data.reported) ? data.reported.map(String) : [];
     .pacte__map { grid-template-columns: 1fr; }
     .pacte__map svg { max-block-size: 11rem; }
     .pacte__letters { grid-template-columns: 1fr; }
+    .pacte__letters::before { inset-block: 2rem .25rem; inset-inline-start: 1.05rem; inset-inline-end: auto; inline-size: .25rem; block-size: auto; }
     .pacte__letters li { grid-template-columns: 2.35rem 1fr; }
-    .pacte__letters li:not(:last-child)::before { inset-block-start: 2rem; inset-block-end: -.25rem; inset-inline-start: 1.05rem; inset-inline-end: auto; inline-size: .25rem; block-size: auto; }
   }
   @media (prefers-reduced-motion: reduce) { .pacte * { transition: none !important; animation: none !important; } }
 </style>
