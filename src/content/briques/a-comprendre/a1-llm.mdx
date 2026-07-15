@@ -9,52 +9,106 @@ type: concept
 platforms:
   - commun
 prerequisites: []
-status: a-rediger
+status: a-relire
 owner: a-attribuer
-learningObjective: null
-expectedOutcome: null
+learningObjective: "Expliquer simplement comment un LLM produit une réponse et nommer deux de ses limites."
+expectedOutcome: "Le participant formule une définition en trois phrases qui mentionne prédiction, contexte et vérification."
 ---
 
 ## Cap
 
-{/* Renseigner l’objectif, les prérequis, la durée et le résultat attendu. */}
+**Objectif :** comprendre ce qui se passe derrière une réponse de Claude sans entrer dans les mathématiques.
+
+- Durée cible : 10 minutes.
+- Prérequis : aucun.
+- Résultat attendu : vous savez expliquer pourquoi une réponse peut être fluide sans être forcément vraie.
 
 ## Concept durable
 
-{/* Présenter la notion indépendamment d’un outil ou d’une interface particulière. */}
+Un **LLM** (*Large Language Model*, ou grand modèle de langage) est un système entraîné sur beaucoup de textes. Il apprend des régularités : quels fragments de texte ont tendance à apparaître ensemble, dans quel ordre et dans quel contexte.
+
+Quand vous écrivez une demande, le modèle découpe le texte en **tokens**. Un token est un petit fragment : un mot court, une partie de mot, un signe de ponctuation ou quelques caractères. Il calcule ensuite le fragment le plus plausible, l'ajoute à la réponse et recommence. La réponse se construit donc pas à pas.
+
+Trois conséquences sont essentielles :
+
+1. **Il génère, il ne récite pas une fiche.** Un LLM n'est pas une base de données qui retrouve toujours une ligne exacte.
+2. **Le contexte guide la réponse.** Votre demande, les messages précédents et les documents fournis constituent son espace de travail du moment.
+3. **Une phrase plausible peut être fausse.** Le modèle optimise la cohérence de la suite, pas la vérité du monde.
+
+Le mot « intelligence » ne signifie pas qu'il comprend, ressent ou veut quelque chose comme un humain. Pour travailler efficacement avec lui, observez ses capacités réelles : reformuler, comparer, synthétiser, produire des variantes et raisonner à partir du contexte fourni.
 
 ## Pratique avec Claude
 
-{/* Préparer la démonstration ou la manipulation guidée. */}
+Dans Claude Chat, envoyez successivement :
+
+```text
+Explique ce qu'est un LLM à un enfant de 10 ans, en 4 phrases maximum.
+```
+
+Puis :
+
+```text
+Explique maintenant la même notion à un adulte non technique.
+Mentionne les tokens, la prédiction et une limite. Reste sous 120 mots.
+```
+
+Enfin :
+
+```text
+Dans ta réponse précédente, sépare ce qui est une analogie de ce qui décrit
+réellement le mécanisme.
+```
+
+Observez ce qui change lorsque le public, les contraintes et le vocabulaire attendu sont précisés.
 
 ## Mission commune
 
-{/* Définir la consigne commune et sa progression. */}
+1. Choisissez une notion que vous connaissez bien : votre métier, une règle de jeu ou une recette.
+2. Demandez à Claude de l'expliquer à un débutant en cinq phrases.
+3. Repérez une phrase exacte, une phrase simplifiée et une phrase qui demanderait une vérification.
+4. Réécrivez la consigne pour améliorer la réponse.
+
+**Critère de réussite :** votre deuxième consigne précise au moins le public, le niveau de détail et la forme attendue.
 
 ## Livrable
 
-{/* Décrire la preuve concrète produite par le participant. */}
+Conservez :
+
+- votre définition personnelle d'un LLM en trois phrases ;
+- la première et la deuxième consigne ;
+- une limite à garder en tête lorsque vous utiliserez Claude.
 
 ## Notes formateur
 
-{/* Préparer le déroulé, les messages essentiels, les pièges et la transition. */}
+- **0–2 min :** faire compléter oralement « Claude est… » sans corriger immédiatement.
+- **2–5 min :** dessiner la boucle « contexte → prochain token → réponse ».
+- **5–8 min :** réaliser les trois prompts et comparer les sorties.
+- **8–10 min :** faire formuler la définition par deux participants.
+
+Message essentiel : **la fluidité est une capacité ; la vérité doit encore être établie.** Éviter les analogies du cerveau ou de la personne omnisciente. Transition : si le modèle produit du texte, qu'est-ce qui lui permet aussi d'agir ?
 
 ## Défis avancés
 
-{/* Ajouter uniquement les extensions destinées aux participants plus rapides. */}
+- Donnez à Claude deux contextes contradictoires et demandez-lui d'identifier le conflit avant de répondre.
+- Faites expliquer la notion en 30, 100 puis 300 mots. Comparez ce que chaque limite force à conserver ou à supprimer.
 
 ## Variantes
 
-{/* Prévoir les variantes utiles selon les cas d’usage. */}
+- **Groupe métier :** utilisez un concept propre au secteur des participants.
+- **Groupe très débutant :** remplacez « token » par « fragment de texte », puis introduisez le terme exact.
+- **Sans accès à Claude :** le formateur montre deux réponses préparées et le groupe les compare.
 
 ## Dépannage
 
-{/* Lister les blocages prévisibles et leur résolution. */}
+- **La réponse est trop longue :** ajoutez une limite de mots et un nombre exact de points.
+- **Claude utilise encore du jargon :** demandez-lui de définir chaque terme technique entre parenthèses.
+- **Les deux réponses se ressemblent :** rendez les publics plus contrastés et imposez un exemple différent.
 
 ## Ressources
 
-{/* Ajouter les liens, commandes et références nécessaires. */}
+- [Présentation de Claude et de ses capacités — Anthropic](https://docs.anthropic.com/en/docs/welcome)
+- [Comprendre les limites d'usage et de longueur — Claude Help Center](https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work)
 
 ## Ouverture
 
-{/* Indiquer le prolongement naturel vers une notion plus avancée. */}
+Un LLM répond à partir de son contexte. La brique suivante montre ce qui change lorsqu'on lui ajoute des outils, des étapes et une capacité d'action : on passe du modèle à l'agent.

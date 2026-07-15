@@ -8,53 +8,110 @@ durationMinutes: 15
 type: concept
 platforms:
   - commun
-prerequisites: []
-status: a-rediger
+prerequisites:
+  - a1
+status: a-relire
 owner: a-attribuer
-learningObjective: null
-expectedOutcome: null
+learningObjective: "Distinguer une réponse de modèle, un workflow déterministe et une boucle agentique."
+expectedOutcome: "Le participant classe trois cas d'usage et justifie quand une action nécessite un agent et un contrôle humain."
 ---
 
 ## Cap
 
-{/* Renseigner l’objectif, les prérequis, la durée et le résultat attendu. */}
+**Objectif :** savoir ce que l'on délègue lorsque Claude ne se contente plus de répondre, mais utilise des outils et agit sur un environnement.
+
+- Durée cible : 15 minutes.
+- Prérequis : A1, « C'est quoi un LLM ».
+- Résultat attendu : vous distinguez réponse, workflow et agent, puis choisissez le niveau d'autonomie adapté.
 
 ## Concept durable
 
-{/* Présenter la notion indépendamment d’un outil ou d’une interface particulière. */}
+Un **LLM** reçoit un contexte et génère une réponse. Un **agent** utilise un modèle comme moteur de décision dans une boucle :
+
+```text
+Objectif → observation → choix d'une action → utilisation d'un outil
+        → observation du résultat → correction ou arrêt
+```
+
+Entre les deux existe le **workflow** : une suite d'étapes décidée à l'avance. Par exemple, « extraire les dates, les trier, puis produire un tableau » est un workflow. L'ordre est connu avant le départ.
+
+Un agent devient utile lorsque le chemin exact dépend de ce qu'il découvre : il inspecte un dossier, choisit les fichiers pertinents, tente une modification, lance un test et adapte la suite au résultat. Ses outils peuvent lire un fichier, appeler une API, chercher sur le Web ou exécuter une commande.
+
+Plus le système peut agir, plus il faut préciser :
+
+- son **objectif** et son critère d'arrêt ;
+- son **périmètre** : dossiers, outils et données autorisés ;
+- les actions qui nécessitent une **confirmation** ;
+- la manière de **vérifier** le résultat et de revenir en arrière.
+
+L'autonomie n'est pas « tout ou rien ». On peut demander un plan sans action, autoriser seulement la lecture, valider chaque modification ou déléguer une tâche bornée et réversible.
 
 ## Pratique avec Claude
 
-{/* Préparer la démonstration ou la manipulation guidée. */}
+Comparez ces deux demandes :
+
+```text
+Donne-moi une méthode en 5 étapes pour classer les fichiers d'un dossier.
+Ne touche à aucun fichier.
+```
+
+```text
+Inspecte les copies de fichiers dans le dossier Atelier. Propose un classement,
+attends ma validation, puis déplace uniquement les fichiers approuvés.
+Ne supprime rien et termine par la liste des changements.
+```
+
+Dans la première, Claude produit du texte. Dans la seconde, un environnement outillé pourrait observer, proposer, agir et rendre compte. Soulignez les mots qui bornent l'action.
 
 ## Mission commune
 
-{/* Définir la consigne commune et sa progression. */}
+Classez chaque situation dans la catégorie **réponse**, **workflow** ou **agent** :
+
+1. Résumer un article fourni.
+2. Chaque vendredi, récupérer trois sources autorisées, comparer les nouveautés et produire une note.
+3. Convertir une liste de contacts en tableau selon cinq colonnes définies.
+4. Explorer un projet, trouver la cause d'un test en échec, proposer une correction puis relancer le test.
+
+Pour chaque cas, indiquez : l'entrée, l'action éventuelle, le contrôle humain et le critère de fin.
+
+**Critère de réussite :** votre classement s'appuie sur la variabilité du chemin et non sur la longueur de la tâche.
 
 ## Livrable
 
-{/* Décrire la preuve concrète produite par le participant. */}
+Un tableau de quatre lignes comportant : `situation`, `type`, `outil ou action`, `validation humaine`, `preuve de fin`.
 
 ## Notes formateur
 
-{/* Préparer le déroulé, les messages essentiels, les pièges et la transition. */}
+- **0–3 min :** rappeler qu'un modèle génère ; faire nommer des outils possibles.
+- **3–7 min :** tracer la boucle agentique et comparer avec une recette fixe.
+- **7–12 min :** faire classer les quatre situations en binômes.
+- **12–15 min :** corriger, puis insister sur le périmètre et la preuve de fin.
+
+Ne pas définir l'agent par « une IA plus puissante ». La différence vient de la boucle, des outils et de l'autonomie accordée. Transition : les interfaces Claude donnent accès à différents degrés de cette boucle.
 
 ## Défis avancés
 
-{/* Ajouter uniquement les extensions destinées aux participants plus rapides. */}
+- Transformez un cas agentique en workflow plus sûr en fixant les étapes à l'avance.
+- Ajoutez trois niveaux d'autorisation : lecture, écriture réversible, action externe.
+- Identifiez une tâche où l'agent coûte plus cher qu'une procédure classique sans apporter de valeur.
 
 ## Variantes
 
-{/* Prévoir les variantes utiles selon les cas d’usage. */}
+- **Administratif :** réponse à un email, publipostage, traitement d'une boîte partagée.
+- **Pédagogie :** expliquer une notion, corriger selon une grille, adapter un parcours.
+- **Développement :** expliquer une fonction, lancer une suite de tests, diagnostiquer puis corriger.
 
 ## Dépannage
 
-{/* Lister les blocages prévisibles et leur résolution. */}
+- **Tout est classé « agent » :** demandez si l'ordre des étapes est déjà connu. Si oui, un workflow suffit souvent.
+- **Confusion avec l'automatisation :** une tâche planifiée peut lancer un workflow fixe ou un agent ; le calendrier ne détermine pas le type.
+- **Confusion avec le chatbot :** une interface de chat peut piloter un agent si elle lui donne des outils.
 
 ## Ressources
 
-{/* Ajouter les liens, commandes et références nécessaires. */}
+- [Building effective agents — Anthropic](https://www.anthropic.com/research/building-effective-agents)
+- [Présentation de Claude Code — Anthropic](https://code.claude.com/docs/en/overview)
 
 ## Ouverture
 
-{/* Indiquer le prolongement naturel vers une notion plus avancée. */}
+Nous utiliserons plusieurs interfaces qui exposent progressivement plus de contexte et d'actions : Chat, Artifacts, Cowork et Claude Code.
