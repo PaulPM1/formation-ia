@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import test from 'node:test';
 
 import { A_DECKS } from '../src/presentation/manifests/a';
@@ -65,17 +65,50 @@ test('les missions denses du bloc A compactent les énoncés au lieu de les fair
   assert.match(css, /\.mission-board--statements \.mission-board__statements/);
 });
 
-test('les descendants textuels du bloc A gardent un plancher de 0,7 rem', async () => {
-  const sources = await Promise.all([
-    'ContextBudget', 'ContextComparison', 'InterfaceContinuum',
-    'ResponseWorkflowAgent', 'TokenPredictor', 'VerificationAudit',
-  ].map((name) => read(`src/components/presentation/visuals/a/${name}.astro`)));
+test('la mission A5 sépare les affirmations de leur correction native', async () => {
+  const mission = await read('src/components/presentation/scenes/MissionBoard.astro');
 
-  for (const source of sources) {
+  assert.match(mission, /<details class="mission-board__correction">/);
+  assert.match(mission, /<summary>Afficher la correction<\/summary>/);
+  assert.match(mission, /mission-board__correction-list/);
+  const initialStatements = mission
+    .slice(mission.indexOf('<div class="mission-board__statements">'))
+    .split('<details class="mission-board__correction">')[0];
+  assert.doesNotMatch(
+    initialStatements,
+    /statement\.category/,
+  );
+});
+
+test('les tokens typographiques des slides gardent un plancher de 0,75 rem', async () => {
+  const visualRoot = new URL('../src/components/presentation/visuals/', import.meta.url);
+  const visualFiles = (await Promise.all((await readdir(visualRoot, { withFileTypes: true }))
+    .filter((entry) => entry.isDirectory())
+    .map(async (family) => (await readdir(new URL(`${family.name}/`, visualRoot)))
+      .filter((name) => name.endsWith('.astro'))
+      .map((name) => `src/components/presentation/visuals/${family.name}/${name}`))))
+    .flat();
+  const files = ['src/styles/presentation.css', ...visualFiles];
+  const sources = await Promise.all(files.map(async (path) => ({ path, source: await read(path) })));
+
+  for (const { path, source } of sources) {
     for (const match of source.matchAll(/font-size:\s*(?:clamp\()?\s*(0?\.\d+)rem/g)) {
-      assert.ok(Number(match[1]) >= 0.7, `font-size ${match[1]}rem sous le plancher`);
+      assert.ok(Number(match[1]) >= 0.75, `${path}: font-size ${match[1]}rem sous le plancher`);
     }
   }
+});
+
+test('la QA durable mesure les textes HTML et SVG à 12 px sur 76 routes et au zoom 200 %', async () => {
+  const [qa, packageJson] = await Promise.all([
+    read('scripts/qa-font-floor.mjs'),
+    read('package.json'),
+  ]);
+
+  assert.match(packageJson, /"qa:font-floor":\s*"node scripts\/qa-font-floor\.mjs"/);
+  assert.match(qa, /const FONT_FLOOR_PX = 11\.99/);
+  assert.match(qa, /querySelectorAll\(['"]svg text['"]\)/);
+  assert.match(qa, /deviceScaleFactor:\s*2/);
+  assert.match(qa, /routes\.length[^\n]*76|76[^\n]*routes\.length/);
 });
 
 test('registre statiquement toutes les clés et refuse les inconnues', async () => {
@@ -421,16 +454,16 @@ test('le bloc B impose un plancher typographique lisible au vidéoprojecteur', a
     return declarations.flatMap((declaration) => Array.from(
       declaration[1].matchAll(/(?<![-\w])(0?\.\d+|\d+(?:\.\d+)?)rem\b/g),
     )
-      .filter((match) => Number(match[1]) < 0.7)
+      .filter((match) => Number(match[1]) < 0.75)
       .map((match) => `${name}:${index + 1}:${match[0]}:${line.trim()}`));
   });
 
   assert.deepEqual([
     ...undersized('presentation.css#family-b', familyB),
     ...components.flatMap(({ name, source }) => undersized(name, source)),
-  ], [], 'aucun texte HTML visible du bloc B ne doit descendre sous .70rem');
+  ], [], 'aucun texte HTML visible du bloc B ne doit descendre sous .75rem');
 
-  assert.match(familyB, /--b-font-meta:\s*0\.70rem/);
+  assert.match(familyB, /--b-font-meta:\s*0\.75rem/);
   assert.match(familyB, /--b-font-control:\s*0\.75rem/);
   assert.match(familyB, /--b-font-body:\s*0\.80rem/);
 

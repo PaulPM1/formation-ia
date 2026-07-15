@@ -9,6 +9,7 @@
     "preview": "astro preview",
     "qa:block-b": "node scripts/qa-block-b.mjs",
     "qa:block-c": "node scripts/qa-block-c.mjs",
+    "qa:font-floor": "node scripts/qa-font-floor.mjs",
     "content:check": "tsx scripts/check-content.ts",
     "presentation:check": "tsx scripts/check-presentation.ts",
     "test": "tsx --test tests/**/*.test.ts"

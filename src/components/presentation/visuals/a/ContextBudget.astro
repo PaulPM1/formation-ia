@@ -151,7 +151,7 @@ const initialSelection = calculateContextSelection(meter.length, meter.map((item
   .budget__tabs label { display: grid; grid-template-columns: auto 1fr; gap: 0.05rem 0.45rem; padding: 0.35rem 0.55rem; border-block-start: 0.22rem solid var(--presentation-line); }
   .budget__tabs label:has(input:checked) { border-color: var(--family-accent); background: color-mix(in srgb, var(--family-accent), transparent 84%); }
   .budget__tabs input { grid-row: 1 / 3; align-self: center; inline-size: 1rem; block-size: 1rem; accent-color: var(--presentation-ink); }
-  .budget__tabs span { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.7rem; }
+  .budget__tabs span { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.75rem; }
   .budget__tabs strong { font-size: 0.82rem; }
   .budget__layer-panels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.7rem; }
   [data-enhanced='true'] .budget__layer-panels { grid-template-columns: 1fr; }
@@ -159,7 +159,7 @@ const initialSelection = calculateContextSelection(meter.length, meter.map((item
   .budget__layer-panels h3, .budget__paths h3, .budget__mission h3 { margin: 0; font-family: var(--font-display); font-size: clamp(1rem, .85rem + .5vw, 1.35rem); }
   .budget__layer-panels dl { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin: 0; }
   .budget__layer-panels dl div { display: grid; gap: 0.1rem; }
-  .budget__layer-panels dt, .budget__paths small { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; }
+  .budget__layer-panels dt, .budget__paths small { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase; }
   .budget__layer-panels dd { margin: 0; font-size: 0.78rem; line-height: 1.2; }
   .budget__warning, .budget__relationship, .budget__factors, .budget__criterion { margin: 0; padding-inline-start: 0.7rem; border-inline-start: 0.28rem solid var(--family-accent); font-size: 0.78rem; font-weight: 680; }
 
@@ -170,23 +170,23 @@ const initialSelection = calculateContextSelection(meter.length, meter.map((item
   .budget__items input { inline-size: 1.15rem; block-size: 1.15rem; accent-color: var(--presentation-ink); }
   .budget__items label { display: grid; cursor: pointer; }
   .budget__items strong { font-size: 0.82rem; }
-  .budget__items label span { color: var(--presentation-muted); font-size: 0.7rem; line-height: 1.15; }
+  .budget__items label span { color: var(--presentation-muted); font-size: 0.75rem; line-height: 1.15; }
   .budget__items li:has(input:not(:checked)) label { opacity: .5; }
   .budget__count { display: grid; gap: .4rem; padding-inline-start: 1.2rem; border-inline-start: .35rem solid var(--family-accent); }
   .budget__count meter { inline-size: 100%; block-size: 1.4rem; accent-color: var(--family-accent); }
   .budget__count output { display: flex; gap: .5rem; align-items: baseline; }
   .budget__count output strong { font-family: var(--font-display); font-size: 2.6rem; line-height: .9; }
-  .budget__count output span { color: var(--presentation-muted); font-family: var(--font-mono); font-size: .7rem; }
+  .budget__count output span { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.75rem; }
   .budget__principle { display: flex; gap: .45rem; margin: .25rem 0 0; font-size: .78rem; font-weight: 680; }
 
   .budget__paths { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
   .budget__paths article { padding: .65rem .8rem; border-block-start: .3rem solid var(--family-accent); background: var(--presentation-surface); }
   .budget__paths header { display: flex; gap: .6rem; align-items: baseline; }
-  .budget__paths header span { color: var(--presentation-muted); font-family: var(--font-mono); font-size: .7rem; }
+  .budget__paths header span { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.75rem; }
   .budget__paths ol { display: grid; grid-template-columns: repeat(3, 1fr); gap: .55rem; margin: .55rem 0 0; padding: 0; list-style: none; }
   .budget__paths li { display: grid; gap: .15rem; position: relative; }
   .budget__paths li:not(:last-child)::after { position: absolute; inset-inline-end: -.35rem; content: '→'; color: var(--family-accent); }
-  .budget__paths strong { font-size: .7rem; line-height: 1.15; }
+  .budget__paths strong { font-size: 0.75rem; line-height: 1.15; }
   .budget__factors span { margin-inline-end: .7rem; color: var(--presentation-muted); font-family: var(--font-mono); }
 
   .budget__mission { grid-template-columns: minmax(13rem, .55fr) 1fr; column-gap: 1.4rem; }
@@ -195,8 +195,8 @@ const initialSelection = calculateContextSelection(meter.length, meter.map((item
   .budget__mission ol { display: grid; grid-template-columns: 1fr 1fr; gap: .35rem .8rem; margin: 0; padding: 0; list-style: none; }
   .budget__mission li { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: .45rem; padding: .35rem; border-block-start: 1px solid var(--presentation-line); }
   .budget__mission input { inline-size: 1.1rem; block-size: 1.1rem; accent-color: var(--presentation-ink); }
-  .budget__mission label { display: grid; grid-template-columns: 1.4rem 1fr; gap: .35rem; font-size: .72rem; font-weight: 680; line-height: 1.15; }
-  .budget__mission label span { color: var(--presentation-muted); font-family: var(--font-mono); font-size: .7rem; }
+  .budget__mission label { display: grid; grid-template-columns: 1.4rem 1fr; gap: .35rem; font-size: 0.75rem; font-weight: 680; line-height: 1.15; }
+  .budget__mission label span { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.75rem; }
   .budget__criterion { grid-column: 1 / -1; }
 
   [data-panel][hidden] { display: none !important; }

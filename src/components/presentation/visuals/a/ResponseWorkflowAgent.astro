@@ -152,7 +152,7 @@ const modePanels = modes.map((mode) => ({ ...mode, steps: mode.path.split(/\s*â†
   .rwa__lane input { inline-size: 1.1rem; block-size: 1.1rem; accent-color: var(--presentation-ink); }
   .rwa__shape { font-size: 1.25rem; font-weight: 800; }
   .rwa__lane strong { font-family: var(--font-display); font-size: clamp(0.9rem, 0.8rem + 0.25vw, 1.05rem); }
-  .rwa__lane small { grid-column: 4; color: var(--presentation-muted); font-size: 0.72rem; text-align: end; }
+  .rwa__lane small { grid-column: 4; color: var(--presentation-muted); font-size: 0.75rem; text-align: end; }
 
   .rwa__stage { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.55rem; }
   [data-enhanced='true'] .rwa__stage { display: block; }
@@ -213,8 +213,8 @@ const modePanels = modes.map((mode) => ({ ...mode, steps: mode.path.split(/\s*â†
     text-align: center;
   }
 
-  .rwa__path li span { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.7rem; }
-  .rwa__path li strong { font-size: clamp(0.7rem, 0.68rem + 0.17vw, 0.82rem); line-height: 1.1; }
+  .rwa__path li span { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.75rem; }
+  .rwa__path li strong { font-size: clamp(0.75rem, 0.75rem + 0.17vw, 0.82rem); line-height: 1.1; }
 
   .rwa__guardrails {
     display: grid;
@@ -228,12 +228,12 @@ const modePanels = modes.map((mode) => ({ ...mode, steps: mode.path.split(/\s*â†
     padding-block-start: 0.25rem;
     border-block-start: 1px solid var(--presentation-line);
     overflow: hidden;
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  .rwa__guardrails span { margin-inline-end: 0.45rem; font-family: var(--font-mono); font-size: 0.7rem; font-weight: 750; text-transform: uppercase; }
+  .rwa__guardrails span { margin-inline-end: 0.45rem; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 750; text-transform: uppercase; }
 
   @media (max-width: 52rem) {
     .rwa__lanes { grid-template-columns: 1fr; }
@@ -242,6 +242,6 @@ const modePanels = modes.map((mode) => ({ ...mode, steps: mode.path.split(/\s*â†
     .rwa__path svg { min-inline-size: 0; }
     .rwa__path ol { gap: 0.1rem; }
     .rwa__path li { min-block-size: 3.2rem; padding: 0.12rem; aspect-ratio: auto; }
-    .rwa__path li strong { font-size: 0.7rem; }
+    .rwa__path li strong { font-size: 0.75rem; }
   }
 </style>

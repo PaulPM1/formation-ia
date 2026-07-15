@@ -693,7 +693,7 @@ export const A_DECKS = [
           key: 'mission-board',
           data: {
             interaction: 'Ouvrir la mission A5.',
-            input: 'Réponse courte fictive : deux faits vérifiables, une inférence raisonnable, une affirmation sans source et une recommandation trop sûre.',
+            input: 'Réponse courte fictive à auditer avant toute décision.',
             exerciseNotice: 'Exemple pédagogique entièrement fictif.',
             statements: [
               { text: 'Dans le dossier fictif, 12 réponses ont été recueillies.', category: 'fait vérifiable', fictional: true },
@@ -717,7 +717,7 @@ export const A_DECKS = [
           notes: 'Partager une vérification et faire expliciter les incertitudes restantes dans la version corrigée.',
           transition: 'Ces réflexes accompagneront toutes les interfaces, surtout celles qui peuvent agir.',
         },
-        accessibleDescription: 'Un tableau de mission présente cinq affirmations fictives déjà classables puis impose couleur, contrôle, réécriture et preuve.',
+        accessibleDescription: 'Un tableau de mission présente cinq affirmations fictives à classer, puis une correction séparée, avant contrôle, réécriture et preuve.',
       }),
     ],
   },

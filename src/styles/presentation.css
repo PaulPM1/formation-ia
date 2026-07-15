@@ -197,7 +197,7 @@ a {
   margin: 0;
   color: var(--presentation-ink);
   font-family: var(--font-mono);
-  font-size: clamp(0.72rem, 0.68rem + 0.18vw, 0.88rem);
+  font-size: clamp(0.75rem, 0.75rem + 0.18vw, 0.88rem);
   font-weight: 720;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -288,7 +288,7 @@ a {
   margin-block-end: 0.35rem;
   color: color-mix(in srgb, var(--presentation-ink), var(--family-accent) 24%);
   font-family: var(--font-mono);
-  font-size: clamp(0.7rem, 0.66rem + 0.14vw, 0.82rem);
+  font-size: clamp(0.75rem, 0.75rem + 0.14vw, 0.82rem);
   font-weight: 720;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -370,7 +370,7 @@ a {
   content: counter(mission-step, decimal-leading-zero);
   color: var(--presentation-muted);
   font-family: var(--font-mono);
-  font-size: 0.78em;
+  font-size: 0.78rem;
 }
 
 .mission-board__outcome {
@@ -419,19 +419,71 @@ a {
   grid-row: 1 / 3;
   color: var(--presentation-muted);
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
 }
 
 .mission-board__statements strong,
 .mission-board__statements small {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   line-height: 1.08;
 }
 
-.mission-board__statements small {
-  color: color-mix(in srgb, var(--presentation-ink), var(--family-accent) 36%);
+.mission-board__correction {
+  margin-block-start: 0.35rem;
+  border-block-start: 1px solid var(--presentation-line);
+}
+
+.mission-board__correction summary {
+  min-block-size: 1.8rem;
+  padding-block: 0.3rem;
+  color: var(--presentation-ink);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 760;
+  cursor: pointer;
+}
+
+.mission-board__correction-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 0.65rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mission-board__correction-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.05rem 0.35rem;
+  padding-block: 0.12rem;
+  border-block-start: 1px solid var(--presentation-line);
+  font-size: 0.75rem;
+  line-height: 1.05;
+}
+
+.mission-board__correction-list span {
+  grid-column: 1 / -1;
+  color: var(--presentation-muted);
   font-family: var(--font-mono);
-  font-weight: 720;
+  white-space: nowrap;
+}
+
+.mission-board__correction-list p {
+  margin: 0;
+}
+
+.mission-board__correction-list strong {
+  color: color-mix(in srgb, var(--presentation-ink), var(--family-accent) 34%);
+  font-family: var(--font-mono);
+}
+
+.mission-board__statements dd:has(.mission-board__correction[open]) > ol {
+  display: none;
+}
+
+.mission-board__outcome:has(.mission-board__correction[open]) > div:not(.mission-board__statements) {
+  display: none;
 }
 
 /* Le bloc A introduit les concepts avec des missions riches. Elles restent
@@ -480,7 +532,7 @@ a {
 
 .presentation-stage[data-family="a"] .mission-board__outcome dt {
   margin-block-end: 0.08rem;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
 }
 
 .presentation-stage[data-family="a"] .mission-board__outcome ul {
@@ -590,25 +642,25 @@ a {
 /* Les claims du bloc B sont volontairement longs : les trois rôles ci-dessous
    gardent leur hiérarchie au vidéoprojecteur, sans retirer d’information. */
 .presentation-stage[data-family="b"] {
-  --b-font-meta: 0.70rem;
+  --b-font-meta: 0.75rem;
   --b-font-control: 0.75rem;
   --b-font-body: 0.80rem;
 }
 
 .presentation-stage[data-family="b"] .scene-frame__content {
-  padding-block: 0.45rem;
+  padding-block: 0.3rem;
 }
 
 .presentation-stage[data-family="b"] .presentation-visual figcaption {
   padding-block: 0.38rem;
-  font-size: 0.74rem;
+  font-size: 0.75rem;
   line-height: 1.2;
 }
 
 .presentation-stage[data-family="b"] .mission-board .scene-frame__content {
   grid-template-columns: minmax(0, 1.35fr) minmax(20rem, 0.65fr);
   gap: 0.25rem 0.7rem;
-  padding-block: 0.35rem;
+  padding-block: 0.2rem;
 }
 
 .presentation-stage[data-family="b"] .mission-board__header {
@@ -719,7 +771,7 @@ a {
 /* Le bloc C superpose système et preuve : le cadre se resserre pour que la
    relation centrale reste projetable sans défilement au format 16 / 9. */
 .presentation-stage[data-family="c"] {
-  --c-font-meta: 0.70rem;
+  --c-font-meta: 0.75rem;
   --c-font-control: 0.75rem;
   --c-font-body: 0.80rem;
 }
@@ -737,12 +789,12 @@ a {
 }
 
 .presentation-stage[data-family="c"] .scene-frame__content {
-  padding-block: 0.42rem;
+  padding-block: 0.2rem;
 }
 
 .presentation-stage[data-family="c"] .presentation-visual figcaption {
   padding-block: 0.36rem;
-  font-size: 0.74rem;
+  font-size: 0.75rem;
   line-height: 1.18;
 }
 
@@ -837,7 +889,7 @@ a {
   margin-inline-start: 0.35em;
   color: currentColor;
   font-family: var(--font-body);
-  font-size: 0.82em;
+  font-size: 0.82rem;
   text-decoration: none;
 }
 
@@ -1030,7 +1082,7 @@ dialog button,
     border: 0;
     background: transparent;
     backdrop-filter: none;
-    font-size: 0.72rem;
+    font-size: 0.75rem;
   }
 
   .presentation-site-nav a {
@@ -1175,6 +1227,18 @@ dialog button,
     display: block;
   }
 
+  .mission-board__correction summary {
+    display: none;
+  }
+
+  .mission-board__correction:not([open]) > :not(summary) {
+    display: grid;
+  }
+
+  .mission-board__statements dd > ol {
+    display: none;
+  }
+
   .presentation-stage {
     inline-size: auto;
     block-size: auto;
@@ -1208,7 +1272,7 @@ dialog button,
   .resource-rail a::after {
     content: " (" attr(href) ")";
     font-family: var(--font-mono);
-    font-size: 0.72em;
+    font-size: 0.75rem;
     font-weight: 400;
   }
 }
