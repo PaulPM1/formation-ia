@@ -8,61 +8,143 @@ durationMinutes: 20
 type: demonstration
 platforms:
   - commun
-prerequisites: []
-status: a-rediger
+prerequisites:
+  - a2
+  - c1
+status: a-relire
 owner: a-attribuer
-learningObjective: null
-expectedOutcome: null
+learningObjective: "Distinguer une API de MCP et appliquer une procédure sûre pour connecter, utiliser puis révoquer un serveur MCP."
+expectedOutcome: "Le participant cartographie une intégration et observe une requête en lecture seule avec outil, permission, résultat et révocation identifiés."
 ---
 
 ## Cap
 
-{/* Renseigner l’objectif, les prérequis, la durée et le résultat attendu. */}
+**Objectif :** comprendre comment Claude accède à un service externe sans confondre le service, son API et le protocole d'intégration.
+
+- Durée cible : 20 minutes.
+- Prérequis : A2 et C1.
+- Résultat attendu : vous expliquez le trajet d'une demande et savez limiter une connexion MCP.
+
+La démonstration utilise un serveur préparé et approuvé par le formateur, avec des données fictives et des droits de lecture seule. Aucun participant ne colle de clé ou jeton dans le chat.
 
 ## Concept durable
 
-{/* Présenter la notion indépendamment d’un outil ou d’une interface particulière. */}
+Une **API** est un contrat permettant à deux logiciels d'échanger : opérations disponibles, paramètres, authentification et format des réponses. Chaque service peut posséder sa propre API.
+
+Le **Model Context Protocol (MCP)** est un standard ouvert permettant à une application d'IA de découvrir et d'utiliser des capacités fournies par un serveur. Un serveur MCP peut lui-même appeler une API, lire une base de données ou exposer un outil local.
+
+```text
+Utilisateur → client Claude → serveur MCP → API ou ressource
+                                      ← résultat structuré
+```
+
+MCP évite de développer une intégration différente pour chaque combinaison de client et de service. Il ne rend pas la connexion sûre par magie. Il faut encore vérifier :
+
+- qui fournit le serveur et son code ;
+- quelles données et actions il expose ;
+- où s'exécute le serveur : localement ou à distance ;
+- comment il s'authentifie et stocke les autorisations ;
+- quelles permissions sont accordées ;
+- comment désactiver, retirer et auditer la connexion.
+
+Dans Claude Code, un serveur peut être personnel, partagé avec un projet ou géré par une organisation. Une configuration de projet provenant d'un dépôt inconnu doit être lue avant d'être approuvée.
 
 ## Pratique avec Claude
 
-{/* Préparer la démonstration ou la manipulation guidée. */}
+Le formateur configure à l'avance un serveur de démonstration nommé `catalogue-demo`, qui expose seulement la lecture de cinq produits fictifs.
+
+Dans Claude Code :
+
+```bash
+claude mcp list
+```
+
+Puis, dans la session interactive :
+
+```text
+/mcp
+```
+
+Avant toute requête, relevez le nom du serveur et ses outils. Demandez ensuite :
+
+```text
+Utilise uniquement catalogue-demo. Liste les produits fictifs dont le stock est
+inférieur à 5. Ne tente aucune écriture et indique l'outil utilisé.
+```
+
+Comparez le résultat avec le fichier source connu du formateur. Enfin, montrez comment désactiver ou retirer le serveur de démonstration selon son mode d'installation.
 
 ## Mission commune
 
-{/* Définir la consigne commune et sa progression. */}
+Sur papier ou avec le serveur de démonstration, produisez la fiche de connexion :
+
+1. besoin utilisateur ;
+2. client Claude ;
+3. serveur MCP et fournisseur ;
+4. ressource ou API en aval ;
+5. outils visibles ;
+6. permissions minimales ;
+7. donnée de test ;
+8. preuve de résultat ;
+9. procédure de révocation.
+
+**Critère de réussite :** une personne extérieure sait quelles données peuvent sortir, quelle action est possible et comment couper l'accès.
 
 ## Livrable
 
-{/* Décrire la preuve concrète produite par le participant. */}
+Un schéma du trajet de la demande, la capture expurgée de la liste d'outils, le résultat du test en lecture seule et la procédure de révocation. Aucun identifiant d'authentification ne figure dans le livrable.
 
 ## Notes formateur
 
-{/* Préparer le déroulé, les messages essentiels, les pièges et la transition. */}
+- Préparer et tester la connexion avant la session ; garder une vidéo ou des captures comme repli.
+- Commencer par l'inventaire des outils, pas par une requête en langage naturel.
+- Faire vérifier un résultat contre une source connue pour rappeler que connecté ne signifie pas exact.
+- Révoquer réellement la connexion de démonstration à la fin.
+
+Message essentiel : **une intégration augmente la portée de Claude et la surface de risque dans le même mouvement.** Transition : les hooks et tâches planifiées ajoutent ensuite la question du déclenchement.
 
 ## Défis avancés
 
-{/* Ajouter uniquement les extensions destinées aux participants plus rapides. */}
+- Comparez serveur local `stdio` et serveur distant HTTP : exécution, réseau, authentification et maintenance.
+- Définissez des permissions séparées pour lire, créer, modifier et supprimer.
+- Analysez un fichier `.mcp.json` fictif et repérez commande, arguments, variables d'environnement et portée projet.
 
 ## Variantes
 
-{/* Prévoir les variantes utiles selon les cas d’usage. */}
+- **Aucun serveur disponible :** utiliser le schéma et des captures préparées ; l'objectif est la compréhension du trajet et des permissions.
+- **Organisation équipée :** auditer un connecteur déjà approuvé sans modifier sa configuration.
+- **Public développeur :** ajouter un serveur local factice et inspecter les échanges structurés, toujours avec des données non sensibles.
 
 ## Dépannage
 
-{/* Lister les blocages prévisibles et leur résolution. */}
+- **Le serveur n'apparaît pas :** vérifier sa portée, relancer la session et consulter `claude mcp list` puis `/mcp`.
+- **Authentification requise :** utiliser le flux officiel, jamais un jeton collé dans une conversation ou committé dans `.mcp.json`.
+- **Aucun outil n'est exposé :** vérifier l'état du serveur et sa documentation ; ne pas élargir les permissions au hasard.
+- **Résultat trop volumineux :** filtrer la demande et limiter les données à la source afin de préserver contexte et confidentialité.
 
 ## Ressources
 
-{/* Ajouter les liens, commandes et références nécessaires. */}
+- [Connecter Claude Code avec MCP](https://code.claude.com/docs/en/mcp)
+- [Introduction au Model Context Protocol](https://modelcontextprotocol.io/introduction)
+- [Architecture MCP](https://modelcontextprotocol.io/docs/learn/architecture)
+- [Référence de l'API Claude](https://docs.anthropic.com/en/api/overview)
 
 ## Ouverture
 
-{/* Indiquer le prolongement naturel vers une notion plus avancée. */}
+Vous savez maintenant définir **comment** travailler avec un Skill et **avec quoi** agir grâce à MCP. Il reste à décider **quand** une action doit partir : sur un événement ou selon un calendrier.
 
 ## Scénario de démonstration
 
-{/* Décrire le point de départ, les actions montrées et le résultat visible. */}
+Point de départ : un mini-catalogue fictif contient cinq produits. Le serveur `catalogue-demo` expose une recherche en lecture seule. Le groupe inspecte la connexion, formule une requête bornée, vérifie deux résultats puis observe la révocation.
+
+Résultat visible : la requête utilise uniquement l'outil attendu, retourne les bons produits et échoue proprement après retrait du serveur.
 
 ## Déroulé de démonstration
 
-{/* Découper la démonstration en étapes courtes et vérifiables. */}
+1. Dessiner le trajet client → MCP → ressource.
+2. Exécuter `claude mcp list`, puis ouvrir `/mcp`.
+3. Lire le nom, l'état et le nombre d'outils exposés.
+4. Lancer la requête en lecture seule et observer la permission.
+5. Vérifier le résultat dans la source fictive.
+6. Retirer ou désactiver le serveur.
+7. Relancer la requête pour prouver que l'accès est bien coupé.
