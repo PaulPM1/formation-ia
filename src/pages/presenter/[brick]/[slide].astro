@@ -1,0 +1,28 @@
+---
+import PresenterShell from '../../../components/presentation/PresenterShell.astro';
+import PresentationLayout from '../../../layouts/PresentationLayout.astro';
+import { PRESENTATION_SLIDES } from '../../../presentation/manifests';
+import type { RoutedSlide } from '../../../presentation/presentation-model';
+import { getSlideNeighbors } from '../../../presentation/presentation-validation';
+
+interface Props {
+  slide: RoutedSlide;
+}
+
+export function getStaticPaths() {
+  return PRESENTATION_SLIDES.map((slide) => ({
+    params: { brick: slide.brickId, slide: slide.id },
+    props: { slide },
+  }));
+}
+
+const { slide } = Astro.props;
+const { previous, next } = getSlideNeighbors(PRESENTATION_SLIDES, slide.id);
+---
+
+<PresentationLayout
+  title={`${slide.claim} · ${slide.brickId.toUpperCase()} · Présentation`}
+  description={slide.accessibleDescription}
+>
+  <PresenterShell {slide} {previous} {next} />
+</PresentationLayout>

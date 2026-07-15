@@ -1,0 +1,359 @@
+:root {
+  color-scheme: light;
+  --presentation-paper: #f6f1e7;
+  --presentation-surface: #fffdf8;
+  --presentation-ink: #17211d;
+  --presentation-muted: #59635e;
+  --presentation-line: #c7c0b3;
+  --presentation-accent: #176b87;
+  --presentation-focus: #d94f2b;
+  --font-display: "Archivo", "Arial Narrow", Arial, sans-serif;
+  --font-body: "Inter", "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
+  background: var(--presentation-paper);
+  color: var(--presentation-ink);
+  font-family: var(--font-body);
+  font-synthesis: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-block-size: 100%;
+}
+
+body {
+  min-block-size: 100dvh;
+  margin: 0;
+  background: var(--presentation-paper);
+  color: var(--presentation-ink);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+a {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+  text-underline-offset: 0.22em;
+  text-decoration-thickness: 0.08em;
+}
+
+:where(a, button, [tabindex]):focus-visible {
+  outline: 0.22rem solid var(--presentation-focus);
+  outline-offset: 0.22rem;
+}
+
+.skip-link {
+  position: fixed;
+  inset-block-start: 0.75rem;
+  inset-inline-start: 0.75rem;
+  z-index: 10;
+  translate: 0 -180%;
+  padding: 0.65rem 0.9rem;
+  border: 2px solid currentColor;
+  background: var(--presentation-surface);
+  font-weight: 700;
+}
+
+.skip-link:focus {
+  translate: 0;
+}
+
+#slide-content {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-block-size: 100dvh;
+  inline-size: min(100%, 120rem);
+  margin-inline: auto;
+}
+
+.presentation-slide {
+  display: grid;
+  grid-template-columns: minmax(16rem, 0.78fr) minmax(22rem, 1.22fr);
+  grid-template-rows: 1fr auto;
+  gap: clamp(1.5rem, 3.5vw, 4rem);
+  min-block-size: calc(100dvh - 5.25rem);
+  padding: clamp(1.5rem, 4vw, 4.5rem);
+}
+
+.presentation-heading {
+  align-self: center;
+}
+
+.presentation-heading > p:first-child,
+.presentation-kicker {
+  margin-block: 0 1rem;
+  color: var(--presentation-accent);
+  font-family: var(--font-mono);
+  font-size: clamp(0.72rem, 0.68rem + 0.2vw, 0.9rem);
+  font-weight: 650;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.presentation-heading h1,
+.presentation-index h1 {
+  max-inline-size: 15ch;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 2rem + 3.4vw, 6rem);
+  font-stretch: 92%;
+  font-weight: 790;
+  letter-spacing: -0.045em;
+  line-height: 0.98;
+  text-wrap: balance;
+}
+
+.presentation-support {
+  max-inline-size: 52ch;
+  margin-block: 1.5rem 0;
+  color: var(--presentation-muted);
+  font-size: clamp(1rem, 0.9rem + 0.45vw, 1.35rem);
+  text-wrap: pretty;
+}
+
+.presentation-visual {
+  display: grid;
+  place-items: end start;
+  min-block-size: min(63dvh, 43rem);
+  margin: 0;
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  border: 1px solid var(--presentation-line);
+  background: var(--presentation-surface);
+}
+
+.presentation-visual figcaption {
+  max-inline-size: 64ch;
+  padding-block-start: 1rem;
+  border-block-start: 2px solid var(--presentation-accent);
+  color: var(--presentation-muted);
+  font-size: clamp(0.95rem, 0.87rem + 0.28vw, 1.15rem);
+  text-wrap: pretty;
+}
+
+.presentation-links {
+  display: flex;
+  flex-wrap: wrap;
+  grid-column: 1 / -1;
+  gap: 0.75rem 1.25rem;
+  align-items: center;
+  min-block-size: 2.5rem;
+}
+
+.presentation-links:empty {
+  display: none;
+}
+
+.presentation-links a {
+  font-size: 0.88rem;
+  font-weight: 650;
+}
+
+.presentation-controls {
+  position: sticky;
+  inset-block-end: 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, auto));
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.65rem;
+  border-block-start: 1px solid var(--presentation-line);
+  background: rgb(246 241 231 / 94%);
+  backdrop-filter: blur(0.75rem);
+}
+
+.presentation-controls :where(a, button, span) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 2.9rem;
+  padding-inline: clamp(0.65rem, 1.4vw, 1.15rem);
+  border: 1px solid var(--presentation-ink);
+  border-radius: 0.2rem;
+  background: var(--presentation-surface);
+  color: var(--presentation-ink);
+  font-size: 0.84rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.presentation-controls :where(a, button):hover {
+  background: var(--presentation-ink);
+  color: var(--presentation-surface);
+}
+
+.presentation-controls span[aria-disabled="true"] {
+  border-color: var(--presentation-line);
+  color: var(--presentation-muted);
+  cursor: not-allowed;
+}
+
+dialog {
+  inline-size: min(42rem, calc(100% - 2rem));
+  max-block-size: min(80dvh, 48rem);
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  border: 1px solid var(--presentation-ink);
+  border-radius: 0.25rem;
+  background: var(--presentation-surface);
+  color: var(--presentation-ink);
+  box-shadow: 0 1.5rem 5rem rgb(23 33 29 / 22%);
+}
+
+dialog::backdrop {
+  background: rgb(23 33 29 / 58%);
+  backdrop-filter: blur(0.2rem);
+}
+
+dialog h2 {
+  margin-block: 0 1.25rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 1.4rem + 1vw, 2.5rem);
+  line-height: 1;
+}
+
+dialog ol {
+  display: grid;
+  gap: 0.55rem;
+  max-block-size: 48dvh;
+  margin-block: 0 1.5rem;
+  padding-inline-start: 1.5rem;
+  overflow: auto;
+}
+
+dialog button,
+.presentation-start {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 3rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--presentation-ink);
+  border-radius: 0.2rem;
+  background: var(--presentation-accent);
+  color: white;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.presentation-index {
+  inline-size: min(72rem, calc(100% - 2rem));
+  margin-inline: auto;
+  padding-block: clamp(2rem, 7vw, 6rem);
+}
+
+.presentation-index > header {
+  padding-block-end: clamp(2.5rem, 6vw, 5rem);
+  border-block-end: 1px solid var(--presentation-line);
+}
+
+.presentation-index > header > p:not(.presentation-kicker) {
+  max-inline-size: 56ch;
+  color: var(--presentation-muted);
+  font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.4rem);
+}
+
+.presentation-start {
+  margin-block-start: 1rem;
+}
+
+.presentation-family-list,
+.presentation-family-list ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.presentation-family-list > li {
+  display: grid;
+  grid-template-columns: minmax(12rem, 0.45fr) 1fr;
+  gap: 1.5rem;
+  padding-block: clamp(2rem, 5vw, 3.5rem);
+  border-block-end: 1px solid var(--presentation-line);
+}
+
+.presentation-family-list h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 1.25rem + 0.7vw, 2rem);
+}
+
+.presentation-family-list ol {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.presentation-family-list a {
+  display: grid;
+  grid-template-columns: 3rem 1fr;
+  gap: 1rem;
+  padding-block: 0.75rem;
+  border-block-end: 1px solid color-mix(in srgb, var(--presentation-line), transparent 45%);
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.presentation-family-list a:hover {
+  color: var(--presentation-accent);
+}
+
+.presentation-family-list a span {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+}
+
+.visually-hidden:where(:not(:focus-within, :active)) {
+  position: absolute !important;
+  inline-size: 1px !important;
+  block-size: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 52rem) {
+  .presentation-slide {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    min-block-size: auto;
+  }
+
+  .presentation-visual {
+    min-block-size: 42dvh;
+  }
+
+  .presentation-links {
+    grid-column: auto;
+  }
+
+  .presentation-family-list > li {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 38rem) {
+  .presentation-controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .presentation-controls :where(a, button, span):last-child {
+    grid-column: 2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
