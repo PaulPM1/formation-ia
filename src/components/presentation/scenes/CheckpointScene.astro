@@ -1,0 +1,42 @@
+---
+import type { RoutedSlide } from '../../../presentation/presentation-model';
+import SceneFrame from './SceneFrame.astro';
+
+interface Props {
+  slide: RoutedSlide;
+}
+
+const { slide } = Astro.props;
+const data = slide.visual.data;
+const asStrings = (value: unknown): string[] => {
+  if (Array.isArray(value)) return value.filter((item): item is string => typeof item === 'string');
+  return typeof value === 'string' ? [value] : [];
+};
+const checks = [data.checks, data.rules, data.commands, data.mission]
+  .flatMap(asStrings)
+  .filter(Boolean);
+const successCriterion = typeof data.successCriterion === 'string'
+  ? data.successCriterion
+  : slide.support ?? slide.accessibleDescription;
+---
+
+<SceneFrame
+  title={slide.claim}
+  description={slide.accessibleDescription}
+  visualKey={slide.visual.key}
+  class="checkpoint-scene"
+>
+  <fieldset class="checkpoint-scene__checklist">
+    <legend>{typeof data.interaction === 'string' ? data.interaction : 'Checkpoint · éléments à vérifier'}</legend>
+    <ul>
+      {checks.map((check, index) => (
+        <li>
+          <input id={`${slide.id}-check-${index}`} type="checkbox" />
+          <label for={`${slide.id}-check-${index}`}>{check}</label>
+          <span class="checkpoint-scene__status">À vérifier</span>
+        </li>
+      ))}
+    </ul>
+  </fieldset>
+  <p class="checkpoint-scene__criterion"><strong>Validation :</strong> {successCriterion}</p>
+</SceneFrame>

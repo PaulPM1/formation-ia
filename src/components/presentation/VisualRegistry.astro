@@ -1,0 +1,42 @@
+---
+import type { RoutedSlide, SlideVisualKey } from '../../presentation/presentation-model';
+import CheckpointScene from './scenes/CheckpointScene.astro';
+import MissionBoard from './scenes/MissionBoard.astro';
+import ResourceRail from './scenes/ResourceRail.astro';
+import StaticConceptScene from './scenes/StaticConceptScene.astro';
+
+interface Props {
+  slide: RoutedSlide;
+}
+
+const { slide } = Astro.props;
+
+const sceneRegistry = {
+  'mission-board': MissionBoard,
+  checkpoint: CheckpointScene,
+  'resource-rail': ResourceRail,
+  'token-predictor': StaticConceptScene,
+  'context-comparison': StaticConceptScene,
+  'response-workflow-agent': StaticConceptScene,
+  'interface-continuum': StaticConceptScene,
+  'context-budget': StaticConceptScene,
+  'verification-audit': StaticConceptScene,
+  'setup-diagnostic': StaticConceptScene,
+  'prompt-builder': StaticConceptScene,
+  'artifact-test-loop': StaticConceptScene,
+  'pacte-workspace': StaticConceptScene,
+  'ipmtr-loop': StaticConceptScene,
+  'workspace-triptych': StaticConceptScene,
+  'skill-anatomy': StaticConceptScene,
+  'mcp-connection-map': StaticConceptScene,
+  'trigger-timeline': StaticConceptScene,
+} satisfies Record<SlideVisualKey, typeof StaticConceptScene>;
+
+const Scene = sceneRegistry[slide.visual.key];
+
+if (!Scene) {
+  throw new Error(`Clé visuelle inconnue : ${String(slide.visual.key)}`);
+}
+---
+
+<Scene slide={slide} />

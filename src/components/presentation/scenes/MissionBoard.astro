@@ -1,0 +1,116 @@
+---
+import type { RoutedSlide } from '../../../presentation/presentation-model';
+import SceneFrame from './SceneFrame.astro';
+
+interface Props {
+  slide: RoutedSlide;
+}
+
+const { slide } = Astro.props;
+const data = slide.visual.data;
+
+const labels: Record<string, string> = {
+  choices: 'Choix proposés',
+  cleanup: 'Nettoyage',
+  exerciseNotice: 'Contexte de l’exercice',
+  fields: 'Champs à renseigner',
+  input: 'Point de départ',
+  instruction: 'Consigne',
+  prohibition: 'Interdit',
+  statements: 'Énoncés à traiter',
+};
+const humanize = (key: string) => labels[key] ?? key
+  .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+  .replace(/^./, (letter) => letter.toUpperCase());
+
+const scalar = (value: string | number | boolean | null) => {
+  if (value === true) return 'Oui';
+  if (value === false) return 'Non';
+  if (value === null) return 'Non renseigné';
+  return String(value);
+};
+
+const asStrings = (value: unknown): string[] => {
+  if (Array.isArray(value)) {
+    return value.flatMap((item) => {
+      if (item && typeof item === 'object' && !Array.isArray(item)) {
+        return [Object.entries(item)
+          .flatMap(([key, nested]) => asStrings(nested).map((line) => `${humanize(key)} : ${line}`))
+          .join(' · ')];
+      }
+      return asStrings(item);
+    });
+  }
+  if (value === null || ['string', 'number', 'boolean'].includes(typeof value)) {
+    return [scalar(value as string | number | boolean | null)];
+  }
+  if (typeof value === 'object') {
+    return Object.entries(value as Record<string, unknown>)
+      .flatMap(([key, nested]) => asStrings(nested).map((line) => `${humanize(key)} : ${line}`));
+  }
+  return [];
+};
+
+const steps = [data.mission, data.rules, data.checks]
+  .flatMap(asStrings)
+  .filter(Boolean);
+const deliverables = [
+  data.deliverables,
+  data.deliverable,
+  data.evidence,
+  data.proof,
+  data.columns,
+].flatMap(asStrings).filter(Boolean);
+const successCriterion = typeof data.successCriterion === 'string'
+  ? data.successCriterion
+  : slide.support ?? slide.accessibleDescription;
+const duration = `${slide.speaker.durationMinutes} min`;
+const detailKeys = new Set([
+  'interaction', 'mission', 'rules', 'checks', 'successCriterion',
+  'deliverables', 'deliverable', 'evidence', 'proof', 'columns',
+]);
+const details = Object.entries(data)
+  .filter(([key]) => !detailKeys.has(key))
+  .map(([key, value]) => ({ label: humanize(key), values: asStrings(value) }));
+---
+
+<SceneFrame
+  title={slide.claim}
+  description={slide.accessibleDescription}
+  visualKey={slide.visual.key}
+  class="mission-board"
+>
+  <header class="mission-board__header">
+    <p class="scene-label">Mission</p>
+    <p class="mission-board__duration"><span>Durée</span> <strong>{duration}</strong></p>
+  </header>
+
+  <ol class="mission-board__steps">
+    {steps.map((step) => <li>{step}</li>)}
+  </ol>
+
+  <dl class="mission-board__outcome">
+    <div>
+      <dt>Livrable</dt>
+      <dd>
+        {deliverables.length > 0
+          ? <ul>{deliverables.map((deliverable) => <li>{deliverable}</li>)}</ul>
+          : <p>Un résultat transmissible conforme au critère de réussite.</p>}
+      </dd>
+    </div>
+    <div>
+      <dt>Réussite</dt>
+      <dd>{successCriterion}</dd>
+    </div>
+    {details.map((detail) => (
+      <div>
+        <dt>{detail.label}</dt>
+        <dd>
+          {detail.values.length > 1
+            ? <ul>{detail.values.map((value) => <li>{value}</li>)}</ul>
+            : detail.values[0]}
+        </dd>
+      </div>
+    ))}
+  </dl>
+</SceneFrame>

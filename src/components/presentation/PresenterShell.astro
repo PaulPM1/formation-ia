@@ -1,6 +1,8 @@
 ---
 import { PRESENTATION_DECKS } from '../../presentation/manifests';
 import type { RoutedSlide } from '../../presentation/presentation-model';
+import ResourceRail from './scenes/ResourceRail.astro';
+import VisualRegistry from './VisualRegistry.astro';
 
 interface Props {
   slide: RoutedSlide;
@@ -11,20 +13,14 @@ interface Props {
 const { slide, previous, next } = Astro.props;
 ---
 
-<article class="presentation-slide" data-family={slide.family} aria-labelledby="slide-title">
+<article class="presentation-stage presentation-slide" data-family={slide.family} aria-labelledby="slide-title">
   <header class="presentation-heading">
     <p>{slide.brickId.toUpperCase()} · {slide.brickTitle}</p>
     <h1 id="slide-title" tabindex="-1">{slide.claim}</h1>
     {slide.support && <p class="presentation-support">{slide.support}</p>}
   </header>
-  <figure class="presentation-visual" data-visual-key={slide.visual.key}>
-    <figcaption>{slide.accessibleDescription}</figcaption>
-  </figure>
-  <nav class="presentation-links" aria-label="Approfondissements">
-    {slide.links.map((link) => (
-      <a href={link.href} target="_blank" rel="noopener noreferrer">{link.label}</a>
-    ))}
-  </nav>
+  <VisualRegistry slide={slide} />
+  {slide.visual.key !== 'resource-rail' && <ResourceRail links={slide.links} />}
 </article>
 
 <nav class="presentation-controls" aria-label="Navigation des slides">
