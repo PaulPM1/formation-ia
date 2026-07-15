@@ -24,7 +24,7 @@ const laneId = `${slide.id}-prediction-lane`;
   visualKey={slide.visual.key}
   class="context-comparison"
 >
-  <div class="context-comparison__scene" data-context-comparison data-contexts={JSON.stringify(contexts)}>
+  <div class="context-comparison__scene" data-context-comparison>
     <div class="context-comparison__source">
       <p class="scene-label">Même demande</p>
       <blockquote>{String(data.sharedPrompt ?? slide.claim)}</blockquote>
@@ -32,8 +32,9 @@ const laneId = `${slide.id}-prediction-lane`;
         {contexts.map((context, index) => (
           <button
             type="button"
+            disabled
             aria-pressed={index === 0 ? 'true' : 'false'}
-            aria-controls={laneId}
+            aria-controls={`${laneId}-${index}`}
             data-context-option={index}
           >
             <span aria-hidden="true">{index === 0 ? '●' : '◆'}</span>
@@ -47,61 +48,43 @@ const laneId = `${slide.id}-prediction-lane`;
       <span></span>
     </div>
 
-    <section id={laneId} class="context-comparison__lane" aria-live="polite" aria-atomic="true">
-      <p class="scene-label">Suite orientée par le contexte</p>
-      {contexts[0] && (
-        <>
-          <h2 data-context-audience>{contexts[0].audience}</h2>
+    <div class="context-comparison__lanes" aria-live="polite">
+      {contexts.map((context, index) => (
+        <section id={`${laneId}-${index}`} class="context-comparison__lane" data-context-panel={index}>
+          <p class="scene-label">Suite orientée par le contexte</p>
+          <h2>{context.audience}</h2>
           <dl>
-            <div><dt>Format</dt><dd data-context-constraints>{contexts[0].constraints}</dd></div>
-            <div><dt>Vocabulaire</dt><dd data-context-vocabulary>{contexts[0].vocabulary}</dd></div>
+            <div><dt>Format</dt><dd>{context.constraints}</dd></div>
+            <div><dt>Vocabulaire</dt><dd>{context.vocabulary}</dd></div>
           </dl>
-          <p class="context-comparison__prediction" data-context-prediction>
-            Une explication en {contexts[0].constraints}, avec « {contexts[0].vocabulary} ».
+          <p class="context-comparison__prediction">
+            Une explication en {context.constraints}, avec « {context.vocabulary} ».
           </p>
-        </>
-      )}
-    </section>
+        </section>
+      ))}
+    </div>
 
     <p class="context-comparison__observation">
       <span aria-hidden="true">↳</span>{String(data.observation ?? 'Le contexte infléchit la réponse.')}
     </p>
 
-    <noscript>
-      <ul>
-        {contexts.map((context) => (
-          <li>{context.audience} : {context.constraints} ; vocabulaire « {context.vocabulary} ».</li>
-        ))}
-      </ul>
-    </noscript>
   </div>
 </SceneFrame>
 
 <script>
   document.querySelectorAll<HTMLElement>('[data-context-comparison]').forEach((scene) => {
-    const contexts = JSON.parse(scene.dataset.contexts ?? '[]') as Array<{
-      audience: string;
-      constraints: string;
-      vocabulary: string;
-    }>;
     const buttons = Array.from(scene.querySelectorAll<HTMLButtonElement>('[data-context-option]'));
-    const audience = scene.querySelector<HTMLElement>('[data-context-audience]');
-    const constraints = scene.querySelector<HTMLElement>('[data-context-constraints]');
-    const vocabulary = scene.querySelector<HTMLElement>('[data-context-vocabulary]');
-    const prediction = scene.querySelector<HTMLElement>('[data-context-prediction]');
+    const panels = Array.from(scene.querySelectorAll<HTMLElement>('[data-context-panel]'));
+    scene.dataset.enhanced = 'true';
 
     buttons.forEach((button) => {
+      button.disabled = false;
       button.addEventListener('click', () => {
-        const index = Number(button.dataset.contextOption);
-        const context = contexts[index];
-        if (!context || !audience || !constraints || !vocabulary || !prediction) return;
         buttons.forEach((candidate) => candidate.setAttribute('aria-pressed', String(candidate === button)));
-        audience.textContent = context.audience;
-        constraints.textContent = context.constraints;
-        vocabulary.textContent = context.vocabulary;
-        prediction.textContent = `Une explication en ${context.constraints}, avec « ${context.vocabulary} ».`;
+        panels.forEach((panel) => { panel.hidden = panel.dataset.contextPanel !== button.dataset.contextOption; });
       });
     });
+    panels.forEach((panel, index) => { panel.hidden = index !== 0; });
   });
 </script>
 
@@ -122,6 +105,10 @@ const laneId = `${slide.id}-prediction-lane`;
     align-content: center;
     min-inline-size: 0;
   }
+
+  .context-comparison__lanes { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; min-inline-size: 0; }
+  [data-enhanced='true'] .context-comparison__lanes { grid-template-columns: 1fr; }
+  .context-comparison__lane[hidden] { display: none; }
 
   .context-comparison__source blockquote {
     margin: 0;

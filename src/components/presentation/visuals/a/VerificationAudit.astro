@@ -1,260 +1,198 @@
 ---
 import type { RoutedSlide } from '../../../../presentation/presentation-model';
 import SceneFrame from '../../scenes/SceneFrame.astro';
+import { getVerificationVariant } from './visual-state';
 
-interface RiskLevel {
-  risk: string;
-  example: string;
-  verification: string;
-}
-
-interface Props {
-  slide: RoutedSlide;
-}
+interface Props { slide: RoutedSlide; }
+interface RiskLevel { risk: string; example: string; verification: string; }
 
 const { slide } = Astro.props;
 const data = slide.visual.data;
-const defaultSteps = [
-  { name: 'Stop', action: 'Suspendre la décision' },
-  { name: 'Source', action: 'Chercher une source indépendante' },
-  { name: 'Test', action: 'Exécuter un contrôle concret' },
-  { name: 'Décision', action: 'Agir avec l’incertitude visible' },
-];
-const auditSteps = Array.isArray(data.steps) && data.steps.length === 4
-  ? data.steps as Array<{ name: string; action: string }>
-  : defaultSteps;
-const suppliedScale = Array.isArray(data.scale) ? data.scale as RiskLevel[] : [];
+const variant = getVerificationVariant(data);
 const buckets = Array.isArray(data.buckets) ? data.buckets.map(String) : [];
-const scale: RiskLevel[] = buckets.length > 0
-  ? buckets.map((bucket) => ({
-      risk: bucket,
-      example: String(data.statement ?? 'Affirmation à classer'),
-      verification: bucket === data.answer
-        ? String(data.reason ?? 'Classement confirmé.')
-        : `Comparer avec « ${String(data.answer ?? 'À vérifier')} » : ${String(data.reason ?? 'une preuve indépendante reste nécessaire')}`,
-    }))
-  : suppliedScale.length > 0 ? suppliedScale : [
-      { risk: 'Faible', example: 'Usage réversible', verification: 'Relecture rapide' },
-      { risk: 'Moyen', example: 'Partage ou décision interne', verification: 'Source indépendante + contre-lecture' },
-      { risk: 'Élevé', example: 'Impact difficilement réversible', verification: 'Sources primaires + expert compétent' },
-    ];
-const defaultIndex = buckets.length > 0
-  ? Math.max(0, scale.findIndex((level) => level.risk === data.answer))
-  : Math.min(1, scale.length - 1);
-const initial = scale[defaultIndex];
 const statements = Array.isArray(data.statements)
   ? data.statements as Array<{ text: string; category: string; fictional?: boolean }>
   : [];
-const biases = Array.isArray(data.biases)
-  ? data.biases as Array<{ name: string; effect: string }>
-  : [];
+const biases = Array.isArray(data.biases) ? data.biases as Array<{ name: string; effect: string }> : [];
+const scale = Array.isArray(data.scale) ? data.scale as RiskLevel[] : [];
+const steps = Array.isArray(data.steps) ? data.steps as Array<{ name: string; action: string }> : [];
 const resultId = `${slide.id}-audit-result`;
 ---
 
-<SceneFrame
-  title={slide.claim}
-  description={slide.accessibleDescription}
-  visualKey={slide.visual.key}
-  class="verification-audit"
->
-  <div class="audit__scene" data-verification-audit data-scale={JSON.stringify(scale)}>
-    <ol class="audit__steps" aria-label="Méthode de vérification en quatre étapes">
-      {auditSteps.map((step, index) => (
-        <li>
-          <span>{String(index + 1).padStart(2, '0')}</span>
-          <strong>{step.name}</strong>
-          <small>{step.action}</small>
-        </li>
-      ))}
-    </ol>
+<SceneFrame title={slide.claim} description={slide.accessibleDescription} visualKey={slide.visual.key} class="verification-audit">
+  <div class="audit__scene" data-verification-audit data-variant={variant} data-answer={String(data.answer ?? '')} data-reason={String(data.reason ?? '')}>
+    {variant === 'classification' && (
+      <section class="audit__classification">
+        <div class="audit__prompt">
+          <p class="scene-label">Affirmation à classer</p>
+          <blockquote>{String(data.statement ?? '')}</blockquote>
+        </div>
+        <fieldset aria-describedby={resultId}>
+          <legend>{String(data.interaction ?? 'Choisir une catégorie')}</legend>
+          <div class="audit__choices">
+            {buckets.map((bucket, index) => (
+              <label><input type="radio" name={`${slide.id}-classification`} value={bucket} data-classification-choice /><span>{String(index + 1).padStart(2, '0')}</span><strong>{bucket}</strong></label>
+            ))}
+          </div>
+          <button type="button" disabled data-classification-reveal>Afficher la correction</button>
+          <output id={resultId} hidden data-classification-result aria-live="polite"></output>
+          <details data-static-correction><summary>Correction accessible sans interaction enrichie</summary><p><strong>{String(data.answer ?? '')}</strong> · {String(data.reason ?? '')}</p></details>
+        </fieldset>
+      </section>
+    )}
 
-    <section class="audit__evidence">
-      <p class="scene-label">Ce qui demande une décision</p>
-      {typeof data.exerciseNotice === 'string' && <p class="audit__notice">{data.exerciseNotice}</p>}
-      {typeof data.statement === 'string' && <blockquote>{data.statement}</blockquote>}
-      {statements.length > 0 && (
-        <ol class="audit__claims">
-          {statements.map((statement) => (
-            <li>
-              <span aria-hidden="true">{statement.category.includes('fait') ? '■' : statement.category.includes('inférence') ? '▲' : '!'}</span>
-              <strong>{statement.text}</strong>
-              <small>{statement.category}</small>
-            </li>
+    {variant === 'statements' && (
+      <section class="audit__statements">
+        <header><div><p class="scene-label">Réponse fluide à auditer</p><p>{String(data.initialSignal ?? '')}</p></div><button type="button" disabled data-reveal-next>Révéler la catégorie suivante</button></header>
+        {typeof data.exerciseNotice === 'string' && <p class="audit__notice">{data.exerciseNotice}</p>}
+        <ol>
+          {statements.map((statement, index) => (
+            <li><span class="audit__number">{String(index + 1).padStart(2, '0')}</span><strong>{statement.text}</strong><small data-statement-category>{statement.category}</small></li>
           ))}
         </ol>
-      )}
-      {biases.length > 0 && (
-        <dl class="audit__biases">
-          {biases.map((bias) => (
-            <div><dt>{bias.name}</dt><dd>{bias.effect}</dd></div>
-          ))}
-        </dl>
-      )}
-      {statements.length === 0 && biases.length === 0 && typeof data.output === 'string' && (
-        <p class="audit__output">Sortie · {data.output}</p>
-      )}
-      {statements.length === 0 && biases.length === 0 && typeof data.question === 'string' && (
-        <p class="audit__question">{data.question}</p>
-      )}
-    </section>
+        <p class="audit__reveal-status" data-reveal-status aria-live="polite">Les cinq catégories sont affichées.</p>
+      </section>
+    )}
 
-    <fieldset class="audit__risk" aria-describedby={resultId}>
-      <legend>{String(data.interaction ?? 'Choisir le niveau de risque')}</legend>
-      <div class="audit__scale">
-        {scale.map((level, index) => (
-          <label>
-            <input
-              type="radio"
-              name={`${slide.id}-risk`}
-              value={level.risk}
-              checked={index === defaultIndex}
-              data-risk-choice
-            />
-            <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
-            <strong>{level.risk}</strong>
-          </label>
-        ))}
-      </div>
-      <output id={resultId} class="audit__result" data-audit-result aria-live="polite" aria-atomic="true">
-        <span data-audit-example>{initial.example}</span>
-        <strong data-audit-verification>{initial.verification}</strong>
-      </output>
-    </fieldset>
+    {variant === 'biases' && (
+      <section class="audit__explorer">
+        <fieldset class="audit__selector"><legend>{String(data.interaction ?? 'Explorer les biais')}</legend>{biases.map((bias, index) => <label><input type="radio" name={`${slide.id}-bias`} value={index} checked={index === 0} disabled data-audit-choice /><span>{String(index + 1).padStart(2, '0')}</span><strong>{bias.name}</strong></label>)}</fieldset>
+        <div class="audit__panels">{biases.map((bias) => <article data-audit-panel><p class="scene-label">Raccourci mental</p><h3>{bias.name}</h3><p>{bias.effect}</p></article>)}</div>
+      </section>
+    )}
+
+    {variant === 'risk' && (
+      <section class="audit__risk">
+        <header><p class="scene-label">Effort proportionné</p><h3>{String(data.question ?? '')}</h3></header>
+        <fieldset class="audit__selector"><legend>{String(data.interaction ?? 'Choisir le niveau de risque')}</legend>{scale.map((level, index) => <label><input type="radio" name={`${slide.id}-risk`} value={index} checked={index === 0} disabled data-audit-choice /><span>{String(index + 1).padStart(2, '0')}</span><strong>{level.risk}</strong></label>)}</fieldset>
+        <div class="audit__panels audit__panels--risk">{scale.map((level) => <article data-audit-panel><p class="scene-label">{level.risk}</p><h3>{level.example}</h3><p><strong>Vérifier</strong> · {level.verification}</p></article>)}</div>
+      </section>
+    )}
+
+    {variant === 'method' && (
+      <section class="audit__method">
+        <fieldset class="audit__selector"><legend>{String(data.interaction ?? 'Parcourir la méthode')}</legend>{steps.map((step, index) => <label><input type="radio" name={`${slide.id}-step`} value={index} checked={index === 0} disabled data-audit-choice /><span>{String(index + 1).padStart(2, '0')}</span><strong>{step.name}</strong></label>)}</fieldset>
+        <div class="audit__panels">{steps.map((step, index) => <article data-audit-panel><p class="scene-label">Étape {String(index + 1).padStart(2, '0')}</p><h3>{step.name}</h3><p>{step.action}</p></article>)}</div>
+        {typeof data.output === 'string' && <p class="audit__output"><span>Sortie</span>{data.output}</p>}
+      </section>
+    )}
   </div>
 </SceneFrame>
 
 <script>
-  import { verificationForRisk } from './visual-state';
+  import { resolvePanelVisibility } from './visual-state';
 
   document.querySelectorAll<HTMLElement>('[data-verification-audit]').forEach((scene) => {
-    const scale = JSON.parse(scene.dataset.scale ?? '[]') as Array<{
-      risk: string;
-      example: string;
-      verification: string;
-    }>;
-    const choices = Array.from(scene.querySelectorAll<HTMLInputElement>('[data-risk-choice]'));
-    const example = scene.querySelector<HTMLElement>('[data-audit-example]');
-    const verification = scene.querySelector<HTMLElement>('[data-audit-verification]');
-    choices.forEach((choice) => {
-      choice.addEventListener('change', () => {
-        const level = scale.find((candidate) => candidate.risk === choice.value);
-        if (!level || !example || !verification) return;
-        example.textContent = level.example;
-        verification.textContent = verificationForRisk(choice.value, scale);
+    const variant = scene.dataset.variant;
+    if (variant === 'classification') {
+      const choices = Array.from(scene.querySelectorAll<HTMLInputElement>('[data-classification-choice]'));
+      const reveal = scene.querySelector<HTMLButtonElement>('[data-classification-reveal]');
+      const result = scene.querySelector<HTMLOutputElement>('[data-classification-result]');
+      const staticCorrection = scene.querySelector<HTMLDetailsElement>('[data-static-correction]');
+      if (!reveal || !result) return;
+      scene.dataset.enhanced = 'true';
+      if (staticCorrection) staticCorrection.hidden = true;
+      choices.forEach((choice) => choice.addEventListener('change', () => {
+        reveal.disabled = false;
+        result.hidden = true;
+      }));
+      reveal.addEventListener('click', () => {
+        const selected = choices.find((choice) => choice.checked)?.value;
+        if (!selected) return;
+        const correct = selected === scene.dataset.answer;
+        result.textContent = correct
+          ? `Correct · ${scene.dataset.answer}. ${scene.dataset.reason}`
+          : `À revoir · la réponse attendue est « ${scene.dataset.answer} ». ${scene.dataset.reason}`;
+        result.hidden = false;
       });
-    });
+      return;
+    }
+
+    if (variant === 'statements') {
+      const categories = Array.from(scene.querySelectorAll<HTMLElement>('[data-statement-category]'));
+      const button = scene.querySelector<HTMLButtonElement>('[data-reveal-next]');
+      const status = scene.querySelector<HTMLElement>('[data-reveal-status]');
+      if (!button || !categories.length) return;
+      scene.dataset.enhanced = 'true';
+      let revealed = 0;
+      categories.forEach((category) => { category.hidden = true; });
+      button.disabled = false;
+      const revealNext = () => {
+        if (revealed >= categories.length) return;
+        categories[revealed].hidden = false;
+        revealed += 1;
+        if (status) status.textContent = `${revealed} catégorie${revealed > 1 ? 's' : ''} sur ${categories.length} révélée${revealed > 1 ? 's' : ''}.`;
+        if (revealed === categories.length) {
+          button.disabled = true;
+          button.textContent = 'Audit complet';
+        }
+      };
+      button.addEventListener('click', revealNext);
+      revealNext();
+      return;
+    }
+
+    const choices = Array.from(scene.querySelectorAll<HTMLInputElement>('[data-audit-choice]'));
+    const panels = Array.from(scene.querySelectorAll<HTMLElement>('[data-audit-panel]'));
+    if (!choices.length || !panels.length) return;
+    scene.dataset.enhanced = 'true';
+    const render = (active: number) => resolvePanelVisibility(panels.length, active, true).forEach((visible, index) => { panels[index].hidden = !visible; });
+    choices.forEach((choice, index) => { choice.disabled = false; choice.addEventListener('change', () => render(index)); });
+    render(Math.max(0, choices.findIndex((choice) => choice.checked)));
   });
 </script>
 
 <style>
-  .audit__scene {
-    display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(16rem, 0.85fr);
-    grid-template-rows: auto minmax(0, 1fr);
-    gap: clamp(0.7rem, 1.4vw, 1.1rem) clamp(1.2rem, 3vw, 3rem);
-    min-block-size: 100%;
-  }
+  .audit__scene { min-block-size: 0; }
+  .audit__classification, .audit__explorer, .audit__risk, .audit__method { display: grid; grid-template-columns: minmax(0, .9fr) minmax(18rem, 1.1fr); gap: clamp(1rem, 3vw, 3rem); align-items: center; min-block-size: 0; }
+  .audit__prompt { display: grid; gap: .35rem; }
+  .audit__prompt blockquote { margin: 0; font-family: var(--font-display); font-size: clamp(1.25rem, 1rem + .75vw, 1.75rem); font-weight: 720; line-height: 1.05; }
+  .audit__classification fieldset, .audit__selector { display: grid; gap: .16rem; margin: 0; padding: 0; border: 0; }
+  .audit__classification legend, .audit__selector legend { margin-block-end: .16rem; font-family: var(--font-display); font-size: .9rem; font-weight: 720; }
+  .audit__choices { display: grid; grid-template-columns: repeat(3, 1fr); }
+  .audit__choices label, .audit__selector label { display: grid; grid-template-columns: auto 1fr; gap: 0 .4rem; align-items: center; padding: .16rem .4rem; border-block-start: .18rem solid var(--presentation-line); }
+  .audit__selector label { grid-template-columns: auto 1.35rem 1fr; }
+  .audit__choices label:has(input:checked), .audit__selector label:has(input:checked) { border-color: var(--family-accent); background: color-mix(in srgb, var(--family-accent), transparent 84%); }
+  .audit__choices input, .audit__selector input { grid-row: 1 / 3; inline-size: 1rem; block-size: 1rem; accent-color: var(--presentation-ink); }
+  .audit__selector input { grid-row: 1; }
+  .audit__choices span, .audit__selector span { color: var(--presentation-muted); font-family: var(--font-mono); font-size: .6rem; }
+  .audit__choices strong, .audit__selector strong { font-size: .74rem; line-height: 1.1; }
+  .audit__classification button, .audit__statements button { justify-self: start; min-block-size: 2.2rem; padding: .35rem .7rem; border: 1px solid var(--presentation-ink); background: var(--presentation-ink); color: var(--presentation-surface); font: 700 .72rem var(--font-display); }
+  .audit__classification button:disabled, .audit__statements button:disabled { opacity: .45; cursor: not-allowed; }
+  .audit__classification output { padding: .55rem .7rem; border-inline-start: .3rem solid var(--family-accent); background: var(--presentation-surface); font-size: .78rem; font-weight: 680; }
+  .audit__classification details { font-size: .75rem; }
+  .audit__classification details p { margin: .3rem 0 0; }
 
-  .audit__steps {
-    display: grid;
-    grid-column: 1 / -1;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
+  .audit__statements { display: grid; gap: .35rem; align-content: center; min-block-size: 0; }
+  .audit__statements header { display: flex; justify-content: space-between; gap: 1rem; align-items: end; }
+  .audit__statements header p { margin: 0; }
+  .audit__notice, .audit__reveal-status { margin: 0; color: var(--presentation-muted); font-family: var(--font-mono); font-size: .63rem; }
+  .audit__statements ol { display: grid; grid-template-columns: 1fr 1fr; column-gap: 1rem; margin: 0; padding: 0; list-style: none; }
+  .audit__statements li { display: grid; grid-template-columns: 1.5rem 1fr; gap: .1rem .4rem; min-block-size: 2.55rem; padding: .32rem .25rem; border-block-start: 1px solid var(--presentation-line); }
+  .audit__number { grid-row: 1 / 3; color: var(--presentation-muted); font-family: var(--font-mono); font-size: .62rem; }
+  .audit__statements strong { font-size: .72rem; line-height: 1.15; }
+  .audit__statements small { color: var(--family-accent); font-family: var(--font-mono); font-size: .61rem; font-weight: 760; }
 
-  .audit__steps li {
-    position: relative;
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 0.1rem 0.45rem;
-    padding: 0.45rem 0.65rem;
-    border-block-start: 0.25rem solid var(--family-accent);
-  }
-
-  .audit__steps li:not(:last-child)::after {
-    position: absolute;
-    inset-block-start: -0.46rem;
-    inset-inline-end: -0.2rem;
-    inline-size: 0.7rem;
-    block-size: 0.7rem;
-    border-block-start: 0.22rem solid var(--family-accent);
-    border-inline-end: 0.22rem solid var(--family-accent);
-    content: '';
-    rotate: 45deg;
-  }
-
-  .audit__steps span { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.65rem; }
-  .audit__steps strong { font-family: var(--font-display); font-size: 0.9rem; }
-  .audit__steps small { grid-column: 2; color: var(--presentation-muted); font-size: 0.67rem; line-height: 1.15; }
-
-  .audit__evidence {
-    display: grid;
-    gap: 0.45rem;
-    align-content: center;
-    min-inline-size: 0;
-  }
-
-  .audit__notice,
-  .audit__output,
-  .audit__question { margin: 0; font-size: 0.8rem; }
-  .audit__notice { color: var(--presentation-muted); font-family: var(--font-mono); }
-  .audit__evidence blockquote { margin: 0; font-family: var(--font-display); font-size: clamp(1.2rem, 0.95rem + 0.7vw, 1.75rem); font-weight: 690; line-height: 1.05; }
-
-  .audit__claims { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 0.7rem; margin: 0; padding: 0; list-style: none; }
-  .audit__claims li {
-    display: grid;
-    grid-template-columns: 1.3rem 1fr;
-    gap: 0.1rem 0.45rem;
-    padding-block: 0.28rem;
-    border-block-start: 1px solid var(--presentation-line);
-  }
-  .audit__claims li > span { grid-row: 1 / 3; font-family: var(--font-mono); font-weight: 800; }
-  .audit__claims strong { overflow: hidden; font-size: 0.72rem; line-height: 1.15; text-overflow: ellipsis; white-space: nowrap; }
-  .audit__claims small { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.62rem; }
-
-  .audit__biases { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 0.7rem; margin: 0; }
-  .audit__biases div { display: grid; gap: 0.05rem; padding-block: 0.14rem; border-block-start: 1px solid var(--presentation-line); }
-  .audit__biases dt { font-size: 0.68rem; font-weight: 740; }
-  .audit__biases dd { overflow: hidden; margin: 0; color: var(--presentation-muted); font-size: 0.62rem; line-height: 1.15; text-overflow: ellipsis; white-space: nowrap; }
-  .audit__output { padding-inline-start: 0.7rem; border-inline-start: 0.3rem solid var(--family-accent); font-weight: 680; }
-  .audit__question { font-family: var(--font-display); font-size: 1.05rem; font-weight: 730; }
-
-  .audit__risk {
-    display: grid;
-    gap: 0.3rem;
-    align-content: center;
-    min-inline-size: 0;
-    margin: 0;
-    padding: 0 0 0 clamp(0.9rem, 2vw, 1.6rem);
-    border: 0;
-    border-inline-start: 0.35rem solid var(--family-accent);
-  }
-
-  .audit__risk legend { margin-block-end: 0; font-family: var(--font-display); font-size: clamp(0.9rem, 0.82rem + 0.25vw, 1.02rem); font-weight: 720; }
-  .audit__scale { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .audit__scale label { display: grid; grid-template-columns: auto 1fr; gap: 0.1rem 0.3rem; align-items: center; justify-items: start; min-block-size: 2.2rem; padding: 0.18rem 0.3rem; border-block-start: 0.22rem solid var(--presentation-line); cursor: pointer; text-align: start; }
-  .audit__scale label:has(input:checked) { border-color: var(--family-accent); background: color-mix(in srgb, var(--family-accent), transparent 84%); }
-  .audit__scale input { inline-size: 1rem; block-size: 1rem; margin: 0; accent-color: var(--presentation-ink); }
-  .audit__scale span { grid-column: 2; color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.58rem; }
-  .audit__scale strong { grid-column: 2; grid-row: 1; font-size: clamp(0.68rem, 0.62rem + 0.17vw, 0.8rem); }
-
-  .audit__result { display: grid; grid-template-columns: minmax(0, 0.65fr) minmax(0, 1.35fr); gap: 0.35rem; align-items: center; padding: 0.25rem 0.4rem; border: 1px solid var(--presentation-ink); background: var(--presentation-surface); }
-  .audit__result span { color: var(--presentation-muted); font-size: 0.65rem; }
-  .audit__result strong { font-size: clamp(0.72rem, 0.67rem + 0.16vw, 0.82rem); line-height: 1.15; }
+  .audit__selector { align-content: center; }
+  .audit__explorer .audit__selector legend { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); }
+  .audit__panels { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; }
+  [data-enhanced='true'] .audit__panels { grid-template-columns: 1fr; }
+  .audit__panels article { display: grid; gap: .25rem; align-content: center; min-block-size: 5.2rem; padding: .65rem .8rem; border: 1px solid var(--presentation-line); border-block-start: .3rem solid var(--family-accent); background: var(--presentation-surface); }
+  .audit__panels h3, .audit__risk header h3 { margin: 0; font-family: var(--font-display); font-size: clamp(1rem, .85rem + .45vw, 1.3rem); }
+  .audit__panels p, .audit__risk header p { margin: 0; font-size: .75rem; line-height: 1.2; }
+  .audit__risk { grid-template-rows: auto 1fr; }
+  .audit__risk header { grid-column: 1 / -1; }
+  .audit__risk .audit__selector { grid-template-columns: repeat(3, 1fr); }
+  .audit__risk .audit__selector legend { grid-column: 1 / -1; }
+  .audit__panels--risk article { min-block-size: 6rem; }
+  .audit__method { grid-template-rows: 1fr auto; }
+  .audit__output { grid-column: 1 / -1; display: flex; gap: .7rem; margin: 0; padding-inline-start: .7rem; border-inline-start: .3rem solid var(--family-accent); font-size: .78rem; font-weight: 680; }
+  .audit__output span { color: var(--presentation-muted); font-family: var(--font-mono); }
+  [data-audit-panel][hidden], [data-statement-category][hidden], [data-classification-result][hidden] { display: none !important; }
 
   @media (max-width: 52rem) {
-    .audit__scene { grid-template-columns: 1fr; }
-    .audit__risk { padding-block-start: 1rem; padding-inline-start: 0; border-block-start: 0.35rem solid var(--family-accent); border-inline-start: 0; }
-    .audit__result { grid-template-columns: 1fr; }
-    .audit__claims,
-    .audit__biases { grid-template-columns: 1fr; }
-  }
-
-  @media (max-width: 38rem) {
-    .audit__steps { grid-template-columns: 1fr 1fr; }
-    .audit__steps li::after { display: none; }
-    .audit__claims strong { white-space: normal; }
+    .audit__classification, .audit__explorer, .audit__risk, .audit__method { grid-template-columns: 1fr; }
+    .audit__risk header, .audit__output { grid-column: 1; }
+    .audit__statements ol { grid-template-columns: 1fr; }
   }
 </style>

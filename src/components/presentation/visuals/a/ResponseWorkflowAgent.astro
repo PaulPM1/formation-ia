@@ -41,6 +41,7 @@ const modePanels = modes.map((mode) => ({ ...mode, steps: mode.path.split(/\s*â†
             name={`${slide.id}-mode`}
             value={String(index)}
             checked={index === activeIndex}
+            disabled
             data-mode-choice
           />
           <span class="rwa__shape" aria-hidden="true">{index === 0 ? 'â†’' : index === 1 ? 'â†¦' : 'â†»'}</span>
@@ -52,7 +53,7 @@ const modePanels = modes.map((mode) => ({ ...mode, steps: mode.path.split(/\s*â†
 
     <div class="rwa__stage" aria-live="polite">
       {modePanels.map((mode, modeIndex) => (
-        <section data-mode-panel={modeIndex} hidden={modeIndex !== activeIndex}>
+        <section data-mode-panel={modeIndex}>
           <p class="scene-label">{mode.name} Â· {mode.autonomy}</p>
           <div class:list={['rwa__path', { 'rwa__path--loop': mode.name === 'Agent' }]}>
             <svg viewBox="0 0 720 124" preserveAspectRatio="none" aria-hidden="true">
@@ -93,11 +94,15 @@ const modePanels = modes.map((mode) => ({ ...mode, steps: mode.path.split(/\s*â†
   document.querySelectorAll<HTMLElement>('[data-rwa-scene]').forEach((scene) => {
     const choices = Array.from(scene.querySelectorAll<HTMLInputElement>('[data-mode-choice]'));
     const panels = Array.from(scene.querySelectorAll<HTMLElement>('[data-mode-panel]'));
+    scene.dataset.enhanced = 'true';
     choices.forEach((choice) => {
+      choice.disabled = false;
       choice.addEventListener('change', () => {
         panels.forEach((panel) => { panel.hidden = panel.dataset.modePanel !== choice.value; });
       });
     });
+    const active = choices.find((choice) => choice.checked)?.value ?? '0';
+    panels.forEach((panel) => { panel.hidden = panel.dataset.modePanel !== active; });
   });
 </script>
 
@@ -149,9 +154,12 @@ const modePanels = modes.map((mode) => ({ ...mode, steps: mode.path.split(/\s*â†
   .rwa__lane strong { font-family: var(--font-display); font-size: clamp(0.9rem, 0.8rem + 0.25vw, 1.05rem); }
   .rwa__lane small { grid-column: 4; color: var(--presentation-muted); font-size: 0.72rem; text-align: end; }
 
+  .rwa__stage { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.55rem; }
+  [data-enhanced='true'] .rwa__stage { display: block; }
   .rwa__stage,
   .rwa__stage section { min-block-size: 0; }
-  .rwa__stage section { display: grid; gap: 0.25rem; align-content: center; block-size: 100%; }
+  .rwa__stage section { display: grid; gap: 0.25rem; align-content: center; block-size: 100%; padding: .35rem; border: 1px solid var(--presentation-line); }
+  [data-enhanced='true'] .rwa__stage section { padding: 0; border: 0; }
   .rwa__stage section[hidden] { display: none; }
 
   .rwa__path {
@@ -168,6 +176,10 @@ const modePanels = modes.map((mode) => ({ ...mode, steps: mode.path.split(/\s*â†
     block-size: 100%;
     overflow: visible;
   }
+
+  .rwa__scene:not([data-enhanced]) .rwa__path svg { display: none; }
+  .rwa__scene:not([data-enhanced]) .rwa__path ol { grid-template-columns: 1fr; }
+  .rwa__scene:not([data-enhanced]) .rwa__path li { min-block-size: 0; border: 0; border-block-start: 1px solid var(--presentation-line); border-radius: 0; aspect-ratio: auto; }
 
   .rwa__path svg > path {
     fill: none;

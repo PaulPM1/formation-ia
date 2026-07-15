@@ -54,6 +54,7 @@ const descriptionId = `${slide.id}-token-description`;
       <button
         class="token-predictor__advance"
         type="button"
+        disabled
         data-token-advance
         aria-describedby={descriptionId}
       >
@@ -93,7 +94,7 @@ const descriptionId = `${slide.id}-token-description`;
 </SceneFrame>
 
 <script>
-  import { advanceTokenState } from './visual-state';
+  import { advanceTokenState, tokenEnhancementState } from './visual-state';
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -102,7 +103,17 @@ const descriptionId = `${slide.id}-token-description`;
     const tokens = JSON.parse(scene.dataset.tokens ?? '[]') as string[];
     const button = scene.querySelector<HTMLButtonElement>('[data-token-advance]');
     const status = scene.querySelector<HTMLOutputElement>('[data-token-status]');
-    if (!button || !status || tokens.length === 0 || reducedMotion) return;
+    if (!button || !status || tokens.length === 0) return;
+    const enhancement = tokenEnhancementState(reducedMotion);
+    if (!enhancement.interactive) {
+      button.disabled = true;
+      button.hidden = enhancement.controlHidden;
+      status.textContent = `État final · phrase complète · ${tokens.length} fragments`;
+      scene.dataset.complete = 'true';
+      return;
+    }
+
+    button.disabled = false;
 
     let index = 0;
     const render = () => {

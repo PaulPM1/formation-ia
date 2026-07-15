@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
+import { A_DECKS } from '../src/presentation/manifests/a';
 import { SLIDE_VISUAL_KEYS } from '../src/presentation/presentation-model';
 
 const read = (path: string) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
@@ -80,22 +81,47 @@ test('les interactions du bloc A produisent des états pédagogiques déterminis
     complete: true,
   });
 
-  const budgetItems = [
-    { load: 'faible', useful: true },
-    { load: 'élevée', useful: false },
-    { load: 'significative', useful: true },
-  ];
-  assert.deepEqual(state.calculateContextBudget(budgetItems, [true, false, true]), {
-    load: 3,
-    capacity: 6,
-    percentage: 50,
-    useful: 2,
+  assert.deepEqual(state.calculateContextSelection(5, [true, false, true, false, true]), {
+    included: 3,
+    total: 5,
   });
 
   assert.equal(state.verificationForRisk('Moyen', [
     { risk: 'Faible', verification: 'Relecture rapide' },
     { risk: 'Moyen', verification: 'Source + contre-lecture' },
   ]), 'Source + contre-lecture');
+});
+
+test('les visuels polymorphes choisissent une scène propre à chaque forme de données', async () => {
+  const state = await import('../src/components/presentation/visuals/a/visual-state').catch(() => null);
+  assert.ok(state, 'les helpers d’état du bloc A doivent exister');
+  const slides = A_DECKS.flatMap((deck) => deck.slides);
+  const data = (id: string) => slides.find((candidate) => candidate.id === id)?.visual.data ?? {};
+
+  assert.equal(state.getVerificationVariant(data('a1-plausible')), 'classification');
+  assert.equal(state.getVerificationVariant(data('a5-convincing')), 'statements');
+  assert.equal(state.getVerificationVariant(data('a5-biases')), 'biases');
+  assert.equal(state.getVerificationVariant(data('a5-risk')), 'risk');
+  assert.equal(state.getVerificationVariant(data('a5-method')), 'method');
+
+  assert.equal(state.getContextBudgetVariant(data('a4-three-costs')), 'layers');
+  assert.equal(state.getContextBudgetVariant(data('a4-context-meter')), 'meter');
+  assert.equal(state.getContextBudgetVariant(data('a4-agentic')), 'comparison');
+  assert.equal(state.getContextBudgetVariant(data('a4-budget')), 'mission');
+});
+
+test('la progression conserve tout le contenu sans JavaScript puis isole le panneau actif', async () => {
+  const state = await import('../src/components/presentation/visuals/a/visual-state').catch(() => null);
+  assert.ok(state, 'les helpers d’état du bloc A doivent exister');
+
+  assert.deepEqual(state.resolvePanelVisibility(4, 2, false), [true, true, true, true]);
+  assert.deepEqual(state.resolvePanelVisibility(4, 2, true), [false, false, true, false]);
+  assert.deepEqual(state.classificationState(), { selection: null, revealed: false });
+  assert.deepEqual(state.tokenEnhancementState(true), {
+    interactive: false,
+    controlHidden: true,
+    finalVisible: true,
+  });
 });
 
 test('les visuels du bloc A utilisent des contrôles natifs et des relations continues', async () => {
