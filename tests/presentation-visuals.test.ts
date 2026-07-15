@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 import { A_DECKS } from '../src/presentation/manifests/a';
+import { B_DECKS } from '../src/presentation/manifests/b';
 import { SLIDE_VISUAL_KEYS } from '../src/presentation/presentation-model';
 
 const read = (path: string) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
@@ -145,4 +146,84 @@ test('les visuels du bloc A utilisent des contrôles natifs et des relations con
 test('le prédicteur laisse réellement disparaître les tokens futurs', async () => {
   const token = await read('src/components/presentation/visuals/a/TokenPredictor.astro');
   assert.match(token, /\[data-token\]\[hidden\]\s*{[^}]*display:\s*none/s);
+});
+
+test('enregistre tous les visuels du bloc B', async () => {
+  const registry = await read('src/components/presentation/VisualRegistry.astro');
+  for (const name of [
+    'SetupDiagnostic', 'PromptBuilder', 'ArtifactTestLoop',
+    'PacteWorkspace', 'IpmtrLoop', 'WorkspaceTriptych',
+  ]) assert.match(registry, new RegExp(name));
+});
+
+test('les 27 routes spécialisées du bloc B choisissent leur variante réelle', async () => {
+  const state = await import('../src/components/presentation/visuals/b/visual-state').catch(() => null);
+  assert.ok(state, "les helpers d’état du bloc B doivent exister");
+
+  const specialized = B_DECKS.flatMap((deck) => deck.slides)
+    .filter((slide) => !['mission-board', 'checkpoint'].includes(slide.visual.key));
+  assert.equal(specialized.length, 27);
+
+  const expected = new Map<string, string>([
+    ['b0-layers', 'layers'], ['b0-diagnostic', 'checks'], ['b0-test', 'test'],
+    ['b0-fallback', 'fallback'], ['b4bis-install', 'platforms'],
+    ['b1-vague', 'comparison'], ['b1-four-blocks', 'blocks'], ['b1-builder', 'builder'], ['b1-loop', 'loop'],
+    ['b2-object', 'transfer'], ['b2-anatomy', 'anatomy'], ['b2-mvp', 'mvp'],
+    ['b2-tests', 'tests'], ['b2-correction', 'correction'],
+    ['b3-delegation', 'delegation'], ['b3-pacte', 'pacte'], ['b3-permissions', 'permissions'],
+    ['b3-observe', 'timeline'], ['b3-check', 'check'],
+    ['b4-context', 'context'], ['b4-ipmtr', 'process'], ['b4-permission', 'permission'], ['b4-test', 'proof'],
+    ['b4-transition', 'panes'], ['b4bis-workspace', 'workspace'],
+    ['b4bis-triptych', 'panes'], ['b4bis-path', 'path'],
+  ]);
+
+  const resolverByKey = {
+    'setup-diagnostic': state.getSetupVariant,
+    'prompt-builder': state.getPromptVariant,
+    'artifact-test-loop': state.getArtifactVariant,
+    'pacte-workspace': state.getPacteVariant,
+    'ipmtr-loop': state.getIpmtrVariant,
+    'workspace-triptych': state.getWorkspaceVariant,
+  } as const;
+
+  for (const slide of specialized) {
+    const resolver = resolverByKey[slide.visual.key as keyof typeof resolverByKey];
+    assert.equal(resolver?.(slide.visual.data), expected.get(slide.id), slide.id);
+  }
+});
+
+test('les états interactifs du bloc B restent déterministes et bloquent les portes', async () => {
+  const state = await import('../src/components/presentation/visuals/b/visual-state').catch(() => null);
+  assert.ok(state, "les helpers d’état du bloc B doivent exister");
+
+  assert.deepEqual(state.resolvePanelVisibility(4, 1, false), [true, true, true, true]);
+  assert.deepEqual(state.resolvePanelVisibility(4, 1, true), [false, true, false, false]);
+  assert.equal(state.assemblePrompt(['Objectif', 'Contexte'], [true, false]), 'Objectif');
+  assert.equal(state.commandForPlatform('windows', { mac: 'pwd', windows: 'Get-Location' }), 'Get-Location');
+
+  const closed = { permission: false, test: false, diff: false };
+  assert.deepEqual(state.advanceIpmtr(1, closed), { index: 1, blockedBy: 'permission' });
+  assert.deepEqual(state.advanceIpmtr(2, { ...closed, permission: true }), { index: 2, blockedBy: 'test' });
+  assert.deepEqual(state.advanceIpmtr(3, { permission: true, test: true, diff: false }), { index: 3, blockedBy: 'diff' });
+  assert.deepEqual(state.advanceIpmtr(3, { permission: true, test: true, diff: true }), { index: 4, blockedBy: null });
+});
+
+test('les visuels du bloc B gardent un état final sans JS et des contrôles natifs', async () => {
+  const files = await Promise.all([
+    'SetupDiagnostic', 'PromptBuilder', 'ArtifactTestLoop',
+    'PacteWorkspace', 'IpmtrLoop', 'WorkspaceTriptych',
+  ].map((name) => read(`src/components/presentation/visuals/b/${name}.astro`))).catch(() => [] as string[]);
+
+  assert.equal(files.length, 6);
+  assert.match(files[0] ?? '', /type="radio"/);
+  assert.match(files[1] ?? '', /<button[^>]+type="button"/);
+  assert.match(files[2] ?? '', /<path[^>]+data-loop-path/);
+  assert.match(files[3] ?? '', /type="checkbox"/);
+  assert.match(files[4] ?? '', /<path[^>]+data-ipmtr-path/);
+  assert.match(files[5] ?? '', /data-command-mac/);
+  for (const file of files) {
+    assert.match(file, /data-enhanced/);
+    assert.match(file, /prefers-reduced-motion/);
+    assert.doesNotMatch(file, /onclick=/);
+  }
 });

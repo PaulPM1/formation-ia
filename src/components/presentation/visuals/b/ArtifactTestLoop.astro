@@ -1,0 +1,136 @@
+---
+import type { RoutedSlide } from '../../../../presentation/presentation-model';
+import SceneFrame from '../../scenes/SceneFrame.astro';
+import { getArtifactVariant } from './visual-state';
+
+interface Props { slide: RoutedSlide; }
+interface TestCase { name: string; action: string; expected: string; }
+interface Zone { name: string; role: string; }
+interface ArtifactSide { location: string; output: string; }
+interface Iteration { passing: string[]; failing: string[]; }
+interface Panel { label: string; title: string; body: string; note?: string; }
+
+const { slide } = Astro.props;
+const data = slide.visual.data;
+const variant = getArtifactVariant(data);
+const tests = (Array.isArray(data.tests) ? data.tests : []) as TestCase[];
+const zones = (Array.isArray(data.zones) ? data.zones : []) as Zone[];
+const before = (data.before ?? {}) as ArtifactSide;
+const after = (data.after ?? {}) as ArtifactSide;
+const iteration1 = (data.iteration1 ?? {}) as Iteration;
+const iteration2 = (data.iteration2 ?? {}) as Iteration;
+const removed = Array.isArray(data.removed) ? data.removed.map(String) : [];
+const affordances = Array.isArray(data.affordances) ? data.affordances.map(String) : [];
+const loopLabels = ['Objet', 'Test 1', 'Test 2', 'Test 3', 'Correction'];
+let panels: Panel[] = [];
+if (variant === 'transfer') panels = [
+  { label: 'Avant', title: before.location, body: before.output },
+  { label: 'Après', title: after.location, body: after.output, note: affordances.join(' · ') },
+];
+if (variant === 'anatomy') panels = zones.map((zone) => ({ label: zone.name === String(data.selected) ? 'Zone active' : 'Zone', title: zone.name, body: zone.role }));
+if (variant === 'mvp') panels = [
+  { label: 'Idée trop large', title: String(data.idea ?? ''), body: `Retirer : ${removed.join(', ')}` },
+  { label: 'Objet testable', title: String(data.retained ?? ''), body: String(data.primaryAction ?? '') },
+];
+if (variant === 'tests') panels = [
+  { label: 'Objet', title: 'Quiz de cinq questions', body: String(data.state ?? '') },
+  ...tests.map((item) => ({ label: item.name, title: item.action, body: item.expected })),
+  { label: 'Correction', title: 'Un écart précis', body: 'Modifier uniquement le comportement qui échoue.' },
+];
+if (variant === 'correction') panels = [
+  { label: 'Itération 1', title: `✓ ${(iteration1.passing ?? []).join(', ')}`, body: `Échec : ${(iteration1.failing ?? []).join(', ')}` },
+  { label: 'Correction ciblée', title: String(data.targetedChange ?? ''), body: String(data.evidence ?? '') },
+  { label: 'Itération 2', title: `✓ ${(iteration2.passing ?? []).join(', ')}`, body: (iteration2.failing ?? []).length ? `Échec : ${iteration2.failing.join(', ')}` : 'Aucun test en échec' },
+];
+---
+
+<SceneFrame title={slide.claim} description={slide.accessibleDescription} visualKey={slide.visual.key} class="artifact-test-loop">
+  <div class="artifact" data-artifact-loop data-variant={variant} data-enhanced="false">
+    <section class="artifact__orbit">
+      <svg viewBox="0 0 560 390" role="img" aria-labelledby={`${slide.id}-orbit-title ${slide.id}-orbit-desc`}>
+        <title id={`${slide.id}-orbit-title`}>Boucle de test de l’Artifact</title>
+        <desc id={`${slide.id}-orbit-desc`}>L’objet autonome traverse trois tests, reçoit une correction ciblée, puis revient au premier test.</desc>
+        <path data-loop-path d="M280 54 C430 54 500 128 470 230 C442 330 330 355 220 330 C100 302 64 195 112 112 C144 57 205 48 280 54 Z" />
+        {[[280,54],[454,128],[438,275],[225,330],[105,180]].map(([x,y], index) => (
+          <g transform={`translate(${x} ${y})`}>
+            <circle r="28" />
+            <text y="5" text-anchor="middle">{index === 0 ? '◆' : index === 4 ? '↺' : index}</text>
+            <text class="artifact__orbit-label" y="48" text-anchor="middle">{loopLabels[index]}</text>
+          </g>
+        ))}
+      </svg>
+      <p class="artifact__rule"><span>Règle de boucle</span>Tester l’objet · nommer l’écart · corriger sans casser ce qui passe.</p>
+    </section>
+
+    <section class="artifact__inspection">
+      <div class="artifact__stage-buttons" role="group" aria-label={String(data.interaction ?? 'Explorer les étapes')}>
+        {panels.map((panel, index) => <button type="button" disabled aria-pressed={index === 0 ? 'true' : 'false'} data-artifact-stage><span>{String(index + 1).padStart(2, '0')}</span>{panel.label}</button>)}
+      </div>
+      <div class="artifact__panels">
+        {panels.map((panel) => (
+          <article data-artifact-panel>
+            <p>{panel.label}</p>
+            <h3>{panel.title}</h3>
+            <strong>{panel.body}</strong>
+            {panel.note && <small>{panel.note}</small>}
+          </article>
+        ))}
+      </div>
+    </section>
+  </div>
+</SceneFrame>
+
+<script>
+  import { resolvePanelVisibility } from './visual-state';
+
+  document.querySelectorAll<HTMLElement>('[data-artifact-loop]').forEach((scene) => {
+    scene.dataset.enhanced = 'true';
+    const buttons = Array.from(scene.querySelectorAll<HTMLButtonElement>('[data-artifact-stage]'));
+    const panels = Array.from(scene.querySelectorAll<HTMLElement>('[data-artifact-panel]'));
+    if (!buttons.length || !panels.length) return;
+    const render = (active: number) => {
+      resolvePanelVisibility(panels.length, active, true).forEach((visible, index) => { panels[index].hidden = !visible; });
+      buttons.forEach((button, index) => button.setAttribute('aria-pressed', String(index === active)));
+    };
+    buttons.forEach((button, index) => { button.disabled = false; button.addEventListener('click', () => render(index)); });
+    render(0);
+  });
+</script>
+
+<style>
+  .artifact { display: grid; grid-template-columns: minmax(18rem, 1.05fr) minmax(16rem, .95fr); gap: clamp(.8rem, 2.2vw, 2rem); align-items: center; min-block-size: 0; }
+  .artifact__orbit { display: grid; grid-template-columns: 1fr minmax(8rem, .38fr); gap: .3rem; align-items: center; }
+  .artifact__orbit svg { inline-size: 100%; max-block-size: 9.2rem; overflow: visible; }
+  .artifact__orbit path { fill: none; stroke: var(--presentation-ink); stroke-width: 5; stroke-linecap: round; }
+  .artifact__orbit circle { fill: var(--presentation-surface); stroke: var(--presentation-ink); stroke-width: 4; }
+  .artifact__orbit g:first-of-type circle { fill: var(--family-accent); }
+  .artifact__orbit g:last-of-type circle { fill: #ed6a46; }
+  .artifact__orbit text { fill: var(--presentation-ink); font: 700 15px var(--font-mono); }
+  .artifact__orbit .artifact__orbit-label { font: 750 14px var(--font-display); }
+  .artifact__rule { display: grid; gap: .25rem; margin: 0; padding-inline-start: .7rem; border-inline-start: .3rem solid var(--family-accent); font: 720 .74rem/1.18 var(--font-display); }
+  .artifact__rule span { color: var(--presentation-muted); font: 600 .56rem var(--font-mono); text-transform: uppercase; }
+  .artifact__inspection { display: grid; gap: .35rem; }
+  .artifact__stage-buttons { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-content: center; }
+  .artifact__stage-buttons button { display: grid; grid-template-columns: auto 1fr; gap: .18rem; min-block-size: 2.15rem; padding: .22rem; border: 0; border-block-start: 1px solid var(--presentation-line); background: transparent; color: var(--presentation-ink); font: 710 .57rem var(--font-display); text-align: start; cursor: pointer; }
+  .artifact__stage-buttons button[aria-pressed='true'] { border-block-start-width: .28rem; border-color: var(--family-accent); background: color-mix(in srgb, var(--family-accent), transparent 86%); }
+  .artifact__stage-buttons button:disabled { cursor: default; }
+  .artifact__stage-buttons span { color: var(--presentation-muted); font: .56rem var(--font-mono); }
+  .artifact__panels { display: grid; grid-template-columns: 1fr 1fr; gap: .45rem; align-content: center; }
+  [data-enhanced='true'] .artifact__panels { grid-template-columns: 1fr; }
+  .artifact__panels article { display: grid; gap: .15rem; align-content: center; min-block-size: 4.6rem; padding: .4rem .55rem; border: 1px solid var(--presentation-line); border-block-start: .3rem solid var(--family-accent); background: var(--presentation-surface); }
+  .artifact__panels article p, .artifact__panels article h3, .artifact__panels article strong { margin: 0; }
+  .artifact__panels article p { color: var(--presentation-muted); font: .58rem var(--font-mono); text-transform: uppercase; }
+  .artifact__panels article h3 { font: 750 clamp(.85rem, 1.4vw, 1.1rem)/1.08 var(--font-display); }
+  .artifact__panels article strong { font-size: .7rem; line-height: 1.14; }
+  .artifact__panels article small { color: var(--presentation-muted); font: .6rem var(--font-mono); }
+  [data-artifact-panel][hidden] { display: none !important; }
+  button:focus-visible { outline: .22rem solid var(--presentation-focus); outline-offset: .18rem; }
+  @media (max-width: 50rem) {
+    .artifact { grid-template-columns: 1fr; }
+    .artifact__orbit { grid-template-columns: 1fr; }
+    .artifact__orbit svg { max-block-size: 11rem; }
+    .artifact__inspection { grid-template-columns: 1fr; }
+    .artifact__stage-buttons { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (prefers-reduced-motion: reduce) { .artifact * { transition: none !important; animation: none !important; } }
+</style>

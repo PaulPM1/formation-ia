@@ -10,6 +10,12 @@ import InterfaceContinuum from './visuals/a/InterfaceContinuum.astro';
 import ResponseWorkflowAgent from './visuals/a/ResponseWorkflowAgent.astro';
 import TokenPredictor from './visuals/a/TokenPredictor.astro';
 import VerificationAudit from './visuals/a/VerificationAudit.astro';
+import ArtifactTestLoop from './visuals/b/ArtifactTestLoop.astro';
+import IpmtrLoop from './visuals/b/IpmtrLoop.astro';
+import PacteWorkspace from './visuals/b/PacteWorkspace.astro';
+import PromptBuilder from './visuals/b/PromptBuilder.astro';
+import SetupDiagnostic from './visuals/b/SetupDiagnostic.astro';
+import WorkspaceTriptych from './visuals/b/WorkspaceTriptych.astro';
 
 interface Props {
   slide: RoutedSlide;
@@ -27,12 +33,12 @@ const sceneRegistry = {
   'interface-continuum': InterfaceContinuum,
   'context-budget': ContextBudget,
   'verification-audit': VerificationAudit,
-  'setup-diagnostic': StaticConceptScene,
-  'prompt-builder': StaticConceptScene,
-  'artifact-test-loop': StaticConceptScene,
-  'pacte-workspace': StaticConceptScene,
-  'ipmtr-loop': StaticConceptScene,
-  'workspace-triptych': StaticConceptScene,
+  'setup-diagnostic': SetupDiagnostic,
+  'prompt-builder': PromptBuilder,
+  'artifact-test-loop': ArtifactTestLoop,
+  'pacte-workspace': PacteWorkspace,
+  'ipmtr-loop': IpmtrLoop,
+  'workspace-triptych': WorkspaceTriptych,
   'skill-anatomy': StaticConceptScene,
   'mcp-connection-map': StaticConceptScene,
   'trigger-timeline': StaticConceptScene,

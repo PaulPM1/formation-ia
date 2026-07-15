@@ -427,6 +427,124 @@ a {
   margin: 0;
 }
 
+/* Les claims du bloc B sont volontairement longs : cette densité conserve la
+   scène entière dans le cadre 16:9 sans retirer d’information. */
+.presentation-stage[data-family="b"] .scene-frame__content {
+  padding-block: 0.45rem;
+}
+
+.presentation-stage[data-family="b"] .presentation-visual figcaption {
+  padding-block: 0.38rem;
+  font-size: 0.74rem;
+  line-height: 1.2;
+}
+
+.presentation-stage[data-family="b"] .mission-board .scene-frame__content {
+  gap: 0.3rem 0.8rem;
+}
+
+.presentation-stage[data-family="b"] .mission-board__header {
+  padding-block-end: 0.18rem;
+}
+
+.presentation-stage[data-family="b"] .mission-board__duration strong {
+  font-size: 0.9rem;
+}
+
+.presentation-stage[data-family="b"] .mission-board__actions {
+  gap: 0.2rem;
+}
+
+.presentation-stage[data-family="b"] .mission-board__steps {
+  gap: 0.12rem;
+}
+
+.presentation-stage[data-family="b"] .mission-board__steps li {
+  grid-template-columns: 1.45rem minmax(0, 1fr);
+  gap: 0.25rem;
+  font-size: 0.66rem;
+  line-height: 1.08;
+}
+
+.presentation-stage[data-family="b"] .mission-board__outcome {
+  gap: 0.3rem;
+  padding-inline-start: 0.55rem;
+  font-size: 0.62rem;
+  line-height: 1.1;
+}
+
+.presentation-stage[data-family="b"] .mission-board__outcome dt {
+  font-size: 0.54rem;
+}
+
+.presentation-stage[data-family="b"] .mission-board__outcome ul {
+  gap: 0.1rem;
+  padding-inline-start: 0.8rem;
+}
+
+.presentation-stage[data-family="b"] .checkpoint-scene .scene-frame__content {
+  gap: 0.75rem;
+}
+
+.presentation-stage[data-family="b"] .checkpoint-scene__checklist legend {
+  margin-block-end: 0.2rem;
+  font-size: 0.78rem;
+}
+
+.presentation-stage[data-family="b"] .checkpoint-scene__checklist ul {
+  grid-template-columns: 1fr 1fr;
+  column-gap: 0.55rem;
+}
+
+.presentation-stage[data-family="b"] .checkpoint-scene__checklist li {
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.3rem;
+  min-block-size: 1.65rem;
+  padding-block: 0.08rem;
+  font-size: 0.62rem;
+  line-height: 1.08;
+}
+
+.presentation-stage[data-family="b"] .checkpoint-scene__checklist input {
+  inline-size: 0.9rem;
+  block-size: 0.9rem;
+}
+
+.presentation-stage[data-family="b"] .checkpoint-scene__status {
+  grid-column: 2;
+  font-size: 0.52rem;
+}
+
+.presentation-stage[data-family="b"] .checkpoint-scene__outcome,
+.presentation-stage[data-family="b"] .checkpoint-scene__details {
+  gap: 0.3rem;
+}
+
+.presentation-stage[data-family="b"] .checkpoint-scene__criterion {
+  padding-inline-start: 0.55rem;
+  font-size: 0.68rem;
+  line-height: 1.12;
+}
+
+.presentation-stage[data-family="b"] .checkpoint-scene__details {
+  grid-template-columns: 1fr 1fr;
+  padding-inline-start: 0.55rem;
+  font-size: 0.58rem;
+  line-height: 1.08;
+}
+
+.presentation-stage[data-family="b"] .checkpoint-scene__details div {
+  padding-block-start: 0.2rem;
+}
+
+.presentation-stage[data-family="b"] .checkpoint-scene__details dt {
+  font-size: 0.52rem;
+}
+
+.presentation-stage[data-family="b"] .checkpoint-scene__details ul {
+  padding-inline-start: 0.8rem;
+}
+
 .resource-rail {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
