@@ -81,4 +81,3 @@
 - [ ] Sweeper les 33 routes à 390×844 et vérifier l’absence d’overflow horizontal.
 - [ ] Compléter le rapport avec les exceptions et métriques.
 - [ ] Committer avec `fix: rendre le bloc B lisible au projecteur`.
-

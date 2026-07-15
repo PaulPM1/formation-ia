@@ -34,4 +34,3 @@ refuse les déclarations de police visibles inférieures aux planchers et exige
 les tokens B. Le contrôle final comprend tests, build, `git diff --check`, puis
 un sweep des 33 routes à 1280×720 et 390×844 avec comparaison des dimensions
 client/scroll.
-
