@@ -346,3 +346,54 @@ test('les visuels du bloc B gardent un état final sans JS et des contrôles nat
     assert.doesNotMatch(file, /onclick=/);
   }
 });
+
+test('le bloc B impose un plancher typographique lisible au vidéoprojecteur', async () => {
+  const componentNames = [
+    'SetupDiagnostic', 'PromptBuilder', 'ArtifactTestLoop',
+    'PacteWorkspace', 'IpmtrLoop', 'WorkspaceTriptych',
+  ];
+  const components = await Promise.all(componentNames.map(async (name) => ({
+    name,
+    source: await read(`src/components/presentation/visuals/b/${name}.astro`),
+  })));
+  const presentation = await read('src/styles/presentation.css');
+  const familyBStart = presentation.indexOf('.presentation-stage[data-family="b"]');
+  const familyB = presentation.slice(
+    familyBStart,
+    presentation.indexOf('.resource-rail {', familyBStart),
+  );
+
+  const undersized = (name: string, source: string) => source.split('\n').flatMap((line, index) => {
+    if (!/\bfont(?:-size)?\s*:/.test(line)) return [];
+    const declarations = Array.from(line.matchAll(/\bfont(?:-size)?\s*:\s*([^;}]+)/g));
+    return declarations.flatMap((declaration) => Array.from(
+      declaration[1].matchAll(/(?<![-\w])(0?\.\d+|\d+(?:\.\d+)?)rem\b/g),
+    )
+      .filter((match) => Number(match[1]) < 0.7)
+      .map((match) => `${name}:${index + 1}:${match[0]}:${line.trim()}`));
+  });
+
+  assert.deepEqual([
+    ...undersized('presentation.css#family-b', familyB),
+    ...components.flatMap(({ name, source }) => undersized(name, source)),
+  ], [], 'aucun texte HTML visible du bloc B ne doit descendre sous .70rem');
+
+  assert.match(familyB, /--b-font-meta:\s*0\.70rem/);
+  assert.match(familyB, /--b-font-control:\s*0\.75rem/);
+  assert.match(familyB, /--b-font-body:\s*0\.80rem/);
+
+  const source = Object.fromEntries(components.map((component) => [component.name, component.source]));
+  assert.match(familyB, /\.mission-board__steps li\s*{[^}]*font-size:\s*var\(--b-font-body\)/s);
+  assert.match(familyB, /\.checkpoint-scene__checklist li\s*{[^}]*font-size:\s*var\(--b-font-body\)/s);
+  assert.match(source.ArtifactTestLoop, /\.artifact__stage-buttons button\s*{[^}]*var\(--b-font-control\)/s);
+  assert.match(source.ArtifactTestLoop, /\.artifact__panels article strong\s*{[^}]*var\(--b-font-body\)/s);
+  assert.match(source.SetupDiagnostic, /\.setup__checklist label\s*{[^}]*var\(--b-font-control\)/s);
+  assert.match(source.IpmtrLoop, /\.ipmtr__gates label\s*{[^}]*var\(--b-font-control\)/s);
+
+  const allowedSvgPxSelectors = /(?:route|map|workspace|orbit|diagram|loop|gate-marker|transfer|anatomy|scope)/;
+  for (const { name, source: component } of components) {
+    for (const match of component.matchAll(/([^{}]+)\{([^{}]*\bfont\s*:[^;}]*\b\d+px\b[^{}]*)\}/g)) {
+      assert.match(match[1], allowedSvgPxSelectors, `${name}: les tailles px sont réservées au texte SVG`);
+    }
+  }
+});

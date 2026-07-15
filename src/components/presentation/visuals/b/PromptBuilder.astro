@@ -104,41 +104,44 @@ const staticResult = variant === 'comparison' ? String(data.after ?? '') : promp
   .prompt { min-block-size: 0; }
   .prompt__construction { display: grid; grid-template-columns: minmax(10rem, .32fr) 1fr; gap: .55rem 1.15rem; align-content: center; }
   .prompt__construction > blockquote { grid-row: 1 / 4; align-self: center; display: grid; gap: .3rem; margin: 0; padding: .8rem; border-inline-start: .35rem solid #ed6a46; font: 750 clamp(1rem, 2vw, 1.45rem)/1.05 var(--font-display); }
-  .prompt__construction > blockquote span { color: var(--presentation-muted); font: 600 .6rem var(--font-mono); text-transform: uppercase; }
+  .prompt__construction > blockquote span { color: var(--presentation-muted); font: 600 var(--b-font-meta) var(--font-mono); text-transform: uppercase; }
   .prompt__blocks { display: grid; grid-template-columns: repeat(4, 1fr); gap: .45rem; }
-  .prompt__blocks button { position: relative; display: grid; grid-template-columns: auto 1fr; gap: .12rem .4rem; min-block-size: 6.2rem; padding: .55rem .5rem .45rem; border: 1px solid var(--presentation-ink); border-block-start: .4rem solid var(--family-accent); background: var(--presentation-surface); color: var(--presentation-ink); text-align: start; cursor: pointer; box-shadow: .28rem .28rem 0 color-mix(in srgb, var(--family-accent), transparent 35%); transition: transform 150ms ease, box-shadow 150ms ease, opacity 150ms ease; }
+  .prompt__blocks button { position: relative; display: grid; grid-template-columns: auto 1fr; gap: .1rem .35rem; min-block-size: 6rem; padding: .45rem .42rem .38rem; border: 1px solid var(--presentation-ink); border-block-start: .4rem solid var(--family-accent); background: var(--presentation-surface); color: var(--presentation-ink); text-align: start; cursor: pointer; box-shadow: .28rem .28rem 0 color-mix(in srgb, var(--family-accent), transparent 35%); transition: transform 150ms ease, box-shadow 150ms ease, opacity 150ms ease; }
   .prompt__blocks button:nth-child(2) { border-block-start-color: #72af80; }
   .prompt__blocks button:nth-child(3) { border-block-start-color: #ed6a46; }
   .prompt__blocks button:nth-child(4) { border-block-start-color: #b79bca; }
   .prompt__blocks button:not([aria-pressed='true']) { opacity: .48; box-shadow: none; transform: translate(.2rem, .2rem); }
   .prompt__blocks button:disabled { cursor: default; opacity: 1; }
-  .prompt__blocks button > span { color: var(--presentation-muted); font: .58rem var(--font-mono); }
+  .prompt__blocks button > span { color: var(--presentation-muted); font: var(--b-font-meta) var(--font-mono); }
   .prompt__blocks strong { font: 760 .83rem var(--font-display); }
-  .prompt__blocks small { grid-column: 1 / -1; font-size: .64rem; font-style: normal; line-height: 1.12; }
+  .prompt__blocks small { grid-column: 1 / -1; font-size: var(--b-font-body); font-style: normal; line-height: 1.1; }
   .prompt__blocks i { position: absolute; inset-block-end: .22rem; inset-inline-end: .32rem; font: 700 1rem var(--font-mono); }
-  .prompt__join { display: grid; grid-template-columns: 1fr auto 1fr; gap: .55rem; align-items: center; color: var(--presentation-muted); font: 600 .58rem var(--font-mono); text-transform: uppercase; }
+  .prompt__join { display: grid; grid-template-columns: 1fr auto 1fr; gap: .45rem; align-items: center; color: var(--presentation-muted); font: 600 var(--b-font-meta) var(--font-mono); text-transform: uppercase; }
   .prompt__join span { block-size: 1px; background: var(--presentation-line); }
-  .prompt__result { display: block; min-block-size: 3rem; padding: .65rem .8rem; border: 1px solid var(--presentation-ink); background: color-mix(in srgb, var(--family-accent), var(--presentation-surface) 88%); font: 720 clamp(.72rem, 1.2vw, .9rem)/1.25 var(--font-display); }
-  .prompt__relation-status { grid-column: 2; margin: -.15rem 0 0; color: var(--presentation-muted); font: .57rem/1.15 var(--font-mono); }
+  .prompt__result { display: block; min-block-size: 3rem; padding: .55rem .7rem; border: 1px solid var(--presentation-ink); background: color-mix(in srgb, var(--family-accent), var(--presentation-surface) 88%); font: 720 clamp(var(--b-font-body), 1.2vw, .9rem)/1.22 var(--font-display); }
+  .prompt__relation-status { grid-column: 2; margin: -.15rem 0 0; color: var(--presentation-muted); font: var(--b-font-control)/1.15 var(--font-mono); }
   .prompt__preview { grid-column: 2; display: grid; grid-template-columns: repeat(5, 1fr); margin: 0; padding: 0; list-style: none; }
-  .prompt__preview li { display: grid; gap: .1rem; padding: .3rem; border-inline-start: 1px solid var(--presentation-line); font-size: .61rem; font-weight: 700; }
-  .prompt__preview li span { color: var(--presentation-muted); font: .55rem var(--font-mono); }
+  .prompt__preview li { display: grid; gap: .08rem; padding: .25rem; border-inline-start: 1px solid var(--presentation-line); font-size: var(--b-font-body); font-weight: 700; }
+  .prompt__preview li span { color: var(--presentation-muted); font: var(--b-font-meta) var(--font-mono); }
   .prompt__loop { display: grid; grid-template-columns: 1.25fr minmax(13rem, .75fr); gap: 1rem; align-items: center; }
   .prompt__loop svg { inline-size: 100%; overflow: visible; }
   .prompt__loop path { fill: none; stroke: var(--presentation-ink); stroke-width: 5; stroke-linecap: round; }
   .prompt__loop circle { fill: var(--presentation-surface); stroke: var(--presentation-ink); stroke-width: 4; }
   .prompt__loop g:last-of-type circle { fill: var(--family-accent); }
+  /* Exception : texte SVG dimensionné dans le viewBox, pas dans le flux HTML. */
   .prompt__loop text { fill: var(--presentation-ink); font: 700 14px var(--font-mono); }
   .prompt__loop .prompt__loop-label { font: 700 14px var(--font-display); }
   .prompt__loop-proof { display: grid; gap: .5rem; }
-  .prompt__loop-proof p { display: grid; gap: .12rem; margin: 0; padding: .5rem .65rem; border-block-start: 1px solid var(--presentation-line); font-size: .72rem; line-height: 1.14; }
-  .prompt__loop-proof span { color: var(--presentation-muted); font: 600 .58rem var(--font-mono); text-transform: uppercase; }
+  .prompt__loop-proof p { display: grid; gap: .1rem; margin: 0; padding: .42rem .55rem; border-block-start: 1px solid var(--presentation-line); font-size: var(--b-font-body); line-height: 1.14; }
+  .prompt__loop-proof span { color: var(--presentation-muted); font: 600 var(--b-font-meta) var(--font-mono); text-transform: uppercase; }
   .prompt__loop-proof strong { font: 760 .9rem var(--font-display); }
   button:focus-visible { outline: .22rem solid var(--presentation-focus); outline-offset: .18rem; }
   @media (max-width: 48rem) {
     .prompt__construction, .prompt__loop { grid-template-columns: 1fr; }
     .prompt__construction > blockquote { grid-row: auto; }
     .prompt__blocks { grid-template-columns: 1fr 1fr; }
+    .prompt__blocks button { box-shadow: inset 0 -.2rem 0 color-mix(in srgb, var(--family-accent), transparent 35%); }
+    .prompt__blocks button:not([aria-pressed='true']) { transform: none; }
     .prompt__preview { grid-column: 1; }
     .prompt__relation-status { grid-column: 1; }
   }

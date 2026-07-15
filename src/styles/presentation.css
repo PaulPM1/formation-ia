@@ -427,8 +427,14 @@ a {
   margin: 0;
 }
 
-/* Les claims du bloc B sont volontairement longs : cette densité conserve la
-   scène entière dans le cadre 16:9 sans retirer d’information. */
+/* Les claims du bloc B sont volontairement longs : les trois rôles ci-dessous
+   gardent leur hiérarchie au vidéoprojecteur, sans retirer d’information. */
+.presentation-stage[data-family="b"] {
+  --b-font-meta: 0.70rem;
+  --b-font-control: 0.75rem;
+  --b-font-body: 0.80rem;
+}
+
 .presentation-stage[data-family="b"] .scene-frame__content {
   padding-block: 0.45rem;
 }
@@ -440,7 +446,9 @@ a {
 }
 
 .presentation-stage[data-family="b"] .mission-board .scene-frame__content {
-  gap: 0.3rem 0.8rem;
+  grid-template-columns: minmax(0, 1.35fr) minmax(20rem, 0.65fr);
+  gap: 0.25rem 0.7rem;
+  padding-block: 0.35rem;
 }
 
 .presentation-stage[data-family="b"] .mission-board__header {
@@ -460,21 +468,22 @@ a {
 }
 
 .presentation-stage[data-family="b"] .mission-board__steps li {
-  grid-template-columns: 1.45rem minmax(0, 1fr);
-  gap: 0.25rem;
-  font-size: 0.66rem;
-  line-height: 1.08;
+  grid-template-columns: 1.3rem minmax(0, 1fr);
+  gap: 0.2rem;
+  font-size: var(--b-font-body);
+  line-height: 1.12;
 }
 
 .presentation-stage[data-family="b"] .mission-board__outcome {
-  gap: 0.3rem;
-  padding-inline-start: 0.55rem;
-  font-size: 0.62rem;
-  line-height: 1.1;
+  gap: 0.24rem;
+  padding-inline-start: 0.5rem;
+  font-size: var(--b-font-body);
+  line-height: 1.12;
 }
 
 .presentation-stage[data-family="b"] .mission-board__outcome dt {
-  font-size: 0.54rem;
+  margin-block-end: 0.18rem;
+  font-size: var(--b-font-meta);
 }
 
 .presentation-stage[data-family="b"] .mission-board__outcome ul {
@@ -483,7 +492,8 @@ a {
 }
 
 .presentation-stage[data-family="b"] .checkpoint-scene .scene-frame__content {
-  gap: 0.75rem;
+  grid-template-columns: minmax(0, 1.35fr) minmax(20rem, 0.65fr);
+  gap: 0.6rem;
 }
 
 .presentation-stage[data-family="b"] .checkpoint-scene__checklist legend {
@@ -498,11 +508,11 @@ a {
 
 .presentation-stage[data-family="b"] .checkpoint-scene__checklist li {
   grid-template-columns: auto minmax(0, 1fr);
-  gap: 0.3rem;
-  min-block-size: 1.65rem;
+  gap: 0.25rem;
+  min-block-size: 1.8rem;
   padding-block: 0.08rem;
-  font-size: 0.62rem;
-  line-height: 1.08;
+  font-size: var(--b-font-body);
+  line-height: 1.12;
 }
 
 .presentation-stage[data-family="b"] .checkpoint-scene__checklist input {
@@ -512,7 +522,7 @@ a {
 
 .presentation-stage[data-family="b"] .checkpoint-scene__status {
   grid-column: 2;
-  font-size: 0.52rem;
+  font-size: var(--b-font-control);
 }
 
 .presentation-stage[data-family="b"] .checkpoint-scene__outcome,
@@ -521,16 +531,17 @@ a {
 }
 
 .presentation-stage[data-family="b"] .checkpoint-scene__criterion {
-  padding-inline-start: 0.55rem;
-  font-size: 0.68rem;
-  line-height: 1.12;
+  padding-inline-start: 0.5rem;
+  font-size: var(--b-font-body);
+  line-height: 1.15;
 }
 
 .presentation-stage[data-family="b"] .checkpoint-scene__details {
   grid-template-columns: 1fr 1fr;
-  padding-inline-start: 0.55rem;
-  font-size: 0.58rem;
-  line-height: 1.08;
+  gap: 0.25rem;
+  padding-inline-start: 0.5rem;
+  font-size: var(--b-font-body);
+  line-height: 1.12;
 }
 
 .presentation-stage[data-family="b"] .checkpoint-scene__details div {
@@ -538,7 +549,7 @@ a {
 }
 
 .presentation-stage[data-family="b"] .checkpoint-scene__details dt {
-  font-size: 0.52rem;
+  font-size: var(--b-font-meta);
 }
 
 .presentation-stage[data-family="b"] .checkpoint-scene__details ul {
@@ -781,6 +792,11 @@ dialog button,
   .mission-board .scene-frame__content,
   .checkpoint-scene .scene-frame__content {
     grid-template-columns: 1fr;
+  }
+
+  .presentation-stage[data-family="b"] .mission-board .scene-frame__content,
+  .presentation-stage[data-family="b"] .checkpoint-scene .scene-frame__content {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .presentation-visual {

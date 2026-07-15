@@ -136,35 +136,36 @@ const windowsExpected = commands.find((item) => /Windows/i.test(item.shell))?.ex
   .triptych__workspace rect { fill: var(--presentation-surface); stroke: var(--presentation-ink); stroke-width: 3; }
   .triptych__workspace circle { fill: var(--presentation-surface); stroke: var(--presentation-ink); stroke-width: 4; transition: fill 160ms ease; }
   .triptych__workspace g:first-of-type circle, .triptych__workspace g.is-active circle { fill: var(--family-accent); }
+  /* Exception : texte SVG dimensionné dans le viewBox, pas dans le flux HTML. */
   .triptych__workspace text { fill: var(--presentation-ink); font: 650 13px var(--font-mono); }
   .triptych__workspace g text { font: 800 15px var(--font-display); }
   .triptych__workspace .triptych__pane-title { font: 760 14px var(--font-display); }
   .triptych__context-labels { display: grid; gap: .5rem; }
   .triptych__shared, .triptych__destination { display: grid; gap: .18rem; margin: 0; padding-inline-start: .65rem; border-inline-start: .3rem solid var(--family-accent); font: 750 .72rem/1.1 var(--display-font); overflow-wrap: anywhere; }
   .triptych__destination { border-color: #ed6a46; }
-  .triptych__shared span, .triptych__destination span { color: var(--presentation-muted); font: .56rem var(--font-mono); text-transform: uppercase; }
+  .triptych__shared span, .triptych__destination span { color: var(--presentation-muted); font: var(--b-font-meta) var(--font-mono); text-transform: uppercase; }
   .triptych__panes { display: grid; grid-template-columns: minmax(7rem, .42fr) 1fr; gap: .55rem; }
   .triptych__pane-buttons { display: grid; align-content: center; }
-  .triptych__pane-buttons button { display: grid; grid-template-columns: 1.4rem 1fr; gap: .35rem; min-block-size: 2.6rem; padding: .35rem; border: 0; border-block-start: 1px solid var(--presentation-line); background: transparent; color: var(--presentation-ink); font: 720 .68rem var(--font-display); text-align: start; cursor: pointer; }
+  .triptych__pane-buttons button { display: grid; grid-template-columns: 1.4rem 1fr; gap: .3rem; min-block-size: 2.6rem; padding: .3rem; border: 0; border-block-start: 1px solid var(--presentation-line); background: transparent; color: var(--presentation-ink); font: 720 var(--b-font-control) var(--font-display); text-align: start; cursor: pointer; }
   .triptych__pane-buttons button[aria-pressed='true'] { border-block-start-width: .3rem; border-color: var(--family-accent); background: color-mix(in srgb, var(--family-accent), transparent 86%); }
-  .triptych__pane-buttons span { color: var(--presentation-muted); font: .56rem var(--font-mono); }
+  .triptych__pane-buttons span { color: var(--presentation-muted); font: var(--b-font-meta) var(--font-mono); }
   .triptych__pane-panels { display: grid; gap: .4rem; }
   .triptych__pane-panels article { display: grid; gap: .2rem; min-block-size: 4.5rem; padding: .55rem .65rem; border: 1px solid var(--presentation-line); border-block-start: .3rem solid var(--family-accent); background: var(--presentation-surface); }
-  .triptych__pane-panels p { margin: 0; color: var(--presentation-muted); font: .57rem var(--font-mono); text-transform: uppercase; }
+  .triptych__pane-panels p { margin: 0; color: var(--presentation-muted); font: var(--b-font-meta) var(--font-mono); text-transform: uppercase; }
   .triptych__pane-panels strong { font: 740 .78rem/1.15 var(--font-display); }
   .triptych__open, .triptych__path { display: grid; gap: .5rem; }
   .triptych__folder { display: grid; gap: .15rem; padding: .6rem; border-inline-start: .35rem solid var(--family-accent); }
-  .triptych__folder span, .triptych__explorer-path span { color: var(--presentation-muted); font: .56rem var(--font-mono); text-transform: uppercase; }
+  .triptych__folder span, .triptych__explorer-path span { color: var(--presentation-muted); font: var(--b-font-meta) var(--font-mono); text-transform: uppercase; }
   .triptych__folder strong { font: 760 1.1rem var(--font-display); }
   .triptych__folder code { font-size: .7rem; }
   .triptych__platforms { display: grid; grid-template-columns: 1fr 1fr; gap: .3rem; }
-  .triptych__platforms button { min-block-size: 2.5rem; padding: .35rem; border: 1px solid var(--presentation-ink); background: var(--presentation-surface); color: var(--presentation-ink); font: 700 .66rem var(--font-display); cursor: pointer; }
+  .triptych__platforms button { min-block-size: 2.5rem; padding: .3rem; border: 1px solid var(--presentation-ink); background: var(--presentation-surface); color: var(--presentation-ink); font: 700 var(--b-font-control) var(--font-display); cursor: pointer; }
   .triptych__platforms button[aria-pressed='true'] { background: var(--family-accent); box-shadow: inset 0 -.25rem 0 var(--presentation-ink); }
   .triptych__commands-static { display: grid; grid-template-columns: 1fr 1fr; gap: .35rem; }
   .triptych__commands-static p { display: grid; gap: .2rem; margin: 0; padding: .45rem; border: 1px solid var(--presentation-line); }
-  .triptych__commands-static span, .triptych__commands-static small { color: var(--presentation-muted); font: .56rem var(--font-mono); }
+  .triptych__commands-static span, .triptych__commands-static small { color: var(--presentation-muted); font: var(--b-font-meta) var(--font-mono); }
   .triptych__command-output, .triptych__terminal-result { display: block; padding: .65rem .75rem; border: 1px solid var(--presentation-ink); background: var(--presentation-ink); color: var(--presentation-surface); font: 700 .82rem var(--font-mono); }
-  .triptych__trust, .triptych__mismatch { margin: 0; padding-inline-start: .6rem; border-inline-start: .3rem solid #72af80; font-size: .67rem; font-weight: 720; }
+  .triptych__trust, .triptych__mismatch { margin: 0; padding-inline-start: .55rem; border-inline-start: .3rem solid #72af80; font-size: var(--b-font-body); font-weight: 720; }
   .triptych__explorer-path { display: grid; gap: .15rem; margin: 0; padding: .5rem .6rem; border-inline-start: .35rem solid var(--family-accent); font: 760 .9rem var(--font-display); }
   .triptych__terminal-result { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
   .triptych__terminal-result strong { color: var(--family-accent); }

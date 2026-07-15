@@ -81,3 +81,23 @@
   - `b2-correction` : mêmes métriques `140/140` et `1045/1045` ;
   - `b1-vague` : l’output reste strictement égal à `data-prompt-target` à l’état initial et après chacun des quatre toggles, soit 5/5 états fidèles au manifeste ;
   - `b4-ipmtr` : le premier cycle bloque puis consomme permission, test et diff ; au second cycle, `I → P` rebloque permission et les trois checkboxes sont à `false`.
+
+## Fix pass 3 — lisibilité vidéoprojecteur du bloc B
+
+- Trois rôles typographiques communs structurent désormais toutes les scènes B : métadonnées et labels à `0.70rem`, contrôles, preuves et statuts à `0.75rem`, corps de texte à `0.80rem`.
+- Missions et checkpoints partagés ont été recomposés avec des colonnes, espacements et paddings plus sobres. Aucun contenu, aucune route et aucune slide supplémentaire n’ont été introduits.
+- Les six composants spécialisés utilisent les mêmes rôles. Les boutons Artifact, les choix Setup et les portes I.P.M.T.R. ne dépendent plus de micro-texte ; les titres gardent une taille supérieure au corps.
+- Seule exception au plancher `rem` : le texte contenu dans les SVG (`route`, `loop`, `orbit`, `map`, `diagram`, `workspace`) reste en pixels, car il est dimensionné dans le `viewBox` et non dans le flux HTML. Chaque exception est commentée dans le composant concerné.
+- Sur mobile, les missions/checkpoints B réaffirment une colonne fluide `minmax(0, 1fr)` et PromptBuilder remplace translation/ombre sortante par un état visuel interne. Le contenu reste intact sans créer de débordement.
+
+### Garde-fou et vérification
+
+- RED observé : le test `le bloc B impose un plancher typographique lisible au vidéoprojecteur` recensait 60 déclarations HTML sous `0.70rem` dans les six composants spécialisés.
+- GREEN ciblé : le garde-fou contrôle les trois tokens, les rôles critiques et interdit les tailles en pixels hors sélecteurs SVG documentés.
+- Vérification fraîche : `npm test` — 56/56 sous-tests réussis.
+- Build frais : `npm run build` — contenu valide et 104 pages générées.
+- `git diff --check` propre ; aucun fichier du bloc C modifié.
+- Sweep navigateur final du workspace partagé :
+  - 33/33 routes à 1280×720 sans overflow horizontal ou vertical sur `.presentation-visual`, `.scene-frame__content` et leurs enfants rendus ;
+  - 33/33 routes à 390×844 sans overflow horizontal sur les mêmes surfaces, y compris `b1-builder`, `b1-four-blocks`, `b2-mission` et toutes les missions ;
+  - la barre `.presentation-controls` du shell conserve volontairement son propre défilement horizontal sticky à 390 px ; cette navigation globale, identique hors bloc B, ne provient pas des scènes Task 7.
