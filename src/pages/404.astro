@@ -22,17 +22,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
     </div>
   </section>
-</BaseLayout>
 
-<script>
-  if (location.pathname.startsWith('/presenter/')) {
-    const title = document.querySelector<HTMLElement>('[data-error-title]');
-    const eyebrow = document.querySelector<HTMLElement>('[data-error-eyebrow]');
-    const genericRecovery = document.querySelector<HTMLElement>('[data-generic-recovery]');
-    const presenterRecovery = document.querySelector<HTMLElement>('[data-presenter-recovery]');
-    if (title) title.textContent = 'Slide introuvable';
-    if (eyebrow) eyebrow.textContent = 'Présentation';
-    if (genericRecovery) genericRecovery.hidden = true;
-    if (presenterRecovery) presenterRecovery.hidden = false;
-  }
-</script>
+  <script>
+    if (location.pathname.startsWith('/presenter/')) {
+      const title = document.querySelector<HTMLElement>('[data-error-title]');
+      const eyebrow = document.querySelector<HTMLElement>('[data-error-eyebrow]');
+      const genericRecovery = document.querySelector<HTMLElement>('[data-generic-recovery]');
+      const presenterRecovery = document.querySelector<HTMLElement>('[data-presenter-recovery]');
+      if (title) title.textContent = 'Slide introuvable';
+      if (eyebrow) eyebrow.textContent = 'Présentation';
+      if (genericRecovery) genericRecovery.hidden = true;
+      if (presenterRecovery) presenterRecovery.hidden = false;
+    }
+  </script>
+</BaseLayout>

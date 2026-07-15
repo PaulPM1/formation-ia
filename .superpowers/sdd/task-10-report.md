@@ -23,14 +23,17 @@ Périmètre : revue globale du mode `/presenter`, 76 slides A1 à C3
   une URL générique conserve « Page introuvable ».
 - `astro check` fait partie du build. Le modèle et la validation d’exécution
   contrôlent familles A–F, identifiants, cohérence famille/brique/slide, rôles,
-  ordres positifs uniques, notes et durées formateur, contrats de liens, clé et
-  données visuelles, et unicité des decks/slides. Les 76 slides restent valides.
+  ordre exact des decks — contigu à partir de 1 et cohérent avec leur position
+  dans le tableau —, notes et durées formateur, contrats de liens, clé et données
+  visuelles, et unicité des decks/slides. Les 76 slides restent valides ; les
+  trous et les tableaux inversés disposent de messages actionnables.
 - Le bouton plein écran expose `aria-pressed="false"` dès le HTML, met à jour son
   état et son libellé sur `fullscreenchange`, puis annonce un refus de l’API dans
   la zone `aria-live` sans rejet non géré.
 - `scripts/qa-presenter.mjs` pérennise la recette navigateur : 76 mobiles,
   contrôles natifs, plein écran et rejet, 404, zoom A/B/C, mouvement réduit,
-  impression et inventaire des 77 pages du présentateur.
+  impression et inventaire des 77 pages du présentateur. La 404 est aussi
+  contrôlée sans JavaScript, avec son repli générique exact.
 
 ## Preuves fraîches
 

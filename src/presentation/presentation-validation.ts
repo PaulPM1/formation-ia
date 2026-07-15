@@ -29,7 +29,16 @@ export function validatePresentation(decks: PresentationDeck[]): string[] {
   const slideIds = new Set<string>();
   const deckOrders = new Set<number>();
 
-  for (const deck of decks) {
+  // The array is the authored pedagogical sequence: order must therefore be
+  // contiguous and match the deck's actual position, not merely be unique.
+  for (const [deckIndex, deck] of decks.entries()) {
+    const expectedOrder = deckIndex + 1;
+    if (deck.order !== expectedOrder) {
+      issues.push(
+        `Ordre de deck incohérent : ${deck.brickId} est en position ${expectedOrder} `
+        + `mais déclare ${String(deck.order)} ; ordre attendu : ${expectedOrder}.`,
+      );
+    }
     if (!brickIdPattern.test(deck.brickId)) {
       issues.push(`Identifiant de brique invalide : ${deck.brickId || '(vide)'}`);
     }

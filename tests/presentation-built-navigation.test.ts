@@ -27,7 +27,7 @@ test('le HTML généré expose la navigation active sur l’index et une slide',
       { cwd: projectDirectory },
     );
 
-    const [home, bricks, presenter, slide] = await Promise.all([
+    const [home, bricks, presenter, slide, notFound] = await Promise.all([
       readFile(path.join(outputDirectory, 'index.html'), 'utf8'),
       readFile(path.join(outputDirectory, 'briques/index.html'), 'utf8'),
       readFile(path.join(outputDirectory, 'presenter/index.html'), 'utf8'),
@@ -35,6 +35,7 @@ test('le HTML généré expose la navigation active sur l’index et une slide',
         outputDirectory,
         'presenter/a1/a1-opening/index.html',
       ), 'utf8'),
+      readFile(path.join(outputDirectory, '404.html'), 'utf8'),
     ]);
 
     for (const html of [presenter, slide]) {
@@ -54,6 +55,8 @@ test('le HTML généré expose la navigation active sur l’index et une slide',
       bricks,
       /href="\/presenter\/"[^>]*aria-current="page"/,
     );
+    assert.ok(notFound.indexOf('data-presenter-recovery') < notFound.lastIndexOf('</html>'));
+    assert.ok(notFound.lastIndexOf('<script') < notFound.lastIndexOf('</html>'));
   } finally {
     await rm(outputDirectory, { recursive: true, force: true });
   }

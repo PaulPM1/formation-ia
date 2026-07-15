@@ -54,6 +54,21 @@ test('rejette les familles, identifiants et ordres incohérents à l’exécutio
   assert.ok(validatePresentation([deck, { ...deck, brickId: 'a2', order: 1 }]).some((issue) => issue.includes('Ordre de brique dupliqué')));
 });
 
+test('rejette un trou dans la séquence des decks avec la position attendue', () => {
+  const second = { ...deck, brickId: 'a2', order: 99, slides: [{ ...deck.slides[0], id: 'a2-opening' }] };
+  const third = { ...deck, brickId: 'a3', order: 3, slides: [{ ...deck.slides[0], id: 'a3-opening' }] };
+  const issues = validatePresentation([deck, second, third]);
+  assert.ok(issues.some((issue) => issue.includes('a2') && issue.includes('position 2') && issue.includes('99')));
+});
+
+test('rejette des decks valides fournis dans l’ordre inverse', () => {
+  const first = { ...deck, order: 2 };
+  const second = { ...deck, brickId: 'a2', order: 1, slides: [{ ...deck.slides[0], id: 'a2-opening' }] };
+  const issues = validatePresentation([first, second]);
+  assert.ok(issues.some((issue) => issue.includes('a1') && issue.includes('position 1') && issue.includes('2')));
+  assert.ok(issues.some((issue) => issue.includes('a2') && issue.includes('position 2') && issue.includes('1')));
+});
+
 test('rejette une slide dont l’identité, le rôle ou le contrat visuel sont invalides', () => {
   assert.ok(validatePresentation([invalidSlide({ id: 'b1-opening' })]).some((issue) => issue.includes('n’appartient pas')));
   assert.ok(validatePresentation([invalidSlide({ role: 'quiz' })]).some((issue) => issue.includes('Rôle invalide')));

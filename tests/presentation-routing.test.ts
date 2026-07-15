@@ -53,6 +53,7 @@ test('la QA navigateur durable couvre navigation native, 404, plein écran et le
   assert.match(source, /keyboard\.press\('Enter'\)/);
   assert.match(source, /unknown-slide/);
   assert.match(source, /generic-unknown/);
+  assert.match(source, /javaScriptEnabled:\s*false/);
   assert.match(source, /aria-pressed/);
   assert.match(source, /fullscreenchange/);
 });

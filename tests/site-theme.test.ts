@@ -58,4 +58,9 @@ test('la 404 distingue les URL du présentateur après chargement sans mentir sa
   assert.match(notFound, /href="\/presenter\/"/);
   assert.match(notFound, /aria-live="polite"/);
   assert.match(notFound, /Slide introuvable/);
+  assert.ok(
+    notFound.indexOf("location.pathname.startsWith('/presenter/')") < notFound.lastIndexOf('</BaseLayout>'),
+    'le script de détection doit rester dans le document fourni par BaseLayout',
+  );
+  assert.doesNotMatch(notFound.slice(notFound.lastIndexOf('</BaseLayout>') + '</BaseLayout>'.length), /<script>/);
 });

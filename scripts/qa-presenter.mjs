@@ -153,6 +153,20 @@ try {
     if (!await controllerPage.locator('.error-copy a[href="/presenter/"]').isVisible()) failures.push(`${pathname} lien vers le sommaire absent`);
   }
 
+  const noScriptContext = await browser.newContext({
+    viewport: { width: 1280, height: 720 },
+    javaScriptEnabled: false,
+  });
+  const noScriptPage = await noScriptContext.newPage();
+  for (const pathname of ['/presenter/a9/unknown-slide/', '/generic-unknown/']) {
+    const response = await noScriptPage.goto(`${baseURL}${pathname}`, { waitUntil: 'load' });
+    if (response?.status() !== 404) failures.push(`${pathname} no-JS statut ${response?.status() ?? 'absent'} au lieu de 404`);
+    if ((await noScriptPage.locator('h1').textContent())?.trim() !== 'Page introuvable') failures.push(`${pathname} no-JS devrait conserver le message générique`);
+    if (!await noScriptPage.locator('.error-copy a[href="/presenter/"]').isVisible()) failures.push(`${pathname} no-JS lien vers le présentateur absent`);
+    if (await noScriptPage.locator('[data-presenter-recovery]').isVisible()) failures.push(`${pathname} no-JS affiche une détection non exécutée`);
+  }
+  await noScriptContext.close();
+
   for (const route of [
     '/presenter/a5/a5-risk/',
     '/presenter/b2/b2-tests/',
