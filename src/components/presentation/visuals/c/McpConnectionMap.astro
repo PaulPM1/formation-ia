@@ -59,10 +59,14 @@ const initialBoundaryLabel = variant === 'revoke'
         <path data-mcp-shackle d="M750 101 V91 A10 10 0 0 1 770 91 V101" />
         {nodes.slice(0, 4).map((node, index) => {
           const x = 95 + index * 270;
+          const words = node.name.split(' ');
+          const lines = words.length > 1
+            ? [words.slice(0, Math.ceil(words.length / 2)).join(' '), words.slice(Math.ceil(words.length / 2)).join(' ')]
+            : [node.name];
           return <g class="mcp-map__node" transform={`translate(${x} 129)`}>
-            <circle r="48" />
-            <text class="mcp-map__node-index" y="-9" text-anchor="middle">{String(index + 1).padStart(2, '0')}</text>
-            <text y="15" text-anchor="middle">{node.name}</text>
+            <circle r="58" />
+            <text class="mcp-map__node-index" y={lines.length > 1 ? -28 : -12} text-anchor="middle">{String(index + 1).padStart(2, '0')}</text>
+            <text y={lines.length > 1 ? -2 : 14} text-anchor="middle">{lines.map((line, lineIndex) => <tspan x="0" dy={lineIndex === 0 ? 0 : 23}>{line}</tspan>)}</text>
           </g>;
         })}
         <text class="mcp-map__direction" x="500" y="61" text-anchor="middle">DEMANDE →</text>
@@ -132,41 +136,44 @@ const initialBoundaryLabel = variant === 'revoke'
 
 <script>
   import { mcpBoundaryState } from './visual-state';
+  import { onPresenterPage } from '../../../../scripts/on-presenter-page';
 
-  document.querySelectorAll<HTMLElement>('[data-mcp-map]').forEach((scene) => {
-    scene.dataset.enhanced = 'true';
-    const status = scene.querySelector<HTMLOutputElement>('[data-mcp-status]');
-    const label = scene.querySelector<SVGTextElement>('[data-mcp-boundary-label]');
-    const renderBoundary = (revoked: boolean, minimal: boolean) => {
-      const state = mcpBoundaryState(revoked, minimal);
-      scene.dataset.boundaryState = state.connected ? (minimal ? 'minimal' : 'broad') : 'revoked';
-      if (status) status.innerHTML = `<strong>${state.boundary}</strong><span>${state.permission}</span>`;
-      if (label) label.textContent = state.connected
-        ? `FRONTIÈRE OUVERTE · ${minimal ? 'LECTURE SEULE' : 'PORTÉE LARGE'}`
-        : 'FRONTIÈRE FERMÉE · RÉVOQUÉE';
-    };
-    scene.querySelectorAll<HTMLButtonElement>('button').forEach((button) => { button.disabled = false; });
-    const follow = scene.querySelector<HTMLButtonElement>('[data-mcp-follow]');
-    follow?.addEventListener('click', () => {
-      scene.classList.remove('is-following');
-      requestAnimationFrame(() => scene.classList.add('is-following'));
-      if (status) status.innerHTML = '<strong>Aller : demande bornée</strong><span>Retour : résultat structuré à vérifier</span>';
+  onPresenterPage(() => {
+    document.querySelectorAll<HTMLElement>('[data-mcp-map]').forEach((scene) => {
+      scene.dataset.enhanced = 'true';
+      const status = scene.querySelector<HTMLOutputElement>('[data-mcp-status]');
+      const label = scene.querySelector<SVGTextElement>('[data-mcp-boundary-label]');
+      const renderBoundary = (revoked: boolean, minimal: boolean) => {
+        const state = mcpBoundaryState(revoked, minimal);
+        scene.dataset.boundaryState = state.connected ? (minimal ? 'minimal' : 'broad') : 'revoked';
+        if (status) status.innerHTML = `<strong>${state.boundary}</strong><span>${state.permission}</span>`;
+        if (label) label.textContent = state.connected
+          ? `FRONTIÈRE OUVERTE · ${minimal ? 'LECTURE SEULE' : 'PORTÉE LARGE'}`
+          : 'FRONTIÈRE FERMÉE · RÉVOQUÉE';
+      };
+      scene.querySelectorAll<HTMLButtonElement>('button').forEach((button) => { button.disabled = false; });
+      const follow = scene.querySelector<HTMLButtonElement>('[data-mcp-follow]');
+      follow?.addEventListener('click', () => {
+        scene.classList.remove('is-following');
+        requestAnimationFrame(() => scene.classList.add('is-following'));
+        if (status) status.innerHTML = '<strong>Aller : demande bornée</strong><span>Retour : résultat structuré à vérifier</span>';
+      });
+      scene.querySelectorAll<HTMLButtonElement>('[data-mcp-scope]').forEach((button) => button.addEventListener('click', () => {
+        const minimal = button.dataset.mcpScope === 'minimal';
+        scene.querySelectorAll<HTMLButtonElement>('[data-mcp-scope]').forEach((candidate) => candidate.setAttribute('aria-pressed', String(candidate === button)));
+        renderBoundary(false, minimal);
+      }));
+      const connect = scene.querySelector<HTMLButtonElement>('[data-mcp-connect]');
+      const revoke = scene.querySelector<HTMLButtonElement>('[data-mcp-revoke]');
+      connect?.addEventListener('click', () => { connect.setAttribute('aria-pressed', 'true'); revoke?.setAttribute('aria-pressed', 'false'); renderBoundary(false, true); });
+      revoke?.addEventListener('click', () => { revoke.setAttribute('aria-pressed', 'true'); connect?.setAttribute('aria-pressed', 'false'); renderBoundary(true, true); });
     });
-    scene.querySelectorAll<HTMLButtonElement>('[data-mcp-scope]').forEach((button) => button.addEventListener('click', () => {
-      const minimal = button.dataset.mcpScope === 'minimal';
-      scene.querySelectorAll<HTMLButtonElement>('[data-mcp-scope]').forEach((candidate) => candidate.setAttribute('aria-pressed', String(candidate === button)));
-      renderBoundary(false, minimal);
-    }));
-    const connect = scene.querySelector<HTMLButtonElement>('[data-mcp-connect]');
-    const revoke = scene.querySelector<HTMLButtonElement>('[data-mcp-revoke]');
-    connect?.addEventListener('click', () => { connect.setAttribute('aria-pressed', 'true'); revoke?.setAttribute('aria-pressed', 'false'); renderBoundary(false, true); });
-    revoke?.addEventListener('click', () => { revoke.setAttribute('aria-pressed', 'true'); connect?.setAttribute('aria-pressed', 'false'); renderBoundary(true, true); });
   });
 </script>
 
 <style>
   .mcp-map { --c-meta: var(--c-font-meta, .75rem); --c-body: var(--c-font-body, .82rem); display: grid; gap: .28rem; min-inline-size: 0; }
-  .mcp-map__system svg { inline-size: 100%; max-block-size: 7rem; overflow: visible; }
+  .mcp-map__system svg { inline-size: 100%; max-block-size: 10.5rem; overflow: visible; }
   .mcp-map__request, .mcp-map__response { fill: none; stroke: var(--presentation-ink); stroke-width: 6; stroke-linecap: round; }
   .mcp-map__response { stroke-dasharray: 12 8; }
   .mcp-map marker path { fill: var(--presentation-ink); }
@@ -174,8 +181,8 @@ const initialBoundaryLabel = variant === 'revoke'
   .mcp-map__system [data-mcp-lock] { fill: var(--family-accent); stroke: var(--presentation-ink); stroke-width: 3; }
   .mcp-map__system [data-mcp-shackle] { fill: none; stroke: var(--presentation-ink); stroke-width: 5; }
   .mcp-map__node circle { fill: var(--presentation-surface); stroke: var(--presentation-ink); stroke-width: 4; }
-  .mcp-map__node text { fill: var(--presentation-ink); font: 740 15px var(--font-display); }
-  .mcp-map__node .mcp-map__node-index, .mcp-map__direction, .mcp-map__boundary-label { fill: var(--presentation-ink); font: 720 12px var(--font-mono); }
+  .mcp-map__node text { fill: var(--presentation-ink); font: 740 19px var(--font-display); }
+  .mcp-map__node .mcp-map__node-index, .mcp-map__direction, .mcp-map__boundary-label { fill: var(--presentation-ink); font: 720 17px var(--font-mono); }
   .mcp-map[data-boundary-state='minimal'] [data-mcp-boundary] { stroke-width: 7; stroke-dasharray: 9 7; }
   .mcp-map[data-boundary-state='broad'] [data-mcp-boundary] { stroke-width: 17; stroke-dasharray: 2 5; }
   .mcp-map[data-boundary-state='broad'] [data-mcp-lock] { transform: scaleX(1.35); transform-origin: center; }

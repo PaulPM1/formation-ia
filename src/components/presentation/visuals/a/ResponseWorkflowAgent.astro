@@ -91,18 +91,22 @@ const modePanels = modes.map((mode) => ({ ...mode, steps: mode.path.split(/\s*â†
 </SceneFrame>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-rwa-scene]').forEach((scene) => {
-    const choices = Array.from(scene.querySelectorAll<HTMLInputElement>('[data-mode-choice]'));
-    const panels = Array.from(scene.querySelectorAll<HTMLElement>('[data-mode-panel]'));
-    scene.dataset.enhanced = 'true';
-    choices.forEach((choice) => {
-      choice.disabled = false;
-      choice.addEventListener('change', () => {
-        panels.forEach((panel) => { panel.hidden = panel.dataset.modePanel !== choice.value; });
+  import { onPresenterPage } from '../../../../scripts/on-presenter-page';
+
+  onPresenterPage(() => {
+    document.querySelectorAll<HTMLElement>('[data-rwa-scene]').forEach((scene) => {
+      const choices = Array.from(scene.querySelectorAll<HTMLInputElement>('[data-mode-choice]'));
+      const panels = Array.from(scene.querySelectorAll<HTMLElement>('[data-mode-panel]'));
+      scene.dataset.enhanced = 'true';
+      choices.forEach((choice) => {
+        choice.disabled = false;
+        choice.addEventListener('change', () => {
+          panels.forEach((panel) => { panel.hidden = panel.dataset.modePanel !== choice.value; });
+        });
       });
+      const active = choices.find((choice) => choice.checked)?.value ?? '0';
+      panels.forEach((panel) => { panel.hidden = panel.dataset.modePanel !== active; });
     });
-    const active = choices.find((choice) => choice.checked)?.value ?? '0';
-    panels.forEach((panel) => { panel.hidden = panel.dataset.modePanel !== active; });
   });
 </script>
 
@@ -152,7 +156,7 @@ const modePanels = modes.map((mode) => ({ ...mode, steps: mode.path.split(/\s*â†
   .rwa__lane input { inline-size: 1.1rem; block-size: 1.1rem; accent-color: var(--presentation-ink); }
   .rwa__shape { font-size: 1.25rem; font-weight: 800; }
   .rwa__lane strong { font-family: var(--font-display); font-size: clamp(0.9rem, 0.8rem + 0.25vw, 1.05rem); }
-  .rwa__lane small { grid-column: 4; color: var(--presentation-muted); font-size: 0.75rem; text-align: end; }
+  .rwa__lane small { grid-column: 4; color: var(--presentation-muted); font-size: 0.82rem; text-align: end; }
 
   .rwa__stage { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.55rem; }
   [data-enhanced='true'] .rwa__stage { display: block; }
@@ -166,7 +170,7 @@ const modePanels = modes.map((mode) => ({ ...mode, steps: mode.path.split(/\s*â†
     position: relative;
     display: grid;
     align-items: center;
-    min-block-size: 3.1rem;
+    min-block-size: clamp(4.5rem, 9vw, 7rem);
   }
 
   .rwa__path svg {
@@ -184,7 +188,7 @@ const modePanels = modes.map((mode) => ({ ...mode, steps: mode.path.split(/\s*â†
   .rwa__path svg > path {
     fill: none;
     stroke: color-mix(in srgb, var(--family-accent), var(--presentation-ink) 25%);
-    stroke-width: 5;
+    stroke-width: 3;
     vector-effect: non-scaling-stroke;
   }
 
@@ -200,21 +204,24 @@ const modePanels = modes.map((mode) => ({ ...mode, steps: mode.path.split(/\s*â†
     list-style: none;
   }
 
+  /* Pilules bornÃ©es : sans max-inline-size, une Ã©tape seule s'Ã©tire en
+     ellipse 5:1 illisible au projecteur. */
   .rwa__path li {
     display: grid;
-    gap: 0.25rem;
-    min-block-size: 2.8rem;
+    gap: 0.3rem;
+    min-block-size: clamp(3.6rem, 7vw, 5.2rem);
+    inline-size: min(100%, 13rem);
     place-content: center;
-    padding: 0.2rem 0.35rem;
-    border: 1px solid var(--presentation-ink);
-    border-radius: 50%;
-    aspect-ratio: 4.6;
+    margin-inline: auto;
+    padding: 0.4rem 0.9rem;
+    border: 2px solid var(--presentation-ink);
+    border-radius: 999px;
     background: var(--presentation-surface);
     text-align: center;
   }
 
-  .rwa__path li span { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.75rem; }
-  .rwa__path li strong { font-size: clamp(0.75rem, 0.75rem + 0.17vw, 0.82rem); line-height: 1.1; }
+  .rwa__path li span { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.85rem; }
+  .rwa__path li strong { font-size: clamp(0.95rem, 0.85rem + 0.4vw, 1.25rem); line-height: 1.12; }
 
   .rwa__guardrails {
     display: grid;
@@ -228,12 +235,12 @@ const modePanels = modes.map((mode) => ({ ...mode, steps: mode.path.split(/\s*â†
     padding-block-start: 0.25rem;
     border-block-start: 1px solid var(--presentation-line);
     overflow: hidden;
-    font-size: 0.75rem;
+    font-size: 0.82rem;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  .rwa__guardrails span { margin-inline-end: 0.45rem; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 750; text-transform: uppercase; }
+  .rwa__guardrails span { margin-inline-end: 0.45rem; font-family: var(--font-mono); font-size: 0.82rem; font-weight: 750; text-transform: uppercase; }
 
   @media (max-width: 52rem) {
     .rwa__lanes { grid-template-columns: 1fr; }
@@ -242,6 +249,6 @@ const modePanels = modes.map((mode) => ({ ...mode, steps: mode.path.split(/\s*â†
     .rwa__path svg { min-inline-size: 0; }
     .rwa__path ol { gap: 0.1rem; }
     .rwa__path li { min-block-size: 3.2rem; padding: 0.12rem; aspect-ratio: auto; }
-    .rwa__path li strong { font-size: 0.75rem; }
+    .rwa__path li strong { font-size: 0.82rem; }
   }
 </style>

@@ -1,4 +1,5 @@
 ---
+import { ClientRouter } from 'astro:transitions';
 import '../styles/presentation.css';
 
 interface Props {
@@ -29,6 +30,9 @@ const isPresentation = Astro.url.pathname.startsWith('/presenter');
       rel="stylesheet"
     />
     <title>{title}</title>
+    {/* Navigation client entre slides : le document n'est jamais déchargé,
+        donc le mode plein écran survit aux changements de slide. */}
+    <ClientRouter />
   </head>
   <body>
     <a class="skip-link" href="#slide-content">Aller au contenu de la slide</a>

@@ -108,60 +108,65 @@ const initialSelection = calculateContextSelection(meter.length, meter.map((item
 
 <script>
   import { calculateContextSelection, resolvePanelVisibility } from './visual-state';
+  import { onPresenterPage } from '../../../../scripts/on-presenter-page';
 
-  document.querySelectorAll<HTMLElement>('[data-context-budget]').forEach((scene) => {
-    const panelChoices = Array.from(scene.querySelectorAll<HTMLInputElement>('[data-panel-choice]'));
-    const panels = Array.from(scene.querySelectorAll<HTMLElement>('[data-panel]'));
-    if (panelChoices.length && panels.length) {
-      scene.dataset.enhanced = 'true';
-      const renderPanel = (active: number) => {
-        resolvePanelVisibility(panels.length, active, true).forEach((visible, index) => { panels[index].hidden = !visible; });
-      };
-      panelChoices.forEach((choice, index) => {
-        choice.disabled = false;
-        choice.addEventListener('change', () => renderPanel(index));
-      });
-      renderPanel(Math.max(0, panelChoices.findIndex((choice) => choice.checked)));
-    }
+  onPresenterPage(() => {
+    document.querySelectorAll<HTMLElement>('[data-context-budget]').forEach((scene) => {
+      const panelChoices = Array.from(scene.querySelectorAll<HTMLInputElement>('[data-panel-choice]'));
+      const panels = Array.from(scene.querySelectorAll<HTMLElement>('[data-panel]'));
+      if (panelChoices.length && panels.length) {
+        scene.dataset.enhanced = 'true';
+        const renderPanel = (active: number) => {
+          resolvePanelVisibility(panels.length, active, true).forEach((visible, index) => { panels[index].hidden = !visible; });
+        };
+        panelChoices.forEach((choice, index) => {
+          choice.disabled = false;
+          choice.addEventListener('change', () => renderPanel(index));
+        });
+        renderPanel(Math.max(0, panelChoices.findIndex((choice) => choice.checked)));
+      }
 
-    const meterChoices = Array.from(scene.querySelectorAll<HTMLInputElement>('[data-meter-choice]'));
-    const meter = scene.querySelector<HTMLMeterElement>('[data-context-meter]');
-    const output = scene.querySelector<HTMLOutputElement>('[data-context-output]');
-    if (meterChoices.length && meter && output) {
-      meterChoices.forEach((choice) => { choice.disabled = false; });
-      const renderMeter = () => {
-        const selection = calculateContextSelection(meterChoices.length, meterChoices.map((choice) => choice.checked));
-        meter.max = Math.max(1, selection.total);
-        meter.value = selection.included;
-        const strong = output.querySelector('strong');
-        const span = output.querySelector('span');
-        if (strong) strong.textContent = String(selection.included);
-        if (span) span.textContent = `sur ${selection.total} éléments inclus`;
-      };
-      meterChoices.forEach((choice) => choice.addEventListener('change', renderMeter));
-    }
+      const meterChoices = Array.from(scene.querySelectorAll<HTMLInputElement>('[data-meter-choice]'));
+      const meter = scene.querySelector<HTMLMeterElement>('[data-context-meter]');
+      const output = scene.querySelector<HTMLOutputElement>('[data-context-output]');
+      if (meterChoices.length && meter && output) {
+        meterChoices.forEach((choice) => { choice.disabled = false; });
+        const renderMeter = () => {
+          const selection = calculateContextSelection(meterChoices.length, meterChoices.map((choice) => choice.checked));
+          meter.max = Math.max(1, selection.total);
+          meter.value = selection.included;
+          const strong = output.querySelector('strong');
+          const span = output.querySelector('span');
+          if (strong) strong.textContent = String(selection.included);
+          if (span) span.textContent = `sur ${selection.total} éléments inclus`;
+        };
+        meterChoices.forEach((choice) => choice.addEventListener('change', renderMeter));
+      }
+    });
   });
 </script>
 
 <style>
-  .budget__scene { min-block-size: 100%; }
+  /* display:grid : sans lui, les sections enfants en min-block-size:100%
+     ne se résolvent pas et le contenu reste collé en haut du cadre. */
+  .budget__scene { display: grid; min-block-size: 100%; }
   .budget__layers, .budget__comparison, .budget__mission { display: grid; gap: clamp(0.5rem, 1.2vw, 0.9rem); align-content: center; min-block-size: 100%; }
   .budget__tabs { display: grid; grid-template-columns: repeat(3, 1fr); margin: 0; padding: 0; border: 0; }
   .budget__tabs legend, .budget__items legend, .budget__mission legend { margin-block-end: 0.45rem; font-family: var(--font-display); font-size: 1rem; font-weight: 720; }
   .budget__tabs label { display: grid; grid-template-columns: auto 1fr; gap: 0.05rem 0.45rem; padding: 0.35rem 0.55rem; border-block-start: 0.22rem solid var(--presentation-line); }
   .budget__tabs label:has(input:checked) { border-color: var(--family-accent); background: color-mix(in srgb, var(--family-accent), transparent 84%); }
   .budget__tabs input { grid-row: 1 / 3; align-self: center; inline-size: 1rem; block-size: 1rem; accent-color: var(--presentation-ink); }
-  .budget__tabs span { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.75rem; }
-  .budget__tabs strong { font-size: 0.82rem; }
+  .budget__tabs span { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.82rem; }
+  .budget__tabs strong { font-size: 0.9rem; }
   .budget__layer-panels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.7rem; }
   [data-enhanced='true'] .budget__layer-panels { grid-template-columns: 1fr; }
   .budget__layer-panels article { display: grid; grid-template-columns: minmax(7rem, .4fr) 1fr; gap: 0.8rem; padding: 0.7rem; border: 1px solid var(--presentation-line); background: var(--presentation-surface); }
   .budget__layer-panels h3, .budget__paths h3, .budget__mission h3 { margin: 0; font-family: var(--font-display); font-size: clamp(1rem, .85rem + .5vw, 1.35rem); }
   .budget__layer-panels dl { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin: 0; }
   .budget__layer-panels dl div { display: grid; gap: 0.1rem; }
-  .budget__layer-panels dt, .budget__paths small { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase; }
-  .budget__layer-panels dd { margin: 0; font-size: 0.78rem; line-height: 1.2; }
-  .budget__warning, .budget__relationship, .budget__factors, .budget__criterion { margin: 0; padding-inline-start: 0.7rem; border-inline-start: 0.28rem solid var(--family-accent); font-size: 0.78rem; font-weight: 680; }
+  .budget__layer-panels dt, .budget__paths small { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.82rem; text-transform: uppercase; }
+  .budget__layer-panels dd { margin: 0; font-size: 0.85rem; line-height: 1.2; }
+  .budget__warning, .budget__relationship, .budget__factors, .budget__criterion { display: flex; gap: 0.5rem; align-items: baseline; margin: 0; padding-inline-start: 0.7rem; border-inline-start: 0.28rem solid var(--family-accent); font-size: 0.9rem; font-weight: 680; }
 
   .budget__meter-layout { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(15rem, .65fr); gap: clamp(1rem, 3vw, 3rem); align-items: center; min-block-size: 100%; }
   .budget__items { margin: 0; padding: 0; border: 0; }
@@ -169,24 +174,24 @@ const initialSelection = calculateContextSelection(meter.length, meter.map((item
   .budget__items li { display: grid; grid-template-columns: auto 1fr; gap: 0.55rem; align-items: center; min-block-size: 2.4rem; padding-block: 0.2rem; border-block-start: 1px solid var(--presentation-line); }
   .budget__items input { inline-size: 1.15rem; block-size: 1.15rem; accent-color: var(--presentation-ink); }
   .budget__items label { display: grid; cursor: pointer; }
-  .budget__items strong { font-size: 0.82rem; }
-  .budget__items label span { color: var(--presentation-muted); font-size: 0.75rem; line-height: 1.15; }
+  .budget__items strong { font-size: 0.9rem; }
+  .budget__items label span { color: var(--presentation-muted); font-size: 0.82rem; line-height: 1.15; }
   .budget__items li:has(input:not(:checked)) label { opacity: .5; }
   .budget__count { display: grid; gap: .4rem; padding-inline-start: 1.2rem; border-inline-start: .35rem solid var(--family-accent); }
-  .budget__count meter { inline-size: 100%; block-size: 1.4rem; accent-color: var(--family-accent); }
+  .budget__count meter { inline-size: 100%; block-size: 2rem; accent-color: var(--family-accent); }
   .budget__count output { display: flex; gap: .5rem; align-items: baseline; }
   .budget__count output strong { font-family: var(--font-display); font-size: 2.6rem; line-height: .9; }
-  .budget__count output span { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.75rem; }
-  .budget__principle { display: flex; gap: .45rem; margin: .25rem 0 0; font-size: .78rem; font-weight: 680; }
+  .budget__count output span { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.82rem; }
+  .budget__principle { display: flex; gap: .45rem; margin: .25rem 0 0; font-size: .85rem; font-weight: 680; }
 
   .budget__paths { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
   .budget__paths article { padding: .65rem .8rem; border-block-start: .3rem solid var(--family-accent); background: var(--presentation-surface); }
   .budget__paths header { display: flex; gap: .6rem; align-items: baseline; }
-  .budget__paths header span { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.75rem; }
+  .budget__paths header span { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.82rem; }
   .budget__paths ol { display: grid; grid-template-columns: repeat(3, 1fr); gap: .55rem; margin: .55rem 0 0; padding: 0; list-style: none; }
   .budget__paths li { display: grid; gap: .15rem; position: relative; }
   .budget__paths li:not(:last-child)::after { position: absolute; inset-inline-end: -.35rem; content: '→'; color: var(--family-accent); }
-  .budget__paths strong { font-size: 0.75rem; line-height: 1.15; }
+  .budget__paths strong { font-size: 0.82rem; line-height: 1.15; }
   .budget__factors span { margin-inline-end: .7rem; color: var(--presentation-muted); font-family: var(--font-mono); }
 
   .budget__mission { grid-template-columns: minmax(13rem, .55fr) 1fr; column-gap: 1.4rem; }
@@ -195,8 +200,8 @@ const initialSelection = calculateContextSelection(meter.length, meter.map((item
   .budget__mission ol { display: grid; grid-template-columns: 1fr 1fr; gap: .35rem .8rem; margin: 0; padding: 0; list-style: none; }
   .budget__mission li { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: .45rem; padding: .35rem; border-block-start: 1px solid var(--presentation-line); }
   .budget__mission input { inline-size: 1.1rem; block-size: 1.1rem; accent-color: var(--presentation-ink); }
-  .budget__mission label { display: grid; grid-template-columns: 1.4rem 1fr; gap: .35rem; font-size: 0.75rem; font-weight: 680; line-height: 1.15; }
-  .budget__mission label span { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.75rem; }
+  .budget__mission label { display: grid; grid-template-columns: 1.4rem 1fr; gap: .35rem; font-size: 0.82rem; font-weight: 680; line-height: 1.15; }
+  .budget__mission label span { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.82rem; }
   .budget__criterion { grid-column: 1 / -1; }
 
   [data-panel][hidden] { display: none !important; }

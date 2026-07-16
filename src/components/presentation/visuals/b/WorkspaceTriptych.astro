@@ -85,61 +85,64 @@ const windowsExpected = commands.find((item) => /Windows/i.test(item.shell))?.ex
 
 <script>
   import { resolvePanelVisibility } from './visual-state';
+  import { onPresenterPage } from '../../../../scripts/on-presenter-page';
 
-  document.querySelectorAll<HTMLElement>('[data-workspace-triptych]').forEach((scene) => {
-    scene.dataset.enhanced = 'true';
-    const paneButtons = Array.from(scene.querySelectorAll<HTMLButtonElement>('[data-pane-button]'));
-    const panePanels = Array.from(scene.querySelectorAll<HTMLElement>('[data-pane-panel]'));
-    const nodes = Array.from(scene.querySelectorAll<SVGGElement>('[data-triptych-node]'));
-    if (paneButtons.length && panePanels.length) {
-      const renderPane = (active: number) => {
-        resolvePanelVisibility(panePanels.length, active, true).forEach((visible, index) => { panePanels[index].hidden = !visible; });
-        paneButtons.forEach((button, index) => button.setAttribute('aria-pressed', String(index === active)));
-        nodes.forEach((node, index) => node.classList.toggle('is-active', index === active));
+  onPresenterPage(() => {
+    document.querySelectorAll<HTMLElement>('[data-workspace-triptych]').forEach((scene) => {
+      scene.dataset.enhanced = 'true';
+      const paneButtons = Array.from(scene.querySelectorAll<HTMLButtonElement>('[data-pane-button]'));
+      const panePanels = Array.from(scene.querySelectorAll<HTMLElement>('[data-pane-panel]'));
+      const nodes = Array.from(scene.querySelectorAll<SVGGElement>('[data-triptych-node]'));
+      if (paneButtons.length && panePanels.length) {
+        const renderPane = (active: number) => {
+          resolvePanelVisibility(panePanels.length, active, true).forEach((visible, index) => { panePanels[index].hidden = !visible; });
+          paneButtons.forEach((button, index) => button.setAttribute('aria-pressed', String(index === active)));
+          nodes.forEach((node, index) => node.classList.toggle('is-active', index === active));
+        };
+        paneButtons.forEach((button, index) => { button.disabled = false; button.addEventListener('click', () => renderPane(index)); });
+        renderPane(0);
+      }
+
+      const platformButtons = Array.from(scene.querySelectorAll<HTMLButtonElement>('[data-platform-button]'));
+      const commandOutput = scene.querySelector<HTMLElement>('[data-command-output]');
+      const expectedOutput = scene.querySelector<HTMLElement>('[data-expected-output]');
+      const mac = scene.querySelector<HTMLElement>('[data-command-mac]')?.textContent?.trim() ?? '';
+      const windows = scene.querySelector<HTMLElement>('[data-command-windows]')?.textContent?.trim() ?? '';
+      const staticCommands = scene.querySelector<HTMLElement>('.triptych__commands-static');
+      if (!platformButtons.length || !commandOutput) return;
+      const expected = { mac: '/atelier-ia', windows: '\\atelier-ia' };
+      if (expectedOutput) {
+        const values = Array.from(scene.querySelectorAll<HTMLElement>('.triptych__commands-static small')).map((item) => item.textContent?.trim() ?? '');
+        expected.mac = values[0] || expected.mac;
+        expected.windows = values[1] || expected.windows;
+      }
+      const renderPlatform = (platform: 'mac' | 'windows') => {
+        commandOutput.textContent = platform === 'mac' ? mac : windows;
+        if (expectedOutput) expectedOutput.textContent = expected[platform];
+        platformButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.platformButton === platform)));
       };
-      paneButtons.forEach((button, index) => { button.disabled = false; button.addEventListener('click', () => renderPane(index)); });
-      renderPane(0);
-    }
-
-    const platformButtons = Array.from(scene.querySelectorAll<HTMLButtonElement>('[data-platform-button]'));
-    const commandOutput = scene.querySelector<HTMLElement>('[data-command-output]');
-    const expectedOutput = scene.querySelector<HTMLElement>('[data-expected-output]');
-    const mac = scene.querySelector<HTMLElement>('[data-command-mac]')?.textContent?.trim() ?? '';
-    const windows = scene.querySelector<HTMLElement>('[data-command-windows]')?.textContent?.trim() ?? '';
-    const staticCommands = scene.querySelector<HTMLElement>('.triptych__commands-static');
-    if (!platformButtons.length || !commandOutput) return;
-    const expected = { mac: '/atelier-ia', windows: '\\atelier-ia' };
-    if (expectedOutput) {
-      const values = Array.from(scene.querySelectorAll<HTMLElement>('.triptych__commands-static small')).map((item) => item.textContent?.trim() ?? '');
-      expected.mac = values[0] || expected.mac;
-      expected.windows = values[1] || expected.windows;
-    }
-    const renderPlatform = (platform: 'mac' | 'windows') => {
-      commandOutput.textContent = platform === 'mac' ? mac : windows;
-      if (expectedOutput) expectedOutput.textContent = expected[platform];
-      platformButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.platformButton === platform)));
-    };
-    platformButtons.forEach((button) => {
-      button.disabled = false;
-      button.addEventListener('click', () => renderPlatform(button.dataset.platformButton === 'windows' ? 'windows' : 'mac'));
+      platformButtons.forEach((button) => {
+        button.disabled = false;
+        button.addEventListener('click', () => renderPlatform(button.dataset.platformButton === 'windows' ? 'windows' : 'mac'));
+      });
+      if (staticCommands) staticCommands.hidden = true;
+      renderPlatform('mac');
     });
-    if (staticCommands) staticCommands.hidden = true;
-    renderPlatform('mac');
   });
 </script>
 
 <style>
   .triptych { display: grid; grid-template-columns: minmax(22rem, 1.25fr) minmax(15rem, .75fr); gap: clamp(.8rem, 2vw, 1.7rem); align-items: center; min-block-size: 0; }
   .triptych__workspace { display: grid; grid-template-columns: 1fr minmax(7rem, .28fr); gap: .35rem; align-items: center; }
-  .triptych__workspace svg { inline-size: 100%; max-block-size: 9.6rem; overflow: visible; }
+  .triptych__workspace svg { inline-size: 100%; max-block-size: 14rem; overflow: visible; }
   .triptych__workspace path { fill: none; stroke: var(--family-accent); stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }
   .triptych__workspace rect { fill: var(--presentation-surface); stroke: var(--presentation-ink); stroke-width: 3; }
   .triptych__workspace circle { fill: var(--presentation-surface); stroke: var(--presentation-ink); stroke-width: 4; transition: fill 160ms ease; }
   .triptych__workspace g:first-of-type circle, .triptych__workspace g.is-active circle { fill: var(--family-accent); }
   /* Exception : texte SVG dimensionné dans le viewBox, pas dans le flux HTML. */
-  .triptych__workspace text { fill: var(--presentation-ink); font: 650 13px var(--font-mono); }
-  .triptych__workspace g text { font: 800 15px var(--font-display); }
-  .triptych__workspace .triptych__pane-title { font: 760 14px var(--font-display); }
+  .triptych__workspace text { fill: var(--presentation-ink); font: 650 18px var(--font-mono); }
+  .triptych__workspace g text { font: 800 21px var(--font-display); }
+  .triptych__workspace .triptych__pane-title { font: 760 20px var(--font-display); }
   .triptych__context-labels { display: grid; gap: .5rem; }
   .triptych__shared, .triptych__destination { display: grid; gap: .18rem; margin: 0; padding-inline-start: .65rem; border-inline-start: .3rem solid var(--family-accent); font: 750 var(--b-font-body)/1.1 var(--font-display); overflow-wrap: anywhere; }
   .triptych__destination { border-color: #ed6a46; }
@@ -157,7 +160,7 @@ const windowsExpected = commands.find((item) => /Windows/i.test(item.shell))?.ex
   .triptych__folder { display: grid; gap: .15rem; padding: .6rem; border-inline-start: .35rem solid var(--family-accent); }
   .triptych__folder span, .triptych__explorer-path span { color: var(--presentation-muted); font: var(--b-font-meta) var(--font-mono); text-transform: uppercase; }
   .triptych__folder strong { font: 760 1.1rem var(--font-display); }
-  .triptych__folder code { font-size: 0.75rem; }
+  .triptych__folder code { font-size: 0.82rem; }
   .triptych__platforms { display: grid; grid-template-columns: 1fr 1fr; gap: .3rem; }
   .triptych__platforms button { min-block-size: 2.5rem; padding: .3rem; border: 1px solid var(--presentation-ink); background: var(--presentation-surface); color: var(--presentation-ink); font: 700 var(--b-font-control) var(--font-display); cursor: pointer; }
   .triptych__platforms button[aria-pressed='true'] { background: var(--family-accent); box-shadow: inset 0 -.25rem 0 var(--presentation-ink); }
