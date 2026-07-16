@@ -8,14 +8,31 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 >
   <section class="error-page" aria-labelledby="error-title">
     <div class="error-code" aria-hidden="true"><span>4</span><span>0</span><span>4</span></div>
-    <div class="error-copy">
-      <p class="eyebrow">Brique manquante</p>
-      <h1 id="error-title">Page introuvable</h1>
-      <p>Cette brique a peut-être changé de place. Reprenez depuis l’accueil ou retrouvez-la dans le programme complet.</p>
+    <div class="error-copy" aria-live="polite">
+      <p class="eyebrow" data-error-eyebrow>Page manquante</p>
+      <h1 id="error-title" data-error-title>Page introuvable</h1>
+      <p data-generic-recovery>Cette page a peut-être changé de place. Reprenez depuis l’accueil ou retrouvez le programme complet.</p>
+      <p data-presenter-recovery hidden>
+        Cette adresse ne correspond à aucune slide publiée. Le sommaire du présentateur permet de reprendre au bon endroit.
+      </p>
       <div class="hero-actions">
         <a class="button button-primary" href="/">Retour à l’accueil</a>
         <a class="text-link" href="/briques/">Voir les 24 briques</a>
+        <a class="text-link" href="/presenter/">Retrouver les slides</a>
       </div>
     </div>
   </section>
+
+  <script>
+    if (location.pathname.startsWith('/presenter/')) {
+      const title = document.querySelector<HTMLElement>('[data-error-title]');
+      const eyebrow = document.querySelector<HTMLElement>('[data-error-eyebrow]');
+      const genericRecovery = document.querySelector<HTMLElement>('[data-generic-recovery]');
+      const presenterRecovery = document.querySelector<HTMLElement>('[data-presenter-recovery]');
+      if (title) title.textContent = 'Slide introuvable';
+      if (eyebrow) eyebrow.textContent = 'Présentation';
+      if (genericRecovery) genericRecovery.hidden = true;
+      if (presenterRecovery) presenterRecovery.hidden = false;
+    }
+  </script>
 </BaseLayout>

@@ -1,0 +1,53 @@
+---
+import '../styles/presentation.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = 'Support de présentation accessible de la formation Les briques du Vibe Coding.',
+} = Astro.props;
+
+const isPresentation = Astro.url.pathname.startsWith('/presenter');
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f6f1e7" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Inter:wght@100..900&family=Geist+Mono:wght@100..700&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#slide-content">Aller au contenu de la slide</a>
+    <nav class="presentation-site-nav" aria-label="Navigation du support">
+      <a class="presentation-site-nav__return" href="/">
+        <span aria-hidden="true">←</span> Retour au site
+      </a>
+      <ul role="list">
+        <li><a href="/briques/">Briques</a></li>
+        <li>
+          <a href="/presenter/" aria-current={isPresentation ? 'page' : undefined}>
+            Présentation
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <main id="slide-content" tabindex="-1">
+      <slot />
+    </main>
+    <script src="../scripts/presentation-controller.ts"></script>
+  </body>
+</html>

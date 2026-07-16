@@ -1,0 +1,59 @@
+---
+import type { PresentationLink, RoutedSlide } from '../../../presentation/presentation-model';
+import { getResourceEmptyState } from '../../../presentation/scene-data';
+
+interface Props {
+  links?: PresentationLink[];
+  slide?: RoutedSlide;
+}
+
+const { slide } = Astro.props;
+const links = Astro.props.links ?? slide?.links ?? [];
+const emptyState = slide ? getResourceEmptyState(links, slide.accessibleDescription) : null;
+const kindLabels: Record<PresentationLink['kind'], string> = {
+  wiki: 'Wiki de la formation',
+  official: 'Documentation officielle',
+  download: 'Téléchargement',
+  digression: 'Pour aller plus loin',
+};
+
+const destination = (href: string) => {
+  try {
+    return new URL(href).hostname.replace(/^www\./, '');
+  } catch {
+    return href;
+  }
+};
+---
+
+{(links.length > 0 || emptyState) && (
+  <nav
+    class:list={['resource-rail', { 'resource-rail--scene': Boolean(slide) }]}
+    aria-label={slide ? slide.claim : 'Ressources et approfondissements'}
+    data-visual-key={slide?.visual.key}
+  >
+    <p>Ressources</p>
+    {links.length > 0
+      ? (
+        <ul>
+          {links.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-link-kind={link.kind}
+              >
+                <span class="resource-rail__meta">{kindLabels[link.kind]} · {destination(link.href)}</span>
+                <strong>
+                  {link.label}
+                  {link.kind !== 'wiki' && <span class="resource-rail__external" aria-hidden="true">↗</span>}
+                </strong>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+      : <p class="resource-rail__empty">{emptyState}</p>}
+  </nav>
+)}

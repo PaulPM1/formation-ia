@@ -1,0 +1,120 @@
+# Task 7 — Visuels interactifs du bloc B
+
+## Résultat
+
+- Commit : `b1e8133 feat: illustrer le bloc B en interactions`.
+- 33 routes B vérifiées : 27 routes spécialisées distribuées selon leur payload réel, 6 routes conservées sur les scènes partagées mission/checkpoint.
+- Registre exact : `setup-diagnostic`, `prompt-builder`, `artifact-test-loop`, `pacte-workspace`, `ipmtr-loop`, `workspace-triptych` pointent vers les six nouveaux composants.
+- État HTML initial complet : les panneaux utiles et les deux états de comparaison restent lisibles sans JavaScript ; les contrôles d’enrichissement sont désactivés avant activation du script.
+- Densité B ajustée uniquement pour cette famille afin que les 33 scènes tiennent dans le cadre 16:9 à 1280×720 sans scroll interne.
+
+## Direction visuelle par famille
+
+| Famille | Thèse silencieuse | Grammaire | Interaction | Repli accessible |
+| --- | --- | --- | --- | --- |
+| SetupDiagnostic | Un setup se diagnostique de Compte à Repli par des preuves observables. | Décision / diagnostic | Radios natifs pour plateformes et états ; panneaux de plateforme synchronisés. | Graphe complet, toutes les plateformes et toutes les étapes visibles ; contrôles désactivés. |
+| PromptBuilder | Objectif, contexte, contraintes et forme s’assemblent en un brief relisible. | Construction | Quatre boutons-blocs activables, jamais du drag-only ; résultat recalculé. | Les quatre blocs et le brief final complet sont rendus dans le HTML. |
+| ArtifactTestLoop | L’objet traverse trois tests puis une correction ciblée sur une boucle unique. | Boucle de test | Boutons d’étape qui isolent l’objet, chaque test et la correction. | Chemin SVG et tous les panneaux sont visibles simultanément. |
+| PacteWorkspace | Sources, plan, permissions, sortie et originaux forment une frontière de travail. | Système / frontière | Checkbox native qui bascule du périmètre large au périmètre borné. | Les deux frontières et la prohibition sur les originaux sont rendues. |
+| IpmtrLoop | Inspecter, Planifier, Modifier, Tester et Relire forment une boucle avec preuves bloquantes. | Séquence bouclée | Permission, test et diff arrêtent réellement la progression tant qu’ils ne sont pas cochés. | Les cinq étapes, leurs preuves et les trois portes validées restent visibles. |
+| WorkspaceTriptych | Explorateur, éditeur et terminal sont trois vues du même chemin. | Système / comparaison | Boutons de panneau et boutons macOS/Windows mettent à jour commandes et suffixes attendus. | Les trois volets et les commandes des deux plateformes sont présents dans le HTML. |
+
+## TDD et vérification
+
+- RED observé : `npx tsx --test --test-name-pattern="bloc B" tests/**/*.test.ts` échouait sur le premier import `SetupDiagnostic`, les helpers absents et les six fichiers manquants.
+- GREEN : tests sur les 27 variantes réelles de `B_DECKS`, l’assemblage de prompt, les commandes plateforme, la visibilité progressive et les portes I.P.M.T.R.
+- Vérification finale : `npx tsx --test --test-name-pattern="bloc B|présentation" tests/**/*.test.ts` — 12/12 sous-tests réussis.
+- Build final : `npm run build` — contenu valide, 104 pages générées.
+- Browser QA locale :
+  - 33/33 routes sans débordement interne à 1280×720 ;
+  - 33/33 cadres visuels sans débordement horizontal à 390×844 ;
+  - état sans JS complet et aucun contrôle d’enrichissement actif ;
+  - comportements ciblés prompt, Artifact, permission, I.P.M.T.R. et triptyque réussis ;
+  - navigation clavier opérable et mouvement réduit à `0s` / `0.01ms` ;
+  - inspection visuelle desktop + mobile de B0, B1, B2, B3, B4 et B4-bis.
+
+## Trois tests bloquants
+
+- Silencieux : réussi — chaque claim est porté par une relation centrale (chaîne, assemblage, boucle ou frontière) et non par une série de cartes génériques.
+- Coup d’œil : réussi — les chemins SVG continus et les états actifs donnent un parcours immédiat.
+- Nécessité : réussi — chaque contrôle modifie une relation pédagogique observable ; aucun bouton ornemental ni flèche décorative.
+
+## Auto-revue
+
+- Aucun mapping statique B ne pointe encore vers `StaticConceptScene`.
+- Aucun `onclick`, contrôle drag-only, chemin SVG fragmenté ou panneau essentiel dépendant du survol.
+- `prefers-reduced-motion` est présent dans les six composants.
+- `git diff --check` est propre.
+- Préoccupation restante : aucune.
+
+## Fix pass — boucle, routage Artifact et transition
+
+- I.P.M.T.R. suit désormais strictement `I → P → M → T → R → I` : permission entre P et M, test entre T et R, diff entre R et I. Relire n’est plus terminal et le bouton, le statut ainsi que les repères SVG annoncent la prochaine porte.
+- Les variantes Artifact `tests` et `correction` possèdent respectivement cinq et trois nœuds SVG adressables. Les boutons d’étape synchronisent nœud, panneau et état pressé ; « Vue d’ensemble » restaure tous les nœuds et panneaux sans empiler artificiellement les cartes.
+- Les variantes `transfer`, `anatomy` et `mvp` ont chacune un visuel central distinct alimenté par leur payload réel ; la boucle générique n’est plus rendue sur ces routes.
+- `b4-transition` affiche `atelier-ia/bonjour.txt` comme chemin partagé et « Setup VS Code » séparément comme transition suivante.
+
+### Régressions et preuves
+
+- Cycle RED observé sur quatre tests ciblés : ordre/portes I.P.M.T.R., sémantique du triptyque, routage/synchronisation Artifact et annonces des portes.
+- Vérification finale fraîche : `npm test` — 52/52 sous-tests réussis.
+- Build final frais : `npm run build` — contenu valide et 104 pages générées.
+- Inspection des routes générées : aucune boucle sur `b2-object`, `b2-anatomy` et `b2-mvp` ; cinq nœuds sur `b2-tests`, trois sur `b2-correction` ; trois portes présentes sur `b4-ipmtr` ; aucune destination « Setup VS Code » utilisée comme chemin partagé.
+- Le navigateur intégré requis pour la re-vérification visuelle ciblée n’était pas exposé dans cette session. La QA navigateur exhaustive du commit initial reste documentée plus haut ; ce fix pass a donc été contrôlé par tests, build et HTML statique généré, sans nouvelle affirmation de contrôle visuel interactif.
+
+## Fix pass 2 — densité, fidélité du comparatif et portes rejouables
+
+- Root cause Artifact : les cinq panneaux de `b2-tests` formaient trois rangées et « Vue d’ensemble » occupait seul une rangée de contrôles. La vue complète utilise désormais une rangée de contrôles et une rangée de panneaux dimensionnée par `--artifact-panel-count` ; l’état isolé conserve un panneau large, et le repli sans JavaScript conserve l’intégralité de la boucle, des contrôles et des preuves.
+- Root cause Prompt : le renderer commun remplaçait l’output de la variante `comparison` par les questions actives. `promptOutputForVariant` traite maintenant le vrai `after` du manifeste comme cible immuable ; les boutons relient seulement les dimensions d’ambiguïté à ce brief final.
+- Root cause I.P.M.T.R. : les cases cochées n’étaient jamais consommées. `advanceIpmtrCycle` remet à faux la porte franchie ; chaque nouveau tour rebloque donc successivement permission, test et diff.
+
+### TDD et vérification
+
+- RED observé sur trois régressions : helpers absents pour la conservation du `after` et la consommation du cycle, contrat CSS de densité absent.
+- GREEN ciblé : 3/3 tests réussis, y compris le second tour complet de permission/test/diff.
+- Vérification fraîche : `npm test` — 55/55 sous-tests réussis.
+- Build frais : `npm run build` — contenu valide et 104 pages générées.
+- `git diff --check` propre ; seuls quatre fichiers du bloc B et le test de présentation sont modifiés, aucun fichier du bloc C.
+- HTML généré : le vrai brief final est présent comme contenu et cible de `b1-vague` ; les routes Artifact exposent respectivement `--artifact-panel-count: 5` et `3`.
+- QA navigateur ciblée à 1280×720, exécutée par le thread principal sur le workspace partagé :
+  - `b2-tests` : `clientHeight=140`, `scrollHeight=140`, `clientWidth=1045`, `scrollWidth=1045` ;
+  - `b2-correction` : mêmes métriques `140/140` et `1045/1045` ;
+  - `b1-vague` : l’output reste strictement égal à `data-prompt-target` à l’état initial et après chacun des quatre toggles, soit 5/5 états fidèles au manifeste ;
+  - `b4-ipmtr` : le premier cycle bloque puis consomme permission, test et diff ; au second cycle, `I → P` rebloque permission et les trois checkboxes sont à `false`.
+
+## Fix pass 3 — lisibilité vidéoprojecteur du bloc B
+
+- Trois rôles typographiques communs structurent désormais toutes les scènes B : métadonnées et labels à `0.70rem`, contrôles, preuves et statuts à `0.75rem`, corps de texte à `0.80rem`.
+- Missions et checkpoints partagés ont été recomposés avec des colonnes, espacements et paddings plus sobres. Aucun contenu, aucune route et aucune slide supplémentaire n’ont été introduits.
+- Les six composants spécialisés utilisent les mêmes rôles. Les boutons Artifact, les choix Setup et les portes I.P.M.T.R. ne dépendent plus de micro-texte ; les titres gardent une taille supérieure au corps.
+- Seule exception au plancher `rem` : le texte contenu dans les SVG (`route`, `loop`, `orbit`, `map`, `diagram`, `workspace`) reste en pixels, car il est dimensionné dans le `viewBox` et non dans le flux HTML. Chaque exception est commentée dans le composant concerné.
+- Sur mobile, les missions/checkpoints B réaffirment une colonne fluide `minmax(0, 1fr)` et PromptBuilder remplace translation/ombre sortante par un état visuel interne. Le contenu reste intact sans créer de débordement.
+
+### Garde-fou et vérification
+
+- RED observé : le test `le bloc B impose un plancher typographique lisible au vidéoprojecteur` recensait 60 déclarations HTML sous `0.70rem` dans les six composants spécialisés.
+- GREEN ciblé : le garde-fou contrôle les trois tokens, les rôles critiques et interdit les tailles en pixels hors sélecteurs SVG documentés.
+- Vérification fraîche : `npm test` — 56/56 sous-tests réussis.
+- Build frais : `npm run build` — contenu valide et 104 pages générées.
+- `git diff --check` propre ; aucun fichier du bloc C modifié.
+- Sweep navigateur final du workspace partagé :
+  - 33/33 routes à 1280×720 sans overflow horizontal ou vertical sur `.presentation-visual`, `.scene-frame__content` et leurs enfants rendus ;
+  - 33/33 routes à 390×844 sans overflow horizontal sur les mêmes surfaces, y compris `b1-builder`, `b1-four-blocks`, `b2-mission` et toutes les missions ;
+  - la barre `.presentation-controls` du shell conserve volontairement son propre défilement horizontal sticky à 390 px ; cette navigation globale, identique hors bloc B, ne provient pas des scènes Task 7.
+
+## Fix pass 4 — audit des descendants et labels Setup
+
+- Root cause Prompt : en l’absence du blockquote propre au comparatif, les variantes `blocks` et `builder` s’auto-plaçaient dans la petite première colonne. Elles utilisent désormais une colonne pleine `minmax(0, 1fr)` ; les quatre pistes et leurs boutons peuvent rétrécir sans dépasser, avec les mêmes tailles de police.
+- Root cause Setup mobile : une media query masquait `.setup__route-label`. La chaîne est maintenant un `<ol>` HTML/CSS de cinq étapes ; Compte, Surface, Fonctions, Test et Repli conservent chacun numéro et nom lisible, sans état `display:none` ni dimension nulle.
+- Root cause Triptyque : `var(--display-font)` n’existait pas et invalidait le raccourci `font`. Il est remplacé par `var(--font-display)` ; un test vérifie désormais tous les tokens utilisés dans les raccourcis `font` des six composants B.
+- Les connecteurs Setup et P.A.C.T.E. sont portés par leur liste plutôt que par des pseudo-éléments sortant de chaque item ; ils n’augmentent plus le `scrollWidth` de leurs descendants.
+
+### QA calculée reproductible
+
+- `npm run qa:block-b` lance Chrome headless sur les 33 routes à 1280×720 et 390×844.
+- Pour chaque descendant HTML visible et non masqué de `.presentation-visual`, le script vérifie les tailles calculées, le plancher de police, `scrollWidth/clientWidth`, `scrollHeight/clientHeight` sur desktop et le clipping par tout ancêtre `overflow:hidden|clip`.
+- Les conteneurs qui débordent ne sont tolérés que s’ils sont explicitement scrollables et accessibles par focus ou nom accessible.
+- Le script exige en plus les cinq labels Setup visibles et nommés sur chaque route concernée.
+- Résultat final : 33/33 routes desktop et 33/33 routes mobile, sans texte sous le plancher, overflow descendant ni clipping.
+- Vérification fraîche : `npm test` — 58/58 sous-tests réussis ; `npm run build` — contenu valide et 104 pages générées ; `git diff --check` propre.
+- Le correctif reste limité aux composants B, à leur QA et au rapport Task 7 ; aucun fichier du bloc C n’est modifié.

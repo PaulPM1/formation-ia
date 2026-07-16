@@ -1,0 +1,204 @@
+---
+import type { RoutedSlide } from '../../../../presentation/presentation-model';
+import SceneFrame from '../../scenes/SceneFrame.astro';
+import { getIpmtrVariant } from './visual-state';
+
+interface Props { slide: RoutedSlide; }
+interface Step { letter: string; name: string; evidence: string; }
+interface ContextItem { surface: string; reveals: string; }
+interface Choice { action: string; when: string; }
+interface Proof { source: string; result: string; }
+
+const { slide } = Astro.props;
+const data = slide.visual.data;
+const variant = getIpmtrVariant(data);
+const steps = (Array.isArray(data.steps) ? data.steps : []) as Step[];
+const context = (Array.isArray(data.context) ? data.context : []) as ContextItem[];
+const questions = Array.isArray(data.questions) ? data.questions.map(String) : [];
+const choices = (Array.isArray(data.choices) ? data.choices : []) as Choice[];
+const proofs = (Array.isArray(data.proofs) ? data.proofs : []) as Proof[];
+const decisions = Array.isArray(data.decision) ? data.decision.map(String) : [];
+const canonicalSteps: Step[] = steps.length ? steps : [
+  { letter: 'I', name: 'Inspecter', evidence: 'Fichiers et périmètre' },
+  { letter: 'P', name: 'Planifier', evidence: 'Action et permission' },
+  { letter: 'M', name: 'Modifier', evidence: 'Changement borné' },
+  { letter: 'T', name: 'Tester', evidence: 'Preuve exécutée' },
+  { letter: 'R', name: 'Relire', evidence: 'Diff accepté' },
+];
+---
+
+<SceneFrame title={slide.claim} description={slide.accessibleDescription} visualKey={slide.visual.key} class="ipmtr-loop">
+  <div class="ipmtr" data-ipmtr-loop data-variant={variant} data-enhanced="false">
+    <section class="ipmtr__diagram">
+      <svg viewBox="0 0 760 340" role="img" aria-labelledby={`${slide.id}-ipmtr-title ${slide.id}-ipmtr-desc`}>
+        <title id={`${slide.id}-ipmtr-title`}>Boucle I.P.M.T.R.</title>
+        <desc id={`${slide.id}-ipmtr-desc`}>Inspecter mène à Planifier, Modifier, Tester et Relire. Une anomalie dans le diff renvoie à Inspecter.</desc>
+        <path data-ipmtr-path d="M105 170 C105 74 650 46 660 160 C668 260 520 292 380 274 C235 256 101 249 105 170 Z" />
+        <g class="ipmtr__gate-marker" data-ipmtr-gate-label="permission" transform="translate(326 68)"><rect x="-42" y="-12" width="84" height="24" rx="12" /><text y="4" text-anchor="middle">permission</text></g>
+        <g class="ipmtr__gate-marker" data-ipmtr-gate-label="test" transform="translate(638 178)"><rect x="-27" y="-12" width="54" height="24" rx="12" /><text y="4" text-anchor="middle">test</text></g>
+        <g class="ipmtr__gate-marker" data-ipmtr-gate-label="diff" transform="translate(330 273)"><rect x="-25" y="-12" width="50" height="24" rx="12" /><text y="4" text-anchor="middle">diff</text></g>
+        {[[105,170],[240,84],[410,70],[584,104],[592,246]].map(([x,y], index) => (
+          <g transform={`translate(${x} ${y})`} data-ipmtr-node={index}>
+            <circle r="30" />
+            <text y="7" text-anchor="middle">{canonicalSteps[index]?.letter}</text>
+            <text class="ipmtr__node-label" y="53" text-anchor="middle">{canonicalSteps[index]?.name}</text>
+          </g>
+        ))}
+      </svg>
+      <p class="ipmtr__loopback"><span>Retour</span>{String(data.loopBack ?? 'Un écart dans la preuve renvoie à Inspecter.')}</p>
+    </section>
+
+    <section class="ipmtr__detail">
+      {variant === 'process' && (
+        <div class="ipmtr__process">
+          <div class="ipmtr__step-panels">{canonicalSteps.map((step, index) => <article data-ipmtr-panel><p>Étape {index + 1}</p><h3>{step.letter} · {step.name}</h3><strong>{step.evidence}</strong></article>)}</div>
+          <fieldset class="ipmtr__gates"><legend>Portes de progression</legend><label><input type="checkbox" checked disabled data-ipmtr-gate="permission" /><span>Permission comprise</span></label><label><input type="checkbox" checked disabled data-ipmtr-gate="test" /><span>Test exécuté</span></label><label><input type="checkbox" checked disabled data-ipmtr-gate="diff" /><span>Diff relu</span></label></fieldset>
+          <div class="ipmtr__advance"><button type="button" disabled data-ipmtr-advance>Avancer dans la boucle</button><output data-ipmtr-status aria-live="polite">Boucle complète · toutes les preuves sont visibles.</output></div>
+        </div>
+      )}
+
+      {variant === 'context' && (
+        <div class="ipmtr__context"><p class="ipmtr__boundary"><span>Périmètre</span>{String(data.boundary ?? '')}</p><ol>{context.map((item, index) => <li><span>{String(index + 1).padStart(2, '0')}</span><strong>{item.surface}</strong><p>{item.reveals}</p></li>)}</ol></div>
+      )}
+
+      {variant === 'permission' && (
+        <div class="ipmtr__permission">
+          <code>{String(data.command ?? '')}</code>
+          <ul>{questions.map((question) => <li>{question}</li>)}</ul>
+          <fieldset><legend>{String(data.interaction ?? 'Décider')}</legend>{choices.map((choice, index) => <label><input type="radio" name={`${slide.id}-permission`} value={index} checked={index === 0} disabled data-permission-choice /><span><strong>{choice.action}</strong><small>{choice.when}</small></span></label>)}</fieldset>
+        </div>
+      )}
+
+      {variant === 'proof' && (
+        <div class="ipmtr__proof">
+          <blockquote>{String(data.summary ?? '')}</blockquote>
+          <ol>{proofs.map((proof, index) => <li><span>{String(index + 1).padStart(2, '0')}</span><strong>{proof.source}</strong><p>{proof.result}</p></li>)}</ol>
+          <div class="ipmtr__decisions" role="group" aria-label="Décision après vérification">{decisions.map((decision) => <button type="button" disabled data-proof-decision>{decision}</button>)}</div>
+          <output data-proof-status aria-live="polite">Les trois décisions restent disponibles après la preuve.</output>
+        </div>
+      )}
+    </section>
+  </div>
+</SceneFrame>
+
+<script>
+  import { advanceIpmtrCycle, ipmtrGateAfter, resolvePanelVisibility } from './visual-state';
+
+  document.querySelectorAll<HTMLElement>('[data-ipmtr-loop]').forEach((scene) => {
+    scene.dataset.enhanced = 'true';
+
+    const permissionChoices = Array.from(scene.querySelectorAll<HTMLInputElement>('[data-permission-choice]'));
+    permissionChoices.forEach((choice) => { choice.disabled = false; });
+
+    const decisionButtons = Array.from(scene.querySelectorAll<HTMLButtonElement>('[data-proof-decision]'));
+    const proofStatus = scene.querySelector<HTMLOutputElement>('[data-proof-status]');
+    decisionButtons.forEach((button) => {
+      button.disabled = false;
+      button.addEventListener('click', () => {
+        decisionButtons.forEach((candidate) => candidate.setAttribute('aria-pressed', String(candidate === button)));
+        if (proofStatus) proofStatus.textContent = `Décision retenue : ${button.textContent ?? ''}.`;
+      });
+    });
+
+    const panels = Array.from(scene.querySelectorAll<HTMLElement>('[data-ipmtr-panel]'));
+    const nodes = Array.from(scene.querySelectorAll<SVGGElement>('[data-ipmtr-node]'));
+    const gates = Array.from(scene.querySelectorAll<HTMLInputElement>('[data-ipmtr-gate]'));
+    const gateMarkers = Array.from(scene.querySelectorAll<SVGGElement>('[data-ipmtr-gate-label]'));
+    const advance = scene.querySelector<HTMLButtonElement>('[data-ipmtr-advance]');
+    const status = scene.querySelector<HTMLOutputElement>('[data-ipmtr-status]');
+    if (!panels.length || !advance || !status) return;
+    let index = 0;
+    gates.forEach((gate) => { gate.disabled = false; gate.checked = false; });
+    advance.disabled = false;
+    const stepNames = ['Inspecter', 'Planifier', 'Modifier', 'Tester', 'Relire'];
+    const gateLabels = { permission: 'permission comprise', test: 'test exécuté', diff: 'diff relu' };
+    const canonicalStepName = (stepIndex: number) => stepNames[stepIndex] ?? '';
+    const render = () => {
+      resolvePanelVisibility(panels.length, index, true).forEach((visible, panelIndex) => { panels[panelIndex].hidden = !visible; });
+      nodes.forEach((node, nodeIndex) => node.classList.toggle('is-active', nodeIndex === index));
+      const requiredGate = ipmtrGateAfter(index);
+      const nextName = canonicalStepName((index + 1) % panels.length);
+      gateMarkers.forEach((marker) => marker.classList.toggle('is-required', marker.dataset.ipmtrGateLabel === requiredGate));
+      advance.textContent = requiredGate ? `Vers ${nextName} · ${gateLabels[requiredGate]} requise` : `Vers ${nextName}`;
+      status.textContent = requiredGate
+        ? `${canonicalStepName(index)} · prochaine porte : ${gateLabels[requiredGate]}.`
+        : `${canonicalStepName(index)} · passage direct vers ${nextName}.`;
+    };
+    advance.addEventListener('click', () => {
+      const gateState = { permission: false, test: false, diff: false };
+      gates.forEach((gate) => { gateState[gate.dataset.ipmtrGate as keyof typeof gateState] = gate.checked; });
+      const next = advanceIpmtrCycle(index, gateState);
+      if (next.blockedBy) {
+        const labels = { permission: 'la permission', test: 'le test', diff: 'la relecture du diff' };
+        status.textContent = `Progression arrêtée : activez ${labels[next.blockedBy]}.`;
+        return;
+      }
+      index = next.index;
+      gates.forEach((gate) => { gate.checked = next.gates[gate.dataset.ipmtrGate as keyof typeof next.gates]; });
+      render();
+    });
+    gates.forEach((gate) => gate.addEventListener('change', render));
+    render();
+  });
+</script>
+
+<style>
+  .ipmtr { display: grid; grid-template-columns: minmax(18rem, 1.1fr) minmax(17rem, .9fr); gap: clamp(.8rem, 2.2vw, 2rem); align-items: center; min-block-size: 0; }
+  .ipmtr__diagram { display: grid; grid-template-columns: 1fr minmax(7rem, .32fr); align-items: center; }
+  .ipmtr__diagram svg { inline-size: 100%; max-block-size: 9.2rem; overflow: visible; }
+  .ipmtr__diagram path { fill: none; stroke: var(--presentation-ink); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+  .ipmtr__gate-marker rect { fill: var(--presentation-surface); stroke: var(--presentation-ink); stroke-width: 2; transition: fill 160ms ease; }
+  /* Exception : texte SVG dimensionné dans le viewBox, pas dans le flux HTML. */
+  .ipmtr__gate-marker text { font: 700 10px var(--font-mono); text-transform: uppercase; }
+  .ipmtr__gate-marker.is-required rect { fill: #ed6a46; }
+  .ipmtr__diagram circle { fill: var(--presentation-surface); stroke: var(--presentation-ink); stroke-width: 4; transition: fill 160ms ease, transform 160ms ease; }
+  .ipmtr[data-enhanced='false'] [data-ipmtr-node='0'] circle, .ipmtr__diagram g.is-active circle { fill: var(--family-accent); }
+  .ipmtr__diagram text { fill: var(--presentation-ink); font: 800 19px var(--font-display); }
+  .ipmtr__diagram .ipmtr__node-label { font: 700 13px var(--font-display); }
+  .ipmtr__loopback { display: grid; gap: .14rem; margin: 0; padding-inline-start: .55rem; border-inline-start: .3rem solid #ed6a46; font: 700 var(--b-font-body)/1.15 var(--font-display); }
+  .ipmtr__loopback span { color: var(--presentation-muted); font: var(--b-font-meta) var(--font-mono); text-transform: uppercase; }
+  .ipmtr__process { display: grid; gap: .55rem; }
+  .ipmtr__step-panels { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; }
+  [data-enhanced='true'] .ipmtr__step-panels { grid-template-columns: 1fr; }
+  .ipmtr__step-panels article { display: grid; gap: .12rem; min-block-size: 3.7rem; padding: .35rem .5rem; border: 1px solid var(--presentation-line); border-block-start: .28rem solid var(--family-accent); background: var(--presentation-surface); }
+  .ipmtr__step-panels p, .ipmtr__step-panels h3 { margin: 0; }
+  .ipmtr__step-panels p { color: var(--presentation-muted); font: var(--b-font-meta) var(--font-mono); text-transform: uppercase; }
+  .ipmtr__step-panels h3 { font: 760 1rem var(--font-display); }
+  .ipmtr__step-panels strong { font-size: var(--b-font-body); }
+  .ipmtr__gates { display: grid; grid-template-columns: repeat(3, 1fr); gap: .3rem; margin: 0; padding: 0; border: 0; }
+  .ipmtr__gates legend { grid-column: 1 / -1; font: 700 var(--b-font-body) var(--font-display); }
+  .ipmtr__gates label { display: flex; gap: .2rem; align-items: center; min-block-size: 1.8rem; padding: .12rem; border-block-start: 1px solid var(--presentation-line); font-size: var(--b-font-control); font-weight: 700; }
+  .ipmtr__gates input, .ipmtr__permission input { accent-color: var(--presentation-ink); }
+  .ipmtr__advance { display: grid; grid-template-columns: auto 1fr; gap: .5rem; align-items: center; }
+  .ipmtr__advance button, .ipmtr__decisions button { min-block-size: 2rem; padding: .22rem .45rem; border: 1px solid var(--presentation-ink); background: var(--presentation-ink); color: var(--presentation-surface); font: 700 var(--b-font-control) var(--font-display); cursor: pointer; }
+  .ipmtr__advance button:disabled, .ipmtr__decisions button:disabled { opacity: .48; cursor: default; }
+  .ipmtr__advance output, .ipmtr__proof output { font-size: var(--b-font-control); line-height: 1.15; }
+  .ipmtr__boundary { display: grid; gap: .1rem; margin: 0 0 .45rem; padding: .5rem .6rem; border-inline-start: .35rem solid var(--family-accent); font-weight: 750; }
+  .ipmtr__boundary span { color: var(--presentation-muted); font: var(--b-font-meta) var(--font-mono); text-transform: uppercase; }
+  .ipmtr__context ol, .ipmtr__proof ol { display: grid; margin: 0; padding: 0; list-style: none; }
+  .ipmtr__context li, .ipmtr__proof li { display: grid; grid-template-columns: 1.5rem 1fr; gap: .1rem .4rem; padding: .45rem; border-block-start: 1px solid var(--presentation-line); }
+  .ipmtr__context li > span, .ipmtr__proof li > span { grid-row: 1 / 3; color: var(--presentation-muted); font: var(--b-font-meta) var(--font-mono); }
+  .ipmtr__context strong, .ipmtr__context p, .ipmtr__proof strong, .ipmtr__proof p { margin: 0; font-size: var(--b-font-body); }
+  .ipmtr__permission { display: grid; grid-template-columns: minmax(8rem, .65fr) 1fr; gap: .55rem .8rem; }
+  .ipmtr__permission code { grid-column: 1 / -1; padding: .55rem .7rem; border: 1px solid var(--presentation-ink); background: var(--presentation-ink); color: var(--presentation-surface); font: 700 .85rem var(--font-mono); }
+  .ipmtr__permission ul { margin: 0; padding-inline-start: .9rem; font-size: var(--b-font-body); }
+  .ipmtr__permission fieldset { display: grid; gap: .2rem; margin: 0; padding: 0; border: 0; }
+  .ipmtr__permission legend { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); }
+  .ipmtr__permission label { display: grid; grid-template-columns: auto 1fr; gap: .4rem; align-items: center; padding: .3rem; border-block-start: 1px solid var(--presentation-line); }
+  .ipmtr__permission label > span { display: grid; }
+  .ipmtr__permission strong { font: 730 var(--b-font-body) var(--font-display); }
+  .ipmtr__permission small { font-size: var(--b-font-meta); }
+  .ipmtr__proof { display: grid; gap: .45rem; }
+  .ipmtr__proof blockquote { margin: 0; padding-inline-start: .65rem; border-inline-start: .35rem solid #ed6a46; font: 750 .95rem var(--font-display); }
+  .ipmtr__decisions { display: grid; grid-template-columns: repeat(3, 1fr); gap: .3rem; }
+  .ipmtr__decisions button[aria-pressed='true'] { background: var(--family-accent); color: var(--presentation-ink); }
+  [data-ipmtr-panel][hidden] { display: none !important; }
+  button:focus-visible, input:focus-visible + span { outline: .22rem solid var(--presentation-focus); outline-offset: .18rem; }
+  @media (max-width: 50rem) {
+    .ipmtr { grid-template-columns: 1fr; }
+    .ipmtr__diagram { grid-template-columns: 1fr; }
+    .ipmtr__diagram svg { max-block-size: 11rem; }
+  }
+  @media (max-width: 34rem) { .ipmtr__permission, .ipmtr__advance { grid-template-columns: 1fr; } }
+  @media (prefers-reduced-motion: reduce) { .ipmtr__diagram circle, .ipmtr__gate-marker rect { transition: none; } }
+</style>

@@ -1,0 +1,168 @@
+---
+import type { RoutedSlide } from '../../../../presentation/presentation-model';
+import SceneFrame from '../../scenes/SceneFrame.astro';
+import { getSetupVariant } from './visual-state';
+
+interface Props { slide: RoutedSlide; }
+interface Layer { name: string; check: string; fallback: string; }
+interface Situation { issue: string; fallback: string; }
+interface Platform { name: string; steps: string[]; terminal: string; }
+
+const { slide } = Astro.props;
+const data = slide.visual.data;
+const variant = getSetupVariant(data);
+const layers = (Array.isArray(data.layers) ? data.layers : []) as Layer[];
+const checks = Array.isArray(data.checks) ? data.checks.map(String) : [];
+const states = Array.isArray(data.states) ? data.states.map(String) : [];
+const steps = Array.isArray(data.steps) ? data.steps.map(String) : [];
+const situations = (Array.isArray(data.situations) ? data.situations : []) as Situation[];
+const platforms = (Array.isArray(data.platforms) ? data.platforms : []) as Platform[];
+const graph = ['Compte', 'Surface', 'Fonctions', 'Test', 'Repli'];
+---
+
+<SceneFrame title={slide.claim} description={slide.accessibleDescription} visualKey={slide.visual.key} class="setup-diagnostic">
+  <div class="setup" data-setup-diagnostic data-variant={variant} data-enhanced="false">
+    <ol class="setup__route" aria-label="Chaîne de diagnostic : compte, surface, fonctionnalités, test observable et chemin de repli">
+      {graph.map((name, index) => (
+        <li><span>{index + 1}</span><strong class="setup__route-label">{name}</strong></li>
+      ))}
+    </ol>
+
+    {variant === 'layers' && (
+      <section class="setup__layers" aria-label="Couches de setup">
+        {layers.map((layer, index) => (
+          <article>
+            <span>{String(index + 1).padStart(2, '0')}</span>
+            <h3>{layer.name}</h3>
+            <p><strong>Observer</strong>{layer.check}</p>
+            <p><strong>Repli</strong>{layer.fallback}</p>
+          </article>
+        ))}
+      </section>
+    )}
+
+    {variant === 'checks' && (
+      <section class="setup__checklist">
+        <p class="setup__privacy">↳ Limite non négociable · {String(data.privacyRule ?? '')}</p>
+        <ol>
+          {checks.map((check, row) => (
+            <li>
+              <span class="setup__check-number">{String(row + 1).padStart(2, '0')}</span>
+              <strong>{check}</strong>
+              <fieldset><legend>État de « {check} »</legend>{states.map((state) => <label><input type="radio" name={`${slide.id}-${row}`} value={state} disabled data-setup-control /><span>{state}</span></label>)}</fieldset>
+            </li>
+          ))}
+        </ol>
+      </section>
+    )}
+
+    {variant === 'test' && (
+      <section class="setup__test">
+        <blockquote>{String(data.prompt ?? '')}</blockquote>
+        <ol>{steps.map((step, index) => <li><span>{String(index + 1).padStart(2, '0')}</span><strong>{step}</strong></li>)}</ol>
+        <div class="setup__evidence"><span>Preuve attendue</span><strong>{String(data.expected ?? '')}</strong><p>{String(data.evidence ?? '')}</p></div>
+        <p class="setup__caution">Limite du test · {String(data.caution ?? '')}</p>
+      </section>
+    )}
+
+    {variant === 'fallback' && (
+      <section class="setup__fallback" aria-label="Situations et replis">
+        {situations.map((situation) => <article><strong>{situation.issue}</strong><span aria-hidden="true">→</span><p>{situation.fallback}</p></article>)}
+      </section>
+    )}
+
+    {variant === 'platforms' && (
+      <section class="setup__platforms">
+        <fieldset><legend>{String(data.interaction ?? 'Choisir la plateforme')}</legend>{platforms.map((platform, index) => <label><input type="radio" name={`${slide.id}-platform`} value={index} checked={index === 0} disabled data-setup-platform /><span>{platform.name}</span></label>)}</fieldset>
+        <div class="setup__platform-panels">
+          {platforms.map((platform) => <article data-setup-panel><h3>{platform.name}</h3><ol>{platform.steps.map((step) => <li>{step}</li>)}</ol><p><strong>Terminal</strong>{platform.terminal}</p></article>)}
+        </div>
+        <p class="setup__shared-test"><span>Test partagé</span>{String(data.sharedTest ?? '')}</p>
+      </section>
+    )}
+  </div>
+</SceneFrame>
+
+<script>
+  import { resolvePanelVisibility } from './visual-state';
+
+  document.querySelectorAll<HTMLElement>('[data-setup-diagnostic]').forEach((scene) => {
+    scene.dataset.enhanced = 'true';
+    scene.querySelectorAll<HTMLInputElement>('[data-setup-control]').forEach((control) => { control.disabled = false; });
+    const choices = Array.from(scene.querySelectorAll<HTMLInputElement>('[data-setup-platform]'));
+    const panels = Array.from(scene.querySelectorAll<HTMLElement>('[data-setup-panel]'));
+    if (!choices.length || !panels.length) return;
+    const render = (active: number) => resolvePanelVisibility(panels.length, active, true).forEach((visible, index) => { panels[index].hidden = !visible; });
+    choices.forEach((choice, index) => {
+      choice.disabled = false;
+      choice.addEventListener('change', () => render(index));
+    });
+    render(Math.max(0, choices.findIndex((choice) => choice.checked)));
+  });
+</script>
+
+<style>
+  .setup { display: grid; gap: .3rem; align-content: center; min-block-size: 0; }
+  .setup__route { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); inline-size: 100%; margin: 0; padding: 0; list-style: none; }
+  .setup__route::before { content: ''; position: absolute; z-index: 0; inset-block-start: .68rem; inset-inline: 10%; block-size: 2px; background: var(--presentation-ink); }
+  .setup__route li { position: relative; display: grid; gap: .08rem; justify-items: center; min-inline-size: 0; }
+  .setup__route li > span { position: relative; z-index: 1; display: grid; place-items: center; inline-size: 1.4rem; aspect-ratio: 1; border: 2px solid var(--presentation-ink); border-radius: 50%; background: var(--presentation-surface); font: 700 var(--b-font-meta) var(--font-mono); }
+  .setup__route li:nth-child(4) > span { background: var(--family-accent); }
+  .setup__route-label { min-inline-size: 0; font: 720 var(--b-font-control) var(--font-display); overflow-wrap: anywhere; text-align: center; }
+  .setup__layers { display: grid; grid-template-columns: repeat(4, 1fr); border-block: 1px solid var(--presentation-line); }
+  .setup__layers article { display: grid; grid-template-columns: auto 1fr; gap: .18rem .4rem; padding: .42rem; border-inline-start: 1px solid var(--presentation-line); }
+  .setup__layers article:first-child { border-inline-start: 0; }
+  .setup__layers span { grid-row: 1 / 4; color: var(--presentation-muted); font: 600 var(--b-font-meta) var(--font-mono); }
+  .setup__layers h3, .setup__layers p { margin: 0; }
+  .setup__layers h3 { font: 750 clamp(.9rem, 1.5vw, 1.15rem) var(--font-display); }
+  .setup__layers p { display: grid; gap: .03rem; font-size: var(--b-font-body); line-height: 1.12; }
+  .setup__layers p strong { color: var(--presentation-muted); font: 600 var(--b-font-meta) var(--font-mono); text-transform: uppercase; }
+  .setup__privacy, .setup__caution { margin: 0; padding: .18rem .45rem; border-inline-start: .3rem solid #ed6a46; background: color-mix(in srgb, #ed6a46, transparent 89%); font-size: var(--b-font-body); font-weight: 700; }
+  .setup__checklist { display: grid; gap: .35rem; }
+  .setup__checklist ol { display: grid; grid-template-columns: 1fr 1fr; gap: 0 .7rem; margin: 0; padding: 0; list-style: none; }
+  .setup__checklist li { display: grid; grid-template-columns: 1.2rem 1fr; gap: .08rem .25rem; padding: .12rem 0; border-block-start: 1px solid var(--presentation-line); }
+  .setup__check-number { color: var(--presentation-muted); font: var(--b-font-meta) var(--font-mono); }
+  .setup__checklist li > strong { font-size: var(--b-font-body); line-height: 1.1; }
+  .setup__checklist fieldset { grid-column: 2; display: flex; flex-wrap: wrap; gap: .25rem; margin: 0; padding: 0; border: 0; }
+  .setup__checklist legend { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); }
+  .setup__checklist label { display: flex; gap: .14rem; align-items: center; font: var(--b-font-control) var(--font-mono); }
+  .setup__checklist label input { inline-size: .78rem; block-size: .78rem; margin: 0; }
+  .setup__checklist input, .setup__platforms input { accent-color: var(--presentation-ink); }
+  .setup__test { display: grid; grid-template-columns: minmax(15rem, .85fr) 1.15fr; gap: .55rem 1rem; }
+  .setup__test blockquote { align-self: center; margin: 0; padding-inline-start: .8rem; border-inline-start: .35rem solid var(--family-accent); font: 750 clamp(.9rem, 1.7vw, 1.3rem)/1.08 var(--font-display); }
+  .setup__test ol { display: grid; gap: .2rem; margin: 0; padding: 0; list-style: none; }
+  .setup__test li { display: grid; grid-template-columns: 1.5rem 1fr; gap: .35rem; padding: .25rem; border-block-start: 1px solid var(--presentation-line); font-size: var(--b-font-body); }
+  .setup__test li span { color: var(--presentation-muted); font: var(--b-font-meta) var(--font-mono); }
+  .setup__evidence { display: grid; gap: .1rem; padding: .5rem .7rem; border: 1px solid var(--presentation-ink); background: var(--presentation-surface); }
+  .setup__evidence span { color: var(--presentation-muted); font: var(--b-font-meta) var(--font-mono); text-transform: uppercase; }
+  .setup__evidence strong { font: 750 1rem var(--font-display); }
+  .setup__evidence p { margin: 0; font-size: var(--b-font-body); }
+  .setup__caution { align-self: center; }
+  .setup__fallback { display: grid; grid-template-columns: 1fr 1fr; gap: .25rem 1rem; }
+  .setup__fallback article { display: grid; grid-template-columns: minmax(7rem, .65fr) auto 1fr; gap: .35rem; align-items: center; padding: .25rem .15rem; border-block-start: 1px solid var(--presentation-line); }
+  .setup__fallback article > span { color: var(--family-accent); font-size: 1.4rem; }
+  .setup__fallback strong, .setup__fallback p { margin: 0; font-size: var(--b-font-body); }
+  .setup__fallback p { font-weight: 700; }
+  .setup__platforms { display: grid; grid-template-columns: minmax(8rem, .35fr) 1fr; gap: .7rem 1.2rem; }
+  .setup__platforms fieldset { display: grid; align-content: center; gap: .3rem; margin: 0; padding: 0; border: 0; }
+  .setup__platforms legend { margin-block-end: .2rem; font: 750 .85rem var(--font-display); }
+  .setup__platforms label { display: flex; gap: .45rem; align-items: center; min-block-size: 2.4rem; padding: .25rem .45rem; border-block-start: .18rem solid var(--presentation-line); font-weight: 750; }
+  .setup__platforms label:has(input:checked) { border-color: var(--family-accent); background: color-mix(in srgb, var(--family-accent), transparent 86%); }
+  .setup__platform-panels { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+  [data-enhanced='true'] .setup__platform-panels { grid-template-columns: 1fr; }
+  .setup__platform-panels article { padding: .7rem; border: 1px solid var(--presentation-line); background: var(--presentation-surface); }
+  .setup__platform-panels h3 { margin: 0; font: 760 1.15rem var(--font-display); }
+  .setup__platform-panels ol { margin: .35rem 0; padding-inline-start: 1.1rem; font-size: var(--b-font-body); }
+  .setup__platform-panels p { display: flex; gap: .5rem; margin: 0; font-size: var(--b-font-body); }
+  .setup__shared-test { grid-column: 1 / -1; display: flex; gap: .6rem; margin: 0; padding-inline-start: .65rem; border-inline-start: .3rem solid var(--family-accent); font-size: var(--b-font-body); font-weight: 700; }
+  .setup__shared-test span { color: var(--presentation-muted); font-family: var(--font-mono); }
+  [data-setup-panel][hidden] { display: none !important; }
+  input:focus-visible + span { outline: .2rem solid var(--presentation-focus); outline-offset: .18rem; }
+  @media (max-width: 46rem) {
+    .setup__layers { grid-template-columns: 1fr 1fr; }
+    .setup__layers article:nth-child(3) { border-inline-start: 0; }
+    .setup__checklist ol, .setup__test, .setup__platforms, .setup__fallback { grid-template-columns: 1fr; }
+    .setup__shared-test { grid-column: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) { .setup *, .setup *::before, .setup *::after { transition: none !important; animation: none !important; } }
+</style>

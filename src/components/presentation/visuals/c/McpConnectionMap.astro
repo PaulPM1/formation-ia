@@ -1,0 +1,249 @@
+---
+import type { RoutedSlide } from '../../../../presentation/presentation-model';
+import SceneFrame from '../../scenes/SceneFrame.astro';
+import { getMcpVariant, mcpInitialBoundary } from './visual-state';
+
+interface Props { slide: RoutedSlide; }
+interface Definition { definition?: string; elements?: string[]; }
+interface ChainNode { name: string; sends: string; }
+interface RiskRow { dimension: string; broad: string; minimal: string; }
+interface Lifecycle { state: string; evidence: string; }
+interface Server { name?: string; provider?: string; scope?: string; state?: string; }
+interface Tool { name: string; capability: string; }
+
+const { slide } = Astro.props;
+const data = slide.visual.data;
+const variant = getMcpVariant(data);
+const api = (data.api ?? {}) as Definition;
+const mcp = (data.mcp ?? {}) as Definition;
+const nodes = (Array.isArray(data.nodes) ? data.nodes : [
+  { name: 'Utilisateur', sends: 'Besoin borné' },
+  { name: 'Client Claude', sends: 'Appel d’outil' },
+  { name: 'Serveur MCP', sends: 'Requête traduite' },
+  { name: 'API ou ressource', sends: 'Résultat structuré' },
+]) as ChainNode[];
+const risks = (Array.isArray(data.riskMap) ? data.riskMap : []) as RiskRow[];
+const lifecycle = (Array.isArray(data.lifecycle) ? data.lifecycle : []) as Lifecycle[];
+const server = (data.server ?? {}) as Server;
+const tools = (Array.isArray(data.tools) ? data.tools : []) as Tool[];
+const forbidden = Array.isArray(data.forbidden) ? data.forbidden.map(String) : [];
+const expectedEvidence = Array.isArray(data.expectedEvidence) ? data.expectedEvidence.map(String) : [];
+const auditRecord = Array.isArray(data.auditRecord) ? data.auditRecord.map(String) : [];
+const boundary = mcpInitialBoundary(variant);
+const initialBoundaryState = variant === 'revoke'
+  ? 'revoked'
+  : variant === 'permissions' || variant === 'readonly'
+    ? 'minimal'
+    : 'neutral';
+const initialBoundaryLabel = variant === 'revoke'
+  ? 'FRONTIÈRE FERMÉE · RÉVOQUÉE'
+  : variant === 'permissions' || variant === 'readonly'
+    ? 'FRONTIÈRE OUVERTE · LECTURE SEULE'
+    : 'FRONTIÈRE À VÉRIFIER';
+---
+
+<SceneFrame title={slide.claim} description={slide.accessibleDescription} visualKey={slide.visual.key} class="mcp-connection-map">
+  <div class="mcp-map" data-mcp-map data-variant={variant} data-enhanced="false" data-boundary-state={initialBoundaryState}>
+    <section class="mcp-map__system" aria-label="Chaîne MCP de bout en bout">
+      <svg viewBox="0 0 1000 250" role="img" aria-labelledby={`${slide.id}-mcp-title ${slide.id}-mcp-desc`}>
+        <title id={`${slide.id}-mcp-title`}>Demande et réponse à travers la chaîne MCP</title>
+        <desc id={`${slide.id}-mcp-desc`}>La demande va de l’utilisateur au client Claude, au serveur MCP puis à l’API ou la ressource. La réponse revient sur un chemin distinct. Une frontière de permission précède la ressource.</desc>
+        <defs>
+          <marker id={`${slide.id}-request-arrow`} markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" /></marker>
+          <marker id={`${slide.id}-response-arrow`} markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 Z" /></marker>
+        </defs>
+        <path data-mcp-request-path class="mcp-map__request" d="M95 78 H905" marker-end={`url(#${slide.id}-request-arrow)`} />
+        <path data-mcp-response-path class="mcp-map__response" d="M905 181 H95" marker-end={`url(#${slide.id}-response-arrow)`} />
+        <line data-mcp-boundary x1="760" x2="760" y1="24" y2="226" />
+        <rect data-mcp-lock x="741" y="101" width="38" height="45" rx="7" />
+        <path data-mcp-shackle d="M750 101 V91 A10 10 0 0 1 770 91 V101" />
+        {nodes.slice(0, 4).map((node, index) => {
+          const x = 95 + index * 270;
+          return <g class="mcp-map__node" transform={`translate(${x} 129)`}>
+            <circle r="48" />
+            <text class="mcp-map__node-index" y="-9" text-anchor="middle">{String(index + 1).padStart(2, '0')}</text>
+            <text y="15" text-anchor="middle">{node.name}</text>
+          </g>;
+        })}
+        <text class="mcp-map__direction" x="500" y="61" text-anchor="middle">DEMANDE →</text>
+        <text class="mcp-map__direction" x="500" y="211" text-anchor="middle">← RÉPONSE</text>
+        <text data-mcp-boundary-label class="mcp-map__boundary-label" x="760" y="18" text-anchor="middle">{initialBoundaryLabel}</text>
+      </svg>
+      <div class="mcp-map__status-row">
+        <output data-mcp-status aria-live="polite"><strong>{boundary.boundary}</strong><span>{boundary.permission}</span></output>
+        <div class="mcp-map__controls" role="group" aria-label={String(data.interaction ?? 'Explorer la connexion')}>
+          {variant === 'revoke' ? (
+            <><button type="button" disabled data-mcp-connect aria-pressed="false">Rétablir une connexion minimale</button><button type="button" disabled data-mcp-revoke aria-pressed="true">Accès révoqué</button></>
+          ) : variant === 'permissions' ? (
+            <><button type="button" disabled data-mcp-scope="broad" aria-pressed="false">Portée large</button><button type="button" disabled data-mcp-scope="minimal" aria-pressed="true">Permission minimale</button></>
+          ) : (
+            <button type="button" disabled data-mcp-follow>Suivre la demande et le retour</button>
+          )}
+        </div>
+      </div>
+    </section>
+
+    {variant === 'api' && (
+      <section class="mcp-map__comparison" aria-label="API et MCP ont deux responsabilités différentes">
+        {[['API', api], ['MCP', mcp]].map(([name, definition]) => <article><p>{name as string}</p><h3>{(definition as Definition).definition}</h3><ul>{((definition as Definition).elements ?? []).map((item) => <li>{item}</li>)}</ul></article>)}
+        <p class="mcp-map__relation">{String(data.relation ?? '')}</p>
+      </section>
+    )}
+
+    {variant === 'chain' && (
+      <section class="mcp-map__chain" aria-label="Contenu transporté à chaque maillon">
+        <ol>{nodes.map((node) => <li><strong>{node.name}</strong><span>{node.sends}</span></li>)}</ol>
+        <p><span>Chemin retour</span>{(Array.isArray(data.returnPath) ? data.returnPath : []).map(String).join(' · ')}</p>
+      </section>
+    )}
+
+    {variant === 'tools' && (
+      <section class="mcp-map__tools" aria-label="Inventaire du serveur et de ses outils">
+        <div><p>Commandes d’inspection</p>{(Array.isArray(data.commands) ? data.commands : []).map((command) => <code>{String(command)}</code>)}</div>
+        <article><p>{server.state}</p><h3>{server.name}</h3><dl><div><dt>Fournisseur</dt><dd>{server.provider}</dd></div><div><dt>Portée</dt><dd>{server.scope}</dd></div></dl></article>
+        <div><p>Capacité exposée</p>{tools.map((tool) => <strong><code>{tool.name}</code> · {tool.capability}</strong>)}<ul>{forbidden.map((item) => <li>× {item}</li>)}</ul></div>
+      </section>
+    )}
+
+    {variant === 'permissions' && (
+      <section class="mcp-map__risks" aria-label="Réduction de quatre dimensions de risque">
+        <div class="mcp-map__risk-head"><span>Dimension</span><strong>Portée large</strong><strong>Permission minimale</strong></div>
+        {risks.map((risk) => <div><strong>{risk.dimension}</strong><span>{risk.broad}</span><span>{risk.minimal}</span></div>)}
+        <p>⛔ {String(data.secretRule ?? '')}</p>
+      </section>
+    )}
+
+    {variant === 'readonly' && (
+      <section class="mcp-map__readonly" aria-label="Premier test en lecture seule">
+        <blockquote>{String(data.request ?? '')}</blockquote>
+        <div><span>Outil attendu</span><code>{String(data.expectedTool ?? '')}</code><span>Permission</span><strong>{String(data.permission ?? '')}</strong></div>
+        <ol>{expectedEvidence.map((item) => <li><span aria-hidden="true">□</span>{item}</li>)}</ol>
+      </section>
+    )}
+
+    {variant === 'revoke' && (
+      <section class="mcp-map__revoke" aria-label="Cycle de révocation et preuve d’audit">
+        <ol>{lifecycle.map((item, index) => <li><span>{String(index + 1).padStart(2, '0')}</span><strong>{item.state}</strong><p>{item.evidence}</p></li>)}</ol>
+        <ul>{auditRecord.map((item) => <li>{item}</li>)}</ul>
+      </section>
+    )}
+  </div>
+</SceneFrame>
+
+<script>
+  import { mcpBoundaryState } from './visual-state';
+
+  document.querySelectorAll<HTMLElement>('[data-mcp-map]').forEach((scene) => {
+    scene.dataset.enhanced = 'true';
+    const status = scene.querySelector<HTMLOutputElement>('[data-mcp-status]');
+    const label = scene.querySelector<SVGTextElement>('[data-mcp-boundary-label]');
+    const renderBoundary = (revoked: boolean, minimal: boolean) => {
+      const state = mcpBoundaryState(revoked, minimal);
+      scene.dataset.boundaryState = state.connected ? (minimal ? 'minimal' : 'broad') : 'revoked';
+      if (status) status.innerHTML = `<strong>${state.boundary}</strong><span>${state.permission}</span>`;
+      if (label) label.textContent = state.connected
+        ? `FRONTIÈRE OUVERTE · ${minimal ? 'LECTURE SEULE' : 'PORTÉE LARGE'}`
+        : 'FRONTIÈRE FERMÉE · RÉVOQUÉE';
+    };
+    scene.querySelectorAll<HTMLButtonElement>('button').forEach((button) => { button.disabled = false; });
+    const follow = scene.querySelector<HTMLButtonElement>('[data-mcp-follow]');
+    follow?.addEventListener('click', () => {
+      scene.classList.remove('is-following');
+      requestAnimationFrame(() => scene.classList.add('is-following'));
+      if (status) status.innerHTML = '<strong>Aller : demande bornée</strong><span>Retour : résultat structuré à vérifier</span>';
+    });
+    scene.querySelectorAll<HTMLButtonElement>('[data-mcp-scope]').forEach((button) => button.addEventListener('click', () => {
+      const minimal = button.dataset.mcpScope === 'minimal';
+      scene.querySelectorAll<HTMLButtonElement>('[data-mcp-scope]').forEach((candidate) => candidate.setAttribute('aria-pressed', String(candidate === button)));
+      renderBoundary(false, minimal);
+    }));
+    const connect = scene.querySelector<HTMLButtonElement>('[data-mcp-connect]');
+    const revoke = scene.querySelector<HTMLButtonElement>('[data-mcp-revoke]');
+    connect?.addEventListener('click', () => { connect.setAttribute('aria-pressed', 'true'); revoke?.setAttribute('aria-pressed', 'false'); renderBoundary(false, true); });
+    revoke?.addEventListener('click', () => { revoke.setAttribute('aria-pressed', 'true'); connect?.setAttribute('aria-pressed', 'false'); renderBoundary(true, true); });
+  });
+</script>
+
+<style>
+  .mcp-map { --c-meta: var(--c-font-meta, .75rem); --c-body: var(--c-font-body, .82rem); display: grid; gap: .28rem; min-inline-size: 0; }
+  .mcp-map__system svg { inline-size: 100%; max-block-size: 7rem; overflow: visible; }
+  .mcp-map__request, .mcp-map__response { fill: none; stroke: var(--presentation-ink); stroke-width: 6; stroke-linecap: round; }
+  .mcp-map__response { stroke-dasharray: 12 8; }
+  .mcp-map marker path { fill: var(--presentation-ink); }
+  .mcp-map__system line { stroke: var(--family-accent); stroke-width: 7; stroke-dasharray: 9 7; }
+  .mcp-map__system [data-mcp-lock] { fill: var(--family-accent); stroke: var(--presentation-ink); stroke-width: 3; }
+  .mcp-map__system [data-mcp-shackle] { fill: none; stroke: var(--presentation-ink); stroke-width: 5; }
+  .mcp-map__node circle { fill: var(--presentation-surface); stroke: var(--presentation-ink); stroke-width: 4; }
+  .mcp-map__node text { fill: var(--presentation-ink); font: 740 15px var(--font-display); }
+  .mcp-map__node .mcp-map__node-index, .mcp-map__direction, .mcp-map__boundary-label { fill: var(--presentation-ink); font: 720 12px var(--font-mono); }
+  .mcp-map[data-boundary-state='minimal'] [data-mcp-boundary] { stroke-width: 7; stroke-dasharray: 9 7; }
+  .mcp-map[data-boundary-state='broad'] [data-mcp-boundary] { stroke-width: 17; stroke-dasharray: 2 5; }
+  .mcp-map[data-boundary-state='broad'] [data-mcp-lock] { transform: scaleX(1.35); transform-origin: center; }
+  .mcp-map[data-boundary-state='revoked'] [data-mcp-boundary] { stroke: var(--presentation-ink); stroke-dasharray: none; stroke-width: 14; }
+  .mcp-map[data-boundary-state='revoked'] [data-mcp-request-path], .mcp-map[data-boundary-state='revoked'] [data-mcp-response-path] { stroke-dasharray: 5 12; opacity: .28; }
+  .mcp-map[data-boundary-state='revoked'] [data-mcp-shackle] { transform: translateY(7px); }
+  .mcp-map__status-row { display: grid; grid-template-columns: minmax(12rem, 1fr) auto; gap: .35rem; align-items: center; }
+  .mcp-map__status-row output { display: flex; gap: .5rem; align-items: baseline; min-inline-size: 0; padding-inline-start: .55rem; border-inline-start: .35rem solid var(--family-accent); }
+  .mcp-map__status-row output strong { font: 760 var(--c-body) var(--font-display); }
+  .mcp-map__status-row output span { color: var(--presentation-muted); font: 700 var(--c-meta) var(--font-mono); }
+  .mcp-map__controls { display: flex; flex-wrap: wrap; gap: .3rem; }
+  .mcp-map button { padding: .25rem .42rem; border: 2px solid var(--presentation-ink); background: var(--presentation-surface); font: 750 var(--c-body) var(--font-display); cursor: pointer; }
+  .mcp-map button:disabled { cursor: default; opacity: 1; }
+  .mcp-map button[aria-pressed='true'] { border-block-end-width: .4rem; border-block-end-color: var(--family-accent); }
+  .mcp-map__comparison { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; }
+  .mcp-map__comparison article { padding: .35rem; border-block-start: .4rem solid var(--presentation-ink); background: var(--presentation-surface); }
+  .mcp-map__comparison article:nth-child(2) { border-color: var(--family-accent); }
+  .mcp-map__comparison p, .mcp-map__comparison h3 { margin: 0; }
+  .mcp-map__comparison article > p { font: 800 var(--c-meta) var(--font-mono); }
+  .mcp-map__comparison h3 { font: 760 1rem/1.1 var(--font-display); }
+  .mcp-map__comparison ul { display: flex; flex-wrap: wrap; gap: .18rem; margin: .2rem 0 0; padding: 0; list-style: none; }
+  .mcp-map__comparison li { padding: .25rem .4rem; border: 1px solid var(--presentation-line); font-size: var(--c-meta); }
+  .mcp-map__comparison .mcp-map__relation { grid-column: 1 / -1; padding: .35rem; border-inline-start: .35rem solid var(--family-accent); font-size: var(--c-body); font-weight: 750; }
+  .mcp-map__chain ol { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .35rem; margin: 0; padding: 0; list-style: none; }
+  .mcp-map__chain li { display: grid; gap: .12rem; min-inline-size: 0; padding: .35rem; border-block-start: .28rem solid var(--family-accent); }
+  .mcp-map__chain strong, .mcp-map__chain span { font-size: var(--c-body); overflow-wrap: anywhere; }
+  .mcp-map__chain p { margin: .35rem 0 0; font-size: var(--c-body); }
+  .mcp-map__chain p span { margin-inline-end: .5rem; font: 700 var(--c-meta) var(--font-mono); text-transform: uppercase; }
+  .mcp-map__tools { display: grid; grid-template-columns: .65fr .85fr 1.2fr; gap: .55rem; }
+  .mcp-map__tools > * { display: grid; gap: .25rem; min-inline-size: 0; padding: .5rem; border: 1px solid var(--presentation-line); background: var(--presentation-surface); }
+  .mcp-map__tools p, .mcp-map__tools h3, .mcp-map__tools dl { margin: 0; }
+  .mcp-map__tools p, .mcp-map__tools dt { font: 700 var(--c-meta) var(--font-mono); text-transform: uppercase; }
+  .mcp-map__tools h3 { font: 780 1.05rem var(--font-display); }
+  .mcp-map__tools code, .mcp-map__readonly code { overflow-wrap: anywhere; font-size: var(--c-body); }
+  .mcp-map__tools dl { display: grid; grid-template-columns: 1fr 1fr; gap: .25rem; }
+  .mcp-map__tools dd { margin: 0; font-size: var(--c-body); }
+  .mcp-map__tools strong { font-size: var(--c-body); }
+  .mcp-map__tools ul { display: flex; flex-wrap: wrap; gap: .25rem; margin: 0; padding: 0; list-style: none; }
+  .mcp-map__tools li { color: #87351f; font-size: var(--c-meta); font-weight: 750; }
+  .mcp-map__risks { display: grid; gap: 0; }
+  .mcp-map__risks > div { display: grid; grid-template-columns: .6fr 1fr 1fr; gap: .35rem; min-inline-size: 0; padding: .12rem .35rem; border-block-start: 1px solid var(--presentation-line); line-height: 1.05; }
+  .mcp-map__risks > div > * { min-inline-size: 0; font-size: var(--c-body); overflow-wrap: anywhere; }
+  .mcp-map__risks .mcp-map__risk-head { font: 700 var(--c-meta) var(--font-mono); text-transform: uppercase; }
+  .mcp-map__risks > div span:last-child { font-weight: 750; }
+  .mcp-map__risks > p { margin: .15rem 0 0; padding: .16rem .28rem; border-inline-start: .35rem solid #87351f; font-size: var(--c-body); font-weight: 750; }
+  .mcp-map__readonly { display: grid; grid-template-columns: 1.2fr .55fr .8fr; gap: .5rem; align-items: stretch; }
+  .mcp-map__readonly blockquote { margin: 0; padding: .55rem; border: 2px solid var(--presentation-ink); font: 730 var(--c-body)/1.25 var(--font-display); }
+  .mcp-map__readonly > div { display: grid; gap: .15rem; padding: .45rem; border-block-start: .45rem solid var(--family-accent); background: var(--presentation-surface); }
+  .mcp-map__readonly > div span { font: 700 var(--c-meta) var(--font-mono); text-transform: uppercase; }
+  .mcp-map__readonly ol { display: grid; gap: .2rem; margin: 0; padding: 0; list-style: none; }
+  .mcp-map__readonly li { padding: .3rem; border: 1px solid var(--presentation-line); font-size: var(--c-body); }
+  .mcp-map__readonly li span { margin-inline-end: .3rem; }
+  .mcp-map__revoke { display: grid; grid-template-columns: 1.4fr .6fr; gap: .55rem; }
+  .mcp-map__revoke ol { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .3rem; margin: 0; padding: 0; list-style: none; }
+  .mcp-map__revoke ol li { display: grid; gap: .12rem; min-inline-size: 0; padding: .4rem; border-block-start: .35rem solid var(--presentation-line); }
+  .mcp-map__revoke ol li:last-child { border-color: var(--family-accent); }
+  .mcp-map__revoke ol span { font: 700 var(--c-meta) var(--font-mono); }
+  .mcp-map__revoke ol strong, .mcp-map__revoke ol p { margin: 0; font-size: var(--c-body); overflow-wrap: anywhere; }
+  .mcp-map__revoke > ul { display: grid; gap: .2rem; margin: 0; padding: 0; list-style: none; }
+  .mcp-map__revoke > ul li { padding: .28rem; border: 1px solid var(--presentation-line); font-size: var(--c-body); }
+  .mcp-map.is-following [data-mcp-request-path] { animation: mcp-pulse 700ms ease both; }
+  .mcp-map.is-following [data-mcp-response-path] { animation: mcp-pulse 700ms 500ms ease both; }
+  @keyframes mcp-pulse { 50% { stroke: var(--family-accent); stroke-width: 12; } }
+  @media (max-width: 48rem) {
+    .mcp-map__system svg { max-block-size: 7.2rem; }
+    .mcp-map__status-row, .mcp-map__comparison, .mcp-map__tools, .mcp-map__readonly, .mcp-map__revoke { grid-template-columns: 1fr; }
+    .mcp-map__chain ol { grid-template-columns: 1fr 1fr; }
+    .mcp-map__risks > div { grid-template-columns: .6fr 1fr 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) { .mcp-map *, .mcp-map *::before, .mcp-map *::after { animation: none !important; transition: none !important; } }
+</style>

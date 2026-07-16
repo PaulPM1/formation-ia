@@ -1,0 +1,45 @@
+---
+import PresentationLayout from '../../layouts/PresentationLayout.astro';
+import { PRESENTATION_DECKS } from '../../presentation/manifests';
+
+const familyLabels = {
+  a: 'Comprendre',
+  b: 'Choisir ses interfaces',
+  c: 'Étendre ses outils',
+} as const;
+
+const families = Object.entries(
+  Object.groupBy(PRESENTATION_DECKS, (deck) => deck.family),
+).filter((entry) => entry[1] !== undefined);
+---
+
+<PresentationLayout title="Mode présentation · Les briques du Vibe Coding">
+  <article class="presentation-index" aria-labelledby="presenter-title">
+    <header>
+      <p class="presentation-kicker">Support formateur</p>
+      <h1 id="presenter-title">Les briques du Vibe Coding</h1>
+      <p>Un parcours visuel pour comprendre, pratiquer et transmettre le Vibe Coding.</p>
+      <a class="presentation-start" href="/presenter/a1/a1-opening/">Commencer la présentation</a>
+    </header>
+
+    <nav aria-label="Sommaire de la présentation">
+      <ol class="presentation-family-list">
+        {families.map(([family, decks]) => (
+          <li>
+            <h2>{familyLabels[family as keyof typeof familyLabels]}</h2>
+            <ol>
+              {decks?.map((deck) => (
+                <li>
+                  <a href={`/presenter/${deck.brickId}/${deck.slides[0].id}/`}>
+                    <span>{deck.brickId.toUpperCase()}</span>
+                    {deck.title}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  </article>
+</PresentationLayout>

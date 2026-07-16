@@ -1,0 +1,61 @@
+---
+import { PRESENTATION_DECKS } from '../../presentation/manifests';
+import type { RoutedSlide } from '../../presentation/presentation-model';
+import ResourceRail from './scenes/ResourceRail.astro';
+import VisualRegistry from './VisualRegistry.astro';
+
+interface Props {
+  slide: RoutedSlide;
+  previous: RoutedSlide | null;
+  next: RoutedSlide | null;
+}
+
+const { slide, previous, next } = Astro.props;
+---
+
+<article class="presentation-stage presentation-slide" data-family={slide.family} aria-labelledby="slide-title">
+  <header class="presentation-heading">
+    <p>{slide.brickId.toUpperCase()} · {slide.brickTitle}</p>
+    <h1 id="slide-title" tabindex="-1">{slide.claim}</h1>
+    {slide.support && <p class="presentation-support">{slide.support}</p>}
+  </header>
+  <VisualRegistry slide={slide} />
+  {slide.visual.key !== 'resource-rail' && <ResourceRail links={slide.links} />}
+</article>
+
+<nav class="presentation-controls" aria-label="Navigation des slides">
+  {previous
+    ? <a href={previous.route} data-previous>Précédente</a>
+    : <span aria-disabled="true">Précédente</span>}
+  <button type="button" data-dialog-target="#presentation-toc">Sommaire</button>
+  <button type="button" data-dialog-target="#speaker-notes">Notes</button>
+  <button type="button" data-presenter-fullscreen aria-pressed="false">Entrer le plein écran</button>
+  {next
+    ? <a href={next.route} data-next>Suivante</a>
+    : <span aria-disabled="true">Suivante</span>}
+</nav>
+
+<dialog id="presentation-toc" aria-labelledby="toc-title">
+  <h2 id="toc-title">Sommaire</h2>
+  <nav aria-label="Toutes les slides">
+    <ol>
+      {PRESENTATION_DECKS.map((deck) => (
+        <li>
+          <a href={`/presenter/${deck.brickId}/${deck.slides[0].id}/`}>
+            {deck.brickId.toUpperCase()} · {deck.title}
+          </a>
+        </li>
+      ))}
+    </ol>
+  </nav>
+  <button type="button" data-dialog-close>Fermer</button>
+</dialog>
+
+<dialog id="speaker-notes" aria-labelledby="notes-title">
+  <h2 id="notes-title">Notes formateur</h2>
+  <p>{slide.speaker.notes}</p>
+  <p><strong>Transition :</strong> {slide.speaker.transition}</p>
+  <button type="button" data-dialog-close>Fermer</button>
+</dialog>
+
+<p class="visually-hidden" aria-live="polite" data-presenter-announcer></p>

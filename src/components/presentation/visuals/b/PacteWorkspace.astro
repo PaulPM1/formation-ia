@@ -1,0 +1,161 @@
+---
+import type { RoutedSlide } from '../../../../presentation/presentation-model';
+import SceneFrame from '../../scenes/SceneFrame.astro';
+import { getPacteVariant } from './visual-state';
+
+interface Props { slide: RoutedSlide; }
+interface PacteItem { letter: string; name: string; prompt: string; }
+interface TimelineItem { event: string; state: string; }
+interface CheckItem { check: string; evidence: string; }
+interface PermissionState { folders: string[]; actions: string[]; risk: string; }
+
+const { slide } = Astro.props;
+const data = slide.visual.data;
+const variant = getPacteVariant(data);
+const pacte = (Array.isArray(data.pacte) ? data.pacte : []) as PacteItem[];
+const timeline = (Array.isArray(data.timeline) ? data.timeline : []) as TimelineItem[];
+const independentChecks = (Array.isArray(data.independentChecks) ? data.independentChecks : []) as CheckItem[];
+const before = (data.before ?? {}) as PermissionState;
+const after = (data.after ?? {}) as PermissionState;
+const workspace = (data.workspace ?? {}) as { sources?: string[]; plan?: string[]; output?: string[] };
+const humans = Array.isArray(data.humanResponsibilities) ? data.humanResponsibilities.map(String) : [];
+const agents = Array.isArray(data.agentResponsibilities) ? data.agentResponsibilities.map(String) : [];
+const controls = Array.isArray(data.controls) ? data.controls.map(String) : [];
+const reported = Array.isArray(data.reported) ? data.reported.map(String) : [];
+---
+
+<SceneFrame title={slide.claim} description={slide.accessibleDescription} visualKey={slide.visual.key} class="pacte-workspace">
+  <div class="pacte" data-pacte-workspace data-variant={variant} data-enhanced="false">
+    <section class="pacte__map" aria-label="Carte des fichiers et des permissions">
+      <svg viewBox="0 0 600 390" role="img" aria-labelledby={`${slide.id}-map-title ${slide.id}-map-desc`}>
+        <title id={`${slide.id}-map-title`}>Carte du workspace délégué</title>
+        <desc id={`${slide.id}-map-desc`}>Les copies sources alimentent un plan approuvé. Les permissions bornent l’action vers un dossier de sortie, tandis que les originaux restent hors de la zone modifiable.</desc>
+        <path d="M92 88 H260 V195 H350 V300 H500" />
+        <path d="M92 310 H260 V195" class="pacte__protected-line" />
+        <rect x="38" y="43" width="110" height="88" rx="8" />
+        <rect x="205" y="43" width="110" height="88" rx="8" />
+        <rect x="300" y="151" width="112" height="88" rx="44" class="pacte__permission-node" />
+        <rect x="444" y="255" width="112" height="88" rx="8" />
+        <rect x="38" y="267" width="110" height="88" rx="8" class="pacte__original-node" />
+        <text x="93" y="76" text-anchor="middle">SOURCES</text><text x="93" y="101" text-anchor="middle">copies</text>
+        <text x="260" y="76" text-anchor="middle">PLAN</text><text x="260" y="101" text-anchor="middle">approuvé</text>
+        <text x="356" y="188" text-anchor="middle">PERMISSIONS</text><text x="356" y="211" text-anchor="middle">limite active</text>
+        <text x="500" y="288" text-anchor="middle">SORTIE</text><text x="500" y="313" text-anchor="middle">fichiers créés</text>
+        <text x="93" y="300" text-anchor="middle">ORIGINAUX</text><text x="93" y="325" text-anchor="middle">inchangés</text>
+      </svg>
+      <p class="pacte__map-rule">Les originaux restent reliés à la preuve, jamais à la zone d’écriture.</p>
+    </section>
+
+    <section class="pacte__detail">
+      {variant === 'delegation' && (
+        <div class="pacte__delegation">
+          <div class="pacte__workspace-lane"><span>Sources</span><strong>{(workspace.sources ?? []).join(', ')}</strong><span>Plan</span><strong>{(workspace.plan ?? []).join(', ')}</strong><span>Sortie</span><strong>{(workspace.output ?? []).join(', ')}</strong></div>
+          <div class="pacte__responsibilities"><article><h3>Vous gardez</h3><ul>{humans.map((item) => <li>{item}</li>)}</ul></article><article><h3>L’agent exécute</h3><ul>{agents.map((item) => <li>{item}</li>)}</ul></article></div>
+        </div>
+      )}
+
+      {variant === 'pacte' && (
+        <ol class="pacte__letters">{pacte.map((item) => <li><span>{item.letter}</span><div><strong>{item.name}</strong><p>{item.prompt}</p></div></li>)}</ol>
+      )}
+
+      {variant === 'permissions' && (
+        <div class="pacte__permissions">
+          <label class="pacte__scope-toggle"><input type="checkbox" checked disabled data-scope-toggle /><span>Limiter l’écriture à la copie de travail</span></label>
+          <div class="pacte__boundaries">
+            <article data-boundary-state="wide"><p>Périmètre large</p><h3>{(before.folders ?? []).join(', ')}</h3><strong>{(before.actions ?? []).join(' · ')}</strong><span>Risque {before.risk}</span></article>
+            <article data-boundary-state="bounded"><p>Périmètre borné</p><h3>{(after.folders ?? []).join(', ')}</h3><strong>{(after.actions ?? []).join(' · ')}</strong><span>Risque {after.risk}</span></article>
+          </div>
+          <p class="pacte__prohibition">⛔ {String(data.prohibition ?? '')}</p>
+        </div>
+      )}
+
+      {variant === 'timeline' && (
+        <div class="pacte__timeline"><ol>{timeline.map((item, index) => <li><span>{String(index + 1).padStart(2, '0')}</span><div><strong>{item.event}</strong><p>{item.state}</p></div></li>)}</ol><div class="pacte__controls">{controls.map((control) => <span>{control}</span>)}</div></div>
+      )}
+
+      {variant === 'check' && (
+        <div class="pacte__check"><p class="pacte__reported"><span>Compte rendu agent</span>{reported.join(' · ')}</p><ol>{independentChecks.map((item, index) => <li><span>{String(index + 1).padStart(2, '0')}</span><strong>{item.check}</strong><p>{item.evidence}</p></li>)}</ol></div>
+      )}
+    </section>
+  </div>
+</SceneFrame>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-pacte-workspace]').forEach((scene) => {
+    scene.dataset.enhanced = 'true';
+    const toggle = scene.querySelector<HTMLInputElement>('[data-scope-toggle]');
+    const states = Array.from(scene.querySelectorAll<HTMLElement>('[data-boundary-state]'));
+    if (!toggle || !states.length) return;
+    const render = () => states.forEach((state) => { state.hidden = (state.dataset.boundaryState === 'bounded') !== toggle.checked; });
+    toggle.disabled = false;
+    toggle.addEventListener('change', render);
+    render();
+  });
+</script>
+
+<style>
+  .pacte { display: grid; grid-template-columns: minmax(17rem, .9fr) minmax(18rem, 1.1fr); gap: clamp(.8rem, 2vw, 2rem); align-items: center; min-block-size: 0; }
+  .pacte__map { display: grid; grid-template-columns: 1fr minmax(7rem, .34fr); gap: .35rem; align-items: center; }
+  .pacte__map svg { inline-size: 100%; max-block-size: 9.2rem; overflow: visible; }
+  .pacte__map path { fill: none; stroke: var(--presentation-ink); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+  .pacte__map .pacte__protected-line { stroke: #72af80; stroke-dasharray: 9 7; }
+  .pacte__map rect { fill: var(--presentation-surface); stroke: var(--presentation-ink); stroke-width: 3; }
+  .pacte__map .pacte__permission-node { fill: var(--family-accent); }
+  .pacte__map .pacte__original-node { fill: color-mix(in srgb, #72af80, var(--presentation-surface) 76%); }
+  /* Exception : texte SVG dimensionné dans le viewBox, pas dans le flux HTML. */
+  .pacte__map text { fill: var(--presentation-ink); font: 700 12px var(--font-mono); }
+  .pacte__map text:nth-of-type(even) { font: 680 13px var(--font-display); }
+  .pacte__map-rule { margin: 0; padding-inline-start: .55rem; border-inline-start: .3rem solid #72af80; font: 700 var(--b-font-body)/1.16 var(--font-display); }
+  .pacte__workspace-lane { display: grid; grid-template-columns: auto 1fr; gap: .2rem .5rem; padding: .5rem; border: 1px solid var(--presentation-line); }
+  .pacte__workspace-lane span { color: var(--presentation-muted); font: var(--b-font-meta) var(--font-mono); text-transform: uppercase; }
+  .pacte__workspace-lane strong { font-size: var(--b-font-body); }
+  .pacte__responsibilities { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; margin-block-start: .55rem; }
+  .pacte__responsibilities article { padding-block-start: .45rem; border-block-start: .3rem solid var(--family-accent); }
+  .pacte__responsibilities article:last-child { border-color: #72af80; }
+  .pacte__responsibilities h3 { margin: 0; font: 750 .9rem var(--font-display); }
+  .pacte__responsibilities ul { margin: .2rem 0 0; padding-inline-start: .9rem; font-size: var(--b-font-body); }
+  .pacte__letters, .pacte__timeline ol, .pacte__check ol { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+  .pacte__letters { position: relative; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .pacte__letters::before { content: ''; position: absolute; z-index: 0; inset-block-start: 1rem; inset-inline: 1.1rem; block-size: .25rem; background: var(--presentation-ink); }
+  .pacte__letters li { position: relative; display: grid; gap: .18rem; align-content: start; min-block-size: 0; padding-inline: .14rem; }
+  .pacte__letters li > span { position: relative; z-index: 1; display: grid; place-items: center; align-self: start; inline-size: 2.2rem; aspect-ratio: 1; border: 3px solid var(--presentation-ink); border-radius: 50%; background: var(--family-accent); font: 800 .9rem var(--font-display); }
+  .pacte__letters div { padding-block: .1rem .25rem; border-block-start: 1px solid var(--presentation-line); }
+  .pacte__letters strong { font: 750 var(--b-font-body) var(--font-display); }
+  .pacte__letters p { margin: .04rem 0 0; font-size: var(--b-font-body); line-height: 1.1; }
+  .pacte__permissions { display: grid; gap: .55rem; }
+  .pacte__scope-toggle { display: flex; gap: .35rem; align-items: center; min-block-size: 2rem; padding: .18rem .4rem; border: 1px solid var(--presentation-ink); background: var(--presentation-surface); font: 730 var(--b-font-control) var(--font-display); cursor: pointer; }
+  .pacte__scope-toggle input { inline-size: 1.15rem; block-size: 1.15rem; accent-color: var(--presentation-ink); }
+  .pacte__boundaries { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; }
+  [data-enhanced='true'] .pacte__boundaries { grid-template-columns: 1fr; }
+  .pacte__boundaries article { display: grid; gap: .1rem; min-block-size: 4.2rem; padding: .3rem .42rem; border: .16rem solid #ed6a46; background: color-mix(in srgb, #ed6a46, transparent 91%); }
+  .pacte__boundaries article[data-boundary-state='bounded'] { border-color: #72af80; background: color-mix(in srgb, #72af80, transparent 88%); }
+  .pacte__boundaries p, .pacte__boundaries h3 { margin: 0; }
+  .pacte__boundaries p, .pacte__boundaries span { color: var(--presentation-muted); font: var(--b-font-meta) var(--font-mono); text-transform: uppercase; }
+  .pacte__boundaries h3 { font: 760 1rem var(--font-display); }
+  .pacte__boundaries strong { font-size: var(--b-font-body); }
+  .pacte__prohibition { margin: 0; padding: .18rem .4rem; border-inline-start: .3rem solid #ed6a46; font-size: var(--b-font-body); font-weight: 750; }
+  .pacte__timeline ol { border-inline-start: .3rem solid var(--presentation-ink); }
+  .pacte__timeline li { display: grid; grid-template-columns: 1.7rem 1fr; gap: .4rem; padding: .4rem 0 .4rem .55rem; border-block-start: 1px solid var(--presentation-line); }
+  .pacte__timeline li:nth-child(3) { border-inline-end: .35rem solid #ed6a46; }
+  .pacte__timeline li > span, .pacte__check li > span { color: var(--presentation-muted); font: var(--b-font-meta) var(--font-mono); }
+  .pacte__timeline strong, .pacte__timeline p { margin: 0; font-size: var(--b-font-body); }
+  .pacte__controls { display: flex; gap: .4rem; margin-block-start: .55rem; }
+  .pacte__controls span { flex: 1; padding: .3rem; border: 1px solid var(--presentation-ink); font: 700 var(--b-font-control) var(--font-mono); text-align: center; }
+  .pacte__reported { display: grid; gap: .12rem; margin: 0 0 .4rem; padding: .42rem; border: 1px solid var(--presentation-line); font-size: var(--b-font-body); font-weight: 700; }
+  .pacte__reported span { color: var(--presentation-muted); font: var(--b-font-meta) var(--font-mono); text-transform: uppercase; }
+  .pacte__check li { display: grid; grid-template-columns: 1.5rem 1fr; gap: .1rem .4rem; padding: .42rem; border-block-start: 1px solid var(--presentation-line); }
+  .pacte__check li > span { grid-row: 1 / 3; }
+  .pacte__check strong, .pacte__check p { margin: 0; font-size: var(--b-font-body); }
+  .pacte__check p { color: #356e42; font-weight: 750; }
+  [data-boundary-state][hidden] { display: none !important; }
+  input:focus-visible + span { outline: .22rem solid var(--presentation-focus); outline-offset: .18rem; }
+  @media (max-width: 48rem) {
+    .pacte { grid-template-columns: 1fr; }
+    .pacte__map { grid-template-columns: 1fr; }
+    .pacte__map svg { max-block-size: 11rem; }
+    .pacte__letters { grid-template-columns: 1fr; }
+    .pacte__letters::before { inset-block: 2rem .25rem; inset-inline-start: 1.05rem; inset-inline-end: auto; inline-size: .25rem; block-size: auto; }
+    .pacte__letters li { grid-template-columns: 2.35rem 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) { .pacte * { transition: none !important; animation: none !important; } }
+</style>

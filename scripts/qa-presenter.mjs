@@ -1,0 +1,198 @@
+import { spawn } from 'node:child_process';
+import { readdir } from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { chromium } from 'playwright';
+
+const projectDirectory = fileURLToPath(new URL('..', import.meta.url));
+const presenterDirectory = path.join(projectDirectory, 'dist/presenter');
+const baseURL = process.env.QA_BASE_URL ?? 'http://127.0.0.1:4380';
+const failures = [];
+let preview;
+
+// The generated route inventory is the static-host equivalent of PRESENTATION_SLIDES.
+async function collectPresenterPages(directory, relative = '') {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const pages = [];
+  for (const entry of entries) {
+    const nextRelative = path.join(relative, entry.name);
+    if (entry.isDirectory()) pages.push(...await collectPresenterPages(path.join(directory, entry.name), nextRelative));
+    else if (entry.name === 'index.html') pages.push(nextRelative);
+  }
+  return pages;
+}
+
+const stopPreview = () => {
+  if (preview && !preview.killed) preview.kill('SIGTERM');
+};
+process.once('exit', stopPreview);
+process.once('SIGINT', () => { stopPreview(); process.exit(130); });
+
+if (!process.env.QA_BASE_URL) {
+  preview = spawn(
+    path.join(projectDirectory, 'node_modules/.bin/astro'),
+    ['preview', '--host', '127.0.0.1', '--port', '4380'],
+    { cwd: projectDirectory, stdio: 'ignore' },
+  );
+  let ready = false;
+  for (let attempt = 0; attempt < 40 && !ready; attempt += 1) {
+    try { ready = (await fetch(`${baseURL}/presenter/`)).ok; } catch {}
+    if (!ready) await new Promise((resolve) => setTimeout(resolve, 250));
+  }
+  if (!ready) throw new Error(`Preview indisponible sur ${baseURL}. Lancez d’abord npm run build.`);
+}
+
+const generatedPages = await collectPresenterPages(presenterDirectory);
+const slideRoutes = generatedPages
+  .filter((page) => page !== 'index.html')
+  .map((page) => `/presenter/${page.replaceAll(path.sep, '/').replace(/\/index\.html$/, '')}`)
+  .toSorted();
+
+if (slideRoutes.length !== 76) failures.push(`inventaire slides ${slideRoutes.length}/76`);
+if (generatedPages.length !== 77) failures.push(`inventaire présentateur ${generatedPages.length}/77`);
+
+const browser = await chromium.launch({ channel: 'chrome', headless: true });
+
+const inspectHorizontalLayout = async (page) => page.evaluate(() => {
+  const viewportWidth = window.innerWidth;
+  const documentClientWidth = document.documentElement.clientWidth;
+  const visible = (element) => {
+    const style = getComputedStyle(element);
+    const rect = element.getBoundingClientRect();
+    return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 1 && rect.height > 1;
+  };
+  const offenders = [...document.body.querySelectorAll('*')]
+    .filter((element) => visible(element) && !element.classList.contains('visually-hidden'))
+    .map((element) => ({
+      name: `${element.tagName.toLowerCase()}${typeof element.className === 'string' && element.className ? `.${element.className.trim().replace(/\s+/g, '.')}` : ''}`,
+      left: element.getBoundingClientRect().left,
+      right: element.getBoundingClientRect().right,
+    }))
+    .filter(({ left, right }) => left < -1 || right > viewportWidth + 1)
+    .slice(0, 8);
+  return {
+    viewportWidth,
+    documentClientWidth,
+    documentWidth: document.documentElement.scrollWidth,
+    offenders,
+  };
+});
+
+try {
+  const mobileContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  const mobilePage = await mobileContext.newPage();
+  for (const route of slideRoutes) {
+    const response = await mobilePage.goto(`${baseURL}${route}`, { waitUntil: 'load' });
+    if (!response?.ok()) {
+      failures.push(`${route} HTTP ${response?.status() ?? 'absent'}`);
+      continue;
+    }
+    await mobilePage.evaluate(() => document.fonts.ready);
+    const layout = await inspectHorizontalLayout(mobilePage);
+    if (layout.documentWidth > layout.documentClientWidth + 1 || layout.offenders.length) {
+      failures.push(`${route} mobile ${layout.documentClientWidth}/${layout.documentWidth}px ${layout.offenders.map((item) => `${item.name}:${item.left.toFixed(1)}..${item.right.toFixed(1)}`).join(', ')}`);
+    }
+  }
+  await mobileContext.close();
+
+  const controllerContext = await browser.newContext({ viewport: { width: 1280, height: 720 } });
+  const controllerPage = await controllerContext.newPage();
+  const pageErrors = [];
+  controllerPage.on('pageerror', (error) => pageErrors.push(error.message));
+
+  await controllerPage.goto(`${baseURL}/presenter/a5/a5-mission/`, { waitUntil: 'load' });
+  const summary = controllerPage.locator('.mission-board__correction summary');
+  const details = controllerPage.locator('.mission-board__correction');
+  const summaryURL = controllerPage.url();
+  await summary.focus();
+  await controllerPage.keyboard.press('Space');
+  if (await details.getAttribute('open') === null) failures.push('summary Space n’ouvre pas details');
+  if (controllerPage.url() !== summaryURL) failures.push('summary Space déclenche la navigation globale');
+  await controllerPage.keyboard.press('Space');
+  await controllerPage.keyboard.press('Enter');
+  if (await details.getAttribute('open') === null) failures.push('summary Enter n’ouvre pas details');
+  if (controllerPage.url() !== summaryURL) failures.push('summary Enter déclenche la navigation globale');
+
+  await controllerPage.goto(`${baseURL}/presenter/a5/a5-risk/`, { waitUntil: 'load' });
+  const riskURL = controllerPage.url();
+  const radio = controllerPage.locator('input[type="radio"]').first();
+  await radio.focus();
+  await controllerPage.keyboard.press('ArrowRight');
+  await controllerPage.keyboard.press('Space');
+  if (controllerPage.url() !== riskURL) failures.push('touches radio déclenchent la navigation globale');
+  const resourceLink = controllerPage.locator('.resource-rail a').first();
+  await resourceLink.focus();
+  await controllerPage.keyboard.press('Space');
+  if (controllerPage.url() !== riskURL) failures.push('Space sur lien déclenche la navigation globale');
+
+  const fullscreenButton = controllerPage.locator('[data-presenter-fullscreen]');
+  if (await fullscreenButton.getAttribute('aria-pressed') !== 'false') failures.push('plein écran aria-pressed initial incorrect');
+  await fullscreenButton.click();
+  await controllerPage.waitForFunction(() => Boolean(document.fullscreenElement));
+  if (await fullscreenButton.getAttribute('aria-pressed') !== 'true') failures.push('fullscreenchange ne met pas aria-pressed à true');
+  if ((await fullscreenButton.textContent())?.trim() !== 'Quitter le plein écran') failures.push('libellé de sortie plein écran absent');
+  await controllerPage.evaluate(async () => { await document.exitFullscreen(); });
+  await controllerPage.waitForFunction(() => !document.fullscreenElement
+    && document.querySelector('[data-presenter-fullscreen]')?.getAttribute('aria-pressed') === 'false');
+  if (await fullscreenButton.getAttribute('aria-pressed') !== 'false') failures.push('fullscreenchange ne restaure pas aria-pressed');
+
+  await controllerPage.evaluate(() => {
+    document.documentElement.requestFullscreen = () => Promise.reject(new Error('refus simulé'));
+  });
+  await fullscreenButton.click();
+  await controllerPage.waitForFunction(() => (document.querySelector('[data-presenter-announcer]')?.textContent ?? '').includes('n’a pas pu'));
+  if (pageErrors.length) failures.push(`rejet plein écran non géré : ${pageErrors.join(', ')}`);
+
+  for (const [pathname, expectedTitle] of [
+    ['/presenter/a9/unknown-slide/', 'Slide introuvable'],
+    ['/generic-unknown/', 'Page introuvable'],
+  ]) {
+    const response = await controllerPage.goto(`${baseURL}${pathname}`, { waitUntil: 'load' });
+    if (response?.status() !== 404) failures.push(`${pathname} statut ${response?.status() ?? 'absent'} au lieu de 404`);
+    if ((await controllerPage.locator('h1').textContent())?.trim() !== expectedTitle) failures.push(`${pathname} récupération 404 incorrecte`);
+    if (!await controllerPage.locator('.error-copy a[href="/presenter/"]').isVisible()) failures.push(`${pathname} lien vers le sommaire absent`);
+  }
+
+  const noScriptContext = await browser.newContext({
+    viewport: { width: 1280, height: 720 },
+    javaScriptEnabled: false,
+  });
+  const noScriptPage = await noScriptContext.newPage();
+  for (const pathname of ['/presenter/a9/unknown-slide/', '/generic-unknown/']) {
+    const response = await noScriptPage.goto(`${baseURL}${pathname}`, { waitUntil: 'load' });
+    if (response?.status() !== 404) failures.push(`${pathname} no-JS statut ${response?.status() ?? 'absent'} au lieu de 404`);
+    if ((await noScriptPage.locator('h1').textContent())?.trim() !== 'Page introuvable') failures.push(`${pathname} no-JS devrait conserver le message générique`);
+    if (!await noScriptPage.locator('.error-copy a[href="/presenter/"]').isVisible()) failures.push(`${pathname} no-JS lien vers le présentateur absent`);
+    if (await noScriptPage.locator('[data-presenter-recovery]').isVisible()) failures.push(`${pathname} no-JS affiche une détection non exécutée`);
+  }
+  await noScriptContext.close();
+
+  for (const route of [
+    '/presenter/a5/a5-risk/',
+    '/presenter/b2/b2-tests/',
+    '/presenter/c2/c2-permissions/',
+  ]) {
+    await controllerPage.goto(`${baseURL}${route}`, { waitUntil: 'load' });
+    await controllerPage.evaluate(() => { document.documentElement.style.zoom = '2'; });
+    const layout = await inspectHorizontalLayout(controllerPage);
+    if (layout.documentWidth > layout.documentClientWidth + 1 || layout.offenders.length) failures.push(`${route} zoom 200 % déborde`);
+    await controllerPage.evaluate(() => { document.documentElement.style.zoom = '1'; });
+    await controllerPage.emulateMedia({ reducedMotion: 'reduce' });
+    const animationName = await controllerPage.locator('.presentation-stage').evaluate((element) => getComputedStyle(element, '::before').animationName);
+    if (animationName !== 'none') failures.push(`${route} mouvement réduit conserve ${animationName}`);
+    await controllerPage.emulateMedia({ reducedMotion: 'no-preference', media: 'print' });
+    if (await controllerPage.locator('.presentation-controls').evaluate((element) => getComputedStyle(element).display) !== 'none') failures.push(`${route} contrôles visibles à l’impression`);
+    await controllerPage.emulateMedia({ media: 'screen' });
+  }
+  await controllerContext.close();
+} finally {
+  await browser.close();
+  stopPreview();
+}
+
+if (failures.length) {
+  console.error(failures.join('\n'));
+  process.exitCode = 1;
+} else {
+  console.log('QA présentateur : 76/76 routes mobiles, contrôleur natif, plein écran, 404, zoom, mouvement réduit et impression validés ; 77 pages générées.');
+}

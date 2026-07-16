@@ -1,0 +1,57 @@
+---
+import type { RoutedSlide, SlideVisualKey } from '../../presentation/presentation-model';
+import CheckpointScene from './scenes/CheckpointScene.astro';
+import MissionBoard from './scenes/MissionBoard.astro';
+import ResourceRail from './scenes/ResourceRail.astro';
+import StaticConceptScene from './scenes/StaticConceptScene.astro';
+import ContextBudget from './visuals/a/ContextBudget.astro';
+import ContextComparison from './visuals/a/ContextComparison.astro';
+import InterfaceContinuum from './visuals/a/InterfaceContinuum.astro';
+import ResponseWorkflowAgent from './visuals/a/ResponseWorkflowAgent.astro';
+import TokenPredictor from './visuals/a/TokenPredictor.astro';
+import VerificationAudit from './visuals/a/VerificationAudit.astro';
+import ArtifactTestLoop from './visuals/b/ArtifactTestLoop.astro';
+import IpmtrLoop from './visuals/b/IpmtrLoop.astro';
+import PacteWorkspace from './visuals/b/PacteWorkspace.astro';
+import PromptBuilder from './visuals/b/PromptBuilder.astro';
+import SetupDiagnostic from './visuals/b/SetupDiagnostic.astro';
+import WorkspaceTriptych from './visuals/b/WorkspaceTriptych.astro';
+import McpConnectionMap from './visuals/c/McpConnectionMap.astro';
+import SkillAnatomy from './visuals/c/SkillAnatomy.astro';
+import TriggerTimeline from './visuals/c/TriggerTimeline.astro';
+
+interface Props {
+  slide: RoutedSlide;
+}
+
+const { slide } = Astro.props;
+
+const sceneRegistry = {
+  'mission-board': MissionBoard,
+  checkpoint: CheckpointScene,
+  'resource-rail': ResourceRail,
+  'token-predictor': TokenPredictor,
+  'context-comparison': ContextComparison,
+  'response-workflow-agent': ResponseWorkflowAgent,
+  'interface-continuum': InterfaceContinuum,
+  'context-budget': ContextBudget,
+  'verification-audit': VerificationAudit,
+  'setup-diagnostic': SetupDiagnostic,
+  'prompt-builder': PromptBuilder,
+  'artifact-test-loop': ArtifactTestLoop,
+  'pacte-workspace': PacteWorkspace,
+  'ipmtr-loop': IpmtrLoop,
+  'workspace-triptych': WorkspaceTriptych,
+  'skill-anatomy': SkillAnatomy,
+  'mcp-connection-map': McpConnectionMap,
+  'trigger-timeline': TriggerTimeline,
+} satisfies Record<SlideVisualKey, typeof StaticConceptScene>;
+
+const Scene = sceneRegistry[slide.visual.key];
+
+if (!Scene) {
+  throw new Error(`Clé visuelle inconnue : ${String(slide.visual.key)}`);
+}
+---
+
+<Scene slide={slide} />
