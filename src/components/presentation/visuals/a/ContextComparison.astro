@@ -72,19 +72,23 @@ const laneId = `${slide.id}-prediction-lane`;
 </SceneFrame>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-context-comparison]').forEach((scene) => {
-    const buttons = Array.from(scene.querySelectorAll<HTMLButtonElement>('[data-context-option]'));
-    const panels = Array.from(scene.querySelectorAll<HTMLElement>('[data-context-panel]'));
-    scene.dataset.enhanced = 'true';
+  import { onPresenterPage } from '../../../../scripts/on-presenter-page';
 
-    buttons.forEach((button) => {
-      button.disabled = false;
-      button.addEventListener('click', () => {
-        buttons.forEach((candidate) => candidate.setAttribute('aria-pressed', String(candidate === button)));
-        panels.forEach((panel) => { panel.hidden = panel.dataset.contextPanel !== button.dataset.contextOption; });
+  onPresenterPage(() => {
+    document.querySelectorAll<HTMLElement>('[data-context-comparison]').forEach((scene) => {
+      const buttons = Array.from(scene.querySelectorAll<HTMLButtonElement>('[data-context-option]'));
+      const panels = Array.from(scene.querySelectorAll<HTMLElement>('[data-context-panel]'));
+      scene.dataset.enhanced = 'true';
+
+      buttons.forEach((button) => {
+        button.disabled = false;
+        button.addEventListener('click', () => {
+          buttons.forEach((candidate) => candidate.setAttribute('aria-pressed', String(candidate === button)));
+          panels.forEach((panel) => { panel.hidden = panel.dataset.contextPanel !== button.dataset.contextOption; });
+        });
       });
+      panels.forEach((panel, index) => { panel.hidden = index !== 0; });
     });
-    panels.forEach((panel, index) => { panel.hidden = index !== 0; });
   });
 </script>
 
@@ -186,7 +190,7 @@ const laneId = `${slide.id}-prediction-lane`;
   }
 
   .context-comparison__lane dl div { border-block-start: 1px solid var(--presentation-line); padding-block-start: 0.4rem; }
-  .context-comparison__lane dt { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase; }
+  .context-comparison__lane dt { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.82rem; text-transform: uppercase; }
   .context-comparison__lane dd { margin: 0; font-weight: 680; }
   .context-comparison__prediction { margin: 0; font-size: clamp(0.9rem, 0.8rem + 0.28vw, 1.05rem); }
 

@@ -96,19 +96,23 @@ const detailsId = `${slide.id}-surface-details`;
 </SceneFrame>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-continuum]').forEach((scene) => {
-    const choices = Array.from(scene.querySelectorAll<HTMLInputElement>('[data-surface-choice]'));
-    const panels = Array.from(scene.querySelectorAll<HTMLElement>('[data-surface-panel]'));
-    scene.dataset.enhanced = 'true';
+  import { onPresenterPage } from '../../../../scripts/on-presenter-page';
 
-    choices.forEach((choice) => {
-      choice.disabled = false;
-      choice.addEventListener('change', () => {
-        panels.forEach((panel) => { panel.hidden = panel.dataset.surfacePanel !== choice.value; });
+  onPresenterPage(() => {
+    document.querySelectorAll<HTMLElement>('[data-continuum]').forEach((scene) => {
+      const choices = Array.from(scene.querySelectorAll<HTMLInputElement>('[data-surface-choice]'));
+      const panels = Array.from(scene.querySelectorAll<HTMLElement>('[data-surface-panel]'));
+      scene.dataset.enhanced = 'true';
+
+      choices.forEach((choice) => {
+        choice.disabled = false;
+        choice.addEventListener('change', () => {
+          panels.forEach((panel) => { panel.hidden = panel.dataset.surfacePanel !== choice.value; });
+        });
       });
+      const active = choices.find((choice) => choice.checked)?.value ?? '0';
+      panels.forEach((panel) => { panel.hidden = panel.dataset.surfacePanel !== active; });
     });
-    const active = choices.find((choice) => choice.checked)?.value ?? '0';
-    panels.forEach((panel) => { panel.hidden = panel.dataset.surfacePanel !== active; });
   });
 </script>
 
@@ -144,9 +148,9 @@ const detailsId = `${slide.id}-surface-details`;
 
   .continuum__track {
     position: absolute;
-    inset-block-start: 2.15rem;
+    inset-block-start: 2.6rem;
     inset-inline: 8%;
-    block-size: 0.28rem;
+    block-size: 0.35rem;
     background: linear-gradient(90deg, var(--presentation-line), var(--family-accent));
   }
 
@@ -158,7 +162,7 @@ const detailsId = `${slide.id}-surface-details`;
     gap: 0.35rem;
     align-items: center;
     justify-items: start;
-    min-block-size: 2.4rem;
+    min-block-size: 3.2rem;
     padding: 0.1rem;
     cursor: pointer;
     text-align: start;
@@ -175,13 +179,13 @@ const detailsId = `${slide.id}-surface-details`;
   .continuum__point {
     display: grid;
     place-items: center;
-    inline-size: 2rem;
+    inline-size: 3rem;
     aspect-ratio: 1;
     border: 2px solid var(--presentation-ink);
     border-radius: 50%;
     background: var(--presentation-surface);
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 1.05rem;
     transition: transform 180ms ease, background 180ms ease;
   }
 
@@ -196,7 +200,7 @@ const detailsId = `${slide.id}-surface-details`;
     outline-offset: 0.22rem;
   }
 
-  .continuum__range strong { font-family: var(--font-display); font-size: clamp(0.78rem, 0.75rem + 0.18vw, 0.9rem); }
+  .continuum__range strong { font-family: var(--font-display); font-size: clamp(1rem, 0.9rem + 0.35vw, 1.25rem); }
   .continuum__range small {
     position: absolute;
     inline-size: 1px;
@@ -219,13 +223,13 @@ const detailsId = `${slide.id}-surface-details`;
   .continuum__details article[hidden] { display: none; }
 
   .continuum__details .scene-label { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); }
-  .continuum__details h2 { margin: 0; font-family: var(--font-display); font-size: clamp(1rem, .9rem + .35vw, 1.3rem); line-height: 1; }
-  .continuum__need { margin: 0; color: var(--presentation-muted); font-size: 0.75rem; }
+  .continuum__details h2 { margin: 0; font-family: var(--font-display); font-size: clamp(1.25rem, 1.05rem + 0.6vw, 1.7rem); line-height: 1; }
+  .continuum__need { margin: 0; color: var(--presentation-muted); font-size: 0.95rem; }
   .continuum__details dl { display: grid; gap: 0.12rem; margin: 0; }
   .continuum__details dl { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .continuum__details dl div { display: grid; gap: 0.1rem; padding-block-start: 0.18rem; border-block-start: 1px solid var(--presentation-line); }
-  .continuum__details dt { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase; }
-  .continuum__details dd { margin: 0; font-size: 0.75rem; font-weight: 650; line-height: 1.08; }
+  .continuum__details dt { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.82rem; text-transform: uppercase; }
+  .continuum__details dd { margin: 0; font-size: 0.82rem; font-weight: 650; line-height: 1.08; }
 
   .continuum__axis {
     position: absolute;

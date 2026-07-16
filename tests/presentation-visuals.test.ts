@@ -489,9 +489,9 @@ test('le bloc B impose un plancher typographique lisible au vidéoprojecteur', a
     ...components.flatMap(({ name, source }) => undersized(name, source)),
   ], [], 'aucun texte HTML visible du bloc B ne doit descendre sous .75rem');
 
-  assert.match(familyB, /--b-font-meta:\s*0\.75rem/);
-  assert.match(familyB, /--b-font-control:\s*0\.75rem/);
-  assert.match(familyB, /--b-font-body:\s*0\.80rem/);
+  assert.match(familyB, /--b-font-meta:\s*0\.8rem/);
+  assert.match(familyB, /--b-font-control:\s*0\.82rem/);
+  assert.match(familyB, /--b-font-body:\s*0\.92rem/);
 
   const source = Object.fromEntries(components.map((component) => [component.name, component.source]));
   const definedFontTokens = new Set(
@@ -504,7 +504,7 @@ test('le bloc B impose un plancher typographique lisible au vidéoprojecteur', a
       }
     }
   }
-  assert.match(familyB, /\.mission-board__steps li\s*{[^}]*font-size:\s*var\(--b-font-body\)/s);
+  assert.match(familyB, /\.mission-board__steps li\s*{[^}]*font-size:\s*1rem/s);
   assert.match(familyB, /\.checkpoint-scene__checklist li\s*{[^}]*font-size:\s*var\(--b-font-body\)/s);
   assert.match(source.ArtifactTestLoop, /\.artifact__stage-buttons button\s*{[^}]*var\(--b-font-control\)/s);
   assert.match(source.ArtifactTestLoop, /\.artifact__panels article strong\s*{[^}]*var\(--b-font-body\)/s);

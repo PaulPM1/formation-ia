@@ -18,6 +18,22 @@ const tests = (Array.isArray(data.tests) ? data.tests : []) as TestCase[];
 const zones = (Array.isArray(data.zones) ? data.zones : []) as Zone[];
 const before = (data.before ?? {}) as ArtifactSide;
 const after = (data.after ?? {}) as ArtifactSide;
+
+// Le texte SVG ne se replie pas : découpe manuelle en deux lignes max
+// pour rester dans les rectangles de 210 unités.
+const wrapSvgText = (value: string | undefined, max = 18): string[] => {
+  const text = String(value ?? '');
+  if (text.length <= max) return [text];
+  const words = text.split(' ');
+  const first: string[] = [];
+  while (words.length && `${first.join(' ')} ${words[0]}`.trim().length <= max) {
+    first.push(words.shift() as string);
+  }
+  if (!first.length && words.length) first.push(words.shift() as string);
+  return [first.join(' '), words.join(' ')].filter(Boolean);
+};
+const beforeLines = wrapSvgText(before.output);
+const afterLines = wrapSvgText(after.output);
 const iteration1 = (data.iteration1 ?? {}) as Iteration;
 const iteration2 = (data.iteration2 ?? {}) as Iteration;
 const removed = Array.isArray(data.removed) ? data.removed.map(String) : [];
@@ -62,9 +78,9 @@ const loopPath = panels.length === 5
           <rect x="35" y="55" width="210" height="190" rx="12" />
           <rect class="artifact__transfer-target" x="515" y="35" width="210" height="230" rx="12" />
           <text class="artifact__svg-kicker" x="60" y="87">AVANT · {before.location}</text>
-          <text x="60" y="130">{before.output}</text>
+          <text x="60" y="130">{beforeLines.map((line, index) => <tspan x="60" dy={index === 0 ? 0 : 24}>{line}</tspan>)}</text>
           <text class="artifact__svg-kicker" x="540" y="67">APRÈS · {after.location}</text>
-          <text x="540" y="110">{after.output}</text>
+          <text x="540" y="110">{afterLines.map((line, index) => <tspan x="540" dy={index === 0 ? 0 : 24}>{line}</tspan>)}</text>
           <text class="artifact__transfer-action" x="380" y="142" text-anchor="middle">EXTRAIRE</text>
         </svg>
         <ul>{affordances.map((affordance) => <li>{affordance}</li>)}</ul>
@@ -141,51 +157,54 @@ const loopPath = panels.length === 5
 
 <script>
   import { artifactViewState } from './visual-state';
+  import { onPresenterPage } from '../../../../scripts/on-presenter-page';
 
-  document.querySelectorAll<HTMLElement>('[data-artifact-loop]').forEach((scene) => {
-    scene.dataset.enhanced = 'true';
-    const buttons = Array.from(scene.querySelectorAll<HTMLButtonElement>('[data-artifact-stage]'));
-    const panels = Array.from(scene.querySelectorAll<HTMLElement>('[data-artifact-panel]'));
-    const nodes = Array.from(scene.querySelectorAll<SVGGElement>('[data-artifact-node]'));
-    const overview = scene.querySelector<HTMLButtonElement>('[data-artifact-overview]');
-    const status = scene.querySelector<HTMLOutputElement>('[data-artifact-status]');
-    if (!buttons.length || !panels.length) return;
-    const render = (active: number | null) => {
-      const state = artifactViewState(panels.length, active);
-      scene.dataset.artifactView = state.active === null ? 'overview' : 'isolated';
-      state.panels.forEach((visible, index) => { panels[index].hidden = !visible; });
-      buttons.forEach((button, index) => button.setAttribute('aria-pressed', String(index === state.active)));
-      nodes.forEach((node, index) => {
-        node.classList.toggle('is-active', state.active === index);
-        node.classList.toggle('is-dimmed', !state.nodes[index]);
-      });
-      overview?.setAttribute('aria-pressed', String(state.active === null));
-      if (status) status.textContent = state.active === null
-        ? 'Vue d’ensemble · toutes les preuves sont visibles.'
-        : `Étape ciblée : ${buttons[state.active]?.textContent?.trim() ?? ''}.`;
-    };
-    buttons.forEach((button, index) => { button.disabled = false; button.addEventListener('click', () => render(index)); });
-    if (overview) {
-      overview.disabled = false;
-      overview.addEventListener('click', () => render(null));
-    }
-    render(null);
+  onPresenterPage(() => {
+    document.querySelectorAll<HTMLElement>('[data-artifact-loop]').forEach((scene) => {
+      scene.dataset.enhanced = 'true';
+      const buttons = Array.from(scene.querySelectorAll<HTMLButtonElement>('[data-artifact-stage]'));
+      const panels = Array.from(scene.querySelectorAll<HTMLElement>('[data-artifact-panel]'));
+      const nodes = Array.from(scene.querySelectorAll<SVGGElement>('[data-artifact-node]'));
+      const overview = scene.querySelector<HTMLButtonElement>('[data-artifact-overview]');
+      const status = scene.querySelector<HTMLOutputElement>('[data-artifact-status]');
+      if (!buttons.length || !panels.length) return;
+      const render = (active: number | null) => {
+        const state = artifactViewState(panels.length, active);
+        scene.dataset.artifactView = state.active === null ? 'overview' : 'isolated';
+        state.panels.forEach((visible, index) => { panels[index].hidden = !visible; });
+        buttons.forEach((button, index) => button.setAttribute('aria-pressed', String(index === state.active)));
+        nodes.forEach((node, index) => {
+          node.classList.toggle('is-active', state.active === index);
+          node.classList.toggle('is-dimmed', !state.nodes[index]);
+        });
+        overview?.setAttribute('aria-pressed', String(state.active === null));
+        if (status) status.textContent = state.active === null
+          ? 'Vue d’ensemble · toutes les preuves sont visibles.'
+          : `Étape ciblée : ${buttons[state.active]?.textContent?.trim() ?? ''}.`;
+      };
+      buttons.forEach((button, index) => { button.disabled = false; button.addEventListener('click', () => render(index)); });
+      if (overview) {
+        overview.disabled = false;
+        overview.addEventListener('click', () => render(null));
+      }
+      render(null);
+    });
   });
 </script>
 
 <style>
   .artifact { min-block-size: 0; }
-  .artifact[data-variant='tests'], .artifact[data-variant='correction'] { display: grid; grid-template-columns: minmax(14rem, .65fr) minmax(22rem, 1.35fr); gap: clamp(.65rem, 1.5vw, 1.2rem); align-items: center; }
+  .artifact[data-variant='tests'], .artifact[data-variant='correction'] { display: grid; grid-template-columns: minmax(17rem, .75fr) minmax(22rem, 1.25fr); gap: clamp(.65rem, 1.5vw, 1.2rem); align-items: center; }
   .artifact__transfer, .artifact__anatomy { display: grid; grid-template-columns: minmax(22rem, 1.4fr) minmax(12rem, .6fr); gap: clamp(.8rem, 2vw, 1.7rem); align-items: center; }
-  .artifact__transfer svg, .artifact__anatomy svg { inline-size: 100%; max-block-size: 12rem; overflow: visible; }
+  .artifact__transfer svg, .artifact__anatomy svg { inline-size: 100%; max-block-size: 17rem; overflow: visible; }
   .artifact__transfer > svg > path, .artifact__anatomy > svg > path { fill: none; stroke: var(--presentation-ink); stroke-width: 7; stroke-linecap: round; }
   .artifact__transfer marker path { fill: var(--presentation-ink); }
   .artifact__transfer rect { fill: var(--presentation-surface); stroke: var(--presentation-ink); stroke-width: 4; }
   .artifact__transfer .artifact__transfer-target { fill: color-mix(in srgb, var(--family-accent), white 76%); }
   /* Exception : texte SVG dimensionné dans le viewBox, pas dans le flux HTML. */
   .artifact__transfer text, .artifact__anatomy text, .artifact__scope text { fill: var(--presentation-ink); font: 740 17px var(--font-display); }
-  .artifact__transfer .artifact__svg-kicker, .artifact__anatomy .artifact__svg-kicker { font: 700 12px var(--font-mono); }
-  .artifact__transfer .artifact__transfer-action { font: 800 14px var(--font-mono); }
+  .artifact__transfer .artifact__svg-kicker, .artifact__anatomy .artifact__svg-kicker { font: 700 14px var(--font-mono); }
+  .artifact__transfer .artifact__transfer-action { font: 800 16px var(--font-mono); paint-order: stroke; stroke: var(--presentation-ivory); stroke-width: 10; stroke-linejoin: round; }
   .artifact__transfer ul, .artifact__anatomy ol { display: grid; margin: 0; padding: 0; list-style: none; }
   .artifact__transfer li { padding: .48rem .58rem; border-block-start: 1px solid var(--presentation-line); font: 750 var(--b-font-body) var(--font-display); }
   .artifact__transfer li::before { content: '◆'; margin-inline-end: .45rem; color: var(--family-accent); }
@@ -205,19 +224,19 @@ const loopPath = panels.length === 5
   .artifact__scope svg path { fill: color-mix(in srgb, var(--family-accent), transparent 65%); stroke: var(--presentation-ink); stroke-width: 3; stroke-linejoin: round; }
   .artifact__scope-core { border-block-start-width: .65rem !important; border-block-start-color: var(--family-accent) !important; }
   .artifact__scope-core p { margin: 0; font: 730 .76rem var(--font-display); }
-  .artifact__orbit { display: grid; grid-template-columns: 1fr minmax(8rem, .38fr); gap: .3rem; align-items: center; }
-  .artifact__orbit svg { inline-size: 100%; max-block-size: 9.2rem; overflow: visible; }
+  .artifact__orbit { display: grid; grid-template-columns: 1fr; gap: .45rem; align-items: center; justify-items: center; }
+  .artifact__orbit svg { inline-size: 100%; max-block-size: 16.5rem; overflow: visible; }
   .artifact__orbit path { fill: none; stroke: var(--presentation-ink); stroke-width: 5; stroke-linecap: round; }
   .artifact__orbit circle { fill: var(--presentation-surface); stroke: var(--presentation-ink); stroke-width: 4; transition: fill 160ms ease, opacity 160ms ease; }
   .artifact__orbit g.is-active circle { fill: var(--family-accent); }
   .artifact__orbit g.is-dimmed { opacity: .28; }
-  .artifact__orbit text { fill: var(--presentation-ink); font: 700 15px var(--font-mono); }
-  .artifact__orbit .artifact__orbit-label { font: 750 14px var(--font-display); }
+  .artifact__orbit text { fill: var(--presentation-ink); font: 700 21px var(--font-mono); }
+  .artifact__orbit .artifact__orbit-label { font: 750 21px var(--font-display); }
   .artifact__rule { display: grid; gap: .2rem; margin: 0; padding-inline-start: .6rem; border-inline-start: .3rem solid var(--family-accent); font: 720 var(--b-font-body)/1.16 var(--font-display); }
   .artifact__rule span { color: var(--presentation-muted); font: 600 var(--b-font-meta) var(--font-mono); text-transform: uppercase; }
   .artifact__inspection { display: grid; gap: .18rem; min-block-size: 0; }
   .artifact__stage-buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(4rem, 1fr)); align-content: center; }
-  .artifact__stage-buttons button { display: grid; grid-template-columns: auto 1fr; gap: .12rem; min-block-size: 2rem; padding: .14rem .18rem; border: 0; border-block-start: 1px solid var(--presentation-line); background: transparent; color: var(--presentation-ink); font: 710 var(--b-font-control) var(--font-display); text-align: start; cursor: pointer; }
+  .artifact__stage-buttons button { display: grid; grid-template-columns: auto 1fr; gap: .12rem .4rem; min-block-size: 2rem; padding: .14rem .22rem; border: 0; border-block-start: 1px solid var(--presentation-line); background: transparent; color: var(--presentation-ink); font: 710 var(--b-font-control) var(--font-display); text-align: start; cursor: pointer; }
   .artifact__stage-buttons .artifact__overview { grid-column: auto; display: block; min-block-size: 1.8rem; text-align: center; }
   .artifact__stage-buttons button[aria-pressed='true'] { border-block-start-width: .28rem; border-color: var(--family-accent); background: color-mix(in srgb, var(--family-accent), transparent 86%); }
   .artifact__stage-buttons button:disabled { cursor: default; }

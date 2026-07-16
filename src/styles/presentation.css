@@ -188,13 +188,15 @@ a {
   to { transform: translate3d(4%, 3%, 0) scale(1.06); }
 }
 
+/* Le visuel est la vedette : l'en-tête reste compact pour laisser un maximum
+   de hauteur à la rangée centrale (minmax(0, 1fr)). */
 .presentation-slide {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
-  gap: clamp(0.75rem, 1.6vw, 1.5rem);
+  gap: clamp(0.6rem, 1.2vw, 1.1rem);
   inline-size: 100%;
   margin-inline: auto;
-  padding: clamp(1.15rem, 2.4vw, 2.75rem);
+  padding: clamp(1rem, 1.9vw, 2.1rem);
 }
 
 .presentation-heading {
@@ -236,11 +238,18 @@ a {
   text-wrap: balance;
 }
 
+/* Sur les slides, le titre cède la place au graphique. */
+.presentation-heading h1 {
+  max-inline-size: 36ch;
+  font-size: clamp(1.6rem, 1.15rem + 1.55vw, 2.7rem);
+  line-height: 1;
+}
+
 .presentation-support {
   max-inline-size: 50ch;
   margin: 0;
   color: var(--presentation-muted);
-  font-size: clamp(0.98rem, 0.88rem + 0.4vw, 1.28rem);
+  font-size: clamp(0.9rem, 0.84rem + 0.25vw, 1.08rem);
   text-wrap: pretty;
 }
 
@@ -255,7 +264,12 @@ a {
   box-shadow: 0 1.1rem 3.2rem rgb(22 34 29 / 7%);
 }
 
+/* Grille à colonne unique : un visuel plus petit que le cadre est centré
+   verticalement au lieu de rester collé en haut. */
 .scene-frame__content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
   min-block-size: 0;
   overflow: auto;
   padding: clamp(1rem, 2vw, 2rem);
@@ -360,6 +374,20 @@ a {
   counter-reset: mission-step;
 }
 
+/* Les longues listes (7+) se répartissent en deux colonnes lues de haut en
+   bas (01→05 à gauche, 06→09 à droite) : plus de trou central sur la slide. */
+.mission-board__steps:has(li:nth-child(7)) {
+  display: block;
+  align-self: center;
+  columns: 2;
+  column-gap: clamp(1.2rem, 2.5vw, 2.5rem);
+}
+
+.mission-board__steps:has(li:nth-child(7)) li {
+  margin-block-end: clamp(0.55rem, 1vw, 0.9rem);
+  break-inside: avoid;
+}
+
 .mission-board__actions {
   display: grid;
   align-content: center;
@@ -440,8 +468,8 @@ a {
 .mission-board__statements small {
   min-inline-size: 0;
   overflow-wrap: anywhere;
-  font-size: 0.75rem;
-  line-height: 1.08;
+  font-size: 0.82rem;
+  line-height: 1.15;
 }
 
 .mission-board__correction {
@@ -454,7 +482,7 @@ a {
   padding-block: 0.3rem;
   color: var(--presentation-ink);
   font-family: var(--font-display);
-  font-size: 0.75rem;
+  font-size: 0.82rem;
   font-weight: 760;
   cursor: pointer;
 }
@@ -474,8 +502,8 @@ a {
   gap: 0.05rem 0.35rem;
   padding-block: 0.12rem;
   border-block-start: 1px solid var(--presentation-line);
-  font-size: 0.75rem;
-  line-height: 1.05;
+  font-size: 0.82rem;
+  line-height: 1.12;
 }
 
 .mission-board__correction-list span {
@@ -510,7 +538,7 @@ a {
 
 .presentation-stage[data-family="a"] .presentation-visual figcaption {
   padding-block: 0.36rem;
-  font-size: 0.78rem;
+  font-size: 0.85rem;
   line-height: 1.18;
 }
 
@@ -534,21 +562,21 @@ a {
 }
 
 .presentation-stage[data-family="a"] .mission-board__steps li {
-  grid-template-columns: 1.35rem minmax(0, 1fr);
-  gap: 0.25rem;
-  font-size: 0.78rem;
-  line-height: 1.12;
+  grid-template-columns: 1.6rem minmax(0, 1fr);
+  gap: 0.3rem;
+  font-size: 1rem;
+  line-height: 1.2;
 }
 
 .presentation-stage[data-family="a"] .mission-board__outcome {
   padding-inline-start: 0.6rem;
-  font-size: 0.76rem;
+  font-size: 0.88rem;
   line-height: 1.12;
 }
 
 .presentation-stage[data-family="a"] .mission-board__outcome dt {
   margin-block-end: 0.08rem;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
 }
 
 .presentation-stage[data-family="a"] .mission-board__outcome ul {
@@ -606,8 +634,8 @@ a {
 }
 
 .checkpoint-scene__checklist input {
-  inline-size: 1.25rem;
-  block-size: 1.25rem;
+  inline-size: 1.45rem;
+  block-size: 1.45rem;
   margin: 0;
   accent-color: var(--presentation-ink);
 }
@@ -658,9 +686,9 @@ a {
 /* Les claims du bloc B sont volontairement longs : les trois rôles ci-dessous
    gardent leur hiérarchie au vidéoprojecteur, sans retirer d’information. */
 .presentation-stage[data-family="b"] {
-  --b-font-meta: 0.75rem;
-  --b-font-control: 0.75rem;
-  --b-font-body: 0.80rem;
+  --b-font-meta: 0.8rem;
+  --b-font-control: 0.82rem;
+  --b-font-body: 0.92rem;
 }
 
 .presentation-stage[data-family="b"] .scene-frame__content {
@@ -669,7 +697,7 @@ a {
 
 .presentation-stage[data-family="b"] .presentation-visual figcaption {
   padding-block: 0.38rem;
-  font-size: 0.75rem;
+  font-size: 0.82rem;
   line-height: 1.2;
 }
 
@@ -696,10 +724,10 @@ a {
 }
 
 .presentation-stage[data-family="b"] .mission-board__steps li {
-  grid-template-columns: 1.3rem minmax(0, 1fr);
-  gap: 0.2rem;
-  font-size: var(--b-font-body);
-  line-height: 1.12;
+  grid-template-columns: 1.5rem minmax(0, 1fr);
+  gap: 0.25rem;
+  font-size: 1rem;
+  line-height: 1.2;
 }
 
 .presentation-stage[data-family="b"] .mission-board__outcome {
@@ -736,16 +764,17 @@ a {
 
 .presentation-stage[data-family="b"] .checkpoint-scene__checklist li {
   grid-template-columns: auto minmax(0, 1fr);
+  align-content: start;
   gap: 0.25rem;
   min-block-size: 1.8rem;
   padding-block: 0.08rem;
   font-size: var(--b-font-body);
-  line-height: 1.12;
+  line-height: 1.18;
 }
 
 .presentation-stage[data-family="b"] .checkpoint-scene__checklist input {
-  inline-size: 0.9rem;
-  block-size: 0.9rem;
+  inline-size: 1.2rem;
+  block-size: 1.2rem;
 }
 
 .presentation-stage[data-family="b"] .checkpoint-scene__status {
@@ -787,21 +816,13 @@ a {
 /* Le bloc C superpose système et preuve : le cadre se resserre pour que la
    relation centrale reste projetable sans défilement au format 16 / 9. */
 .presentation-stage[data-family="c"] {
-  --c-font-meta: 0.75rem;
-  --c-font-control: 0.75rem;
-  --c-font-body: 0.80rem;
+  --c-font-meta: 0.8rem;
+  --c-font-control: 0.82rem;
+  --c-font-body: 0.92rem;
 }
 
 .presentation-stage[data-family="c"] .presentation-slide {
   gap: clamp(0.55rem, 1vw, 0.85rem);
-}
-
-.presentation-stage[data-family="c"] .presentation-heading h1 {
-  font-size: clamp(1.9rem, 1.2rem + 2vw, 3.5rem);
-}
-
-.presentation-stage[data-family="c"] .presentation-support {
-  font-size: clamp(0.9rem, 0.82rem + 0.25vw, 1.05rem);
 }
 
 .presentation-stage[data-family="c"] .scene-frame__content {
@@ -810,7 +831,7 @@ a {
 
 .presentation-stage[data-family="c"] .presentation-visual figcaption {
   padding-block: 0.36rem;
-  font-size: 0.75rem;
+  font-size: 0.82rem;
   line-height: 1.18;
 }
 
@@ -834,10 +855,10 @@ a {
 }
 
 .presentation-stage[data-family="c"] .mission-board__steps li {
-  grid-template-columns: 1.25rem minmax(0, 1fr);
-  gap: 0.18rem;
-  font-size: var(--c-font-body);
-  line-height: 1.08;
+  grid-template-columns: 1.5rem minmax(0, 1fr);
+  gap: 0.25rem;
+  font-size: 1rem;
+  line-height: 1.2;
 }
 
 .presentation-stage[data-family="c"] .mission-board__outcome {
@@ -1161,6 +1182,9 @@ dialog button,
 }
 
 @media (min-width: 52.01rem) and (min-aspect-ratio: 4 / 3) {
+  /* overflow-y: clip — les halos décoratifs absolus (::before/::after) ne
+     doivent pas étendre la zone de défilement : la slide tient dans l'écran
+     et la page ne doit pas défiler pendant la projection. */
   .presentation-stage {
     inline-size: min(100%, calc((100dvh - 4.3rem) * 16 / 9));
     min-inline-size: 0;
@@ -1168,7 +1192,7 @@ dialog button,
     min-block-size: calc(100dvh - 4.3rem);
     max-block-size: none;
     overflow-x: clip;
-    overflow-y: visible;
+    overflow-y: clip;
     aspect-ratio: auto;
   }
 

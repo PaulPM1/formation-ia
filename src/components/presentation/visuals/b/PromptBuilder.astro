@@ -72,31 +72,34 @@ const staticResult = variant === 'comparison' ? String(data.after ?? '') : promp
 
 <script>
   import { promptOutputForVariant } from './visual-state';
+  import { onPresenterPage } from '../../../../scripts/on-presenter-page';
 
-  document.querySelectorAll<HTMLElement>('[data-prompt-builder]').forEach((scene) => {
-    scene.dataset.enhanced = 'true';
-    const blocks = Array.from(scene.querySelectorAll<HTMLButtonElement>('[data-prompt-block]'));
-    const result = scene.querySelector<HTMLOutputElement>('[data-prompt-result]');
-    const relationStatus = scene.querySelector<HTMLElement>('[data-prompt-relation-status]');
-    if (!blocks.length || !result) return;
-    const variant = scene.dataset.variant === 'comparison' ? 'comparison' : scene.dataset.variant === 'blocks' ? 'blocks' : 'builder';
-    const target = result.dataset.promptTarget ?? result.textContent ?? '';
-    const active = blocks.map(() => variant === 'comparison');
-    const render = () => {
-      blocks.forEach((block, index) => block.setAttribute('aria-pressed', String(active[index])));
-      result.textContent = promptOutputForVariant(variant, target, blocks.map((block) => block.dataset.content ?? ''), active);
-      if (relationStatus) {
-        const selected = blocks.filter((_, index) => active[index]).map((block) => block.dataset.name ?? '');
-        relationStatus.textContent = selected.length
-          ? `Ambiguïtés reliées au brief final : ${selected.join(', ')}.`
-          : 'Le brief final reste la cible ; aucune ambiguïté n’est isolée.';
-      }
-    };
-    blocks.forEach((block, index) => {
-      block.disabled = false;
-      block.addEventListener('click', () => { active[index] = !active[index]; render(); });
+  onPresenterPage(() => {
+    document.querySelectorAll<HTMLElement>('[data-prompt-builder]').forEach((scene) => {
+      scene.dataset.enhanced = 'true';
+      const blocks = Array.from(scene.querySelectorAll<HTMLButtonElement>('[data-prompt-block]'));
+      const result = scene.querySelector<HTMLOutputElement>('[data-prompt-result]');
+      const relationStatus = scene.querySelector<HTMLElement>('[data-prompt-relation-status]');
+      if (!blocks.length || !result) return;
+      const variant = scene.dataset.variant === 'comparison' ? 'comparison' : scene.dataset.variant === 'blocks' ? 'blocks' : 'builder';
+      const target = result.dataset.promptTarget ?? result.textContent ?? '';
+      const active = blocks.map(() => variant === 'comparison');
+      const render = () => {
+        blocks.forEach((block, index) => block.setAttribute('aria-pressed', String(active[index])));
+        result.textContent = promptOutputForVariant(variant, target, blocks.map((block) => block.dataset.content ?? ''), active);
+        if (relationStatus) {
+          const selected = blocks.filter((_, index) => active[index]).map((block) => block.dataset.name ?? '');
+          relationStatus.textContent = selected.length
+            ? `Ambiguïtés reliées au brief final : ${selected.join(', ')}.`
+            : 'Le brief final reste la cible ; aucune ambiguïté n’est isolée.';
+        }
+      };
+      blocks.forEach((block, index) => {
+        block.disabled = false;
+        block.addEventListener('click', () => { active[index] = !active[index]; render(); });
+      });
+      render();
     });
-    render();
   });
 </script>
 

@@ -34,9 +34,9 @@ const canonicalSteps: Step[] = steps.length ? steps : [
         <title id={`${slide.id}-ipmtr-title`}>Boucle I.P.M.T.R.</title>
         <desc id={`${slide.id}-ipmtr-desc`}>Inspecter mène à Planifier, Modifier, Tester et Relire. Une anomalie dans le diff renvoie à Inspecter.</desc>
         <path data-ipmtr-path d="M105 170 C105 74 650 46 660 160 C668 260 520 292 380 274 C235 256 101 249 105 170 Z" />
-        <g class="ipmtr__gate-marker" data-ipmtr-gate-label="permission" transform="translate(326 68)"><rect x="-42" y="-12" width="84" height="24" rx="12" /><text y="4" text-anchor="middle">permission</text></g>
-        <g class="ipmtr__gate-marker" data-ipmtr-gate-label="test" transform="translate(638 178)"><rect x="-27" y="-12" width="54" height="24" rx="12" /><text y="4" text-anchor="middle">test</text></g>
-        <g class="ipmtr__gate-marker" data-ipmtr-gate-label="diff" transform="translate(330 273)"><rect x="-25" y="-12" width="50" height="24" rx="12" /><text y="4" text-anchor="middle">diff</text></g>
+        <g class="ipmtr__gate-marker" data-ipmtr-gate-label="permission" transform="translate(326 30)"><rect x="-64" y="-14" width="128" height="28" rx="14" /><text y="5" text-anchor="middle">permission</text></g>
+        <g class="ipmtr__gate-marker" data-ipmtr-gate-label="test" transform="translate(700 178)"><rect x="-36" y="-14" width="72" height="28" rx="14" /><text y="5" text-anchor="middle">test</text></g>
+        <g class="ipmtr__gate-marker" data-ipmtr-gate-label="diff" transform="translate(330 300)"><rect x="-34" y="-14" width="68" height="28" rx="14" /><text y="5" text-anchor="middle">diff</text></g>
         {[[105,170],[240,84],[410,70],[584,104],[592,246]].map(([x,y], index) => (
           <g transform={`translate(${x} ${y})`} data-ipmtr-node={index}>
             <circle r="30" />
@@ -83,78 +83,81 @@ const canonicalSteps: Step[] = steps.length ? steps : [
 
 <script>
   import { advanceIpmtrCycle, ipmtrGateAfter, resolvePanelVisibility } from './visual-state';
+  import { onPresenterPage } from '../../../../scripts/on-presenter-page';
 
-  document.querySelectorAll<HTMLElement>('[data-ipmtr-loop]').forEach((scene) => {
-    scene.dataset.enhanced = 'true';
+  onPresenterPage(() => {
+    document.querySelectorAll<HTMLElement>('[data-ipmtr-loop]').forEach((scene) => {
+      scene.dataset.enhanced = 'true';
 
-    const permissionChoices = Array.from(scene.querySelectorAll<HTMLInputElement>('[data-permission-choice]'));
-    permissionChoices.forEach((choice) => { choice.disabled = false; });
+      const permissionChoices = Array.from(scene.querySelectorAll<HTMLInputElement>('[data-permission-choice]'));
+      permissionChoices.forEach((choice) => { choice.disabled = false; });
 
-    const decisionButtons = Array.from(scene.querySelectorAll<HTMLButtonElement>('[data-proof-decision]'));
-    const proofStatus = scene.querySelector<HTMLOutputElement>('[data-proof-status]');
-    decisionButtons.forEach((button) => {
-      button.disabled = false;
-      button.addEventListener('click', () => {
-        decisionButtons.forEach((candidate) => candidate.setAttribute('aria-pressed', String(candidate === button)));
-        if (proofStatus) proofStatus.textContent = `Décision retenue : ${button.textContent ?? ''}.`;
+      const decisionButtons = Array.from(scene.querySelectorAll<HTMLButtonElement>('[data-proof-decision]'));
+      const proofStatus = scene.querySelector<HTMLOutputElement>('[data-proof-status]');
+      decisionButtons.forEach((button) => {
+        button.disabled = false;
+        button.addEventListener('click', () => {
+          decisionButtons.forEach((candidate) => candidate.setAttribute('aria-pressed', String(candidate === button)));
+          if (proofStatus) proofStatus.textContent = `Décision retenue : ${button.textContent ?? ''}.`;
+        });
       });
-    });
 
-    const panels = Array.from(scene.querySelectorAll<HTMLElement>('[data-ipmtr-panel]'));
-    const nodes = Array.from(scene.querySelectorAll<SVGGElement>('[data-ipmtr-node]'));
-    const gates = Array.from(scene.querySelectorAll<HTMLInputElement>('[data-ipmtr-gate]'));
-    const gateMarkers = Array.from(scene.querySelectorAll<SVGGElement>('[data-ipmtr-gate-label]'));
-    const advance = scene.querySelector<HTMLButtonElement>('[data-ipmtr-advance]');
-    const status = scene.querySelector<HTMLOutputElement>('[data-ipmtr-status]');
-    if (!panels.length || !advance || !status) return;
-    let index = 0;
-    gates.forEach((gate) => { gate.disabled = false; gate.checked = false; });
-    advance.disabled = false;
-    const stepNames = ['Inspecter', 'Planifier', 'Modifier', 'Tester', 'Relire'];
-    const gateLabels = { permission: 'permission comprise', test: 'test exécuté', diff: 'diff relu' };
-    const canonicalStepName = (stepIndex: number) => stepNames[stepIndex] ?? '';
-    const render = () => {
-      resolvePanelVisibility(panels.length, index, true).forEach((visible, panelIndex) => { panels[panelIndex].hidden = !visible; });
-      nodes.forEach((node, nodeIndex) => node.classList.toggle('is-active', nodeIndex === index));
-      const requiredGate = ipmtrGateAfter(index);
-      const nextName = canonicalStepName((index + 1) % panels.length);
-      gateMarkers.forEach((marker) => marker.classList.toggle('is-required', marker.dataset.ipmtrGateLabel === requiredGate));
-      advance.textContent = requiredGate ? `Vers ${nextName} · ${gateLabels[requiredGate]} requise` : `Vers ${nextName}`;
-      status.textContent = requiredGate
-        ? `${canonicalStepName(index)} · prochaine porte : ${gateLabels[requiredGate]}.`
-        : `${canonicalStepName(index)} · passage direct vers ${nextName}.`;
-    };
-    advance.addEventListener('click', () => {
-      const gateState = { permission: false, test: false, diff: false };
-      gates.forEach((gate) => { gateState[gate.dataset.ipmtrGate as keyof typeof gateState] = gate.checked; });
-      const next = advanceIpmtrCycle(index, gateState);
-      if (next.blockedBy) {
-        const labels = { permission: 'la permission', test: 'le test', diff: 'la relecture du diff' };
-        status.textContent = `Progression arrêtée : activez ${labels[next.blockedBy]}.`;
-        return;
-      }
-      index = next.index;
-      gates.forEach((gate) => { gate.checked = next.gates[gate.dataset.ipmtrGate as keyof typeof next.gates]; });
+      const panels = Array.from(scene.querySelectorAll<HTMLElement>('[data-ipmtr-panel]'));
+      const nodes = Array.from(scene.querySelectorAll<SVGGElement>('[data-ipmtr-node]'));
+      const gates = Array.from(scene.querySelectorAll<HTMLInputElement>('[data-ipmtr-gate]'));
+      const gateMarkers = Array.from(scene.querySelectorAll<SVGGElement>('[data-ipmtr-gate-label]'));
+      const advance = scene.querySelector<HTMLButtonElement>('[data-ipmtr-advance]');
+      const status = scene.querySelector<HTMLOutputElement>('[data-ipmtr-status]');
+      if (!panels.length || !advance || !status) return;
+      let index = 0;
+      gates.forEach((gate) => { gate.disabled = false; gate.checked = false; });
+      advance.disabled = false;
+      const stepNames = ['Inspecter', 'Planifier', 'Modifier', 'Tester', 'Relire'];
+      const gateLabels = { permission: 'permission comprise', test: 'test exécuté', diff: 'diff relu' };
+      const canonicalStepName = (stepIndex: number) => stepNames[stepIndex] ?? '';
+      const render = () => {
+        resolvePanelVisibility(panels.length, index, true).forEach((visible, panelIndex) => { panels[panelIndex].hidden = !visible; });
+        nodes.forEach((node, nodeIndex) => node.classList.toggle('is-active', nodeIndex === index));
+        const requiredGate = ipmtrGateAfter(index);
+        const nextName = canonicalStepName((index + 1) % panels.length);
+        gateMarkers.forEach((marker) => marker.classList.toggle('is-required', marker.dataset.ipmtrGateLabel === requiredGate));
+        advance.textContent = requiredGate ? `Vers ${nextName} · ${gateLabels[requiredGate]} requise` : `Vers ${nextName}`;
+        status.textContent = requiredGate
+          ? `${canonicalStepName(index)} · prochaine porte : ${gateLabels[requiredGate]}.`
+          : `${canonicalStepName(index)} · passage direct vers ${nextName}.`;
+      };
+      advance.addEventListener('click', () => {
+        const gateState = { permission: false, test: false, diff: false };
+        gates.forEach((gate) => { gateState[gate.dataset.ipmtrGate as keyof typeof gateState] = gate.checked; });
+        const next = advanceIpmtrCycle(index, gateState);
+        if (next.blockedBy) {
+          const labels = { permission: 'la permission', test: 'le test', diff: 'la relecture du diff' };
+          status.textContent = `Progression arrêtée : activez ${labels[next.blockedBy]}.`;
+          return;
+        }
+        index = next.index;
+        gates.forEach((gate) => { gate.checked = next.gates[gate.dataset.ipmtrGate as keyof typeof next.gates]; });
+        render();
+      });
+      gates.forEach((gate) => gate.addEventListener('change', render));
       render();
     });
-    gates.forEach((gate) => gate.addEventListener('change', render));
-    render();
   });
 </script>
 
 <style>
   .ipmtr { display: grid; grid-template-columns: minmax(18rem, 1.1fr) minmax(17rem, .9fr); gap: clamp(.8rem, 2.2vw, 2rem); align-items: center; min-block-size: 0; }
   .ipmtr__diagram { display: grid; grid-template-columns: 1fr minmax(7rem, .32fr); align-items: center; }
-  .ipmtr__diagram svg { inline-size: 100%; max-block-size: 9.2rem; overflow: visible; }
+  .ipmtr__diagram svg { inline-size: 100%; max-block-size: 14rem; overflow: visible; }
   .ipmtr__diagram path { fill: none; stroke: var(--presentation-ink); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
   .ipmtr__gate-marker rect { fill: var(--presentation-surface); stroke: var(--presentation-ink); stroke-width: 2; transition: fill 160ms ease; }
   /* Exception : texte SVG dimensionné dans le viewBox, pas dans le flux HTML. */
-  .ipmtr__gate-marker text { font: 700 10px var(--font-mono); text-transform: uppercase; }
+  .ipmtr__gate-marker text { font: 700 16px var(--font-mono); text-transform: uppercase; }
   .ipmtr__gate-marker.is-required rect { fill: #ed6a46; }
   .ipmtr__diagram circle { fill: var(--presentation-surface); stroke: var(--presentation-ink); stroke-width: 4; transition: fill 160ms ease, transform 160ms ease; }
   .ipmtr[data-enhanced='false'] [data-ipmtr-node='0'] circle, .ipmtr__diagram g.is-active circle { fill: var(--family-accent); }
-  .ipmtr__diagram text { fill: var(--presentation-ink); font: 800 19px var(--font-display); }
-  .ipmtr__diagram .ipmtr__node-label { font: 700 13px var(--font-display); }
+  .ipmtr__diagram text { fill: var(--presentation-ink); font: 800 26px var(--font-display); }
+  .ipmtr__diagram .ipmtr__node-label { font: 700 19px var(--font-display); }
   .ipmtr__loopback { display: grid; gap: .14rem; margin: 0; padding-inline-start: .55rem; border-inline-start: .3rem solid #ed6a46; font: 700 var(--b-font-body)/1.15 var(--font-display); }
   .ipmtr__loopback span { color: var(--presentation-muted); font: var(--b-font-meta) var(--font-mono); text-transform: uppercase; }
   .ipmtr__process { display: grid; gap: .55rem; }

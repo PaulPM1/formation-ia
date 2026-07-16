@@ -85,19 +85,22 @@ const graph = ['Compte', 'Surface', 'Fonctions', 'Test', 'Repli'];
 
 <script>
   import { resolvePanelVisibility } from './visual-state';
+  import { onPresenterPage } from '../../../../scripts/on-presenter-page';
 
-  document.querySelectorAll<HTMLElement>('[data-setup-diagnostic]').forEach((scene) => {
-    scene.dataset.enhanced = 'true';
-    scene.querySelectorAll<HTMLInputElement>('[data-setup-control]').forEach((control) => { control.disabled = false; });
-    const choices = Array.from(scene.querySelectorAll<HTMLInputElement>('[data-setup-platform]'));
-    const panels = Array.from(scene.querySelectorAll<HTMLElement>('[data-setup-panel]'));
-    if (!choices.length || !panels.length) return;
-    const render = (active: number) => resolvePanelVisibility(panels.length, active, true).forEach((visible, index) => { panels[index].hidden = !visible; });
-    choices.forEach((choice, index) => {
-      choice.disabled = false;
-      choice.addEventListener('change', () => render(index));
+  onPresenterPage(() => {
+    document.querySelectorAll<HTMLElement>('[data-setup-diagnostic]').forEach((scene) => {
+      scene.dataset.enhanced = 'true';
+      scene.querySelectorAll<HTMLInputElement>('[data-setup-control]').forEach((control) => { control.disabled = false; });
+      const choices = Array.from(scene.querySelectorAll<HTMLInputElement>('[data-setup-platform]'));
+      const panels = Array.from(scene.querySelectorAll<HTMLElement>('[data-setup-panel]'));
+      if (!choices.length || !panels.length) return;
+      const render = (active: number) => resolvePanelVisibility(panels.length, active, true).forEach((visible, index) => { panels[index].hidden = !visible; });
+      choices.forEach((choice, index) => {
+        choice.disabled = false;
+        choice.addEventListener('change', () => render(index));
+      });
+      render(Math.max(0, choices.findIndex((choice) => choice.checked)));
     });
-    render(Math.max(0, choices.findIndex((choice) => choice.checked)));
   });
 </script>
 
