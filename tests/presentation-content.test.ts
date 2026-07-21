@@ -126,20 +126,23 @@ test('contient les 73 étapes de compréhension validées', () => {
   );
 });
 
-test('A2 compare huit solutions et priorise quatre réponses contextualisées', () => {
-  const landscape = PRESENTATION_SLIDES.find((slide) => slide.id === 'a2-landscape');
-  const levels = landscape?.visual.data.levels as Array<{ solutions: string[] }>;
-  assert.deepEqual(levels.flatMap((level) => level.solutions), [
-    'Claude Chat', 'ChatGPT Chat',
-    'Claude Artifacts', 'ChatGPT Canvas',
-    'Claude Cowork', 'ChatGPT Work',
-    'Claude Code', 'Codex',
-  ]);
-
+test('A2 propose quatre paires équivalentes dans un ordre non progressif', () => {
   const exercise = PRESENTATION_SLIDES.find((slide) => slide.id === 'a2-prioritize');
+  const options = exercise?.visual.data.options as Array<{
+    id: string;
+    need: string;
+    solutions: string[];
+  }>;
   const scenarios = exercise?.visual.data.scenarios as Array<{ answer: string }>;
+
+  assert.deepEqual(options, [
+    { id: 'chat', need: 'Réponse', solutions: ['Claude Chat', 'ChatGPT Chat'] },
+    { id: 'object', need: 'Objet', solutions: ['Claude Artifacts', 'ChatGPT Canvas'] },
+    { id: 'work', need: 'Livrable', solutions: ['Claude Cowork', 'ChatGPT Work'] },
+    { id: 'code', need: 'Projet', solutions: ['Claude Code', 'Codex'] },
+  ]);
   assert.deepEqual(scenarios.map((scenario) => scenario.answer), [
-    'chatgpt-chat', 'claude-artifacts', 'chatgpt-work', 'claude-code',
+    'code', 'chat', 'work', 'object',
   ]);
 });
 

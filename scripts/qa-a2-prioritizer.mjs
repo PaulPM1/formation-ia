@@ -42,11 +42,14 @@ try {
   const form = page.locator('[data-solution-prioritizer]');
   if (await form.getAttribute('data-enhanced') !== 'true') failures.push('prioriteur non amélioré par JavaScript');
   if (await page.locator('[data-prioritizer-scenario]:visible').count() !== 1) failures.push('plus d’une situation visible au départ');
+  if (await page.locator('[data-prioritizer-scenario]:visible input[type="radio"]').count() !== 4) {
+    failures.push('le prioriteur doit afficher quatre paires');
+  }
 
   await page.locator('[data-prioritizer-validate]:visible').click();
   if (await page.locator('[data-prioritizer-correction]:visible').count() !== 0) failures.push('correction révélée sans choix');
 
-  const choices = ['chatgpt-chat', 'claude-code', 'chatgpt-work', 'claude-code'];
+  const choices = ['code', 'work', 'work', 'object'];
   for (let index = 0; index < choices.length; index += 1) {
     const scenario = page.locator('[data-prioritizer-scenario]:visible');
     const radio = scenario.locator(`input[value="${choices[index]}"]`);

@@ -460,6 +460,13 @@ test('A2 conserve ses comparatifs et corrections sans JavaScript', async () => {
   assert.match(prioritizer, /:focus-visible/);
 });
 
+test('le prioriteur A2 rend une radio par paire de solutions', async () => {
+  const source = await read('src/components/presentation/visuals/a/SolutionPrioritizer.astro');
+  assert.match(source, /option\.solutions/);
+  assert.match(source, /join\(['"] \/ ['"]\)/);
+  assert.doesNotMatch(source, /option\.ecosystem/);
+});
+
 test('le prédicteur laisse réellement disparaître les tokens futurs', async () => {
   const token = await read('src/components/presentation/visuals/a/TokenPredictor.astro');
   assert.match(token, /\[data-token\]\[hidden\]\s*{[^}]*display:\s*none/s);

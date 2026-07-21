@@ -11,27 +11,27 @@ import {
 test('le prioriteur refuse de révéler une réponse sans choix', () => {
   const initial = createPrioritizerState();
 
-  assert.deepEqual(revealPrioritizerAnswer(initial, 'chatgpt-chat'), initial);
+  assert.deepEqual(revealPrioritizerAnswer(initial, 'chat'), initial);
 });
 
 test('le prioriteur compte une bonne réponse une seule fois', () => {
-  const selected = chooseSolution(createPrioritizerState(), 'chatgpt-chat');
-  const revealed = revealPrioritizerAnswer(selected, 'chatgpt-chat');
+  const selected = chooseSolution(createPrioritizerState(), 'chat');
+  const revealed = revealPrioritizerAnswer(selected, 'chat');
 
   assert.deepEqual(revealed, {
     index: 0,
-    selection: 'chatgpt-chat',
+    selection: 'chat',
     revealed: true,
     score: 1,
     complete: false,
   });
-  assert.deepEqual(revealPrioritizerAnswer(revealed, 'chatgpt-chat'), revealed);
+  assert.deepEqual(revealPrioritizerAnswer(revealed, 'chat'), revealed);
 });
 
 test('le prioriteur conserve une erreur puis passe à la situation suivante', () => {
   const wrong = revealPrioritizerAnswer(
-    chooseSolution(createPrioritizerState(), 'chatgpt-work'),
-    'chatgpt-chat',
+    chooseSolution(createPrioritizerState(), 'work'),
+    'chat',
   );
 
   assert.equal(wrong.score, 0);
@@ -47,7 +47,7 @@ test('le prioriteur conserve une erreur puis passe à la situation suivante', ()
 test('le prioriteur termine la quatrième situation et peut être recréé', () => {
   const last = {
     index: 3,
-    selection: 'claude-code',
+    selection: 'code',
     revealed: true,
     score: 4,
     complete: false,
