@@ -1208,6 +1208,40 @@ dialog button,
   .presentation-stage::after {
     inset-inline-start: 0;
   }
+
+  /* A3 doit tenir comme une scène complète dans le projecteur : le titre,
+     le visuel avec sa légende et le rail de sources précèdent tous la barre
+     de navigation, sans faire grandir la page au-delà du viewport. */
+  .presentation-stage[data-family="a"]:has([data-model-cost-guide]) {
+    block-size: calc(100dvh - 4.3rem);
+    min-block-size: 0;
+    max-block-size: calc(100dvh - 4.3rem);
+    gap: 0.4rem;
+    padding-block: 0.5rem;
+  }
+
+  .presentation-stage[data-family="a"]:has([data-model-cost-guide]) .presentation-heading h1 {
+    font-size: 2rem;
+  }
+
+  .presentation-stage[data-family="a"]:has([data-model-cost-guide]) .presentation-visual figcaption {
+    padding-block: 0.25rem;
+    font-size: 0.75rem;
+    line-height: 1.1;
+  }
+
+  .presentation-stage[data-family="a"]:has([data-model-cost-guide]) .scene-frame__content {
+    padding-block: 0.25rem;
+  }
+
+  .presentation-stage[data-family="a"]:has([data-model-cost-guide]) .resource-rail {
+    min-block-size: 2.25rem;
+    gap: 0.5rem;
+  }
+
+  .presentation-stage[data-family="a"]:has([data-model-cost-guide]) .resource-rail ul {
+    gap: 0.3rem 1rem;
+  }
 }
 
 @media (max-width: 52rem) {

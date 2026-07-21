@@ -164,6 +164,67 @@ const checkHorizontalOverflow = (layout, label) => {
   }
 };
 
+const checkDesktopProjector = async (page, label) => {
+  const geometry = await page.evaluate(() => {
+    const controlsTop = document.querySelector('.presentation-controls')?.getBoundingClientRect().top
+      ?? Number.NEGATIVE_INFINITY;
+    const selectors = ['.presentation-heading', '.presentation-visual', '.resource-rail'];
+    const regions = selectors.map((selector) => {
+      const element = document.querySelector(selector);
+      const rect = element?.getBoundingClientRect();
+      const style = element ? getComputedStyle(element) : null;
+      return {
+        selector,
+        visible: Boolean(rect && style && style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0),
+        top: rect?.top ?? Number.POSITIVE_INFINITY,
+        bottom: rect?.bottom ?? Number.POSITIVE_INFINITY,
+      };
+    });
+    const stage = document.querySelector('.presentation-stage')?.getBoundingClientRect();
+    const visualContent = document.querySelector('.scene-frame__content')?.getBoundingClientRect();
+    const guide = document.querySelector('[data-model-cost-guide]')?.getBoundingClientRect();
+    const figcaption = document.querySelector('.presentation-visual figcaption')?.getBoundingClientRect();
+    return {
+      controlsTop,
+      stageBottom: stage?.bottom ?? Number.POSITIVE_INFINITY,
+      documentScrollHeight: document.documentElement.scrollHeight,
+      viewportHeight: window.innerHeight,
+      regions,
+      visualFlow: {
+        contentBottom: visualContent?.bottom ?? Number.POSITIVE_INFINITY,
+        guideBottom: guide?.bottom ?? Number.POSITIVE_INFINITY,
+        figcaptionTop: figcaption?.top ?? Number.NEGATIVE_INFINITY,
+        figcaptionBottom: figcaption?.bottom ?? Number.POSITIVE_INFINITY,
+      },
+    };
+  });
+  const screenshot = await page.screenshot({ fullPage: false });
+  const screenshotWidth = screenshot.readUInt32BE(16);
+  const screenshotHeight = screenshot.readUInt32BE(20);
+
+  const obstructed = geometry.regions.filter((region) => (
+    !region.visible || region.bottom > geometry.controlsTop + 1
+  ));
+  const [heading, visual, resourceRail] = geometry.regions;
+  const flowCollision = heading.bottom > visual.top + 1
+    || visual.bottom > resourceRail.top + 1
+    || geometry.visualFlow.guideBottom > geometry.visualFlow.contentBottom + 1
+    || geometry.visualFlow.contentBottom > geometry.visualFlow.figcaptionTop + 1
+    || geometry.visualFlow.figcaptionBottom > visual.bottom + 1;
+  if (geometry.stageBottom > geometry.controlsTop + 1
+    || geometry.documentScrollHeight > geometry.viewportHeight + 1
+    || obstructed.length
+    || flowCollision
+    || screenshotWidth !== 1280
+    || screenshotHeight !== 720) {
+    failures.push(`${label} desktop 1280 × 720 : scène projecteur incomplète (${JSON.stringify({
+      ...geometry,
+      screenshotWidth,
+      screenshotHeight,
+    })})`);
+  }
+};
+
 try {
   const desktop = await browser.newContext({ viewport: { width: 1280, height: 720 } });
   const page = await desktop.newPage();
@@ -187,6 +248,7 @@ try {
   if (await page.locator('[data-tier-row]:visible').count() !== 3) {
     failures.push('modèles desktop : les trois niveaux ne restent pas visibles');
   }
+  await checkDesktopProjector(page, 'modèles');
 
   await page.goto(`${baseURL}${routes.costs}`, { waitUntil: 'load' });
   await stabilize(page);
@@ -244,6 +306,7 @@ try {
     || costCollision.caveatTop < costCollision.lastRowBottom - 1) {
     failures.push(`coûts desktop 1280 × 720 : tableau ou réserve chevauche les contrôles (${JSON.stringify(costCollision)})`);
   }
+  await checkDesktopProjector(page, 'coûts');
 
   await page.goto(`${baseURL}${routes.access}`, { waitUntil: 'load' });
   await stabilize(page);
@@ -263,6 +326,7 @@ try {
       failures.push(`accès desktop : repère absent ${JSON.stringify(exactText)}`);
     }
   }
+  await checkDesktopProjector(page, 'accès');
   await desktop.close();
 
   const mobile = await browser.newContext({ viewport: { width: 390, height: 844 } });
