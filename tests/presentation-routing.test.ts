@@ -17,10 +17,11 @@ test('la séquence relie la première slide à la deuxième', () => {
   assert.equal(neighbors.next?.id, 'a1-context');
 });
 
-test('la fusion A2 rejoint directement A4 et ne conserve aucune route A3', () => {
+test('la fusion A2 rejoint directement A3 et ne conserve aucune route A5', () => {
   const neighbors = getSlideNeighbors(PRESENTATION_SLIDES, 'a2-prioritize');
-  assert.equal(neighbors.next?.id, 'a4-three-costs');
-  assert.ok(PRESENTATION_SLIDES.every((slide) => !slide.id.startsWith('a3-')));
+  const obsoletePrefix = ['a', '5-'].join('');
+  assert.equal(neighbors.next?.id, 'a3-three-costs');
+  assert.ok(PRESENTATION_SLIDES.every((slide) => !slide.id.startsWith(obsoletePrefix)));
 });
 
 test('le contrôleur ignore les raccourcis lorsque le focus est dans un contrôle', async () => {
@@ -53,7 +54,7 @@ test('la QA navigateur durable couvre navigation native, 404, plein écran et le
   );
   assert.match(source, /PRESENTATION_SLIDES/);
   assert.match(source, /width:\s*390,\s*height:\s*844/);
-  assert.match(source, /a5-risk/);
+  assert.match(source, /a4-risk/);
   assert.match(source, /summary/);
   assert.match(source, /keyboard\.press\('Space'\)/);
   assert.match(source, /keyboard\.press\('Enter'\)/);

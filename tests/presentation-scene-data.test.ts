@@ -39,8 +39,8 @@ test('normalise chaque champ structuré des manifestes exactement une fois', () 
   }
 });
 
-test('conserve la preuve A4 dans les détails du checkpoint', () => {
-  const current = slide('a4-checkpoint');
+test('conserve la preuve A3 dans les détails du checkpoint', () => {
+  const current = slide('a3-checkpoint');
   const partition = partitionSceneFields(current.visual.data, CHECKPOINT_FIELD_GROUPS);
   const proof = partition.details.find((field) => field.key === 'proof');
 

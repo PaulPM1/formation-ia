@@ -100,7 +100,7 @@ try {
   const pageErrors = [];
   controllerPage.on('pageerror', (error) => pageErrors.push(error.message));
 
-  await controllerPage.goto(`${baseURL}/presenter/a5/a5-mission/`, { waitUntil: 'load' });
+  await controllerPage.goto(`${baseURL}/presenter/a4/a4-mission/`, { waitUntil: 'load' });
   const summary = controllerPage.locator('.mission-board__correction summary');
   const details = controllerPage.locator('.mission-board__correction');
   const summaryURL = controllerPage.url();
@@ -113,7 +113,7 @@ try {
   if (await details.getAttribute('open') === null) failures.push('summary Enter n’ouvre pas details');
   if (controllerPage.url() !== summaryURL) failures.push('summary Enter déclenche la navigation globale');
 
-  await controllerPage.goto(`${baseURL}/presenter/a5/a5-risk/`, { waitUntil: 'load' });
+  await controllerPage.goto(`${baseURL}/presenter/a4/a4-risk/`, { waitUntil: 'load' });
   const riskURL = controllerPage.url();
   const radio = controllerPage.locator('input[type="radio"]').first();
   await radio.focus();
@@ -168,7 +168,7 @@ try {
   await noScriptContext.close();
 
   for (const route of [
-    '/presenter/a5/a5-risk/',
+    '/presenter/a4/a4-risk/',
     '/presenter/b2/b2-tests/',
     '/presenter/c2/c2-permissions/',
   ]) {

@@ -16,8 +16,8 @@ const contentDirectory = fileURLToPath(
 const DRAFTED_BRICK_IDS = [
   'a1',
   'a2',
+  'a3',
   'a4',
-  'a5',
   'b0',
   'b1',
   'b2',

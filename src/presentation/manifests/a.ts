@@ -511,13 +511,13 @@ export const A_DECKS = [
     ],
   },
   {
-    brickId: 'a4',
+    brickId: 'a3',
     family: 'a',
     order: 3,
     title: 'Les coûts',
     slides: [
       slide({
-        id: 'a4-three-costs',
+        id: 'a3-three-costs',
         role: 'opening',
         claim: "Abonnement, limite d'usage et API sont trois réalités différentes.",
         support: 'Accès au produit, capacité sur une période et facturation technique ne se lisent pas avec la même unité.',
@@ -533,7 +533,7 @@ export const A_DECKS = [
             warning: 'Prix et quotas changent : consulter la source officielle',
           },
         },
-        links: [wikiLink('a4', 'concept-durable', 'Les trois réalités du coût'), planGuide, usageLimits, apiPricing],
+        links: [wikiLink('a3', 'concept-durable', 'Les trois réalités du coût'), planGuide, usageLimits, apiPricing],
         speaker: {
           durationMinutes: 4,
           notes: 'Distinguer abonnement, limite et API sur trois colonnes, sans annoncer de quota universel.',
@@ -542,7 +542,7 @@ export const A_DECKS = [
         accessibleDescription: 'Trois colonnes différencient abonnement, limite d’usage et API par ce qu’ils mesurent et où les vérifier.',
       }),
       slide({
-        id: 'a4-context-meter',
+        id: 'a3-context-meter',
         role: 'demonstration',
         claim: 'Chaque élément de contexte a un coût et une utilité.',
         support: 'Demande, historique, documents, instructions et outils occupent l’entrée du modèle.',
@@ -564,7 +564,7 @@ export const A_DECKS = [
             objective: 'Conserver ce qui sert le résultat ou sa vérification',
           },
         },
-        links: [wikiLink('a4', 'pratique-avec-claude', 'Comparer les conversations A et B')],
+        links: [wikiLink('a3', 'pratique-avec-claude', 'Comparer les conversations A et B')],
         speaker: {
           durationMinutes: 3,
           notes: 'Comparer les conversations A et B et faire retirer ce qui consomme sans aider le résultat.',
@@ -573,7 +573,7 @@ export const A_DECKS = [
         accessibleDescription: 'Une jauge qualitative compare cinq éléments selon leur charge de contexte, leur pertinence et la décision de les conserver.',
       }),
       slide({
-        id: 'a4-agentic',
+        id: 'a3-agentic',
         role: 'explanation',
         claim: 'Lire, agir et se corriger multiplie les étapes consommées.',
         support: 'Une tâche agentique peut relire des fichiers, appeler des outils et produire plusieurs sorties intermédiaires.',
@@ -608,7 +608,7 @@ export const A_DECKS = [
         accessibleDescription: 'Une comparaison qualitative oppose une question directe à une tâche agentique qui relit du contexte, appelle des outils et se corrige.',
       }),
       slide({
-        id: 'a4-budget',
+        id: 'a3-budget',
         role: 'mission',
         claim: 'Optimiser consiste à fournir le contexte utile une fois.',
         support: 'Réussite : chaque élément conservé sert directement le résultat ou sa vérification.',
@@ -628,7 +628,7 @@ export const A_DECKS = [
             successCriterion: 'Chaque élément de contexte conservé sert directement le résultat ou sa vérification.',
           },
         },
-        links: [wikiLink('a4', 'mission-commune', 'Mission A4 complète')],
+        links: [wikiLink('a3', 'mission-commune', 'Mission A3 complète')],
         speaker: {
           durationMinutes: 3,
           notes: 'Faire produire puis partager les fiches budget en binômes. Optimiser signifie fournir le contexte utile une fois, au bon endroit.',
@@ -637,7 +637,7 @@ export const A_DECKS = [
         accessibleDescription: 'Une fiche à six champs relie résultat, contexte, autonomie, arrêt et preuve ; le critère exige l’utilité de chaque élément.',
       }),
       slide({
-        id: 'a4-checkpoint',
+        id: 'a3-checkpoint',
         role: 'checkpoint',
         claim: "Un point d'arrêt évite de relancer sans preuve.",
         support: 'Une charte simple transforme l’économie de contexte en habitudes répétables.',
@@ -655,7 +655,7 @@ export const A_DECKS = [
             proof: 'Critère atteint et résultat vérifié',
           },
         },
-        links: [wikiLink('a4', 'livrable', 'Charte personnelle')],
+        links: [wikiLink('a3', 'livrable', 'Charte personnelle')],
         speaker: {
           durationMinutes: 2,
           notes: 'Faire choisir cinq règles concrètes et vérifier qu’au moins une règle définit explicitement la fin de tâche.',
@@ -666,13 +666,13 @@ export const A_DECKS = [
     ],
   },
   {
-    brickId: 'a5',
+    brickId: 'a4',
     family: 'a',
     order: 4,
     title: 'Biais cognitifs des IA',
     slides: [
       slide({
-        id: 'a5-convincing',
+        id: 'a4-convincing',
         role: 'opening',
         claim: 'Une erreur bien formulée reste une erreur.',
         support: 'Le modèle peut générer une information fausse sans intention de tromper.',
@@ -691,7 +691,7 @@ export const A_DECKS = [
             initialSignal: 'Ton fluide et affirmatif',
           },
         },
-        links: [wikiLink('a5', 'concept-durable', 'Comprendre le risque'), hallucinationGuide],
+        links: [wikiLink('a4', 'concept-durable', 'Comprendre le risque'), hallucinationGuide],
         speaker: {
           durationMinutes: 3,
           notes: 'Montrer une fausse information bien formulée et demander un vote rapide. Ne pas résumer par « l’IA ment ».',
@@ -700,7 +700,7 @@ export const A_DECKS = [
         accessibleDescription: 'Cinq affirmations fictives et concrètes sont révélées comme deux faits, une inférence, une affirmation sans source et une recommandation trop sûre.',
       }),
       slide({
-        id: 'a5-biases',
+        id: 'a4-biases',
         role: 'explanation',
         claim: 'Nos biais transforment la fluidité en confiance excessive.',
         support: 'Cinq raccourcis mentaux peuvent masquer l’incertitude ou décourager la vérification.',
@@ -717,7 +717,7 @@ export const A_DECKS = [
             ],
           },
         },
-        links: [wikiLink('a5', 'concept-durable', 'Hallucination et biais')],
+        links: [wikiLink('a4', 'concept-durable', 'Hallucination et biais')],
         speaker: {
           durationMinutes: 4,
           notes: 'Nommer hallucination et cinq biais sans culpabiliser les participants ; demander un exemple concret pour chacun.',
@@ -726,7 +726,7 @@ export const A_DECKS = [
         accessibleDescription: 'Cinq cartes nomment un biais cognitif et l’effet précis qui peut augmenter la confiance accordée à la réponse.',
       }),
       slide({
-        id: 'a5-risk',
+        id: 'a4-risk',
         role: 'checkpoint',
         claim: "L'effort de vérification doit suivre le niveau de risque.",
         support: 'L’enjeu, la réversibilité et l’impact déterminent la profondeur du contrôle.',
@@ -751,7 +751,7 @@ export const A_DECKS = [
         accessibleDescription: 'Une échelle à trois niveaux associe chaque risque à un exemple et à un effort de vérification proportionné.',
       }),
       slide({
-        id: 'a5-method',
+        id: 'a4-method',
         role: 'demonstration',
         claim: "Stop — Source — Test — Décision rend l'incertitude visible.",
         support: 'La méthode sépare ce qui est affirmé, ce qui peut être contrôlé et ce qui justifie l’action.',
@@ -768,7 +768,7 @@ export const A_DECKS = [
             output: 'Faits, inférences, inconnues et recommandation calibrée',
           },
         },
-        links: [wikiLink('a5', 'pratique-avec-claude', 'Appliquer la méthode'), hallucinationGuide],
+        links: [wikiLink('a4', 'pratique-avec-claude', 'Appliquer la méthode'), hallucinationGuide],
         speaker: {
           durationMinutes: 3,
           notes: 'Réaliser un audit en binômes et exiger une source indépendante ou un test concret avant la décision.',
@@ -777,14 +777,14 @@ export const A_DECKS = [
         accessibleDescription: 'Quatre étapes successives suspendent la décision, cherchent une source, testent puis décident avec incertitude explicite.',
       }),
       slide({
-        id: 'a5-mission',
+        id: 'a4-mission',
         role: 'mission',
         claim: 'Auditez une réponse avant de décider.',
         support: 'Réussite : la version corrigée ne masque aucune affirmation incertaine derrière un ton affirmatif.',
         visual: {
           key: 'mission-board',
           data: {
-            interaction: 'Ouvrir la mission A5.',
+            interaction: 'Ouvrir la mission A4.',
             input: 'Réponse courte fictive à auditer avant toute décision.',
             exerciseNotice: 'Exemple pédagogique entièrement fictif.',
             statements: [
@@ -803,7 +803,7 @@ export const A_DECKS = [
             successCriterion: 'Votre version corrigée ne masque aucune affirmation incertaine derrière un ton affirmatif.',
           },
         },
-        links: [wikiLink('a5', 'mission-commune', 'Mission A5 complète')],
+        links: [wikiLink('a4', 'mission-commune', 'Mission A4 complète')],
         speaker: {
           durationMinutes: 3,
           notes: 'Partager une vérification et faire expliciter les incertitudes restantes dans la version corrigée.',
