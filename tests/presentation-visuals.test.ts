@@ -197,6 +197,32 @@ test('enregistre tous les visuels du bloc A', async () => {
   assert.doesNotMatch(registry, /ResponseWorkflowAgent|InterfaceContinuum/);
 });
 
+test('A3 utilise des contrôles natifs et conserve ses données sans JavaScript', async () => {
+  const visual = await read('src/components/presentation/visuals/a/ModelCostGuide.astro');
+
+  assert.match(visual, /<fieldset class="model-guide__tier-controls">/);
+  assert.match(visual, /type="radio"[^>]*data-tier-choice/);
+  assert.match(visual, /<table class="model-guide__cost-table">/);
+  assert.match(visual, /<caption>/);
+  assert.match(visual, /scope="col"/);
+  assert.match(visual, /data-cost-output/);
+  assert.match(visual, /:focus-visible/);
+  assert.match(visual, /min-block-size:\s*3rem/);
+  assert.match(visual, /prefers-reduced-motion:\s*reduce/);
+  assert.doesNotMatch(visual, /onclick=/);
+});
+
+test('le registre expose la scène modèles et coûts', async () => {
+  const [model, registry] = await Promise.all([
+    read('src/presentation/presentation-model.ts'),
+    read('src/components/presentation/VisualRegistry.astro'),
+  ]);
+
+  assert.match(model, /'model-cost-guide'/);
+  assert.match(registry, /ModelCostGuide/);
+  assert.match(registry, /'model-cost-guide': ModelCostGuide/);
+});
+
 test('les interactions du bloc A produisent des états pédagogiques déterministes', async () => {
   const state = await import('../src/components/presentation/visuals/a/visual-state').catch(() => null);
   assert.ok(state, 'les helpers d’état du bloc A doivent exister');
