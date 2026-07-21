@@ -106,7 +106,7 @@ test('les tokens typographiques des slides gardent un plancher de 0,75 rem', asy
   }
 });
 
-test('la QA durable mesure les textes HTML et SVG à 12 px sur 73 routes et au zoom 200 %', async () => {
+test('la QA durable mesure les textes HTML et SVG à 12 px sur 71 routes et au zoom 200 %', async () => {
   const [qa, packageJson] = await Promise.all([
     read('scripts/qa-font-floor.mjs'),
     read('package.json'),
@@ -116,7 +116,7 @@ test('la QA durable mesure les textes HTML et SVG à 12 px sur 73 routes et au z
   assert.match(qa, /const FONT_FLOOR_PX = 11\.99/);
   assert.match(qa, /querySelectorAll\(['"]svg text['"]\)/);
   assert.match(qa, /deviceScaleFactor:\s*2/);
-  assert.match(qa, /routes\.length[^\n]*73|73[^\n]*routes\.length/);
+  assert.match(qa, /routes\.length[^\n]*71|71[^\n]*routes\.length/);
 });
 
 test('la QA A2 couvre clavier, progression, score, replay, mobile, zoom et repli sans JavaScript', async () => {
@@ -189,11 +189,16 @@ test('les repères secondaires restent lisibles au projecteur', async () => {
 });
 
 test('enregistre tous les visuels du bloc A', async () => {
-  const registry = await read('src/components/presentation/VisualRegistry.astro');
+  const [registry, model] = await Promise.all([
+    read('src/components/presentation/VisualRegistry.astro'),
+    read('src/presentation/presentation-model.ts'),
+  ]);
   for (const name of [
     'TokenPredictor', 'ContextComparison', 'SolutionComparison',
-    'SolutionPrioritizer', 'ContextBudget', 'VerificationAudit',
+    'SolutionPrioritizer', 'VerificationAudit',
   ]) assert.match(registry, new RegExp(name));
+  assert.doesNotMatch(registry, /ContextBudget|'context-budget'/);
+  assert.doesNotMatch(model, /'context-budget'/);
   assert.doesNotMatch(registry, /ResponseWorkflowAgent|InterfaceContinuum/);
 });
 
@@ -247,11 +252,6 @@ test('les interactions du bloc A produisent des états pédagogiques déterminis
     index: 3,
     sentence: 'Le chat dort.',
     complete: true,
-  });
-
-  assert.deepEqual(state.calculateContextSelection(5, [true, false, true, false, true]), {
-    included: 3,
-    total: 5,
   });
 
   assert.equal(state.verificationForRisk('Moyen', [
@@ -398,11 +398,6 @@ test('les visuels polymorphes choisissent une scène propre à chaque forme de d
   assert.equal(state.getVerificationVariant(data('a4-biases')), 'biases');
   assert.equal(state.getVerificationVariant(data('a4-risk')), 'risk');
   assert.equal(state.getVerificationVariant(data('a4-method')), 'method');
-
-  assert.equal(state.getContextBudgetVariant(data('a3-three-costs')), 'layers');
-  assert.equal(state.getContextBudgetVariant(data('a3-context-meter')), 'meter');
-  assert.equal(state.getContextBudgetVariant(data('a3-agentic')), 'comparison');
-  assert.equal(state.getContextBudgetVariant(data('a3-budget')), 'mission');
 });
 
 test('le checkpoint A1 avance sans dépasser la cinquième affirmation', async () => {
@@ -464,12 +459,11 @@ test('la progression conserve tout le contenu sans JavaScript puis isole le pann
 });
 
 test('les visuels du bloc A utilisent des contrôles natifs et des relations continues', async () => {
-  const [token, context, comparison, prioritizer, budget, audit] = await Promise.all([
+  const [token, context, comparison, prioritizer, audit] = await Promise.all([
     read('src/components/presentation/visuals/a/TokenPredictor.astro'),
     read('src/components/presentation/visuals/a/ContextComparison.astro'),
     read('src/components/presentation/visuals/a/SolutionComparison.astro'),
     read('src/components/presentation/visuals/a/SolutionPrioritizer.astro'),
-    read('src/components/presentation/visuals/a/ContextBudget.astro'),
     read('src/components/presentation/visuals/a/VerificationAudit.astro'),
   ]).catch(() => [] as string[]);
 
@@ -479,7 +473,6 @@ test('les visuels du bloc A utilisent des contrôles natifs et des relations con
   assert.match(prioritizer ?? '', /<form[^>]+data-solution-prioritizer/);
   assert.match(prioritizer ?? '', /type="radio"/);
   assert.match(prioritizer ?? '', /aria-live="polite"/);
-  assert.match(budget ?? '', /type="checkbox"/);
   assert.match(audit ?? '', /type="radio"/);
 });
 
