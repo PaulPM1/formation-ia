@@ -1,0 +1,115 @@
+---
+id: p2
+order: 2
+title: "Le cerveau"
+subtitle: "Une mémoire structurée, versionnée sur GitHub, et un assistant qui sait toujours où chercher."
+durationLabel: "Samedi matin"
+budgetMinutes: 150
+organe: "Cerveau"
+bricks:
+  - e1
+  - d1
+  - d2
+  - d2-bis
+goal: "Construire la mémoire de votre assistant : une structure de dossiers que vous avez décidée, des règles de routage qu'il applique, et de vrais documents rangés au bon endroit."
+outcome: "Un cerveau organisé et versionné sur GitHub, qui répond aux questions en citant ses sources."
+prideCriterion: "Votre voisin pose trois questions pièges sur vos documents : score 3 sur 3, réponses sourcées."
+kit: "L'inbox : 8 documents variés à faire trier, dont un piège sans catégorie évidente."
+---
+
+Une matinée pour donner un cerveau à votre assistant. Le principe reste le même tout du long : l'assistant exécute, vous décidez. Et après chaque victoire, un commit.
+
+## Tâche 1 : la structure et les règles de routage
+
+Concevez la structure de dossiers de la mémoire, par exemple `profil/`, `projets/`, `connaissances/`, `journal/`, `inbox/`, puis écrivez les règles de routage dans le `CLAUDE.md` : quel type de document va où. Discutez-en avec votre assistant si vous hésitez, mais la décision est à vous, et le tout tient en cinq lignes maximum.
+
+**But :** une mémoire utile est une mémoire où l'on sait où chercher, avant d'être une mémoire qui contient beaucoup.
+
+<ul class="task-checklist" role="list">
+  <li><label><input type="checkbox" /> Choisir vos dossiers (partez des cinq proposés, adaptez à votre vie)</label></li>
+  <li><label><input type="checkbox" /> Écrire les règles de routage dans le <code>CLAUDE.md</code>, cinq lignes max</label></li>
+  <li><label><input type="checkbox" /> Demander à l'assistant de reformuler « où chercher quoi » pour vérifier qu'il a compris</label></li>
+  <li><label><input type="checkbox" /> Commit</label></li>
+</ul>
+
+**Preuve :** « où chercher quoi » tient en cinq lignes et l'assistant les restitue sans se tromper.
+
+<aside class="task-why">
+  <p><strong>Pourquoi ça compte.</strong> Chaque skill de cet après-midi lira ces dossiers. Une structure claire maintenant, ce sont des briefs justes demain matin. Et cinq lignes, c'est la taille d'une règle qu'on relit vraiment.</p>
+</aside>
+
+## Tâche 2 : le grand tri
+
+Déposez les 8 documents du kit dans `inbox/`. Demandez à votre assistant de proposer un rangement document par document : à chaque proposition, vous validez ou vous corrigez. Un des documents est un piège, sans catégorie évidente : si une proposition vous fait hésiter, ce n'est pas un échec, c'est une règle de routage à amender.
+
+**But :** déléguer l'exécution du tri en gardant chaque décision de rangement.
+
+<ul class="task-checklist" role="list">
+  <li><label><input type="checkbox" /> Déposer les 8 documents du kit dans <code>inbox/</code></label></li>
+  <li><label><input type="checkbox" /> Faire proposer un rangement, document par document</label></li>
+  <li><label><input type="checkbox" /> Valider ou corriger chaque proposition</label></li>
+  <li><label><input type="checkbox" /> Amender les règles de routage quand une hésitation apparaît</label></li>
+  <li><label><input type="checkbox" /> Vider l'inbox, puis commit</label></li>
+</ul>
+
+**Preuve :** l'inbox est vide et au moins une règle de routage a été amendée pendant le tri.
+
+<aside class="task-why">
+  <p><strong>Pourquoi ça compte.</strong> C'est le geste que vous referez toute l'année : des choses en vrac arrivent, l'assistant propose, vous tranchez. Le document piège vous entraîne au cas réel, celui qui ne rentre dans aucune case.</p>
+</aside>
+
+## Tâche 3 : trois vrais documents
+
+Ajoutez 3 documents personnels : des notes, une liste, un début de projet, ce que vous avez sous la main et acceptez de mettre dans le repo. L'assistant les range selon vos règles. Puis posez trois questions dont les réponses se trouvent dans ces documents.
+
+**But :** passer du kit d'exercice à votre vraie vie, et exiger des réponses sourcées.
+
+<ul class="task-checklist" role="list">
+  <li><label><input type="checkbox" /> Choisir 3 documents personnels (rien de sensible : ni mot de passe, ni donnée d'autrui)</label></li>
+  <li><label><input type="checkbox" /> Les faire ranger selon vos règles</label></li>
+  <li><label><input type="checkbox" /> Poser trois questions dont les réponses sont dans ces documents</label></li>
+  <li><label><input type="checkbox" /> Exiger la source (le fichier) pour chaque réponse, puis commit</label></li>
+</ul>
+
+**Preuve :** trois questions, trois réponses justes, chacune citant le fichier d'où elle vient.
+
+<aside class="task-why">
+  <p><strong>Pourquoi ça compte.</strong> Une réponse sans source ne se vérifie pas. En exigeant le fichier d'origine dès maintenant, vous prenez l'habitude qui distingue une mémoire fiable d'un générateur de réponses plausibles.</p>
+</aside>
+
+## Tâche 4 : la mise sur GitHub
+
+Le cerveau vaut maintenant la peine d'être protégé. Faites le rituel D2-bis en entier : création du repo GitHub, premier push. À partir d'ici, la règle du checkpoint s'applique : un commit après chaque victoire, poussé régulièrement.
+
+**But :** mettre la mémoire à l'abri et rendre l'historique lisible depuis n'importe où.
+
+<ul class="task-checklist" role="list">
+  <li><label><input type="checkbox" /> Créer le repo GitHub (rituel D2-bis complet)</label></li>
+  <li><label><input type="checkbox" /> Pousser l'historique du week-end</label></li>
+  <li><label><input type="checkbox" /> Vérifier sur github.com que les dossiers et l'historique sont là</label></li>
+</ul>
+
+**Preuve :** le repo est visible sur GitHub et l'historique raconte la matinée, commit par commit.
+
+<aside class="task-why">
+  <p><strong>Pourquoi ça compte.</strong> Versionné et poussé, votre cerveau devient indestructible : vous pourrez tenter n'importe quoi cet après-midi avec les skills, le pire des cas est un retour en arrière.</p>
+</aside>
+
+## Tâche 5 : le quiz du voisin
+
+Échangez avec votre voisin ou votre voisine : chacun pose trois questions pièges sur les documents de l'autre. Les réponses doivent être justes et sourcées, sinon le point ne compte pas. Score sur 3.
+
+**But :** faire évaluer votre cerveau par quelqu'un qui cherche la faille, pas par vous.
+
+<ul class="task-checklist" role="list">
+  <li><label><input type="checkbox" /> Recevoir trois questions pièges de votre voisin ou voisine</label></li>
+  <li><label><input type="checkbox" /> Laisser l'assistant répondre, source à l'appui</label></li>
+  <li><label><input type="checkbox" /> Compter les points : juste et sourcé, sinon zéro</label></li>
+  <li><label><input type="checkbox" /> Si un point manque : corriger (règle ou document), puis commit</label></li>
+</ul>
+
+**Preuve :** 3 sur 3, réponses sourcées. C'est le critère de fierté du plateau.
+
+<aside class="task-why">
+  <p><strong>Pourquoi ça compte.</strong> Vous connaissez vos documents par cœur, votre voisin non : ses questions révèlent ce qu'un regard neuf ne trouve pas dans votre cerveau. Ce qui résiste au quiz résistera à votre usage quotidien.</p>
+</aside>

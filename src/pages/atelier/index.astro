@@ -1,0 +1,89 @@
+---
+import { getCollection } from 'astro:content';
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { formatBudgetMinutes } from '../../content/atelier-model';
+
+const stages = (await getCollection('atelier')).toSorted(
+  (left, right) => left.data.order - right.data.order,
+);
+const bricks = await getCollection('briques');
+const brickTitles = new Map(bricks.map((brick) => [brick.data.id, brick.data.title]));
+
+const organes = [
+  { family: 'a', label: 'Identité' },
+  { family: 'b', label: 'Cerveau' },
+  { family: 'c', label: 'Savoir-faire' },
+  { family: 'd', label: 'Sens' },
+  { family: 'e', label: 'Visage' },
+];
+---
+
+<BaseLayout
+  title="Atelier"
+  description="Le TP fil rouge de la formation : construire son assistant personnel à cinq organes, plateau par plateau."
+>
+  <header class="catalog-hero">
+    <div>
+      <p class="eyebrow">Le TP fil rouge</p>
+      <h1>Construis ton assistant personnel</h1>
+      <p class="lede">
+        Cinq plateaux sur un week-end. À la fin, vous repartez avec votre propre
+        assistant : un nom, une mémoire qui répond avec des sources, des skills à
+        vous, une page en ligne, et la méthode pour démarrer tout futur projet.
+      </p>
+      <ul class="organ-list" role="list" aria-label="Les cinq organes de l'assistant">
+        {organes.map((organe) => (
+          <li data-family={organe.family}>
+            <span class="organ-dot" aria-hidden="true"></span>
+            {organe.label}
+          </li>
+        ))}
+      </ul>
+    </div>
+    <aside class="catalog-counter" aria-label="5 plateaux sur un week-end">
+      <strong>5</strong>
+      <span>plateaux</span>
+      <small>1 week-end · 1 assistant</small>
+    </aside>
+  </header>
+
+  <ol class="stage-track" role="list" aria-label="Les plateaux, dans l'ordre du week-end">
+    {stages.map((stage) => (
+      <li class="stage-step" data-stage={stage.data.id}>
+        <span class="family-index" aria-hidden="true">0{stage.data.order}</span>
+        <article class="stage-card">
+          <p class="card-kicker">
+            <span>{stage.data.organe}</span>
+            <span>{stage.data.durationLabel} · ≈ {formatBudgetMinutes(stage.data.budgetMinutes)}</span>
+          </p>
+          <h2><a href={`/atelier/${stage.data.id}/`}>{stage.data.title}</a></h2>
+          <p class="stage-subtitle">{stage.data.subtitle}</p>
+          <dl class="stage-facts">
+            <div>
+              <dt>Le but</dt>
+              <dd>{stage.data.goal}</dd>
+            </div>
+            <div>
+              <dt>Le livrable</dt>
+              <dd>{stage.data.outcome}</dd>
+            </div>
+          </dl>
+          <ul class="pill-list" role="list" aria-label="Briques mobilisées">
+            {stage.data.bricks.map((brickId) => (
+              <li>
+                <a class="brick-pill" data-family={brickId.charAt(0)} href={`/briques/${brickId}/`}>
+                  <span aria-hidden="true">{brickId.toUpperCase()}</span>
+                  {brickTitles.get(brickId) ?? brickId.toUpperCase()}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <a class="text-link" href={`/atelier/${stage.data.id}/`}>
+            Voir le plateau en détail <span aria-hidden="true">→</span>
+          </a>
+        </article>
+      </li>
+    ))}
+  </ol>
+</BaseLayout>

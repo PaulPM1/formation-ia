@@ -1,0 +1,117 @@
+---
+id: p1
+order: 1
+title: "Naissance"
+subtitle: "Votre assistant reçoit un dossier, un nom, une personnalité et sa première mémoire : vous."
+durationLabel: "Vendredi après-midi"
+budgetMinutes: 60
+organe: "Identité"
+bricks:
+  - b0
+  - b1
+  - a1
+  - a2
+goal: "Donner naissance à un assistant qui vous connaît : un dossier de travail et un CLAUDE.md rédigé à partir de vos réponses, pas de votre clavier."
+outcome: "Un dossier assistant/ suivi par git, avec un CLAUDE.md complet : votre assistant se présente avec son nom, dans son ton, et cite de vraies infos sur vous."
+prideCriterion: "Votre assistant se présente à quelqu'un d'autre et cite trois vraies infos sur vous."
+kit: "Le prompt d'interview : 10 questions et les consignes de rédaction du CLAUDE.md."
+---
+
+Une heure pour passer d'un dossier vide à un assistant qui a un nom, un ton, et qui vous connaît. Vous ne rédigez rien à la main : vous répondez, vous choisissez, vous corrigez.
+
+## Tâche 1 : le dossier de naissance
+
+Créez un dossier `assistant/` sur votre machine et ouvrez-le dans Claude Code. Demandez ensuite à Claude d'y initialiser git : c'est la version allégée du rituel D2-bis, à ce stade le dossier reste local, GitHub attendra demain matin.
+
+**But :** installer le lieu où votre assistant va vivre tout le week-end, avec un historique dès la première minute.
+
+<ul class="task-checklist" role="list">
+  <li><label><input type="checkbox" /> Créer le dossier <code>assistant/</code></label></li>
+  <li><label><input type="checkbox" /> L'ouvrir dans Claude Code</label></li>
+  <li><label><input type="checkbox" /> Faire initialiser git par Claude (dossier local seulement)</label></li>
+</ul>
+
+**Preuve :** Claude Code répond depuis le dossier, et `git status` répond sans erreur.
+
+<aside class="task-why">
+  <p><strong>Pourquoi ça compte.</strong> Tout ce que vous construirez ensuite (le cerveau, les skills, le dashboard) habitera ce dossier. L'historique git racontera la construction, commit après commit, et vous permettra d'expérimenter sans peur de casser.</p>
+</aside>
+
+## Tâche 2 : l'interview inversée
+
+Ouvrez le prompt d'interview fourni dans le kit et collez-le dans Claude Code. Les rôles s'inversent : l'assistant vous pose 10 questions (identité, habitudes, projets, style de réponse attendu), puis rédige lui-même votre `CLAUDE.md` à partir de vos réponses. Votre travail : répondre honnêtement, puis relire et faire corriger tout ce qui sonne faux.
+
+**But :** construire la mémoire d'un assistant par le dialogue, et garder la relecture comme votre responsabilité.
+
+<ul class="task-checklist" role="list">
+  <li><label><input type="checkbox" /> Coller le prompt d'interview du kit</label></li>
+  <li><label><input type="checkbox" /> Répondre aux 10 questions</label></li>
+  <li><label><input type="checkbox" /> Laisser l'assistant rédiger le <code>CLAUDE.md</code></label></li>
+  <li><label><input type="checkbox" /> Relire et faire corriger ce qui sonne faux</label></li>
+</ul>
+
+**Preuve :** le `CLAUDE.md` existe et chaque ligne dit quelque chose de vrai sur vous.
+
+<aside class="task-why">
+  <p><strong>Pourquoi ça compte.</strong> Ce fichier est l'identité de votre assistant : chaque plateau du week-end s'appuiera dessus. Un CLAUDE.md juste aujourd'hui, c'est un brief pertinent dimanche matin.</p>
+</aside>
+
+## Tâche 3 : le nom et la personnalité
+
+Choisissez un nom et un ton (sobre, enjoué, direct, ironique, à vous de voir) et faites-les inscrire dans le `CLAUDE.md`. Puis demandez : « Présente-toi ».
+
+**But :** vérifier que la personnalité est écrite quelque part, pas seulement imaginée.
+
+<ul class="task-checklist" role="list">
+  <li><label><input type="checkbox" /> Choisir un nom</label></li>
+  <li><label><input type="checkbox" /> Choisir un ton et le faire inscrire dans le <code>CLAUDE.md</code></label></li>
+  <li><label><input type="checkbox" /> Demander « Présente-toi »</label></li>
+</ul>
+
+**Preuve :** la présentation est personnelle, dans le ton choisi, et donne son nom sans qu'on le lui souffle.
+
+<aside class="task-why">
+  <p><strong>Pourquoi ça compte.</strong> Un assistant dont le comportement est écrit dans un fichier est un assistant que vous pouvez régler, versionner et corriger. C'est toute la différence avec un chat qui repart de zéro à chaque conversation.</p>
+</aside>
+
+## Tâche 4 : le test du voisin
+
+Tournez votre écran vers votre voisin ou votre voisine et demandez à votre assistant de se présenter. La personne en face doit pouvoir citer trois vraies infos sur vous à partir de cette seule présentation.
+
+**But :** confronter la mémoire de l'assistant à quelqu'un qui ne vous connaît pas encore.
+
+<ul class="task-checklist" role="list">
+  <li><label><input type="checkbox" /> Faire présenter l'assistant à votre voisin ou voisine</label></li>
+  <li><label><input type="checkbox" /> Lui faire relever trois infos apprises sur vous</label></li>
+  <li><label><input type="checkbox" /> Confirmer (ou corriger le <code>CLAUDE.md</code> si une info est fausse)</label></li>
+</ul>
+
+**Preuve :** trois infos citées, trois infos exactes. C'est le critère de fierté du plateau.
+
+<aside class="task-why">
+  <p><strong>Pourquoi ça compte.</strong> Une mémoire ne vaut que si elle est juste. Faire vérifier par quelqu'un d'autre, c'est le test le plus rapide et le plus honnête qui existe.</p>
+</aside>
+
+## Tâche 5 : le test d'honnêteté
+
+Posez une question dont la réponse n'est nulle part dans sa mémoire : le prénom de votre premier animal, le plat que vous détestiez à la cantine, peu importe. Un bon assistant doit avouer qu'il ne sait pas, pas broder une réponse plausible.
+
+**But :** observer en direct la différence entre savoir et inventer, vue dans les briques A1 et A2.
+
+<ul class="task-checklist" role="list">
+  <li><label><input type="checkbox" /> Poser une question hors mémoire</label></li>
+  <li><label><input type="checkbox" /> Vérifier qu'il avoue son ignorance au lieu d'inventer</label></li>
+  <li><label><input type="checkbox" /> S'il invente : ajouter une règle d'honnêteté dans le <code>CLAUDE.md</code> et retester</label></li>
+</ul>
+
+**Preuve :** à la question hors mémoire, l'assistant répond qu'il ne sait pas.
+
+<aside class="task-why">
+  <p><strong>Pourquoi ça compte.</strong> Dimanche, votre assistant produira des briefs que vous lirez vite et croirez sur parole. Un assistant qui invente est plus dangereux qu'un assistant qui ne sait pas : cette règle d'honnêteté protège tout le reste.</p>
+</aside>
+
+## Le commit de naissance
+
+Terminez le plateau par un commit nommé « naissance ». C'est le premier point de l'historique : tout ce qui suivra pourra s'y comparer.
+
+**Preuve :** `git log` affiche le commit, l'histoire de votre assistant a commencé.

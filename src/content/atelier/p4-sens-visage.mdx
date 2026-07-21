@@ -1,0 +1,93 @@
+---
+id: p4
+order: 4
+title: "Sens et visage"
+subtitle: "Votre brief du jour s'affiche sur une page en ligne, et votre assistant commence à percevoir le monde."
+durationLabel: "Dimanche matin"
+budgetMinutes: 120
+organe: "Sens + Visage"
+bricks:
+  - c2
+  - d3
+  - d4
+goal: "Donner un visage à votre assistant : le brief réel affiché sur une page déployée, un projet audité, et un aperçu de ses futurs sens."
+outcome: "Une URL publique qui affiche votre brief du jour, ouverte sur votre téléphone, et la faille la plus grave de votre projet corrigée."
+prideCriterion: "Montrer son brief du jour sur son téléphone à quelqu'un autour de la table."
+kit: "Le template dashboard : une page pré-stylée, données en dur clairement balisées « à brancher »."
+---
+
+Une matinée pour rendre votre assistant visible. Jusqu'ici il vivait dans un terminal : à midi, il aura une adresse publique et un écran, et vous aurez vérifié qu'il ne montre rien qu'il ne devrait pas.
+
+## Tâche 1 : brancher le dashboard
+
+Le kit fournit un template HTML/CSS pré-stylé, « Mon brief du jour », qui s'affiche joliment tel quel avec des données en dur, toutes clairement balisées « à brancher ». Votre travail : remplacer ces données par le brief réel généré par votre skill `briefing`.
+
+**But :** relier deux organes construits séparément : le savoir-faire d'hier alimente le visage d'aujourd'hui.
+
+<ul class="task-checklist" role="list">
+  <li><label><input type="checkbox" /> Ouvrir le template du kit et repérer chaque zone balisée « à brancher »</label></li>
+  <li><label><input type="checkbox" /> Générer un brief réel avec votre skill <code>briefing</code></label></li>
+  <li><label><input type="checkbox" /> Faire brancher le brief sur la page, zone par zone</label></li>
+  <li><label><input type="checkbox" /> Recharger, vérifier, commit</label></li>
+</ul>
+
+**Preuve :** recharger la page affiche votre brief du jour réel, il ne reste aucune donnée en dur.
+
+<aside class="task-why">
+  <p><strong>Pourquoi ça compte.</strong> Un assistant qui ne parle qu'à vous dans un terminal reste invisible. Une page qui affiche son travail, c'est ce qui le rend montrable, et c'est le modèle de tout projet à venir : un moteur derrière, un visage devant.</p>
+</aside>
+
+## Tâche 2 : déployer
+
+Faites le rituel D3 : le dashboard part en ligne et reçoit une URL publique. Ouvrez-la sur votre téléphone.
+
+**But :** franchir la frontière entre « ça marche chez moi » et « c'est en ligne ».
+
+<ul class="task-checklist" role="list">
+  <li><label><input type="checkbox" /> Déployer le dashboard (rituel D3)</label></li>
+  <li><label><input type="checkbox" /> Ouvrir l'URL sur votre téléphone</label></li>
+  <li><label><input type="checkbox" /> Garder l'onglet ouvert : il servira à la restitution</label></li>
+</ul>
+
+**Preuve :** l'URL s'ouvre sur votre téléphone et affiche le brief du jour. C'est le critère de fierté du plateau.
+
+<aside class="task-why">
+  <p><strong>Pourquoi ça compte.</strong> Déployer est le geste qui fait le plus peur et qui, une fois ritualisé, prend un quart d'heure. L'avoir fait une fois sur un vrai projet, le vôtre, change ce que vous oserez lancer ensuite.</p>
+</aside>
+
+## Tâche 3 : l'attaque du voisin
+
+Échangez les projets avec votre voisin ou votre voisine. Chacun audite le projet de l'autre avec le prompt d'audit de la brique D4 : secrets exposés, données personnelles, fichiers qui n'auraient pas dû être poussés. Puis chacun rentre chez soi et corrige la faille la plus grave trouvée dans son propre projet.
+
+**But :** apprendre à chercher les failles avec un regard extérieur, et accepter qu'on en trouve chez vous.
+
+<ul class="task-checklist" role="list">
+  <li><label><input type="checkbox" /> Auditer le projet du voisin avec le prompt d'audit de D4</label></li>
+  <li><label><input type="checkbox" /> Lui remettre la liste de ce que vous avez trouvé</label></li>
+  <li><label><input type="checkbox" /> Recevoir la vôtre, choisir la faille la plus grave</label></li>
+  <li><label><input type="checkbox" /> La corriger, commit à l'appui</label></li>
+</ul>
+
+**Preuve :** l'audit du voisin est rendu, et votre faille la plus grave est corrigée avec un commit qui le montre.
+
+<aside class="task-why">
+  <p><strong>Pourquoi ça compte.</strong> Votre repo contient maintenant des documents personnels et une page publique : c'est exactement la configuration où une fuite fait mal. L'audit croisé rend le réflexe sécurité concret, sur un cas qui vous concerne vraiment.</p>
+</aside>
+
+## Tâche 4 : démo formateur, les sens
+
+Posez les claviers : démonstration au tableau. Un MCP (agenda ou Notion) vient alimenter le brief, qui cite un vrai rendez-vous du lendemain. Puis la tâche planifiée qui génère le brief chaque matin, sans que personne ne demande rien. C'est la prochaine marche pour votre assistant, chez vous.
+
+**But :** voir où mènent les sens : un assistant branché sur de vraies sources, qui agit sans être sollicité.
+
+<ul class="task-checklist" role="list">
+  <li><label><input type="checkbox" /> Regarder la démo MCP : le brief cite un vrai rendez-vous</label></li>
+  <li><label><input type="checkbox" /> Regarder la démo du briefing automatique du matin</label></li>
+  <li><label><input type="checkbox" /> Noter la connexion que vous brancherez en premier chez vous</label></li>
+</ul>
+
+**Preuve :** vous savez citer la première connexion que vous donnerez à votre assistant après la formation.
+
+<aside class="task-why">
+  <p><strong>Pourquoi ça compte.</strong> Les quatre premiers organes, vous les avez construits vous-mêmes. Celui-ci, vous savez maintenant à quoi il ressemble en vrai : la marche est visible, elle n'est plus mystérieuse, et elle vous attend.</p>
+</aside>
