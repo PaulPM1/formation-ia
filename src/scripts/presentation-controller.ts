@@ -6,9 +6,17 @@ import { navigate } from 'astro:transitions/client';
 const interactiveSelector =
   'a, button, input, textarea, select, summary, details, [contenteditable="true"], dialog';
 
+/* Les flèches naviguent même quand le focus est sur un bouton ou un lien
+   (comportement attendu d'un présentateur, notamment après le clic sur le
+   bouton plein écran). Seuls les champs de saisie et les dialogues ouverts
+   conservent leurs touches fléchées. Espace garde le garde complet : il
+   active nativement liens, boutons et summary. */
+const editingSelector = 'input, textarea, select, [contenteditable="true"], dialog';
+
 document.addEventListener('keydown', (event) => {
   const target = event.target as Element | null;
-  if (target?.closest(interactiveSelector)) return;
+  if (event.key === ' ' && target?.closest(interactiveSelector)) return;
+  if (event.key !== ' ' && target?.closest(editingSelector)) return;
 
   const previous = document.querySelector<HTMLAnchorElement>('[data-previous]');
   const next = document.querySelector<HTMLAnchorElement>('[data-next]');
