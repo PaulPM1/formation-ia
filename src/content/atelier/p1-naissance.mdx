@@ -46,41 +46,86 @@ Installez aussi l'**extension Claude Code** dans VS Code : cherchez « Claude Co
 
 ## Tâche 2 : les comptes prêts
 
-Ouvrez ou retrouvez vos comptes GitHub et Vercel, et autorisez votre machine à parler à GitHub. Vous ne déployez rien maintenant : vous enlevez les obstacles avant de les rencontrer.
+Deux comptes gratuits suffisent pour tout le week-end. **GitHub** conserve votre projet en ligne, **Vercel** le publiera plus tard sur une vraie adresse web.
 
 **But :** avoir tous les accès en place avant d'en avoir besoin.
 
+### Votre compte GitHub
+
+Ouvrez [github.com/signup](https://github.com/signup) pour créer un compte, ou [github.com/login](https://github.com/login) si vous en avez déjà un. Choisissez un nom d'utilisateur que vous assumerez : il est public et durable.
+
+<details class="hint"><summary>Guide pas à pas</summary><p>Sur la page d'inscription, GitHub demande votre adresse email, un mot de passe et un nom d'utilisateur, puis vous envoie un code de vérification par email. Ce code met parfois quelques minutes à arriver et atterrit souvent dans les indésirables. Pendant l'attente, passez à Vercel, vous reviendrez terminer ensuite.</p></details>
+
+### Prouver que ce compte est le vôtre
+
+Votre machine et votre compte GitHub ne se connaissent pas encore. Tant que ce lien n'existe pas, tout envoi de code sera refusé. Vous n'avez rien à configurer vous-même : Claude s'en charge, vous validez.
+
+Collez ceci dans Claude :
+
+```text
+Configure l'authentification GitHub sur cette machine et guide-moi pas à pas.
+Dis-moi avant chaque étape ce qui va se passer et sur quoi je dois cliquer.
+Je n'ai jamais fait cela.
+```
+
+<details class="hint"><summary>Ce qui va se passer, et quoi faire</summary><p>Une page GitHub s'ouvre dans votre navigateur et vous demande d'autoriser l'accès depuis votre ordinateur. Vous cliquez sur le bouton d'autorisation, vous revenez dans VS Code, et c'est terminé. Si une fenêtre nommée « Git Credential Manager » apparaît sur Windows, c'est le gestionnaire officiel : choisissez la connexion par navigateur. Si rien ne s'ouvre, demandez à Claude de vous donner l'adresse à ouvrir vous-même.</p></details>
+
+### Votre compte Vercel
+
+Ouvrez [vercel.com/signup](https://vercel.com/signup) et choisissez **Continue with GitHub**. Vercel s'appuie sur le compte que vous venez de créer : aucun mot de passe supplémentaire.
+
+<details class="hint"><summary>Guide pas à pas</summary><p>Après avoir cliqué sur Continue with GitHub, une page vous demande d'autoriser Vercel à accéder à vos dépôts. Acceptez : sans cette autorisation, Vercel ne verra pas votre projet le jour où vous voudrez le publier. Si vous avez cliqué trop vite et refusé, déconnectez-vous de Vercel et recommencez.</p></details>
+
 <ul class="task-checklist" role="list">
-  <li><label><input type="checkbox" /> Créer ou retrouver votre compte GitHub</label></li>
-  <li><label><input type="checkbox" /> Autoriser votre machine à pousser sur GitHub et vérifier l'authentification</label></li>
-  <li><label><input type="checkbox" /> Créer un compte Vercel et le relier à GitHub</label></li>
+  <li><label><input type="checkbox" /> Créer ou retrouver votre compte GitHub, et valider l'email</label></li>
+  <li><label><input type="checkbox" /> Faire configurer l'authentification par Claude et cliquer sur Autoriser</label></li>
+  <li><label><input type="checkbox" /> Créer un compte Vercel avec Continue with GitHub</label></li>
 </ul>
 
-**Preuve :** vous êtes connecté sur github.com, et votre compte Vercel voit vos dépôts.
+**Preuve :** vous êtes connecté sur github.com, et votre tableau de bord Vercel affiche votre compte GitHub.
 
 <aside class="task-why">
-  <p><strong>Pourquoi ça compte.</strong> Créer un compte et régler une authentification prend dix minutes quand on est calme, et une heure quand on veut publier dans l'urgence. Ces dix minutes-là se prennent maintenant, et le dépôt de la tâche suivante en dépend.</p>
+  <p><strong>Pourquoi ça compte.</strong> Créer un compte et régler une authentification prend dix minutes quand on est calme, et une heure quand on veut publier dans l'urgence. Ces dix minutes-là se prennent maintenant, et la tâche suivante en dépend.</p>
 </aside>
 
 ## Tâche 3 : votre dépôt de projet
 
 Deux chemins mènent au même résultat : un dossier de projet sur votre machine, suivi par git, relié à un dépôt GitHub qui vous appartient. Prenez la voie rapide si c'est votre premier projet.
 
+Trois mots à poser avant de commencer, ils reviendront tout le week-end. Un **dépôt** (ou *repository*, souvent abrégé *repo*) est le dossier de votre projet tel que GitHub le conserve en ligne. Un **modèle** (*template*) est un dépôt prêt à être recopié : vous ne travaillez jamais dedans, vous en fabriquez votre propre exemplaire. **Cloner**, c'est télécharger votre dépôt sur votre ordinateur pour pouvoir y travailler.
+
 ### Voie rapide : partir du kit fourni
 
-Le kit de départ contient déjà la structure de dossiers, un `CLAUDE.md` à personnaliser, un `.gitignore` qui protège vos secrets et les prompts du week-end. Vous n'écrivez rien : vous récupérez, vous ouvrez, vous adaptez.
+Le kit contient déjà la structure de dossiers, un `CLAUDE.md` à personnaliser, un `.gitignore` qui protège vos secrets et les prompts du week-end. Vous n'écrivez rien : vous recopiez, vous ouvrez, vous adaptez.
 
-1. Ouvrez le dépôt modèle communiqué par les formateurs et utilisez le bouton **Use this template** pour créer votre propre dépôt. Donnez-lui un nom court, et mettez-le en privé si votre matière est personnelle.
-2. Copiez l'adresse de votre nouveau dépôt.
-3. Demandez à Claude de le récupérer sur votre machine, par exemple : « Clone ce dépôt dans mon dossier Documents, puis ouvre-le. »
-4. Ouvrez le dossier obtenu dans VS Code, et regardez ce qu'il contient avant de toucher à quoi que ce soit.
-5. Choisissez votre variante : `debutant` si vous voulez partir de fichiers déjà rédigés, `avance` si vous préférez écrire vous-même. Demandez à Claude de remonter la variante choisie à la racine et de supprimer l'autre.
+<p class="kit-link"><strong>Le dépôt modèle :</strong> <a href="https://github.com/">[À COMPLÉTER : adresse du dépôt modèle]</a></p>
+
+**1. Fabriquez votre exemplaire.** Ouvrez le lien ci-dessus. En haut de la page, un bouton vert **Use this template** propose *Create a new repository*. Cliquez dessus : GitHub crée une copie du modèle sur votre compte. Donnez-lui un nom court, et cochez **Private** si votre matière est personnelle. Cette copie vous appartient, vous pouvez tout y casser.
+
+<details class="hint"><summary>Je ne trouve pas le bouton</summary><p>Le bouton n'apparaît que si vous êtes connecté à GitHub : vérifiez votre photo de profil en haut à droite. Il se trouve en haut à droite de la liste des fichiers, à côté des boutons Watch et Fork. Si vous ne le voyez toujours pas, utilisez le bouton vert <strong>Code</strong> puis <strong>Download ZIP</strong> et prévenez un formateur : vous continuerez par la voie complète.</p></details>
+
+**2. Récupérez l'adresse.** Vous êtes maintenant sur la page de VOTRE dépôt, pas celle du modèle : le nom en haut de page est le vôtre. Copiez l'adresse affichée dans la barre du navigateur.
+
+**3. Faites-le télécharger par Claude.** Collez ceci dans Claude, en remplaçant l'adresse par la vôtre :
+
+```text
+Clone ce dépôt dans mon dossier Documents, puis ouvre le dossier obtenu :
+[collez ici l'adresse de votre dépôt]
+Explique-moi ce que tu fais et ce que contient le dossier une fois terminé.
+```
+
+**4. Ouvrez le dossier dans VS Code** et parcourez-le avant de toucher à quoi que ce soit.
+
+<details class="hint"><summary>Qu'est-ce que contient ce dossier ?</summary><p>Vous y trouverez un <code>README.md</code> qui explique le kit, deux dossiers <code>debutant</code> et <code>avance</code> qui sont les deux variantes du même squelette, et dans chacun : un <code>CLAUDE.md</code> qui portera l'identité de votre projet, un <code>.gitignore</code> qui empêche vos secrets de partir en ligne, un dossier <code>prompts</code> avec l'interview et les prompts de sécurité, et trois dossiers vides <code>matiere</code>, <code>sorties</code> et <code>notes</code>. Si un fichier vous intrigue, demandez : « Explique-moi à quoi sert ce fichier, comme à quelqu'un qui n'a jamais codé. »</p></details>
+
+**5. Choisissez votre variante.** `debutant` si vous voulez partir de fichiers déjà rédigés et les adapter, `avance` si vous préférez écrire le contenu vous-même. Puis demandez : « Remonte le contenu du dossier `debutant` à la racine du projet et supprime les deux dossiers de variantes. »
 
 <ul class="task-checklist" role="list">
-  <li><label><input type="checkbox" /> Créer votre dépôt depuis le modèle avec <strong>Use this template</strong></label></li>
-  <li><label><input type="checkbox" /> Faire cloner le dépôt sur votre machine par Claude</label></li>
+  <li><label><input type="checkbox" /> Créer votre exemplaire avec <strong>Use this template</strong></label></li>
+  <li><label><input type="checkbox" /> Copier l'adresse de votre dépôt</label></li>
+  <li><label><input type="checkbox" /> Faire cloner le dépôt par Claude</label></li>
   <li><label><input type="checkbox" /> Ouvrir le dossier dans VS Code et parcourir le squelette</label></li>
-  <li><label><input type="checkbox" /> Choisir votre variante et faire ranger le dossier par Claude</label></li>
+  <li><label><input type="checkbox" /> Choisir sa variante et faire ranger le dossier par Claude</label></li>
 </ul>
 
 ### Voie complète : tout construire soi-même
@@ -109,13 +154,13 @@ Le kit de départ contient déjà la structure de dossiers, un `CLAUDE.md` à pe
 
 Parcourez le catalogue et arrêtez votre choix. Cinq directions sont proposées, chacune avec sa page dédiée et son cahier des charges :
 
-- **Assistant à mémoire** : il retient ce que vous lui confiez et vous le ressort quand il faut.
-- **Coach de révisions** : il transforme vos cours en questions et suit ce que vous maîtrisez.
-- **Radar de veille** : il surveille des sources et vous rend un point régulier.
-- **Archiviste de fichiers** : il range, renomme et retrouve dans un dossier en désordre.
-- **Portfolio vivant** : il tient à jour la trace de ce que vous faites et la met en page.
+- [**Assistant à mémoire**](/atelier/projets/assistant/) : vous lui confiez vos notes, vos documents et ce qui vous passe par la tête, il les range et vous les ressort au bon moment. À la fin, vous lui demandez « qu'est-ce que j'avais noté sur ce sujet ? » et il répond en citant vos propres documents, puis vous produit votre point du jour.
+- [**Coach de révisions**](/atelier/projets/coach/) : vous lui donnez vos cours, il en tire des questions, vous interroge, retient vos erreurs et revient dessus. À la fin, vous avez un entraîneur qui connaît vos points faibles et ne vous interroge que sur ce qui est dans vos cours.
+- [**Radar de veille**](/atelier/projets/radar/) : vous lui dites ce que vous suivez, il collecte, écarte le bruit et vous rend un résumé court. À la fin, vous recevez un point quotidien sur vos sujets, avec la raison pour laquelle chaque élément vous concerne.
+- [**Archiviste**](/atelier/projets/archiviste/) : vous lui jetez un dossier en désordre, il trie, renomme, extrait les informations utiles et en fait un tableau. À la fin, un dossier illisible devient consultable, avec un récapitulatif chiffré.
+- [**Portfolio vivant**](/atelier/projets/portfolio/) : votre site personnel, plus un assistant qui répond aux questions sur votre parcours. À la fin, vous avez une adresse à donner, et un visiteur peut demander « qu'a-t-il déjà fait en équipe ? » et obtenir une réponse fondée sur ce que vous avez écrit.
 
-Choisissez celui pour lequel vous avez déjà de la matière sous la main : c'est le critère le plus fiable.
+Ouvrez la page du projet qui vous attire : chacune détaille le cahier des charges, les six étapes et les aides. Choisissez celui pour lequel vous avez déjà de la matière sous la main, c'est le critère le plus fiable.
 
 **But :** avoir un sujet précis avant d'écrire l'identité du projet.
 

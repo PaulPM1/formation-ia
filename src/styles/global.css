@@ -1722,6 +1722,19 @@ progress::-moz-progress-bar {
   line-height: 1.6;
 }
 
+/* Lien vers une ressource fournie : dépôt modèle, kit, template. */
+.brick-content .kit-link {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: baseline;
+  padding: 0.85rem 1rem;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  box-shadow: var(--shadow-block);
+}
+
 @media (max-width: 43rem) {
   .weekend-track {
     grid-template-columns: 1fr;
