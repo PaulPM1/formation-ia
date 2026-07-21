@@ -1,0 +1,240 @@
+---
+import type { RoutedSlide } from '../../../../presentation/presentation-model';
+
+interface Candidate { token: string; probability: number; }
+interface TrainingStep { target: string; candidates: Candidate[]; }
+interface Props { slide: RoutedSlide; }
+
+const { slide } = Astro.props;
+const training = slide.visual.data.trainingExample as { tokens: string[]; steps: TrainingStep[] };
+const descriptionId = `${slide.id}-training-description`;
+---
+
+<div
+  class="training-playback"
+  data-training-playback
+  data-tokens={JSON.stringify(training.tokens)}
+  data-steps={JSON.stringify(training.steps)}
+  aria-describedby={descriptionId}
+>
+  <p id={descriptionId} class="visually-hidden">
+    Phrase cible : {training.tokens.join('')}. Les probabilités affichées sont une simulation pédagogique.
+  </p>
+
+  <div class="training-playback__target">
+    <p class="scene-label">Phrase cible de l'exemple d'entraînement</p>
+    <p class="training-playback__sentence" aria-hidden="true">
+      {training.tokens.map((token, index) => (
+        <span data-training-token data-token-index={index}>{token}</span>
+      ))}
+    </p>
+  </div>
+
+  <section class="training-playback__prediction" aria-live="polite">
+    <p class="scene-label">Simulation pédagogique · probabilités illustratives</p>
+    <p data-training-context>Contexte : début de phrase</p>
+    <ol data-training-candidates>
+      {training.steps[0]?.candidates.map((candidate) => (
+        <li><strong>{candidate.token}</strong><span>{candidate.probability} %</span></li>
+      ))}
+    </ol>
+    <output data-training-status>Prédire le prochain token</output>
+  </section>
+
+  <ol class="training-playback__cycle" aria-label="Cycle d'entraînement">
+    <li data-training-phase="predict"><span>01</span><strong>Prédire</strong></li>
+    <li data-training-phase="compare"><span>02</span><strong>Comparer</strong></li>
+    <li data-training-phase="adjust"><span>03</span><strong>Ajuster</strong></li>
+  </ol>
+
+  <button type="button" data-training-toggle disabled>Mettre en pause</button>
+</div>
+
+<script>
+  import { advanceTrainingPlayback, type TrainingPlaybackState } from './visual-state';
+  import { onPresenterPage } from '../../../../scripts/on-presenter-page';
+
+  onPresenterPage(() => {
+    document.querySelectorAll<HTMLElement>('[data-training-playback]').forEach((scene) => {
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const tokens = JSON.parse(scene.dataset.tokens ?? '[]') as string[];
+      const steps = JSON.parse(scene.dataset.steps ?? '[]') as Array<{
+        target: string;
+        candidates: Array<{ token: string; probability: number }>;
+      }>;
+      const tokenNodes = Array.from(scene.querySelectorAll<HTMLElement>('[data-training-token]'));
+      const phaseNodes = Array.from(scene.querySelectorAll<HTMLElement>('[data-training-phase]'));
+      const candidates = scene.querySelector<HTMLOListElement>('[data-training-candidates]');
+      const context = scene.querySelector<HTMLElement>('[data-training-context]');
+      const status = scene.querySelector<HTMLOutputElement>('[data-training-status]');
+      const toggle = scene.querySelector<HTMLButtonElement>('[data-training-toggle]');
+      if (!tokens.length || !steps.length || !candidates || !context || !status || !toggle) return;
+      const candidateRows = Array.from(candidates.querySelectorAll<HTMLLIElement>('li'));
+
+      if (reducedMotion) {
+        scene.dataset.complete = 'true';
+        tokenNodes.forEach((node) => { node.dataset.revealed = 'true'; });
+        phaseNodes.forEach((node) => { node.dataset.active = 'true'; });
+        status.textContent = 'Phrase complète · prédire → comparer → ajuster';
+        toggle.hidden = true;
+        return;
+      }
+
+      scene.dataset.enhanced = 'true';
+      let state: TrainingPlaybackState = { tokenIndex: 0, phase: 'predict', complete: false };
+      let paused = false;
+      let timer = 0;
+
+      const render = () => {
+        tokenNodes.forEach((node, index) => {
+          node.dataset.revealed = String(state.complete || index < state.tokenIndex || state.phase === 'adjust' && index === state.tokenIndex);
+          node.dataset.active = String(!state.complete && index === state.tokenIndex);
+        });
+        phaseNodes.forEach((node) => { node.dataset.active = String(state.complete || node.dataset.trainingPhase === state.phase); });
+        const step = steps[state.tokenIndex];
+        context.textContent = state.tokenIndex === 0
+          ? 'Contexte : début de phrase'
+          : `Contexte : ${tokens.slice(0, state.tokenIndex).join('')}`;
+        candidateRows.forEach((row, index) => {
+          const candidate = step.candidates[index];
+          const token = row.querySelector<HTMLElement>('strong');
+          const probability = row.querySelector<HTMLElement>('span');
+          if (!candidate || !token || !probability) return;
+          token.textContent = candidate.token;
+          probability.textContent = `${candidate.probability} %`;
+        });
+        status.textContent = state.complete
+          ? 'Phrase complète · le cycle ajuste le modèle'
+          : state.phase === 'predict'
+            ? 'Prédire le prochain token'
+            : state.phase === 'compare'
+              ? `Comparer avec le token attendu : ${step.target}`
+              : `Ajuster à partir de l'écart`;
+        scene.dataset.complete = String(state.complete);
+      };
+
+      const schedule = () => {
+        window.clearTimeout(timer);
+        if (paused) return;
+        timer = window.setTimeout(() => {
+          state = advanceTrainingPlayback(state, tokens.length);
+          render();
+          schedule();
+        }, state.complete ? 2200 : 1200);
+      };
+
+      toggle.disabled = false;
+      toggle.addEventListener('click', () => {
+        paused = !paused;
+        toggle.textContent = paused ? 'Rejouer la démonstration' : 'Mettre en pause';
+        if (!paused) schedule();
+        else window.clearTimeout(timer);
+      });
+      render();
+      schedule();
+    });
+  });
+</script>
+
+<style>
+  .training-playback {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(15rem, .85fr);
+    gap: clamp(.8rem, 2vw, 1.6rem);
+    align-items: center;
+    min-block-size: 100%;
+  }
+
+  .training-playback__target { grid-column: 1 / -1; }
+  .training-playback__sentence {
+    display: flex;
+    flex-wrap: wrap;
+    margin: .35rem 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 1.45rem + 2vw, 3.8rem);
+    font-weight: 760;
+    letter-spacing: -.045em;
+    line-height: 1;
+  }
+
+  .training-playback__sentence span {
+    position: relative;
+    padding: .06em .03em;
+    transition: color 180ms ease, background-color 180ms ease;
+  }
+
+  [data-enhanced='true'] .training-playback__sentence span:not([data-revealed='true']) {
+    border-radius: .12em;
+    background: color-mix(in srgb, var(--presentation-ink), transparent 86%);
+    color: transparent;
+  }
+
+  .training-playback__sentence span[data-active='true'] {
+    outline: .12em solid var(--family-accent);
+    outline-offset: .05em;
+  }
+
+  .training-playback__prediction {
+    display: grid;
+    gap: .45rem;
+    padding: .8rem;
+    border-inline-start: .35rem solid var(--family-accent);
+    background: var(--presentation-surface);
+  }
+
+  .training-playback__prediction p,
+  .training-playback__prediction output { margin: 0; }
+  .training-playback__prediction ol { display: grid; margin: 0; padding: 0; list-style: none; }
+  .training-playback__prediction li {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: .3rem;
+    border-block-start: 1px solid var(--presentation-line);
+  }
+  .training-playback__prediction span,
+  .training-playback__prediction output { font-family: var(--font-mono); font-size: .82rem; }
+
+  .training-playback__cycle {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .training-playback__cycle li {
+    display: grid;
+    gap: .2rem;
+    padding: .55rem;
+    border-block-start: .18rem solid var(--presentation-line);
+  }
+  .training-playback__cycle li[data-active='true'] {
+    border-block-start-width: .38rem;
+    border-color: var(--family-accent);
+    background: color-mix(in srgb, var(--family-accent), transparent 84%);
+  }
+  .training-playback__cycle span { font-family: var(--font-mono); font-size: .78rem; }
+
+  .training-playback button {
+    grid-column: 1 / -1;
+    justify-self: start;
+    min-block-size: 2.75rem;
+    padding: .45rem .95rem;
+    border: 2px solid var(--presentation-ink);
+    background: var(--presentation-ink);
+    color: var(--presentation-surface);
+    font-weight: 750;
+  }
+  .training-playback button:focus-visible { outline: .25rem solid var(--family-accent); outline-offset: .18rem; }
+
+  @media (max-width: 52rem) {
+    .training-playback { grid-template-columns: 1fr; }
+    .training-playback__target,
+    .training-playback button { grid-column: 1; }
+    .training-playback__cycle { grid-template-columns: 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .training-playback *, .training-playback *::before, .training-playback *::after { transition: none !important; }
+  }
+</style>

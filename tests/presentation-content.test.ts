@@ -10,7 +10,7 @@ const expectedIds = [
 ];
 
 const expectedSlides = [
-  { id: 'a1-opening', claim: "Une réponse fluide n'est pas une preuve.", visualKey: 'token-predictor' },
+  { id: 'a1-opening', claim: "À l'entraînement, le modèle apprend à prédire la suite.", visualKey: 'token-predictor' },
   { id: 'a1-token-loop', claim: 'Une réponse se construit token après token.', visualKey: 'token-predictor' },
   { id: 'a1-context', claim: 'Changer le contexte change la suite plausible.', visualKey: 'context-comparison' },
   { id: 'a1-plausible', claim: 'Plausible et vrai sont deux questions différentes.', visualKey: 'verification-audit' },
@@ -109,6 +109,20 @@ test('contient les 76 étapes de compréhension validées', () => {
   );
 });
 
+test("l'ouverture A1 fournit une distribution illustrative valide pour chaque token", () => {
+  const opening = PRESENTATION_SLIDES.find((slide) => slide.id === 'a1-opening');
+  const training = opening?.visual.data.trainingExample as {
+    tokens: string[];
+    steps: Array<{ target: string; candidates: Array<{ token: string; probability: number }> }>;
+  };
+
+  assert.equal(training.tokens.length, training.steps.length);
+  training.steps.forEach((step, index) => {
+    assert.equal(step.target, training.tokens[index]);
+    assert.equal(step.candidates.reduce((sum, candidate) => sum + candidate.probability, 0), 100);
+  });
+});
+
 test('conserve les contenus canoniques revus de B0, A5 et P.A.C.T.E.', () => {
   const b0Test = slideData('b0-test');
   assert.match(String(b0Test.prompt), /Atelier prêt/);
@@ -135,7 +149,7 @@ test('conserve les contenus canoniques revus de B0, A5 et P.A.C.T.E.', () => {
 });
 
 test('emploie des relations qualitatives et un audit fictif concret', () => {
-  for (const slideId of ['a1-opening', 'a4-context-meter', 'a4-agentic']) {
+  for (const slideId of ['a4-context-meter', 'a4-agentic']) {
     const serialized = JSON.stringify(slideData(slideId));
     for (const unsupportedKey of ['probability', 'size', 'utility', 'reads', 'toolCalls', 'outputs', 'loops']) {
       assert.ok(!serialized.includes(`\"${unsupportedKey}\"`), `${slideId}: ${unsupportedKey}`);

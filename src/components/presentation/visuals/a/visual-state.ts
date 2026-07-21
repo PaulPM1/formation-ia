@@ -4,6 +4,26 @@ export interface TokenState {
   complete: boolean;
 }
 
+export type TrainingPhase = 'predict' | 'compare' | 'adjust';
+
+export interface TrainingPlaybackState {
+  tokenIndex: number;
+  phase: TrainingPhase;
+  complete: boolean;
+}
+
+export const advanceTrainingPlayback = (
+  current: TrainingPlaybackState,
+  tokenCount: number,
+): TrainingPlaybackState => {
+  if (tokenCount <= 0) return { tokenIndex: 0, phase: 'predict', complete: true };
+  if (current.complete) return { tokenIndex: 0, phase: 'predict', complete: false };
+  if (current.phase === 'predict') return { ...current, phase: 'compare' };
+  if (current.phase === 'compare') return { ...current, phase: 'adjust' };
+  if (current.tokenIndex >= tokenCount - 1) return { ...current, complete: true };
+  return { tokenIndex: current.tokenIndex + 1, phase: 'predict', complete: false };
+};
+
 export const advanceTokenState = (current: number, tokens: string[]): TokenState => {
   const last = Math.max(0, tokens.length - 1);
   const index = Math.min(Math.max(0, current + 1), last);

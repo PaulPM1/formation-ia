@@ -64,29 +64,33 @@ export const A_DECKS = [
       slide({
         id: 'a1-opening',
         role: 'opening',
-        claim: "Une réponse fluide n'est pas une preuve.",
-        support: 'Le modèle optimise une suite cohérente ; la vérité reste à établir.',
+        claim: "À l'entraînement, le modèle apprend à prédire la suite.",
+        support: 'Il prédit un fragment, compare avec le texte attendu, puis ajuste ses paramètres.',
         visual: {
           key: 'token-predictor',
           data: {
-            interaction: 'Lancer la prédiction.',
-            prompt: 'Claude est…',
-            candidates: [
-              { token: 'un', plausibility: 'la plus forte parmi les exemples' },
-              { token: 'capable', plausibility: 'forte parmi les exemples' },
-              { token: 'toujours', plausibility: 'plus faible parmi les exemples' },
-            ],
-            legend: 'Classement qualitatif illustratif, sans score calculé',
-            warning: 'Probabilité linguistique ≠ preuve factuelle',
+            interaction: 'Mettre en pause ou rejouer la démonstration.',
+            trainingExample: {
+              tokens: ['Le', ' soleil', ' réchauffe', ' doucement', ' la', ' pierre', '.'],
+              steps: [
+                { target: 'Le', candidates: [{ token: 'Le', probability: 52 }, { token: 'Un', probability: 31 }, { token: 'Cette', probability: 17 }] },
+                { target: ' soleil', candidates: [{ token: ' soleil', probability: 64 }, { token: ' vent', probability: 23 }, { token: ' chat', probability: 13 }] },
+                { target: ' réchauffe', candidates: [{ token: ' réchauffe', probability: 61 }, { token: ' éclaire', probability: 25 }, { token: ' frappe', probability: 14 }] },
+                { target: ' doucement', candidates: [{ token: ' doucement', probability: 44 }, { token: ' encore', probability: 33 }, { token: ' lentement', probability: 23 }] },
+                { target: ' la', candidates: [{ token: ' la', probability: 70 }, { token: ' une', probability: 20 }, { token: ' cette', probability: 10 }] },
+                { target: ' pierre', candidates: [{ token: ' pierre', probability: 58 }, { token: ' pièce', probability: 27 }, { token: ' terre', probability: 15 }] },
+                { target: '.', candidates: [{ token: '.', probability: 76 }, { token: ' chaude', probability: 14 }, { token: ' grise', probability: 10 }] },
+              ],
+            },
           },
         },
         links: [wikiLink('a1', 'concept-durable', 'Comprendre le mécanisme'), claudeOverview],
         speaker: {
           durationMinutes: 2,
-          notes: 'Faire compléter oralement « Claude est… » sans corriger immédiatement. Éviter les analogies du cerveau ou de la personne omnisciente.',
-          transition: 'Observons comment la phrase apparaît, fragment après fragment.',
+          notes: "Laisser jouer une boucle complète. Préciser que les scores sont illustratifs et qu'en pratique un token peut être un fragment ou un signe.",
+          transition: 'À la génération, la même prédiction est réutilisée sans phrase cible fournie.',
         },
-        accessibleDescription: 'Une phrase inachevée alimente trois prochains tokens classés qualitativement ; un avertissement sépare plausibilité et vérité.',
+        accessibleDescription: "Une phrase cible se révèle automatiquement. À chaque étape, le modèle simule trois suites, compare sa prédiction au token attendu, puis ajuste ses paramètres.",
       }),
       slide({
         id: 'a1-token-loop',

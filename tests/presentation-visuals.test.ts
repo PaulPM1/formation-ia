@@ -203,6 +203,49 @@ test('les interactions du bloc A produisent des états pédagogiques déterminis
   ]), 'Source + contre-lecture');
 });
 
+test("la démonstration d'entraînement parcourt prédiction, comparaison et ajustement", async () => {
+  const state = await import('../src/components/presentation/visuals/a/visual-state');
+
+  assert.deepEqual(
+    state.advanceTrainingPlayback({ tokenIndex: 0, phase: 'predict', complete: false }, 3),
+    { tokenIndex: 0, phase: 'compare', complete: false },
+  );
+  assert.deepEqual(
+    state.advanceTrainingPlayback({ tokenIndex: 0, phase: 'compare', complete: false }, 3),
+    { tokenIndex: 0, phase: 'adjust', complete: false },
+  );
+  assert.deepEqual(
+    state.advanceTrainingPlayback({ tokenIndex: 0, phase: 'adjust', complete: false }, 3),
+    { tokenIndex: 1, phase: 'predict', complete: false },
+  );
+  assert.deepEqual(
+    state.advanceTrainingPlayback({ tokenIndex: 2, phase: 'adjust', complete: false }, 3),
+    { tokenIndex: 2, phase: 'adjust', complete: true },
+  );
+  assert.deepEqual(
+    state.advanceTrainingPlayback({ tokenIndex: 2, phase: 'adjust', complete: true }, 3),
+    { tokenIndex: 0, phase: 'predict', complete: false },
+  );
+});
+
+test("l'ouverture A1 annonce une simulation et conserve son état final sans JavaScript", async () => {
+  const [token, training] = await Promise.all([
+    read('src/components/presentation/visuals/a/TokenPredictor.astro'),
+    read('src/components/presentation/visuals/a/TrainingPlayback.astro'),
+  ]);
+
+  assert.match(token, /trainingExample/);
+  assert.match(training, /Simulation pédagogique/);
+  assert.match(training, /data-training-playback/);
+  assert.match(training, /data-training-toggle/);
+  assert.match(training, /<ol class="training-playback__cycle"/);
+  assert.match(training, /prefers-reduced-motion/);
+  assert.match(training, /Prédire/);
+  assert.match(training, /Comparer/);
+  assert.match(training, /Ajuster/);
+  assert.doesNotMatch(training, /candidates\.innerHTML/);
+});
+
 test('les visuels polymorphes choisissent une scène propre à chaque forme de données', async () => {
   const state = await import('../src/components/presentation/visuals/a/visual-state').catch(() => null);
   assert.ok(state, 'les helpers d’état du bloc A doivent exister');
