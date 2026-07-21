@@ -117,27 +117,37 @@ export const A_DECKS = [
       slide({
         id: 'a1-context',
         role: 'demonstration',
-        claim: 'Changer le contexte change la suite plausible.',
-        support: 'Le public, les messages précédents et les documents fournis orientent la réponse.',
+        claim: 'Le contexte change le sens avant de changer les mots.',
+        support: 'Le même début de phrase active une interprétation différente selon ce qui le précède.',
         visual: {
           key: 'context-comparison',
           data: {
-            interaction: 'Basculer entre deux contextes.',
-            sharedPrompt: "Explique ce qu'est un LLM.",
+            interaction: 'Basculer entre les deux contextes.',
+            sharedPrompt: 'Le navigateur a ouvert…',
             contexts: [
-              { audience: 'Enfant de 10 ans', constraints: '4 phrases', vocabulary: 'fragments de texte' },
-              { audience: 'Adulte non technique', constraints: '120 mots', vocabulary: 'tokens, prédiction, limite' },
+              {
+                label: 'En mer',
+                leadIn: "Le vent se lève, l'équipage quitte le port.",
+                interpretation: 'Un membre de l’équipage',
+                completion: 'les voiles',
+              },
+              {
+                label: 'Sur ordinateur',
+                leadIn: 'La page ne répond plus, il relance Chrome.',
+                interpretation: 'Le logiciel de navigation',
+                completion: 'un nouvel onglet',
+              },
             ],
-            observation: 'Même notion, explications différentes',
+            observation: 'Même amorce, deux sens, deux suites plausibles',
           },
         },
         links: [wikiLink('a1', 'pratique-avec-claude', 'Comparer les prompts')],
         speaker: {
           durationMinutes: 2,
-          notes: 'Réaliser les deux prompts destinés à des publics différents et faire nommer ce qui change dans les sorties.',
-          transition: 'Une réponse adaptée peut rester factuellement fragile.',
+          notes: 'Afficher les deux branches et faire nommer le sens du mot « navigateur » avant de révéler chaque suite.',
+          transition: 'Une suite adaptée au contexte peut encore être fausse ou incohérente.',
         },
-        accessibleDescription: 'Deux panneaux comparent le même prompt adapté à un enfant puis à un adulte, avec contraintes et vocabulaire distincts.',
+        accessibleDescription: 'Le début « Le navigateur a ouvert… » devient « les voiles » après un contexte maritime et « un nouvel onglet » après un contexte informatique.',
       }),
       slide({
         id: 'a1-plausible',

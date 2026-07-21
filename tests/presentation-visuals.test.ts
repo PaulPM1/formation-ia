@@ -246,6 +246,16 @@ test("l'ouverture A1 annonce une simulation et conserve son état final sans Jav
   assert.doesNotMatch(training, /candidates\.innerHTML/);
 });
 
+test('la comparaison A1 relie contexte, interprétation et suite sans JavaScript', async () => {
+  const context = await read('src/components/presentation/visuals/a/ContextComparison.astro');
+
+  assert.match(context, /context\.leadIn/);
+  assert.match(context, /context\.interpretation/);
+  assert.match(context, /context\.completion/);
+  assert.match(context, /data-context-panel/);
+  assert.match(context, /aria-pressed/);
+});
+
 test("l'entraînement annule son timeout avant chaque transition Astro", async () => {
   const training = await read('src/components/presentation/visuals/a/TrainingPlayback.astro');
 

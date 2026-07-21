@@ -12,7 +12,7 @@ const expectedIds = [
 const expectedSlides = [
   { id: 'a1-opening', claim: "À l'entraînement, le modèle apprend à prédire la suite.", visualKey: 'token-predictor' },
   { id: 'a1-token-loop', claim: 'Une réponse se construit token après token.', visualKey: 'token-predictor' },
-  { id: 'a1-context', claim: 'Changer le contexte change la suite plausible.', visualKey: 'context-comparison' },
+  { id: 'a1-context', claim: 'Le contexte change le sens avant de changer les mots.', visualKey: 'context-comparison' },
   { id: 'a1-plausible', claim: 'Plausible et vrai sont deux questions différentes.', visualKey: 'verification-audit' },
   { id: 'a1-mission', claim: 'Expliquez, repérez, puis améliorez la consigne.', visualKey: 'mission-board' },
   { id: 'a2-three-modes', claim: 'Réponse, workflow et agent ne délèguent pas la même chose.', visualKey: 'response-workflow-agent' },
@@ -87,6 +87,25 @@ const expectedSlides = [
   { id: 'c3-pause', claim: 'Tester, surveiller, mettre en pause et supprimer font partie du système.', visualKey: 'trigger-timeline' },
   { id: 'c3-mission', claim: "Concevez une automatisation que quelqu'un d'autre peut arrêter.", visualKey: 'mission-board' },
 ];
+
+test('A1 résout la même amorce dans deux univers sémantiques', () => {
+  const contextSlide = PRESENTATION_SLIDES.find((slide) => slide.id === 'a1-context');
+  assert.equal(contextSlide?.visual.data.sharedPrompt, 'Le navigateur a ouvert…');
+  assert.deepEqual(contextSlide?.visual.data.contexts, [
+    {
+      label: 'En mer',
+      leadIn: "Le vent se lève, l'équipage quitte le port.",
+      interpretation: 'Un membre de l’équipage',
+      completion: 'les voiles',
+    },
+    {
+      label: 'Sur ordinateur',
+      leadIn: 'La page ne répond plus, il relance Chrome.',
+      interpretation: 'Le logiciel de navigation',
+      completion: 'un nouvel onglet',
+    },
+  ]);
+});
 
 function slideData(slideId: string) {
   const slide = PRESENTATION_SLIDES.find((candidate) => candidate.id === slideId);
