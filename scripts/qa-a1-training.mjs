@@ -60,6 +60,20 @@ try {
   const status = page.locator('[data-training-status]');
   const toggle = page.locator('[data-training-toggle]');
 
+  const futureTokenStyles = await scene.locator('[data-training-token][data-revealed="false"]').evaluateAll((tokens) =>
+    tokens.map((token) => {
+      const style = getComputedStyle(token);
+      return { color: style.color, transitionProperty: style.transitionProperty };
+    }),
+  );
+  if (!futureTokenStyles.length) failures.push('aucun token futur mesurable avant autoplay');
+  if (futureTokenStyles.some(({ color }) => color !== 'rgba(0, 0, 0, 0)')) {
+    failures.push(`token futur lisible immédiatement : ${JSON.stringify(futureTokenStyles)}`);
+  }
+  if (futureTokenStyles.some(({ transitionProperty }) => /(?:^|,\s*)(?:all|color)(?:,|$)/.test(transitionProperty))) {
+    failures.push(`transition anti-fuite invalide : ${JSON.stringify(futureTokenStyles)}`);
+  }
+
   const initialStatus = (await status.textContent())?.trim();
   await page.waitForFunction(
     (initial) => document.querySelector('[data-training-status]')?.textContent?.trim() !== initial,
@@ -100,6 +114,13 @@ try {
     if (await page.evaluate(() => window.trainingTimerCount) !== 1) failures.push(`timeouts multipliés à la revisite ${visit + 1}`);
   }
   if (!await scene.isVisible()) failures.push('scène absente après revisite');
+
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.waitForTimeout(80);
+  if (await scene.getAttribute('data-complete') !== 'true') failures.push('basculement dynamique reduce sans état final');
+  if (await page.locator('[data-training-token][data-revealed="true"]').count() !== 7) failures.push('basculement dynamique reduce ne révèle pas les 7 tokens');
+  if (!await toggle.isHidden()) failures.push('basculement dynamique reduce conserve le bouton');
+  if (await page.evaluate(() => window.trainingTimerCount) !== 0) failures.push('basculement dynamique reduce conserve un timeout');
   await motionContext.close();
 
   const reducedContext = await browser.newContext({
@@ -109,6 +130,9 @@ try {
   const reducedPage = await reducedContext.newPage();
   await reducedPage.goto(`${baseURL}/presenter/a1/a1-opening/`, { waitUntil: 'load' });
   const reducedScene = reducedPage.locator('[data-training-playback]');
+  if (!await reducedScene.locator('.training-playback__sentence').isVisible()) failures.push('mouvement réduit masque la phrase');
+  if (!await reducedScene.locator('.training-playback__cycle').isVisible()) failures.push('mouvement réduit masque le cycle');
+  if (await reducedScene.locator('[data-training-phase]:visible').count() !== 3) failures.push('mouvement réduit masque des étapes');
   if (await reducedScene.getAttribute('data-complete') !== 'true') failures.push('mouvement réduit sans état final');
   if (await reducedPage.locator('[data-training-token][data-revealed="true"]').count() !== 7) failures.push('mouvement réduit ne révèle pas les 7 tokens');
   if (!await reducedPage.locator('[data-training-toggle]').isHidden()) failures.push('mouvement réduit conserve le bouton');
@@ -121,6 +145,9 @@ try {
   const noScriptPage = await noScriptContext.newPage();
   await noScriptPage.goto(`${baseURL}/presenter/a1/a1-opening/`, { waitUntil: 'load' });
   const noScriptScene = noScriptPage.locator('[data-training-playback]');
+  if (!await noScriptScene.locator('.training-playback__sentence').isVisible()) failures.push('no-JS masque la phrase');
+  if (!await noScriptScene.locator('.training-playback__cycle').isVisible()) failures.push('no-JS masque le cycle');
+  if (await noScriptScene.locator('[data-training-phase]:visible').count() !== 3) failures.push('no-JS masque des étapes');
   const sentence = (await noScriptScene.locator('.training-playback__sentence').textContent())?.replaceAll(/\s+/g, '');
   if (sentence !== 'Lesoleilréchauffedoucementlapierre.') failures.push(`phrase no-JS incomplète : ${sentence}`);
   if (!await noScriptPage.locator('[data-training-toggle]').isDisabled()) failures.push('bouton no-JS non désactivé');

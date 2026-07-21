@@ -1,12 +1,10 @@
 ---
 import type { RoutedSlide } from '../../../../presentation/presentation-model';
+import type { TrainingExample } from './training-example';
 
-interface Candidate { token: string; probability: number; }
-interface TrainingStep { target: string; candidates: Candidate[]; }
-interface Props { slide: RoutedSlide; }
+interface Props { slide: RoutedSlide; training: TrainingExample; }
 
-const { slide } = Astro.props;
-const training = slide.visual.data.trainingExample as { tokens: string[]; steps: TrainingStep[] };
+const { slide, training } = Astro.props;
 const descriptionId = `${slide.id}-training-description`;
 ---
 
@@ -51,42 +49,30 @@ const descriptionId = `${slide.id}-training-description`;
 </div>
 
 <script>
+  import { isTrainingExample } from './training-example';
   import { advanceTrainingPlayback, type TrainingPlaybackState } from './visual-state';
   import { onPresenterPage } from '../../../../scripts/on-presenter-page';
 
   onPresenterPage(() => {
     document.querySelectorAll<HTMLElement>('[data-training-playback]').forEach((scene) => {
-      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const tokens = JSON.parse(scene.dataset.tokens ?? '[]') as string[];
-      const steps = JSON.parse(scene.dataset.steps ?? '[]') as Array<{
-        target: string;
-        candidates: Array<{ token: string; probability: number }>;
-      }>;
+      const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const trainingExample = {
+        tokens: JSON.parse(scene.dataset.tokens ?? '[]'),
+        steps: JSON.parse(scene.dataset.steps ?? '[]'),
+      };
+      if (!isTrainingExample(trainingExample)) return;
+      const { tokens, steps } = trainingExample;
       const tokenNodes = Array.from(scene.querySelectorAll<HTMLElement>('[data-training-token]'));
       const phaseNodes = Array.from(scene.querySelectorAll<HTMLElement>('[data-training-phase]'));
       const candidates = scene.querySelector<HTMLOListElement>('[data-training-candidates]');
       const context = scene.querySelector<HTMLElement>('[data-training-context]');
       const status = scene.querySelector<HTMLOutputElement>('[data-training-status]');
       const toggle = scene.querySelector<HTMLButtonElement>('[data-training-toggle]');
-      if (!tokens.length || !steps.length || !candidates || !context || !status || !toggle) return;
+      if (!tokens.length || !candidates || !context || !status || !toggle) return;
       const candidateRows = Array.from(candidates.querySelectorAll<HTMLLIElement>('li'));
-
-      if (reducedMotion) {
-        scene.dataset.complete = 'true';
-        tokenNodes.forEach((node) => { node.dataset.revealed = 'true'; });
-        phaseNodes.forEach((node) => { node.dataset.active = 'true'; });
-        status.textContent = 'Phrase complète · prédire → comparer → ajuster';
-        toggle.hidden = true;
-        return;
-      }
-
-      scene.dataset.enhanced = 'true';
       let state: TrainingPlaybackState = { tokenIndex: 0, phase: 'predict', complete: false };
       let paused = false;
       let timer = 0;
-      document.addEventListener('astro:before-swap', () => {
-        window.clearTimeout(timer);
-      }, { once: true });
 
       const render = () => {
         tokenNodes.forEach((node, index) => {
@@ -125,6 +111,32 @@ const descriptionId = `${slide.id}-training-description`;
           schedule();
         }, state.complete ? 2200 : 1200);
       };
+
+      const finalizeReducedMotion = () => {
+        paused = true;
+        window.clearTimeout(timer);
+        timer = 0;
+        state = { tokenIndex: tokens.length - 1, phase: 'adjust', complete: true };
+        render();
+        status.textContent = 'Phrase complète · prédire → comparer → ajuster';
+        toggle.hidden = true;
+      };
+      const handleMotionPreference = (event: MediaQueryListEvent) => {
+        if (event.matches) finalizeReducedMotion();
+      };
+      const cleanup = () => {
+        window.clearTimeout(timer);
+        motionPreference.removeEventListener('change', handleMotionPreference);
+      };
+      motionPreference.addEventListener('change', handleMotionPreference);
+      document.addEventListener('astro:before-swap', cleanup, { once: true });
+
+      if (motionPreference.matches) {
+        finalizeReducedMotion();
+        return;
+      }
+
+      scene.dataset.enhanced = 'true';
 
       toggle.disabled = false;
       toggle.addEventListener('click', () => {

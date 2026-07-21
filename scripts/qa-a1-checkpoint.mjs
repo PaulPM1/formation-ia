@@ -49,6 +49,21 @@ try {
   );
 
   const expectedAnswers = ['Exacte', 'À vérifier', 'Exacte', 'Exacte', 'Exacte'];
+  const expectedFocusColor = 'rgb(159, 53, 29)';
+  const assertVisibleFocus = async (locator, control) => {
+    const style = await locator.evaluate((element) => {
+      const computed = getComputedStyle(element);
+      return {
+        color: computed.outlineColor,
+        style: computed.outlineStyle,
+        width: computed.outlineWidth,
+      };
+    });
+    assert.equal(style.color, expectedFocusColor, `${control} doit utiliser le focus contrasté`);
+    assert.equal(style.style, 'solid', `${control} doit conserver un contour plein`);
+    assert.ok(Number.parseFloat(style.width) >= 3, `${control} doit conserver un contour visible : ${style.width}`);
+  };
+
   for (let statementIndex = 0; statementIndex < expectedAnswers.length; statementIndex += 1) {
     const panel = scene.locator(`[data-sequence-panel="${statementIndex}"]`);
     const reveal = panel.locator('[data-sequence-reveal]');
@@ -65,13 +80,22 @@ try {
     assert.equal(await result.isHidden(), true);
 
     const choice = panel.locator(`[data-sequence-choice][value="${expectedAnswers[statementIndex]}"]`);
-    await choice.click();
+    await choice.focus();
+    await page.keyboard.press('Space');
+    if (statementIndex === 0) await assertVisibleFocus(choice, 'le radio');
     assert.equal(await panel.locator('[data-sequence-choice]:checked').count(), 1);
     assert.equal(await reveal.isEnabled(), true, 'le vote doit déverrouiller la correction');
     assert.equal(await next.isDisabled(), true, 'le vote seul ne doit pas déverrouiller la progression');
     assert.equal(await result.isHidden(), true);
 
-    await reveal.click();
+    if (statementIndex === 0) {
+      await page.keyboard.press('Tab');
+      assert.equal(await reveal.evaluate((button) => document.activeElement === button), true);
+      await assertVisibleFocus(reveal, 'le bouton de correction');
+      await page.keyboard.press('Enter');
+    } else {
+      await reveal.click();
+    }
     assert.equal(await result.isVisible(), true);
     assert.match((await result.textContent()) ?? '', new RegExp(expectedAnswers[statementIndex]));
     assert.equal(await next.isEnabled(), true, 'la correction doit déverrouiller la progression');

@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { isTrainingExample } from '../src/components/presentation/visuals/a/training-example';
 
 import { PRESENTATION_DECKS, PRESENTATION_SLIDES } from '../src/presentation/manifests';
 import { validatePresentation } from '../src/presentation/presentation-validation';
@@ -130,10 +131,8 @@ test('contient les 76 étapes de compréhension validées', () => {
 
 test("l'ouverture A1 fournit une distribution illustrative valide pour chaque token", () => {
   const opening = PRESENTATION_SLIDES.find((slide) => slide.id === 'a1-opening');
-  const training = opening?.visual.data.trainingExample as {
-    tokens: string[];
-    steps: Array<{ target: string; candidates: Array<{ token: string; probability: number }> }>;
-  };
+  const training = opening?.visual.data.trainingExample;
+  assert.ok(isTrainingExample(training));
 
   assert.equal(training.tokens.length, training.steps.length);
   training.steps.forEach((step, index) => {

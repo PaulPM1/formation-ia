@@ -250,12 +250,31 @@ test("l'ouverture A1 masque les tokens futurs sans transition lisible", async ()
   const training = await read('src/components/presentation/visuals/a/TrainingPlayback.astro');
   const tokenRule = training.match(/\.training-playback__sentence span\s*\{([^}]*)\}/s)?.[1] ?? '';
   const transitions = tokenRule.match(/transition:\s*([^;]*)/)?.[1] ?? '';
+  const transitionProperties = tokenRule.match(/transition-property:\s*([^;]*)/)?.[1] ?? '';
 
-  assert.doesNotMatch(transitions, /(?:^|,)\s*color(?:\s|$)/);
+  assert.doesNotMatch(transitions, /(?:^|,)\s*(?:all|color)(?:\s|$)/);
+  assert.doesNotMatch(transitionProperties, /(?:^|,)\s*(?:all|color)\s*(?:,|$)/);
   assert.match(
     training,
     /\[data-enhanced='true'\][^{]*span:not\(\[data-revealed='true'\]\)\s*\{[^}]*color:\s*transparent/s,
   );
+});
+
+test("l'ouverture A1 partage un contrat validé pour son exemple d'entraînement", async () => {
+  const contract = await import('../src/components/presentation/visuals/a/training-example').catch(() => null);
+  assert.ok(contract, "le contrat d'entraînement partagé doit exister");
+  const opening = A_DECKS.flatMap((deck) => deck.slides).find((slide) => slide.id === 'a1-opening');
+  assert.equal(contract.isTrainingExample(opening?.visual.data.trainingExample), true);
+
+  const [token, training] = await Promise.all([
+    read('src/components/presentation/visuals/a/TokenPredictor.astro'),
+    read('src/components/presentation/visuals/a/TrainingPlayback.astro'),
+  ]);
+  assert.match(token, /isTrainingExample/);
+  assert.match(training, /TrainingExample/);
+  assert.match(training, /isTrainingExample\(trainingExample\)/);
+  assert.doesNotMatch(training, /trainingExample\s+as\s+\{/);
+  assert.doesNotMatch(training, /JSON\.parse\([^\n]+\)\s+as\s+/);
 });
 
 test('la comparaison A1 relie contexte, interprétation et suite sans JavaScript', async () => {
@@ -268,13 +287,12 @@ test('la comparaison A1 relie contexte, interprétation et suite sans JavaScript
   assert.match(context, /aria-pressed/);
 });
 
-test("l'entraînement annule son timeout avant chaque transition Astro", async () => {
+test("l'entraînement annule son timeout et son écouteur de mouvement avant chaque transition Astro", async () => {
   const training = await read('src/components/presentation/visuals/a/TrainingPlayback.astro');
 
-  assert.match(
-    training,
-    /document\.addEventListener\('astro:before-swap',[\s\S]*?window\.clearTimeout\(timer\)[\s\S]*?once:\s*true/,
-  );
+  assert.match(training, /const cleanup = \(\) => \{[\s\S]*?window\.clearTimeout\(timer\)/);
+  assert.match(training, /motionPreference\.removeEventListener\('change', handleMotionPreference\)/);
+  assert.match(training, /document\.addEventListener\('astro:before-swap', cleanup, \{ once: true \}\)/);
 });
 
 test("le bouton d'entraînement utilise le focus contrasté de la présentation", async () => {
@@ -306,6 +324,10 @@ test("la QA durable A1 couvre autoplay, pause, repli et nettoyage des timers", a
   assert.match(qa, /data-previous/);
   assert.match(qa, /trainingTimerCount/);
   assert.match(qa, /outlineColor/);
+  assert.match(qa, /emulateMedia\(\{ reducedMotion: 'reduce' \}\)/);
+  assert.match(qa, /training-playback__sentence[\s\S]*isVisible/);
+  assert.match(qa, /training-playback__cycle[\s\S]*isVisible/);
+  assert.match(qa, /transitionProperty/);
 });
 
 test('les visuels polymorphes choisissent une scène propre à chaque forme de données', async () => {
@@ -365,6 +387,9 @@ test('la QA durable du checkpoint A1 protège son verrou, son focus, son replay 
   assert.match(qa, /Rejouer le checkpoint/);
   assert.match(qa, /javaScriptEnabled:\s*false/);
   assert.match(qa, /audit__sequence-fallback/);
+  assert.match(qa, /outlineColor/);
+  assert.match(qa, /outlineStyle/);
+  assert.match(qa, /outlineWidth/);
 });
 
 test('la progression conserve tout le contenu sans JavaScript puis isole le panneau actif', async () => {
