@@ -148,8 +148,15 @@ test('la QA A3 couvre niveaux, volumes, mobile, zoom, mouvement réduit et repli
   assert.match(qa, /a3-model-fit/);
   assert.match(qa, /a3-api-cost/);
   assert.match(qa, /a3-access/);
-  assert.match(qa, /data-tier-choice/);
+  assert.match(qa, /input\[type="radio"\]\[data-tier-choice\]/);
   assert.match(qa, /data-cost-output/);
+  assert.match(qa, /descendantOverflow/);
+  assert.match(qa, /outsideGuide/);
+  assert.match(qa, /getComputedStyle\(element, pseudo\)/);
+  assert.match(qa, /\['', '::before', '::after'\]/);
+  assert.match(qa, /unitCell\.isVisible\(\)/);
+  assert.match(qa, /hundredCell\.isVisible\(\)/);
+  assert.match(qa, /inspectLayout\(noScriptPage\)/);
   assert.match(qa, /javaScriptEnabled:\s*false/);
   assert.match(qa, /viewport:\s*\{ width: 390, height: 844 \}/);
   assert.match(qa, /style\.zoom = ['"]2['"]/);
@@ -257,7 +264,7 @@ test('A3 autorise les colonnes d’accès à se contracter au zoom 200 %', async
 test('A3 cible son propre nœud racine lorsque le mouvement est réduit', async () => {
   const visual = await read('src/components/presentation/visuals/a/ModelCostGuide.astro');
 
-  assert.match(visual, /\.model-guide__scene,\s*\.model-guide__scene \*\s*\{[^}]*transition:\s*none !important;[^}]*animation:\s*none !important;/s);
+  assert.match(visual, /\.model-guide__scene,\s*\.model-guide__scene \*,\s*\.model-guide__scene::before,\s*\.model-guide__scene::after,\s*\.model-guide__scene \*::before,\s*\.model-guide__scene \*::after\s*\{[^}]*transition:\s*none !important;[^}]*animation:\s*none !important;/s);
 });
 
 test('le registre expose la scène modèles et coûts', async () => {

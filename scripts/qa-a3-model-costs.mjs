@@ -46,16 +46,18 @@ const inspectLayout = (page) => page.evaluate(() => {
   const tolerance = 1;
   const slide = document.querySelector('.presentation-slide');
   const guide = document.querySelector('[data-model-cost-guide]');
-  const isHidden = (element) => {
+  const isIntentionallyHidden = (element) => {
     for (let current = element; current && guide?.contains(current); current = current.parentElement) {
       const style = getComputedStyle(current);
-      const rect = current.getBoundingClientRect();
       if (style.display === 'none'
         || style.visibility === 'hidden'
-        || Number(style.opacity) === 0
-        || style.clipPath === 'inset(50%)'
-        || rect.width <= 1
-        || rect.height <= 1) return true;
+        || Number(style.opacity) === 0) return true;
+      const isMobileTableHead = current.matches('.model-guide__cost-table thead')
+        && style.position === 'absolute'
+        && style.clipPath === 'inset(50%)'
+        && ['hidden', 'clip'].includes(style.overflowX)
+        && ['hidden', 'clip'].includes(style.overflowY);
+      if (isMobileTableHead) return true;
     }
     return false;
   };
@@ -66,13 +68,34 @@ const inspectLayout = (page) => page.evaluate(() => {
     return `${element.tagName.toLowerCase()}${className ? `.${className}` : ''}`;
   };
   const clippedText = [];
+  const descendantOverflow = [];
+  const outsideGuide = [];
+  const outsideViewport = [];
 
   if (guide && slide) {
+    const guideRect = guide.getBoundingClientRect();
+    const visibleDescendants = [...guide.querySelectorAll('*')]
+      .filter((element) => !isIntentionallyHidden(element));
+
+    for (const element of visibleDescendants) {
+      const rect = element.getBoundingClientRect();
+      if (rect.width <= 0 || rect.height <= 0) continue;
+      if (element.scrollWidth > element.clientWidth + tolerance) {
+        descendantOverflow.push(`${label(element)} ${element.clientWidth}/${element.scrollWidth}px`);
+      }
+      if (rect.left < guideRect.left - tolerance || rect.right > guideRect.right + tolerance) {
+        outsideGuide.push(`${label(element)} ${Math.round(rect.left - guideRect.left)}/${Math.round(rect.right - guideRect.right)}px`);
+      }
+      if (rect.left < -tolerance || rect.right > window.innerWidth + tolerance) {
+        outsideViewport.push(`${label(element)} ${Math.round(rect.left)}/${Math.round(rect.right)}px`);
+      }
+    }
+
     const walker = document.createTreeWalker(guide, NodeFilter.SHOW_TEXT);
     for (let node = walker.nextNode(); node; node = walker.nextNode()) {
       if (!node.textContent?.trim()) continue;
       const parent = node.parentElement;
-      if (!parent || isHidden(parent)) continue;
+      if (!parent || isIntentionallyHidden(parent)) continue;
       const range = document.createRange();
       range.selectNodeContents(node);
       const textRects = [...range.getClientRects()].filter((rect) => rect.width > 0 && rect.height > 0);
@@ -103,6 +126,9 @@ const inspectLayout = (page) => page.evaluate(() => {
     guideClientWidth: guide?.clientWidth ?? 0,
     guideScrollWidth: guide?.scrollWidth ?? 0,
     clippedText: [...new Set(clippedText)],
+    descendantOverflow: [...new Set(descendantOverflow)],
+    outsideGuide: [...new Set(outsideGuide)],
+    outsideViewport: [...new Set(outsideViewport)],
   };
 });
 
@@ -116,6 +142,15 @@ const checkHorizontalOverflow = (layout, label) => {
   if (layout.guideScrollWidth > layout.guideClientWidth + 1) {
     failures.push(`${label} : débordement horizontal du guide ${layout.guideClientWidth}/${layout.guideScrollWidth}px`);
   }
+  if (layout.descendantOverflow.length) {
+    failures.push(`${label} : descendants en débordement (${layout.descendantOverflow.join(', ')})`);
+  }
+  if (layout.outsideGuide.length) {
+    failures.push(`${label} : descendants hors du guide (${layout.outsideGuide.join(', ')})`);
+  }
+  if (layout.outsideViewport.length) {
+    failures.push(`${label} : descendants hors du viewport (${layout.outsideViewport.join(', ')})`);
+  }
 };
 
 try {
@@ -124,11 +159,11 @@ try {
 
   await page.goto(`${baseURL}${routes.models}`, { waitUntil: 'load' });
   await stabilize(page);
-  const tierChoices = page.locator('[data-tier-choice]');
+  const tierChoices = page.locator('input[type="radio"][data-tier-choice]');
   const tierRows = page.locator('[data-tier-row]');
   if (await tierChoices.count() !== 3) failures.push('modèles desktop : trois niveaux de contrôle attendus');
   if (await tierRows.count() !== 3) failures.push('modèles desktop : trois lignes de niveau attendues');
-  const exigenceRadio = page.locator('[data-tier-choice][value="exigence"]');
+  const exigenceRadio = page.locator('input[type="radio"][data-tier-choice][value="exigence"]');
   if (await exigenceRadio.count() !== 1) {
     failures.push('modèles desktop : choix exigence absent');
   } else {
@@ -207,7 +242,7 @@ try {
   await zoom.close();
 
   const reduced = await browser.newContext({
-    viewport: { width: 1280, height: 720 },
+    viewport: { width: 390, height: 844 },
     reducedMotion: 'reduce',
   });
   const reducedPage = await reduced.newPage();
@@ -215,15 +250,33 @@ try {
     await reducedPage.goto(`${baseURL}${route}`, { waitUntil: 'load' });
     await stabilize(reducedPage);
     const motion = await reducedPage.locator('[data-model-cost-guide]').evaluate((guide) => {
-      const elements = [guide, ...guide.querySelectorAll('*')];
+      const isIntentionallyHidden = (element) => {
+        for (let current = element; current && guide.contains(current); current = current.parentElement) {
+          const style = getComputedStyle(current);
+          if (style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) === 0) return true;
+          const isMobileTableHead = current.matches('.model-guide__cost-table thead')
+            && style.position === 'absolute'
+            && style.clipPath === 'inset(50%)'
+            && ['hidden', 'clip'].includes(style.overflowX)
+            && ['hidden', 'clip'].includes(style.overflowY);
+          if (isMobileTableHead) return true;
+        }
+        return false;
+      };
+      const elements = [guide, ...guide.querySelectorAll('*')]
+        .filter((element) => !isIntentionallyHidden(element));
       const nonZeroDuration = (value) => value.split(',').some((duration) => Number.parseFloat(duration) > 0);
       return elements.flatMap((element) => {
-        const style = getComputedStyle(element);
-        const issues = [];
-        if (style.animationName.split(',').some((animation) => animation.trim() !== 'none')
-          || nonZeroDuration(style.animationDuration)) issues.push(`animation ${style.animationName}/${style.animationDuration}`);
-        if (nonZeroDuration(style.transitionDuration)) issues.push(`transition ${style.transitionDuration}`);
-        return issues;
+        return ['', '::before', '::after'].flatMap((pseudo) => {
+          const style = getComputedStyle(element, pseudo);
+          if (pseudo && ['none', 'normal'].includes(style.content)) return [];
+          const target = `${element.tagName.toLowerCase()}${pseudo}`;
+          const issues = [];
+          if (style.animationName.split(',').some((animation) => animation.trim() !== 'none')
+            || nonZeroDuration(style.animationDuration)) issues.push(`${target} animation ${style.animationName}/${style.animationDuration}`);
+          if (nonZeroDuration(style.transitionDuration)) issues.push(`${target} transition ${style.transitionDuration}`);
+          return issues;
+        });
       });
     });
     if (motion.length) failures.push(`${name} mouvement réduit : ${[...new Set(motion)].join(', ')}`);
@@ -237,21 +290,35 @@ try {
   const noScriptPage = await noScript.newPage();
 
   await noScriptPage.goto(`${baseURL}${routes.models}`, { waitUntil: 'load' });
+  await noScriptPage.waitForTimeout(100);
   if (await noScriptPage.locator('[data-tier-row]:visible').count() !== 3) {
     failures.push('modèles sans JavaScript : les trois niveaux ne sont pas visibles');
   }
+  const noScriptModelsLayout = await inspectLayout(noScriptPage);
+  checkHorizontalOverflow(noScriptModelsLayout, 'modèles sans JavaScript');
+  if (noScriptModelsLayout.clippedText.length) failures.push(`modèles sans JavaScript : texte visible rogné (${noScriptModelsLayout.clippedText.join(', ')})`);
 
   await noScriptPage.goto(`${baseURL}${routes.costs}`, { waitUntil: 'load' });
+  await noScriptPage.waitForTimeout(100);
   const noScriptCostRows = noScriptPage.locator('.model-guide__cost-table tbody tr:visible');
   if (await noScriptCostRows.count() !== 6) failures.push('coûts sans JavaScript : six lignes attendues');
   for (let index = 0; index < await noScriptCostRows.count(); index += 1) {
     const row = noScriptCostRows.nth(index);
-    const unit = await normalizedText(row.locator('[data-label="1 dossier"]'));
-    const hundred = await normalizedText(row.locator('[data-label="100 dossiers"][data-volume-cost]'));
-    if (!unit || !hundred) failures.push(`coûts sans JavaScript : valeurs 1 et 100 dossiers absentes ligne ${index + 1}`);
+    const unitCell = row.locator('[data-label="1 dossier"]');
+    const hundredCell = row.locator('[data-label="100 dossiers"][data-volume-cost]');
+    const unit = await normalizedText(unitCell);
+    const hundred = await normalizedText(hundredCell);
+    if (await unitCell.count() !== 1 || !await unitCell.isVisible() || !unit
+      || await hundredCell.count() !== 1 || !await hundredCell.isVisible() || !hundred) {
+      failures.push(`coûts sans JavaScript : cellules 1 et 100 dossiers illisibles ligne ${index + 1}`);
+    }
   }
+  const noScriptCostsLayout = await inspectLayout(noScriptPage);
+  checkHorizontalOverflow(noScriptCostsLayout, 'coûts sans JavaScript');
+  if (noScriptCostsLayout.clippedText.length) failures.push(`coûts sans JavaScript : texte visible rogné (${noScriptCostsLayout.clippedText.join(', ')})`);
 
   await noScriptPage.goto(`${baseURL}${routes.access}`, { waitUntil: 'load' });
+  await noScriptPage.waitForTimeout(100);
   if (await noScriptPage.locator('.model-guide__access article:visible').count() !== 2) {
     failures.push('accès sans JavaScript : les deux colonnes ne sont pas visibles');
   }
@@ -260,6 +327,9 @@ try {
       failures.push(`accès sans JavaScript : colonne ${heading} absente`);
     }
   }
+  const noScriptAccessLayout = await inspectLayout(noScriptPage);
+  checkHorizontalOverflow(noScriptAccessLayout, 'accès sans JavaScript');
+  if (noScriptAccessLayout.clippedText.length) failures.push(`accès sans JavaScript : texte visible rogné (${noScriptAccessLayout.clippedText.join(', ')})`);
   await noScript.close();
 } finally {
   await browser.close();
