@@ -7,7 +7,8 @@ import { validatePresentation } from '../src/presentation/presentation-validatio
 
 const expectedIds = [
   'a1', 'a2', 'a3', 'a4', 'b0', 'b1', 'b2', 'b3', 'b4', 'b4-bis',
-  'c1', 'c2', 'c3',
+  'c1', 'c2', 'c3', 'd1', 'd2', 'd2-bis', 'd3', 'd4', 'e1', 'e2',
+  'e3',
 ];
 
 const expectedSlides = [
