@@ -152,25 +152,49 @@ export const A_DECKS = [
       slide({
         id: 'a1-plausible',
         role: 'checkpoint',
-        claim: 'Plausible et vrai sont deux questions différentes.',
-        support: 'Une phrase peut être exacte, simplifiée ou demander une vérification.',
+        claim: 'Probable, cohérent et vrai ne désignent pas la même chose.',
+        support: 'Cinq propriétés contre-intuitives séparent la génération linguistique de la preuve.',
         visual: {
           key: 'verification-audit',
           data: {
-            interaction: 'Classer une affirmation.',
-            statement: 'Un LLM retrouve toujours la bonne ligne dans une base de données.',
+            interaction: 'Classer chaque affirmation puis afficher sa nuance.',
             buckets: ['Exacte', 'Simplifiée', 'À vérifier'],
-            answer: 'À vérifier',
-            reason: 'Un LLM génère ; il ne récite pas toujours une fiche exacte.',
+            statements: [
+              {
+                text: "Une erreur souvent répétée peut être plus probable qu'une vérité rarement formulée.",
+                answer: 'Exacte',
+                reason: 'La fréquence des formulations influence la plausibilité statistique ; elle ne constitue pas une preuve.',
+              },
+              {
+                text: "Le mot généré n'est pas nécessairement celui qui avait la probabilité la plus élevée.",
+                answer: 'À vérifier',
+                reason: "Cela dépend du décodage : l'échantillonnage peut retenir un token moins probable ; le décodage glouton choisit le premier.",
+              },
+              {
+                text: 'Répéter une information dans le contexte peut renforcer son influence sans la rendre plus vraie.',
+                answer: 'Exacte',
+                reason: 'La répétition renforce le signal présent dans le contexte, sans modifier la réalité extérieure.',
+              },
+              {
+                text: "Quand un LLM justifie sa réponse, il ne restitue pas forcément le calcul qui l'a réellement produite.",
+                answer: 'Exacte',
+                reason: "Une justification générée peut être utile, mais elle n'est pas une lecture garantie des opérations internes du modèle.",
+              },
+              {
+                text: 'Des mots plausibles pris un par un ne garantissent pas une réponse cohérente dans son ensemble.',
+                answer: 'Exacte',
+                reason: 'La prédiction est locale ; la cohérence globale doit encore être construite et contrôlée sur toute la réponse.',
+              },
+            ],
           },
         },
         links: [wikiLink('a1', 'concept-durable', 'Voir les trois conséquences'), usageLimits],
         speaker: {
-          durationMinutes: 2,
-          notes: 'Faire distinguer fluidité, cohérence et exactitude. Message essentiel : la fluidité est une capacité ; la vérité doit encore être établie.',
-          transition: 'Mettons ce réflexe en pratique sur une notion connue.',
+          durationMinutes: 3,
+          notes: 'Faire voter avant chaque correction. Ne pas annoncer que quatre affirmations sur cinq sont exactes : le déséquilibre est volontairement contre-intuitif.',
+          transition: 'Mettons ces distinctions en pratique sur une réponse produite par Claude.',
         },
-        accessibleDescription: 'Une affirmation sur les LLM doit être rangée dans l’une de trois catégories ; la correction explique pourquoi elle demande vérification.',
+        accessibleDescription: 'Cinq affirmations sur fréquence, échantillonnage, répétition, justification et cohérence sont classées puis expliquées une par une.',
       }),
       slide({
         id: 'a1-mission',

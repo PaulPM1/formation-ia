@@ -302,7 +302,7 @@ test('les visuels polymorphes choisissent une scène propre à chaque forme de d
   const slides = A_DECKS.flatMap((deck) => deck.slides);
   const data = (id: string) => slides.find((candidate) => candidate.id === id)?.visual.data ?? {};
 
-  assert.equal(state.getVerificationVariant(data('a1-plausible')), 'classification');
+  assert.equal(state.getVerificationVariant(data('a1-plausible')), 'classification-sequence');
   assert.equal(state.getVerificationVariant(data('a5-convincing')), 'statements');
   assert.equal(state.getVerificationVariant(data('a5-biases')), 'biases');
   assert.equal(state.getVerificationVariant(data('a5-risk')), 'risk');
@@ -312,6 +312,22 @@ test('les visuels polymorphes choisissent une scène propre à chaque forme de d
   assert.equal(state.getContextBudgetVariant(data('a4-context-meter')), 'meter');
   assert.equal(state.getContextBudgetVariant(data('a4-agentic')), 'comparison');
   assert.equal(state.getContextBudgetVariant(data('a4-budget')), 'mission');
+});
+
+test('le checkpoint A1 avance sans dépasser la cinquième affirmation', async () => {
+  const state = await import('../src/components/presentation/visuals/a/visual-state');
+  assert.equal(state.advanceClassificationSequence(0, 5), 1);
+  assert.equal(state.advanceClassificationSequence(4, 5), 4);
+  assert.equal(state.advanceClassificationSequence(0, 0), 0);
+});
+
+test('le checkpoint A1 expose cinq corrections natives hors JavaScript', async () => {
+  const audit = await read('src/components/presentation/visuals/a/VerificationAudit.astro');
+  assert.match(audit, /classification-sequence/);
+  assert.match(audit, /data-sequence-panel/);
+  assert.match(audit, /data-sequence-next/);
+  assert.match(audit, /<details class="audit__sequence-fallback"/);
+  assert.match(audit, /statement\.reason/);
 });
 
 test('la progression conserve tout le contenu sans JavaScript puis isole le panneau actif', async () => {

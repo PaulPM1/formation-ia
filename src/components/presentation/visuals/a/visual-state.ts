@@ -36,15 +36,25 @@ export const advanceTokenState = (current: number, tokens: string[]): TokenState
 
 type VisualData = Record<string, unknown>;
 
-export type VerificationVariant = 'classification' | 'statements' | 'biases' | 'risk' | 'method';
+export type VerificationVariant =
+  | 'classification'
+  | 'classification-sequence'
+  | 'statements'
+  | 'biases'
+  | 'risk'
+  | 'method';
 
 export const getVerificationVariant = (data: VisualData): VerificationVariant => {
+  if (Array.isArray(data.buckets) && Array.isArray(data.statements)) return 'classification-sequence';
   if (Array.isArray(data.buckets)) return 'classification';
   if (Array.isArray(data.statements)) return 'statements';
   if (Array.isArray(data.biases)) return 'biases';
   if (Array.isArray(data.scale)) return 'risk';
   return 'method';
 };
+
+export const advanceClassificationSequence = (current: number, count: number) =>
+  count <= 0 ? 0 : Math.min(Math.max(0, current + 1), count - 1);
 
 export type ContextBudgetVariant = 'layers' | 'meter' | 'comparison' | 'mission';
 

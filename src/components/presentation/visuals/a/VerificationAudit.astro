@@ -5,6 +5,7 @@ import { getVerificationVariant } from './visual-state';
 
 interface Props { slide: RoutedSlide; }
 interface RiskLevel { risk: string; example: string; verification: string; }
+interface ClassificationStatement { text: string; answer: string; reason: string; }
 
 const { slide } = Astro.props;
 const data = slide.visual.data;
@@ -12,6 +13,9 @@ const variant = getVerificationVariant(data);
 const buckets = Array.isArray(data.buckets) ? data.buckets.map(String) : [];
 const statements = Array.isArray(data.statements)
   ? data.statements as Array<{ text: string; category: string; fictional?: boolean }>
+  : [];
+const classificationStatements = Array.isArray(data.statements)
+  ? data.statements as ClassificationStatement[]
   : [];
 const biases = Array.isArray(data.biases) ? data.biases as Array<{ name: string; effect: string }> : [];
 const scale = Array.isArray(data.scale) ? data.scale as RiskLevel[] : [];
@@ -21,6 +25,49 @@ const resultId = `${slide.id}-audit-result`;
 
 <SceneFrame title={slide.claim} description={slide.accessibleDescription} visualKey={slide.visual.key} class="verification-audit">
   <div class="audit__scene" data-verification-audit data-variant={variant} data-answer={String(data.answer ?? '')} data-reason={String(data.reason ?? '')}>
+    {variant === 'classification-sequence' && (
+      <section class="audit__classification-sequence">
+        <p class="scene-label">Affirmation <span data-sequence-index>1</span> / {classificationStatements.length}</p>
+        <div class="audit__sequence-panels">
+          {classificationStatements.map((statement, statementIndex) => (
+            <article data-sequence-panel={statementIndex}>
+              <blockquote>{statement.text}</blockquote>
+              <fieldset aria-describedby={`${resultId}-${statementIndex}`}>
+                <legend>{String(data.interaction ?? 'Choisir une catégorie')}</legend>
+                <div class="audit__choices">
+                  {buckets.map((bucket, bucketIndex) => (
+                    <label>
+                      <input type="radio" name={`${slide.id}-${statementIndex}`} value={bucket} data-sequence-choice />
+                      <span>{String(bucketIndex + 1).padStart(2, '0')}</span>
+                      <strong>{bucket}</strong>
+                    </label>
+                  ))}
+                </div>
+                <button type="button" disabled data-sequence-reveal>Afficher la correction</button>
+                <output
+                  id={`${resultId}-${statementIndex}`}
+                  hidden
+                  data-sequence-result
+                  data-answer={statement.answer}
+                  data-reason={statement.reason}
+                  aria-live="polite"
+                ></output>
+              </fieldset>
+            </article>
+          ))}
+        </div>
+        <button type="button" disabled data-sequence-next>Affirmation suivante</button>
+        <details class="audit__sequence-fallback">
+          <summary>Afficher les cinq corrections</summary>
+          <ol>
+            {classificationStatements.map((statement) => (
+              <li><strong>{statement.answer}</strong><span>{statement.text}</span><p>{statement.reason}</p></li>
+            ))}
+          </ol>
+        </details>
+      </section>
+    )}
+
     {variant === 'classification' && (
       <section class="audit__classification">
         <div class="audit__prompt">
@@ -80,12 +127,76 @@ const resultId = `${slide.id}-audit-result`;
 </SceneFrame>
 
 <script>
-  import { resolvePanelVisibility } from './visual-state';
+  import { advanceClassificationSequence, resolvePanelVisibility } from './visual-state';
   import { onPresenterPage } from '../../../../scripts/on-presenter-page';
 
   onPresenterPage(() => {
     document.querySelectorAll<HTMLElement>('[data-verification-audit]').forEach((scene) => {
       const variant = scene.dataset.variant;
+      if (variant === 'classification-sequence') {
+        const panels = Array.from(scene.querySelectorAll<HTMLElement>('[data-sequence-panel]'));
+        const next = scene.querySelector<HTMLButtonElement>('[data-sequence-next]');
+        const indexLabel = scene.querySelector<HTMLElement>('[data-sequence-index]');
+        const fallback = scene.querySelector<HTMLDetailsElement>('.audit__sequence-fallback');
+        if (!panels.length || !next || !indexLabel) return;
+
+        scene.dataset.enhanced = 'true';
+        if (fallback) fallback.hidden = true;
+        let active = 0;
+
+        const renderPanel = () => {
+          panels.forEach((panel, index) => { panel.hidden = index !== active; });
+          indexLabel.textContent = String(active + 1);
+          next.disabled = true;
+          next.textContent = active === panels.length - 1
+            ? 'Rejouer le checkpoint'
+            : 'Affirmation suivante';
+
+          const panel = panels[active];
+          const choices = Array.from(panel.querySelectorAll<HTMLInputElement>('[data-sequence-choice]'));
+          const reveal = panel.querySelector<HTMLButtonElement>('[data-sequence-reveal]');
+          const result = panel.querySelector<HTMLOutputElement>('[data-sequence-result]');
+          choices.forEach((choice) => { choice.checked = false; });
+          if (reveal) reveal.disabled = true;
+          if (result) result.hidden = true;
+        };
+
+        panels.forEach((panel) => {
+          const choices = Array.from(panel.querySelectorAll<HTMLInputElement>('[data-sequence-choice]'));
+          const reveal = panel.querySelector<HTMLButtonElement>('[data-sequence-reveal]');
+          const result = panel.querySelector<HTMLOutputElement>('[data-sequence-result]');
+          if (!reveal || !result) return;
+
+          choices.forEach((choice) => choice.addEventListener('change', () => {
+            reveal.disabled = false;
+            result.hidden = true;
+            next.disabled = true;
+          }));
+
+          reveal.addEventListener('click', () => {
+            const selected = choices.find((choice) => choice.checked)?.value;
+            if (!selected) return;
+            const answer = result.dataset.answer ?? '';
+            const reason = result.dataset.reason ?? '';
+            result.textContent = selected === answer
+              ? `Correct · ${answer}. ${reason}`
+              : `À revoir · la réponse attendue est « ${answer} ». ${reason}`;
+            result.hidden = false;
+            next.disabled = false;
+          });
+        });
+
+        next.addEventListener('click', () => {
+          active = active === panels.length - 1
+            ? 0
+            : advanceClassificationSequence(active, panels.length);
+          renderPanel();
+        });
+
+        renderPanel();
+        return;
+      }
+
       if (variant === 'classification') {
         const choices = Array.from(scene.querySelectorAll<HTMLInputElement>('[data-classification-choice]'));
         const reveal = scene.querySelector<HTMLButtonElement>('[data-classification-reveal]');
@@ -166,6 +277,21 @@ const resultId = `${slide.id}-audit-result`;
   .audit__classification details { font-size: .82rem; }
   .audit__classification details p { margin: .3rem 0 0; }
 
+  .audit__classification-sequence { display: grid; grid-template-columns: 1fr auto; gap: .65rem 1rem; align-content: center; min-block-size: 0; }
+  .audit__classification-sequence > .scene-label, .audit__sequence-panels { grid-column: 1 / -1; }
+  .audit__sequence-panels article { display: grid; grid-template-columns: minmax(0, .9fr) minmax(18rem, 1.1fr); gap: clamp(1rem, 3vw, 3rem); align-items: center; }
+  .audit__sequence-panels blockquote { margin: 0; font-family: var(--font-display); font-size: clamp(1.25rem, 1rem + .75vw, 1.8rem); font-weight: 720; line-height: 1.08; }
+  .audit__sequence-panels fieldset { display: grid; gap: .45rem; margin: 0; padding: 0; border: 0; }
+  .audit__classification-sequence button { justify-self: start; min-block-size: 2.75rem; padding: .45rem .95rem; border: 2px solid var(--presentation-ink); background: var(--presentation-ink); color: var(--presentation-surface); font: 700 .95rem var(--font-display); }
+  .audit__classification-sequence button:disabled { opacity: .45; cursor: not-allowed; }
+  .audit__classification-sequence button:focus-visible, .audit__classification-sequence input:focus-visible { outline: .25rem solid var(--family-accent); outline-offset: .18rem; }
+  .audit__classification-sequence output { padding: .55rem .7rem; border-inline-start: .3rem solid var(--family-accent); background: var(--presentation-surface); font-size: .85rem; font-weight: 680; }
+  .audit__sequence-fallback { grid-column: 1 / -1; font-size: .82rem; }
+  .audit__sequence-fallback li { margin-block: .5rem; }
+  .audit__sequence-fallback span { display: block; font-weight: 700; }
+  .audit__sequence-fallback p { margin: .2rem 0 0; }
+  [data-sequence-panel][hidden], [data-sequence-result][hidden] { display: none !important; }
+
   .audit__statements { display: grid; gap: .35rem; align-content: center; min-block-size: 0; }
   .audit__statements header { display: flex; justify-content: space-between; gap: 1rem; align-items: end; }
   .audit__statements header p { margin: 0; }
@@ -198,5 +324,7 @@ const resultId = `${slide.id}-audit-result`;
     .audit__risk header, .audit__output { grid-column: 1; }
     .audit__statements ol { grid-template-columns: 1fr; }
     .audit__risk .audit__selector { grid-template-columns: 1fr; }
+    .audit__sequence-panels article { grid-template-columns: 1fr; }
+    .audit__choices { grid-template-columns: 1fr; }
   }
 </style>

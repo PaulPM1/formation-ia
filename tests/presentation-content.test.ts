@@ -13,7 +13,7 @@ const expectedSlides = [
   { id: 'a1-opening', claim: "À l'entraînement, le modèle apprend à prédire la suite.", visualKey: 'token-predictor' },
   { id: 'a1-token-loop', claim: 'Une réponse se construit token après token.', visualKey: 'token-predictor' },
   { id: 'a1-context', claim: 'Le contexte change le sens avant de changer les mots.', visualKey: 'context-comparison' },
-  { id: 'a1-plausible', claim: 'Plausible et vrai sont deux questions différentes.', visualKey: 'verification-audit' },
+  { id: 'a1-plausible', claim: 'Probable, cohérent et vrai ne désignent pas la même chose.', visualKey: 'verification-audit' },
   { id: 'a1-mission', claim: 'Expliquez, repérez, puis améliorez la consigne.', visualKey: 'mission-board' },
   { id: 'a2-three-modes', claim: 'Réponse, workflow et agent ne délèguent pas la même chose.', visualKey: 'response-workflow-agent' },
   { id: 'a2-response', claim: 'Une réponse transforme du contexte en texte.', visualKey: 'response-workflow-agent' },
@@ -139,6 +139,17 @@ test("l'ouverture A1 fournit une distribution illustrative valide pour chaque to
   training.steps.forEach((step, index) => {
     assert.equal(step.target, training.tokens[index]);
     assert.equal(step.candidates.reduce((sum, candidate) => sum + candidate.probability, 0), 100);
+  });
+});
+
+test('le checkpoint A1 contient les cinq affirmations nuancées validées', () => {
+  const checkpoint = PRESENTATION_SLIDES.find((slide) => slide.id === 'a1-plausible');
+  const statements = checkpoint?.visual.data.statements as Array<{ text: string; answer: string; reason: string }>;
+  assert.equal(statements.length, 5);
+  assert.deepEqual(statements.map(({ answer }) => answer), ['Exacte', 'À vérifier', 'Exacte', 'Exacte', 'Exacte']);
+  statements.forEach(({ text, reason }) => {
+    assert.ok(text.length > 40);
+    assert.ok(reason.length > 60);
   });
 });
 
