@@ -16,7 +16,7 @@ bricks:
 goal: "Passer d'une machine vide à un projet prêt à être développé : outils qui répondent, dossier suivi par git, comptes en place, sujet choisi et identité écrite."
 outcome: "Un dossier de projet suivi par git et présent sur GitHub, ouvert dans Claude Code, avec un CLAUDE.md rédigé par interview et un premier commit envoyé."
 prideCriterion: "Vous ouvrez une conversation neuve et Claude sait déjà sur quoi vous travaillez, sans que vous le lui rappeliez."
-kit: "Le prompt d'interview : les questions à poser et les consignes de rédaction du CLAUDE.md."
+kit: "Le dépôt modèle à cloner (structure, CLAUDE.md, .gitignore, prompts) et le prompt d'interview qui rédige votre identité de projet."
 ---
 
 Cette séance est la même pour tout le monde, quel que soit le projet choisi. Deux heures pour décoller : les outils répondent, le dossier existe, l'historique est ouvert, les comptes sont prêts, le sujet est arrêté et son identité est écrite. Vous ne rédigez rien à la main : vous répondez, vous choisissez, vous corrigez.
@@ -44,42 +44,65 @@ Installez aussi l'**extension Claude Code** dans VS Code : cherchez « Claude Co
   <p><strong>Pourquoi ça compte.</strong> Un outil qui hésite vous coûte du temps à chaque heure du week-end. Régler l'installation maintenant, à froid, vaut mieux que la régler samedi après-midi au milieu d'une fonctionnalité.</p>
 </aside>
 
-## Tâche 2 : le dossier et l'historique
+## Tâche 2 : les comptes prêts
 
-Créez le dossier de votre projet sur votre machine, ouvrez-le dans VS Code et dans Claude Code, puis demandez à Claude d'y initialiser git. Ajoutez tout de suite un `.gitignore` : rien de secret ne doit jamais entrer dans l'historique.
-
-**But :** installer le lieu où tout va vivre, avec un historique dès la première minute.
-
-<ul class="task-checklist" role="list">
-  <li><label><input type="checkbox" /> Créer le dossier de projet et lui donner un nom court</label></li>
-  <li><label><input type="checkbox" /> L'ouvrir dans Claude Code</label></li>
-  <li><label><input type="checkbox" /> Faire initialiser git par Claude</label></li>
-  <li><label><input type="checkbox" /> Faire écrire un <code>.gitignore</code> avant tout ajout de fichier</label></li>
-</ul>
-
-**Preuve :** Claude Code répond depuis le dossier, et `git status` répond sans erreur.
-
-<aside class="task-why">
-  <p><strong>Pourquoi ça compte.</strong> Tout ce que vous construirez ce week-end habitera ce dossier. L'historique git racontera la construction, commit après commit, et vous permettra d'expérimenter sans peur de casser.</p>
-</aside>
-
-## Tâche 3 : les comptes prêts
-
-Ouvrez ou retrouvez vos comptes GitHub et Vercel, et autorisez votre machine à parler à GitHub. Vous ne déployez rien maintenant : vous enlevez simplement les obstacles pour ne pas les rencontrer demain, au moment où vous voudrez publier.
+Ouvrez ou retrouvez vos comptes GitHub et Vercel, et autorisez votre machine à parler à GitHub. Vous ne déployez rien maintenant : vous enlevez les obstacles avant de les rencontrer.
 
 **But :** avoir tous les accès en place avant d'en avoir besoin.
 
 <ul class="task-checklist" role="list">
   <li><label><input type="checkbox" /> Créer ou retrouver votre compte GitHub</label></li>
   <li><label><input type="checkbox" /> Autoriser votre machine à pousser sur GitHub et vérifier l'authentification</label></li>
-  <li><label><input type="checkbox" /> Créer un dépôt vide pour votre projet, en privé si votre matière est personnelle</label></li>
   <li><label><input type="checkbox" /> Créer un compte Vercel et le relier à GitHub</label></li>
 </ul>
 
-**Preuve :** votre dépôt existe sur GitHub et votre compte Vercel voit vos dépôts.
+**Preuve :** vous êtes connecté sur github.com, et votre compte Vercel voit vos dépôts.
 
 <aside class="task-why">
-  <p><strong>Pourquoi ça compte.</strong> Créer un compte et régler une authentification prend dix minutes quand on est calme, et une heure quand on veut publier dans l'urgence. Ces dix minutes-là se prennent aujourd'hui.</p>
+  <p><strong>Pourquoi ça compte.</strong> Créer un compte et régler une authentification prend dix minutes quand on est calme, et une heure quand on veut publier dans l'urgence. Ces dix minutes-là se prennent maintenant, et le dépôt de la tâche suivante en dépend.</p>
+</aside>
+
+## Tâche 3 : votre dépôt de projet
+
+Deux chemins mènent au même résultat : un dossier de projet sur votre machine, suivi par git, relié à un dépôt GitHub qui vous appartient. Prenez la voie rapide si c'est votre premier projet.
+
+### Voie rapide : partir du kit fourni
+
+Le kit de départ contient déjà la structure de dossiers, un `CLAUDE.md` à personnaliser, un `.gitignore` qui protège vos secrets et les prompts du week-end. Vous n'écrivez rien : vous récupérez, vous ouvrez, vous adaptez.
+
+1. Ouvrez le dépôt modèle communiqué par les formateurs et utilisez le bouton **Use this template** pour créer votre propre dépôt. Donnez-lui un nom court, et mettez-le en privé si votre matière est personnelle.
+2. Copiez l'adresse de votre nouveau dépôt.
+3. Demandez à Claude de le récupérer sur votre machine, par exemple : « Clone ce dépôt dans mon dossier Documents, puis ouvre-le. »
+4. Ouvrez le dossier obtenu dans VS Code, et regardez ce qu'il contient avant de toucher à quoi que ce soit.
+5. Choisissez votre variante : `debutant` si vous voulez partir de fichiers déjà rédigés, `avance` si vous préférez écrire vous-même. Demandez à Claude de remonter la variante choisie à la racine et de supprimer l'autre.
+
+<ul class="task-checklist" role="list">
+  <li><label><input type="checkbox" /> Créer votre dépôt depuis le modèle avec <strong>Use this template</strong></label></li>
+  <li><label><input type="checkbox" /> Faire cloner le dépôt sur votre machine par Claude</label></li>
+  <li><label><input type="checkbox" /> Ouvrir le dossier dans VS Code et parcourir le squelette</label></li>
+  <li><label><input type="checkbox" /> Choisir votre variante et faire ranger le dossier par Claude</label></li>
+</ul>
+
+### Voie complète : tout construire soi-même
+
+À prendre si vous voulez comprendre chaque geste, ou si vous avez déjà l'habitude. Vous obtiendrez la même chose, en le fabriquant.
+
+1. Créez le dossier de votre projet et ouvrez-le dans VS Code.
+2. Demandez à Claude d'y initialiser git.
+3. Faites écrire un `.gitignore` **avant** d'ajouter le moindre fichier : rien de secret ne doit jamais entrer dans l'historique.
+4. Créez un dépôt vide sur GitHub, puis demandez à Claude de relier votre dossier à ce dépôt.
+
+<ul class="task-checklist" role="list">
+  <li><label><input type="checkbox" /> Créer le dossier de projet et lui donner un nom court</label></li>
+  <li><label><input type="checkbox" /> Faire initialiser git par Claude</label></li>
+  <li><label><input type="checkbox" /> Faire écrire un <code>.gitignore</code> avant tout ajout de fichier</label></li>
+  <li><label><input type="checkbox" /> Créer un dépôt vide sur GitHub et l'associer à votre dossier</label></li>
+</ul>
+
+**Preuve, quelle que soit la voie :** le dossier est ouvert dans VS Code, `git status` répond sans erreur, et votre dépôt existe sur votre compte GitHub.
+
+<aside class="task-why">
+  <p><strong>Pourquoi ça compte.</strong> Tout ce que vous construirez ce week-end habitera ce dossier, et l'historique git racontera la construction commit après commit. Partir d'un squelette fourni ne vous fait rien perdre : les gestes que vous économisez ici, vous les verrez de toute façon en D2, et vous les referez sur votre prochain projet.</p>
 </aside>
 
 ## Tâche 4 : choisir votre projet
@@ -138,7 +161,7 @@ Faites un commit nommé « socle » et envoyez-le sur votre dépôt GitHub. C'es
 <ul class="task-checklist" role="list">
   <li><label><input type="checkbox" /> Vérifier avec <code>git status</code> ce qui va entrer dans le commit</label></li>
   <li><label><input type="checkbox" /> Faire le commit « socle »</label></li>
-  <li><label><input type="checkbox" /> Relier le dossier au dépôt GitHub et pousser</label></li>
+  <li><label><input type="checkbox" /> Pousser sur votre dépôt GitHub</label></li>
   <li><label><input type="checkbox" /> Ouvrir le dépôt dans le navigateur et vérifier que le <code>CLAUDE.md</code> y est</label></li>
 </ul>
 
