@@ -225,6 +225,48 @@ const checkDesktopProjector = async (page, label) => {
   }
 };
 
+const inspectEssentialVerticalClipping = (page) => page.evaluate(() => {
+  const tolerance = 1;
+  const stage = document.querySelector('.presentation-stage');
+  const stageRect = stage?.getBoundingClientRect();
+  if (!stage || !stageRect) return ['scène absente'];
+
+  const isHidden = (element) => {
+    for (let current = element; current && stage.contains(current); current = current.parentElement) {
+      const style = getComputedStyle(current);
+      if (style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) === 0) return true;
+      if (current.matches('.visually-hidden')
+        && style.position === 'absolute'
+        && current.clientWidth <= 1
+        && current.clientHeight <= 1
+        && style.clipPath !== 'none') return true;
+      const isMobileTableHead = current.matches('.model-guide__cost-table thead')
+        && style.position === 'absolute'
+        && style.clipPath === 'inset(50%)';
+      if (isMobileTableHead) return true;
+    }
+    return false;
+  };
+
+  const failures = [];
+  for (const root of document.querySelectorAll('.presentation-heading, [data-model-cost-guide]')) {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+      if (!node.textContent?.trim() || !node.parentElement || isHidden(node.parentElement)) continue;
+      const range = document.createRange();
+      range.selectNodeContents(node);
+      for (const rect of range.getClientRects()) {
+        if (rect.width <= 0 || rect.height <= 0) continue;
+        if (rect.top < stageRect.top - tolerance || rect.bottom > stageRect.bottom + tolerance) {
+          failures.push(`${node.textContent.trim().slice(0, 48)} ${Math.round(rect.top)}/${Math.round(rect.bottom)} hors ${Math.round(stageRect.top)}/${Math.round(stageRect.bottom)}`);
+          break;
+        }
+      }
+    }
+  }
+  return [...new Set(failures)];
+});
+
 try {
   const desktop = await browser.newContext({ viewport: { width: 1280, height: 720 } });
   const page = await desktop.newPage();
@@ -383,7 +425,15 @@ try {
     await zoomPage.goto(`${baseURL}${route}`, { waitUntil: 'load' });
     await zoomPage.evaluate(() => { document.documentElement.style.zoom = '2'; });
     await stabilize(zoomPage);
-    checkHorizontalOverflow(await inspectLayout(zoomPage), `${name} zoom 200 %`);
+    const layout = await inspectLayout(zoomPage);
+    checkHorizontalOverflow(layout, `${name} zoom 200 %`);
+    if (layout.clippedText.length) {
+      failures.push(`${name} zoom 200 % : texte visible rogné (${layout.clippedText.join(', ')})`);
+    }
+    const verticalClipping = await inspectEssentialVerticalClipping(zoomPage);
+    if (verticalClipping.length) {
+      failures.push(`${name} zoom 200 % : contenu essentiel hors de la scène (${verticalClipping.join(', ')})`);
+    }
   }
   await zoom.close();
 

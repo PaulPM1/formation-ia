@@ -302,10 +302,12 @@ const initialCostSummary = data.variant === 'costs'
     .model-guide__access-facts { grid-template-columns: 1fr; }
   }
 
-  @media (min-width: 53rem) and (max-height: 45rem) {
-    .model-guide__costs { gap: .1rem; }
-    .model-guide__cost-table caption { padding-block-end: .18rem; }
-    .model-guide__cost-table :is(th, td) { padding-block: .18rem; }
+  @media (max-height: 45rem) {
+    @container (min-width: 53rem) {
+      .model-guide__costs { gap: .1rem; }
+      .model-guide__cost-table caption { padding-block-end: .18rem; }
+      .model-guide__cost-table :is(th, td) { padding-block: .18rem; }
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
