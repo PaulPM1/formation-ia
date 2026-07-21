@@ -246,6 +246,46 @@ test("l'ouverture A1 annonce une simulation et conserve son état final sans Jav
   assert.doesNotMatch(training, /candidates\.innerHTML/);
 });
 
+test("l'entraînement annule son timeout avant chaque transition Astro", async () => {
+  const training = await read('src/components/presentation/visuals/a/TrainingPlayback.astro');
+
+  assert.match(
+    training,
+    /document\.addEventListener\('astro:before-swap',[\s\S]*?window\.clearTimeout\(timer\)[\s\S]*?once:\s*true/,
+  );
+});
+
+test("le bouton d'entraînement utilise le focus contrasté de la présentation", async () => {
+  const training = await read('src/components/presentation/visuals/a/TrainingPlayback.astro');
+
+  assert.match(
+    training,
+    /\.training-playback button:focus-visible\s*{[^}]*var\(--presentation-focus\)/s,
+  );
+  assert.doesNotMatch(
+    training,
+    /\.training-playback button:focus-visible\s*{[^}]*var\(--family-accent\)/s,
+  );
+});
+
+test("la QA durable A1 couvre autoplay, pause, repli et nettoyage des timers", async () => {
+  const [qa, packageJson] = await Promise.all([
+    read('scripts/qa-a1-training.mjs'),
+    read('package.json'),
+  ]);
+
+  assert.match(packageJson, /"qa:a1-training":\s*"node scripts\/qa-a1-training\.mjs"/);
+  assert.match(qa, /javaScriptEnabled:\s*false/);
+  assert.match(qa, /reducedMotion:\s*'reduce'/);
+  assert.match(qa, /data-training-status/);
+  assert.match(qa, /data-training-toggle/);
+  assert.match(qa, /data-training-playback/);
+  assert.match(qa, /data-next/);
+  assert.match(qa, /data-previous/);
+  assert.match(qa, /trainingTimerCount/);
+  assert.match(qa, /outlineColor/);
+});
+
 test('les visuels polymorphes choisissent une scène propre à chaque forme de données', async () => {
   const state = await import('../src/components/presentation/visuals/a/visual-state').catch(() => null);
   assert.ok(state, 'les helpers d’état du bloc A doivent exister');

@@ -84,6 +84,9 @@ const descriptionId = `${slide.id}-training-description`;
       let state: TrainingPlaybackState = { tokenIndex: 0, phase: 'predict', complete: false };
       let paused = false;
       let timer = 0;
+      document.addEventListener('astro:before-swap', () => {
+        window.clearTimeout(timer);
+      }, { once: true });
 
       const render = () => {
         tokenNodes.forEach((node, index) => {
@@ -225,7 +228,7 @@ const descriptionId = `${slide.id}-training-description`;
     color: var(--presentation-surface);
     font-weight: 750;
   }
-  .training-playback button:focus-visible { outline: .25rem solid var(--family-accent); outline-offset: .18rem; }
+  .training-playback button:focus-visible { outline: .25rem solid var(--presentation-focus); outline-offset: .18rem; }
 
   @media (max-width: 52rem) {
     .training-playback { grid-template-columns: 1fr; }
