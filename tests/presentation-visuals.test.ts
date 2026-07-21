@@ -106,7 +106,7 @@ test('les tokens typographiques des slides gardent un plancher de 0,75 rem', asy
   }
 });
 
-test('la QA durable mesure les textes HTML et SVG à 12 px sur 73 routes et au zoom 200 %', async () => {
+test('la QA durable mesure les textes HTML et SVG à 12 px sur 119 routes et au zoom 200 %', async () => {
   const [qa, packageJson] = await Promise.all([
     read('scripts/qa-font-floor.mjs'),
     read('package.json'),
@@ -116,7 +116,7 @@ test('la QA durable mesure les textes HTML et SVG à 12 px sur 73 routes et au z
   assert.match(qa, /const FONT_FLOOR_PX = 11\.99/);
   assert.match(qa, /querySelectorAll\(['"]svg text['"]\)/);
   assert.match(qa, /deviceScaleFactor:\s*2/);
-  assert.match(qa, /routes\.length[^\n]*73|73[^\n]*routes\.length/);
+  assert.match(qa, /routes\.length[^\n]*119|119[^\n]*routes\.length/);
 });
 
 test('la QA A2 couvre clavier, progression, score, replay, mobile, zoom et repli sans JavaScript', async () => {
