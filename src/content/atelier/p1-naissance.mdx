@@ -1,64 +1,87 @@
 ---
 id: p1
 order: 1
-title: "Le berceau"
-subtitle: "Un dossier, un historique git, et un CLAUDE.md écrit à partir de vos réponses : le socle commun à tous les projets."
+title: "Le socle commun"
+subtitle: "Deux heures pour tout mettre en place : les outils, le dossier versionné, les comptes, le projet choisi et son identité écrite."
 durationLabel: "Vendredi après-midi"
-budgetMinutes: 60
-organe: "Fondations"
+budgetMinutes: 120
+organe: "Décollage"
 bricks:
   - b0
   - b1
   - b4-bis
   - d1
   - d2
-goal: "Installer le lieu où votre projet va vivre tout le week-end et y déposer son identité : ce qu'il fait, pour qui, avec quelles contraintes."
-outcome: "Un dossier de projet suivi par git, ouvert dans Claude Code, avec un CLAUDE.md rédigé par interview et un premier commit."
+  - d2-bis
+goal: "Passer d'une machine vide à un projet prêt à être développé : outils qui répondent, dossier suivi par git, comptes en place, sujet choisi et identité écrite."
+outcome: "Un dossier de projet suivi par git et présent sur GitHub, ouvert dans Claude Code, avec un CLAUDE.md rédigé par interview et un premier commit envoyé."
 prideCriterion: "Vous ouvrez une conversation neuve et Claude sait déjà sur quoi vous travaillez, sans que vous le lui rappeliez."
 kit: "Le prompt d'interview : les questions à poser et les consignes de rédaction du CLAUDE.md."
 ---
 
-Cette première étape est la même pour tout le monde, quel que soit le projet que vous choisirez ensuite. Une heure pour passer d'une machine vide à un projet qui a un dossier, un historique et une identité écrite. Vous ne rédigez rien à la main : vous répondez, vous choisissez, vous corrigez.
+Cette séance est la même pour tout le monde, quel que soit le projet choisi. Deux heures pour décoller : les outils répondent, le dossier existe, l'historique est ouvert, les comptes sont prêts, le sujet est arrêté et son identité est écrite. Vous ne rédigez rien à la main : vous répondez, vous choisissez, vous corrigez.
+
+Ensuite, tout le week-end est à vous pour développer votre projet.
 
 ## Tâche 1 : les outils en place
 
-Vérifiez que votre environnement de travail répond : Claude installé et connecté, l'éditeur ouvert, le terminal accessible. C'est le contenu des briques B0 et B4-bis, appliqué sur votre machine.
+Vérifiez que votre environnement de travail répond : Claude installé et connecté, VS Code ouvert, le terminal accessible, Claude Code lancé depuis ce terminal. C'est le contenu des briques B0 et B4-bis, appliqué sur votre machine.
 
 **But :** partir d'un poste qui fonctionne, pour que la suite ne soit jamais un problème d'installation.
 
 <ul class="task-checklist" role="list">
-  <li><label><input type="checkbox" /> Vérifier que Claude est installé et connecté</label></li>
-  <li><label><input type="checkbox" /> Ouvrir l'éditeur et repérer le terminal intégré</label></li>
-  <li><label><input type="checkbox" /> Lancer Claude Code et vérifier qu'il répond</label></li>
+  <li><label><input type="checkbox" /> Vérifier que Claude est installé et que votre compte est connecté</label></li>
+  <li><label><input type="checkbox" /> Ouvrir VS Code et repérer le terminal intégré</label></li>
+  <li><label><input type="checkbox" /> Installer et lancer Claude Code, puis vérifier qu'il répond</label></li>
 </ul>
 
 **Preuve :** vous posez une question à Claude Code depuis votre terminal et vous obtenez une réponse.
 
 <aside class="task-why">
-  <p><strong>Pourquoi ça compte.</strong> Un outil qui hésite vous coûte du temps à chaque étape du week-end. Régler l'installation maintenant, à froid, vaut mieux que la régler samedi après-midi au milieu d'un skill.</p>
+  <p><strong>Pourquoi ça compte.</strong> Un outil qui hésite vous coûte du temps à chaque heure du week-end. Régler l'installation maintenant, à froid, vaut mieux que la régler samedi après-midi au milieu d'une fonctionnalité.</p>
 </aside>
 
 ## Tâche 2 : le dossier et l'historique
 
-Créez le dossier de votre projet sur votre machine, ouvrez-le dans Claude Code, puis demandez à Claude d'y initialiser git. À ce stade le dossier reste local : la mise sur GitHub viendra demain matin.
+Créez le dossier de votre projet sur votre machine, ouvrez-le dans VS Code et dans Claude Code, puis demandez à Claude d'y initialiser git. Ajoutez tout de suite un `.gitignore` : rien de secret ne doit jamais entrer dans l'historique.
 
 **But :** installer le lieu où tout va vivre, avec un historique dès la première minute.
 
 <ul class="task-checklist" role="list">
   <li><label><input type="checkbox" /> Créer le dossier de projet et lui donner un nom court</label></li>
   <li><label><input type="checkbox" /> L'ouvrir dans Claude Code</label></li>
-  <li><label><input type="checkbox" /> Faire initialiser git par Claude (dossier local seulement)</label></li>
+  <li><label><input type="checkbox" /> Faire initialiser git par Claude</label></li>
+  <li><label><input type="checkbox" /> Faire écrire un <code>.gitignore</code> avant tout ajout de fichier</label></li>
 </ul>
 
 **Preuve :** Claude Code répond depuis le dossier, et `git status` répond sans erreur.
 
 <aside class="task-why">
-  <p><strong>Pourquoi ça compte.</strong> Tout ce que vous construirez ensuite (la matière, les skills, l'interface) habitera ce dossier. L'historique git racontera la construction, commit après commit, et vous permettra d'expérimenter sans peur de casser.</p>
+  <p><strong>Pourquoi ça compte.</strong> Tout ce que vous construirez ce week-end habitera ce dossier. L'historique git racontera la construction, commit après commit, et vous permettra d'expérimenter sans peur de casser.</p>
 </aside>
 
-## Tâche 3 : choisir votre projet
+## Tâche 3 : les comptes prêts
 
-Parcourez le catalogue et arrêtez votre choix. Cinq directions sont proposées, chacune avec sa page dédiée :
+Ouvrez ou retrouvez vos comptes GitHub et Vercel, et autorisez votre machine à parler à GitHub. Vous ne déployez rien maintenant : vous enlevez simplement les obstacles pour ne pas les rencontrer demain, au moment où vous voudrez publier.
+
+**But :** avoir tous les accès en place avant d'en avoir besoin.
+
+<ul class="task-checklist" role="list">
+  <li><label><input type="checkbox" /> Créer ou retrouver votre compte GitHub</label></li>
+  <li><label><input type="checkbox" /> Autoriser votre machine à pousser sur GitHub et vérifier l'authentification</label></li>
+  <li><label><input type="checkbox" /> Créer un dépôt vide pour votre projet, en privé si votre matière est personnelle</label></li>
+  <li><label><input type="checkbox" /> Créer un compte Vercel et le relier à GitHub</label></li>
+</ul>
+
+**Preuve :** votre dépôt existe sur GitHub et votre compte Vercel voit vos dépôts.
+
+<aside class="task-why">
+  <p><strong>Pourquoi ça compte.</strong> Créer un compte et régler une authentification prend dix minutes quand on est calme, et une heure quand on veut publier dans l'urgence. Ces dix minutes-là se prennent aujourd'hui.</p>
+</aside>
+
+## Tâche 4 : choisir votre projet
+
+Parcourez le catalogue et arrêtez votre choix. Cinq directions sont proposées, chacune avec sa page dédiée et son cahier des charges :
 
 - **Assistant à mémoire** : il retient ce que vous lui confiez et vous le ressort quand il faut.
 - **Coach de révisions** : il transforme vos cours en questions et suit ce que vous maîtrisez.
@@ -72,19 +95,20 @@ Choisissez celui pour lequel vous avez déjà de la matière sous la main : c'es
 
 <ul class="task-checklist" role="list">
   <li><label><input type="checkbox" /> Lire les cinq propositions du catalogue</label></li>
-  <li><label><input type="checkbox" /> Vérifier que vous avez de la matière disponible pour celui qui vous tente</label></li>
+  <li><label><input type="checkbox" /> Ouvrir la page du projet qui vous tente et lire son cahier des charges</label></li>
+  <li><label><input type="checkbox" /> Vérifier que vous avez de la matière disponible pour ce projet</label></li>
   <li><label><input type="checkbox" /> Annoncer votre choix, l'écrire quelque part</label></li>
 </ul>
 
 **Preuve :** vous pouvez dire en une phrase ce que votre projet fera et pour qui.
 
 <aside class="task-why">
-  <p><strong>Pourquoi ça compte.</strong> Les quatre étapes du socle sont les mêmes pour tous, mais chacune s'applique à votre sujet. Plus votre choix est net maintenant, plus les décisions de demain sont faciles à trancher.</p>
+  <p><strong>Pourquoi ça compte.</strong> Le cahier des charges de votre projet est votre feuille de route pour tout le reste du week-end. Plus votre choix est net maintenant, plus les décisions de demain se tranchent vite.</p>
 </aside>
 
-## Tâche 4 : l'interview inversée
+## Tâche 5 : l'interview inversée
 
-Ouvrez le prompt d'interview fourni dans le kit et collez-le dans Claude Code. Les rôles s'inversent : Claude vous pose des questions (ce que fait le projet, pour qui, ce qu'il ne doit surtout pas faire, le ton attendu, les contraintes), puis rédige lui-même le `CLAUDE.md` à partir de vos réponses. Votre travail : répondre honnêtement, puis relire et faire corriger tout ce qui sonne faux.
+Ouvrez le prompt d'interview fourni dans le kit et collez-le dans Claude Code. Les rôles s'inversent : Claude vous pose des questions (ce que fait le projet, pour qui, ce qu'il ne doit surtout pas faire, le ton attendu, les contraintes), puis rédige lui-même le `CLAUDE.md` à partir de vos réponses. N'écrivez pas ce fichier au clavier. Votre travail : répondre honnêtement, puis relire et faire corriger tout ce qui sonne faux.
 
 **But :** écrire l'identité du projet par le dialogue, et garder la relecture comme votre responsabilité.
 
@@ -93,34 +117,38 @@ Ouvrez le prompt d'interview fourni dans le kit et collez-le dans Claude Code. L
   <li><label><input type="checkbox" /> Répondre aux questions sans raccourcir</label></li>
   <li><label><input type="checkbox" /> Laisser Claude rédiger le <code>CLAUDE.md</code></label></li>
   <li><label><input type="checkbox" /> Relire ligne à ligne et faire corriger ce qui sonne faux</label></li>
+  <li><label><input type="checkbox" /> Ouvrir une conversation neuve et vérifier que le projet est restitué sans aucun rappel</label></li>
 </ul>
 
-**Preuve :** le `CLAUDE.md` existe, et chaque ligne dit quelque chose de vrai sur votre projet.
+**Preuve :** dans une conversation neuve, Claude décrit correctement votre projet et ses contraintes, en s'appuyant sur le `CLAUDE.md`.
 
 <aside class="task-why">
-  <p><strong>Pourquoi ça compte.</strong> Ce fichier est lu au début de chaque conversation : c'est lui qui évite de tout réexpliquer à chaque fois. Un CLAUDE.md juste aujourd'hui, ce sont des propositions pertinentes demain, et c'est le principe qu'on garde partout : on prémâche la saisie, on garde la décision.</p>
+  <p><strong>Pourquoi ça compte.</strong> Ce fichier est lu au début de chaque conversation : c'est lui qui évite de tout réexpliquer à chaque fois. Un comportement écrit dans un fichier est un comportement que vous pouvez régler, versionner et corriger, et c'est le principe qu'on garde partout : on prémâche la saisie, on garde la décision.</p>
 </aside>
 
-## Tâche 5 : le test du contexte
+## Tâche 6 : le premier commit
 
-Fermez la conversation, ouvrez-en une neuve et demandez : « Sur quoi est-ce qu'on travaille, et qu'est-ce que tu ne dois pas faire ici ? » La réponse doit venir du `CLAUDE.md`, pas de ce que vous venez de dire.
+Faites un commit nommé « socle » et envoyez-le sur votre dépôt GitHub. C'est le premier point de l'historique : tout ce qui suivra pourra s'y comparer.
 
-**But :** vérifier que l'identité est écrite quelque part, pas seulement présente dans une conversation.
+**But :** clore le décollage par une trace envoyée, vérifiable depuis n'importe quelle machine.
 
 <ul class="task-checklist" role="list">
-  <li><label><input type="checkbox" /> Ouvrir une conversation neuve</label></li>
-  <li><label><input type="checkbox" /> Demander de reformuler le projet et ses contraintes</label></li>
-  <li><label><input type="checkbox" /> Compléter le <code>CLAUDE.md</code> si une réponse est vague, puis retester</label></li>
+  <li><label><input type="checkbox" /> Vérifier avec <code>git status</code> ce qui va entrer dans le commit</label></li>
+  <li><label><input type="checkbox" /> Faire le commit « socle »</label></li>
+  <li><label><input type="checkbox" /> Relier le dossier au dépôt GitHub et pousser</label></li>
+  <li><label><input type="checkbox" /> Ouvrir le dépôt dans le navigateur et vérifier que le <code>CLAUDE.md</code> y est</label></li>
 </ul>
 
-**Preuve :** dans une conversation neuve, le projet est restitué correctement sans aucun rappel de votre part.
+**Preuve :** `git log` affiche le commit, et vous le voyez aussi sur GitHub depuis votre navigateur.
 
 <aside class="task-why">
-  <p><strong>Pourquoi ça compte.</strong> Un comportement écrit dans un fichier est un comportement que vous pouvez régler, versionner et corriger. C'est toute la différence avec un chat qui repart de zéro à chaque conversation.</p>
+  <p><strong>Pourquoi ça compte.</strong> Un projet qui existe seulement sur votre disque disparaît avec votre disque. Une fois poussé, il est consultable, partageable et prêt à être déployé quand vous en arriverez là.</p>
 </aside>
 
-## Le premier commit
+## La suite se passe sur la page de votre projet
 
-Terminez l'étape par un commit nommé « socle ». C'est le premier point de l'historique : tout ce qui suivra pourra s'y comparer.
+Le décollage s'arrête ici, et c'est voulu : tout le reste du week-end sert à construire. Samedi et dimanche matin, vous développez votre projet à votre rythme, en suivant le cahier des charges et les étapes de sa page. Chaque étape donne son objectif, sa preuve de réussite, les briques à mobiliser, et trois niveaux d'aide à ouvrir seulement quand vous bloquez : un indice, une piste, puis un prompt de secours.
 
-**Preuve :** `git log` affiche le commit, l'histoire de votre projet a commencé.
+Vous n'êtes pas obligé de tout faire dans l'ordre affiché, ni de tout faire tout court. Visez d'abord les exigences minimales, elles suffisent à avoir un projet qui tient debout et qui se montre. Les formateurs circulent en continu : appelez-les dès qu'une difficulté dure plus de dix minutes, c'est exactement à ça qu'ils servent.
+
+Rendez-vous dimanche midi pour la restitution.

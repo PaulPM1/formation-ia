@@ -5,11 +5,10 @@ import { formatDifficulty } from '../content/projet-model';
 
 interface Props {
   projet: CollectionEntry<'projets'>;
-  brickTitles: Map<string, string>;
 }
 
-const { projet, brickTitles } = Astro.props;
-const { id, order, title, tagline, deliverable, difficulty, teamHint, bricks } = projet.data;
+const { projet } = Astro.props;
+const { id, order, title, tagline, deliverable, difficulty, teamHint } = projet.data;
 const href = `/atelier/projets/${id}/`;
 ---
 
@@ -29,16 +28,6 @@ const href = `/atelier/projets/${id}/`;
       <dd>{deliverable}</dd>
     </div>
   </dl>
-  <ul class="pill-list" role="list" aria-label={`Briques mobilisées par le projet ${title}`}>
-    {bricks.map((brickId) => (
-      <li>
-        <a class="brick-pill" data-family={brickId.charAt(0)} href={`/briques/${brickId}/`}>
-          <span aria-hidden="true">{brickId.toUpperCase()}</span>
-          {brickTitles.get(brickId) ?? brickId.toUpperCase()}
-        </a>
-      </li>
-    ))}
-  </ul>
   <a class="text-link" href={href}>
     Voir le cahier des charges <span aria-hidden="true">→</span>
   </a>

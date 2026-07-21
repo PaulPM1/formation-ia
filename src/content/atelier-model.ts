@@ -1,6 +1,6 @@
 import { z } from 'astro/zod';
 
-export const ATELIER_STAGE_IDS = ['p1', 'p2', 'p3', 'p4', 'restitution'] as const;
+export const ATELIER_STAGE_IDS = ['p1', 'restitution'] as const;
 
 export const atelierFrontmatterSchema = z.object({
   id: z.enum(ATELIER_STAGE_IDS),

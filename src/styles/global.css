@@ -792,8 +792,11 @@ p {
 .card-kicker span:first-child {
   display: inline-grid;
   place-items: center;
+  /* Le badge ne doit jamais rétrécir sous la largeur de son texte. */
+  flex: none;
+  white-space: nowrap;
   min-inline-size: 2rem;
-  padding: 0.3rem 0.4rem;
+  padding: 0.3rem 0.6rem;
   border: 2px solid var(--ink);
   border-radius: var(--radius-sm);
   background: var(--family-accent);
@@ -1091,9 +1094,6 @@ progress::-moz-progress-bar {
 /* Atelier */
 
 [data-stage="p1"] { --family-accent: var(--brick-yellow); }
-[data-stage="p2"] { --family-accent: var(--brick-blue); }
-[data-stage="p3"] { --family-accent: var(--brick-coral); }
-[data-stage="p4"] { --family-accent: var(--brick-green); }
 [data-stage="restitution"] { --family-accent: var(--brick-orange); }
 
 .organ-list {
@@ -1481,6 +1481,16 @@ progress::-moz-progress-bar {
   border: 2px solid var(--ink);
   border-radius: var(--radius-md);
   background: var(--surface);
+}
+
+.weekend-step[data-core] {
+  background: var(--paper);
+  border-width: 3px;
+  box-shadow: 6px 6px 0 var(--ink);
+}
+
+.weekend-step[data-core] .weekend-label {
+  font-size: 1.35rem;
 }
 
 .weekend-when {

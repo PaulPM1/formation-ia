@@ -7,8 +7,6 @@ import ProjetCard from '../../../components/ProjetCard.astro';
 const projets = (await getCollection('projets')).toSorted(
   (left, right) => left.data.order - right.data.order,
 );
-const bricks = await getCollection('briques');
-const brickTitles = new Map(bricks.map((brick) => [brick.data.id, brick.data.title]));
 ---
 
 <BaseLayout
@@ -32,7 +30,7 @@ const brickTitles = new Map(bricks.map((brick) => [brick.data.id, brick.data.tit
 
     <div class="projet-grid">
       {projets.map((projet) => (
-        <ProjetCard projet={projet} brickTitles={brickTitles} />
+        <ProjetCard projet={projet} />
       ))}
     </div>
   </div>

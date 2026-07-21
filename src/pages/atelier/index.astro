@@ -17,38 +17,24 @@ const brickTitles = new Map(bricks.map((brick) => [brick.data.id, brick.data.tit
 const weekend = [
   {
     when: 'Vendredi après-midi',
-    label: 'Le berceau',
+    label: 'Le socle commun, 2 h',
     detail:
-      "Dossier de travail, git, Claude Code, et un CLAUDE.md d'identité écrit à partir d'une interview menée par Claude.",
+      "Les outils en place, le dossier créé et versionné, les comptes GitHub et Vercel prêts, le projet choisi, son CLAUDE.md écrit par interview, un premier commit envoyé.",
+    core: false,
   },
   {
-    when: 'Vendredi soir',
-    label: 'Le choix',
+    when: 'Samedi et dimanche matin',
+    label: 'Vous développez votre projet',
     detail:
-      'Vous choisissez votre projet dans le catalogue et vous repartez avec sa matière première à réunir.',
+      "Le cœur du week-end : vous construisez, à votre rythme, en suivant le cahier des charges de votre projet. Les formateurs circulent et débloquent.",
+    core: true,
   },
   {
-    when: 'Samedi matin',
-    label: 'La matière',
-    detail:
-      'Structure de dossiers, ingestion de votre matière première, règles de routage, mise sur GitHub.',
-  },
-  {
-    when: 'Samedi après-midi',
-    label: 'Le savoir-faire',
-    detail:
-      "Le skill qui transforme votre matière en valeur, testé et corrigé jusqu'à ce qu'il tienne.",
-  },
-  {
-    when: 'Dimanche matin',
-    label: 'Le visage et le cœur',
-    detail:
-      "Interface web, déploiement, audit de sécurité, puis l'étape qui distingue votre projet des autres.",
-  },
-  {
-    when: 'Dimanche après-midi',
+    when: 'Dimanche midi',
     label: 'La restitution',
-    detail: 'La dernière étape de votre projet, puis la démonstration devant le groupe.',
+    detail:
+      'La démonstration devant le groupe, en direct, puis le cadrage du projet suivant.',
+    core: false,
   },
 ];
 ---
@@ -60,12 +46,12 @@ const weekend = [
   <header class="catalog-hero">
     <div>
       <p class="eyebrow">L'atelier</p>
-      <h1>Un socle, cinq projets</h1>
+      <h1>Deux heures de socle, puis votre projet</h1>
       <p class="lede">
-        Tout le monde construit le même socle : un dossier versionné, une identité
-        écrite, une matière rangée, un skill, une interface en ligne. Ensuite,
-        chacun mène le projet qu'il a choisi. Vendredi vous partez d'un dossier
-        vide, dimanche vous montrez une adresse qui fonctionne.
+        Vendredi après-midi, tout le monde installe le même socle : les outils,
+        un dossier versionné, les comptes, le projet choisi et son identité
+        écrite. Tout le reste du week-end sert à construire ce projet, à votre
+        rythme, avec les formateurs à côté. Dimanche midi, vous le montrez.
       </p>
       <p class="hero-actions">
         <a class="button" href="#catalogue">Voir les 5 projets</a>
@@ -75,18 +61,18 @@ const weekend = [
     <aside class="catalog-counter" aria-label="5 projets sur un week-end">
       <strong>5</strong>
       <span>projets</span>
-      <small>1 socle · 1 week-end</small>
+      <small>2 h de socle · 1 week-end</small>
     </aside>
   </header>
 
   <section class="weekend-section" aria-labelledby="deroule-titre">
     <div class="section-heading">
       <p class="eyebrow">Le déroulé</p>
-      <h2 id="deroule-titre">Ce qui se passe, heure par heure</h2>
+      <h2 id="deroule-titre">Le week-end en trois temps</h2>
     </div>
     <ol class="weekend-track" role="list">
       {weekend.map((moment) => (
-        <li class="weekend-step">
+        <li class="weekend-step" data-core={moment.core ? 'true' : undefined}>
           <p class="weekend-when">{moment.when}</p>
           <p class="weekend-label">{moment.label}</p>
           <p class="weekend-detail">{moment.detail}</p>
@@ -95,25 +81,46 @@ const weekend = [
     </ol>
   </section>
 
+  <section class="catalogue-section" id="catalogue" aria-labelledby="catalogue-titre">
+    <div class="section-heading">
+      <p class="eyebrow">Le catalogue</p>
+      <div>
+        <h2 id="catalogue-titre">Choisissez votre projet</h2>
+        <p class="section-lede">
+          C'est ici que se joue l'essentiel du week-end. Cinq projets, cinq
+          matières, cinq finalités. Chaque page donne le cahier des charges, les
+          étapes, les preuves de réussite et trois niveaux d'aide à ouvrir quand
+          vous bloquez. Choisissez celui dont vous avez déjà la matière première
+          sous la main : c'est le meilleur critère.
+        </p>
+      </div>
+    </div>
+    <div class="projet-grid">
+      {projets.map((projet) => (
+        <ProjetCard projet={projet} />
+      ))}
+    </div>
+  </section>
+
   <section class="socle-section" id="socle" aria-labelledby="socle-titre">
     <div class="section-heading">
       <p class="eyebrow">Commun à tous les projets</p>
       <div>
-        <h2 id="socle-titre">Le socle en quatre étapes, puis la restitution</h2>
+        <h2 id="socle-titre">Les deux moments communs</h2>
         <p class="section-lede">
-          Ces étapes se déroulent au même moment pour tout le monde. Le contenu
-          change selon votre projet, l'objectif et la preuve de réussite restent
-          les mêmes.
+          Le décollage du vendredi et la restitution du dimanche se déroulent au
+          même moment pour tout le monde. Entre les deux, chacun avance sur son
+          projet.
         </p>
       </div>
     </div>
-    <ol class="stage-track" role="list" aria-label="Les étapes du socle, dans l'ordre du week-end">
+    <ol class="stage-track" role="list" aria-label="Les deux moments communs du week-end">
       {stages.map((stage) => (
         <li class="stage-step" data-stage={stage.data.id}>
           <span class="family-index" aria-hidden="true">0{stage.data.order}</span>
           <article class="stage-card">
             <p class="card-kicker">
-              <span>Socle commun</span>
+              <span>Tous ensemble</span>
               <span>{stage.data.durationLabel} · ≈ {formatBudgetMinutes(stage.data.budgetMinutes)}</span>
             </p>
             <h3><a href={`/atelier/${stage.data.id}/`}>{stage.data.title}</a></h3>
@@ -135,30 +142,11 @@ const weekend = [
               ))}
             </ul>
             <a class="text-link" href={`/atelier/${stage.data.id}/`}>
-              Voir l'étape en détail <span aria-hidden="true">→</span>
+              Voir le détail <span aria-hidden="true">→</span>
             </a>
           </article>
         </li>
       ))}
     </ol>
-  </section>
-
-  <section class="catalogue-section" id="catalogue" aria-labelledby="catalogue-titre">
-    <div class="section-heading">
-      <p class="eyebrow">Le catalogue</p>
-      <div>
-        <h2 id="catalogue-titre">Choisissez votre projet</h2>
-        <p class="section-lede">
-          Cinq projets, la même colonne vertébrale en six étapes, des matières et
-          des finalités différentes. Choisissez celui dont vous avez déjà la
-          matière première sous la main : c'est le meilleur critère.
-        </p>
-      </div>
-    </div>
-    <div class="projet-grid">
-      {projets.map((projet) => (
-        <ProjetCard projet={projet} brickTitles={brickTitles} />
-      ))}
-    </div>
   </section>
 </BaseLayout>

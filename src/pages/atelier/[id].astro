@@ -36,15 +36,15 @@ const brickTitles = new Map(bricks.map((brick) => [brick.data.id, brick.data.tit
 
 <BaseLayout
   title={`Atelier · ${stage.data.title}`}
-  description={`${stage.data.title}, plateau ${stage.data.order} du TP fil rouge : construire son assistant personnel.`}
+  description={`${stage.data.title} : le moment commun ${stage.data.order} sur ${total} du week-end de l'atelier.`}
 >
   <div class="detail-page" data-stage={stage.data.id}>
-    <a class="back-link" href="/atelier/"><span aria-hidden="true">←</span> Tous les plateaux</a>
+    <a class="back-link" href="/atelier/"><span aria-hidden="true">←</span> Retour à l'atelier</a>
 
     <header class="detail-header">
       <div class="detail-title">
         <p class="eyebrow">
-          Atelier · Plateau {stage.data.order} sur {total} · {stage.data.organe}
+          Atelier · Moment commun {stage.data.order} sur {total} · {stage.data.organe}
         </p>
         <h1><span>0{stage.data.order}</span>{stage.data.title}</h1>
       </div>
