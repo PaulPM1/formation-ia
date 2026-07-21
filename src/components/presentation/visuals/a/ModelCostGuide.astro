@@ -155,8 +155,10 @@ const defaultVolume = 100;
   .model-guide__cost-table tbody :is(th, td) { font-size: .8rem; }
   .model-guide__cost-table tbody th { display: grid; gap: .1rem; }
   .model-guide__cost-table output { font-weight: 800; }
-  .model-guide__access { display: grid; grid-template-columns: 1fr minmax(12rem, .55fr) 1fr; gap: 1rem; align-items: stretch; }
+  .model-guide__access { display: grid; grid-template-columns: minmax(0, 1fr) minmax(12rem, .55fr) minmax(0, 1fr); gap: 1rem; align-items: stretch; }
+  .model-guide__access > * { min-inline-size: 0; }
   .model-guide__access article { display: grid; gap: .45rem; align-content: center; padding: 1rem; }
+  .model-guide__access article > * { min-inline-size: 0; overflow-wrap: anywhere; }
   .model-guide__access h3,
   .model-guide__access p,
   .model-guide__access ul { margin: 0; }
@@ -179,6 +181,7 @@ const defaultVolume = 100;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .model-guide * { transition: none !important; animation: none !important; }
+    .model-guide__scene,
+    .model-guide__scene * { transition: none !important; animation: none !important; }
   }
 </style>

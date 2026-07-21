@@ -138,6 +138,24 @@ test('la QA A2 couvre clavier, progression, score, replay, mobile, zoom et repli
   assert.match(qa, /reducedMotion:\s*['"]reduce['"]/);
 });
 
+test('la QA A3 couvre niveaux, volumes, mobile, zoom, mouvement réduit et repli sans JavaScript', async () => {
+  const [qa, packageJson] = await Promise.all([
+    read('scripts/qa-a3-model-costs.mjs'),
+    read('package.json'),
+  ]);
+
+  assert.match(packageJson, /"qa:a3-model-costs":\s*"node scripts\/qa-a3-model-costs\.mjs"/);
+  assert.match(qa, /a3-model-fit/);
+  assert.match(qa, /a3-api-cost/);
+  assert.match(qa, /a3-access/);
+  assert.match(qa, /data-tier-choice/);
+  assert.match(qa, /data-cost-output/);
+  assert.match(qa, /javaScriptEnabled:\s*false/);
+  assert.match(qa, /viewport:\s*\{ width: 390, height: 844 \}/);
+  assert.match(qa, /style\.zoom = ['"]2['"]/);
+  assert.match(qa, /reducedMotion:\s*['"]reduce['"]/);
+});
+
 test('la QA durable A4 ouvre la correction au clavier et exige un reflow au zoom 200 %', async () => {
   const [qa, packageJson] = await Promise.all([
     read('scripts/qa-a4-mission.mjs'),
@@ -226,6 +244,20 @@ test('A3 conserve des libellés visibles pour chaque coût au format mobile', as
   assert.match(visual, /<td data-label="100 dossiers" data-volume-cost>/);
   assert.match(visual, /content:\s*attr\(data-label\)/);
   assert.match(visual, /volumeCost\.dataset\.label\s*=\s*volumeLabel/);
+});
+
+test('A3 autorise les colonnes d’accès à se contracter au zoom 200 %', async () => {
+  const visual = await read('src/components/presentation/visuals/a/ModelCostGuide.astro');
+
+  assert.match(visual, /grid-template-columns:\s*minmax\(0, 1fr\) minmax\(12rem, \.55fr\) minmax\(0, 1fr\)/);
+  assert.match(visual, /\.model-guide__access > \*\s*\{[^}]*min-inline-size:\s*0/s);
+  assert.match(visual, /\.model-guide__access article > \*\s*\{[^}]*min-inline-size:\s*0;[^}]*overflow-wrap:\s*anywhere/s);
+});
+
+test('A3 cible son propre nœud racine lorsque le mouvement est réduit', async () => {
+  const visual = await read('src/components/presentation/visuals/a/ModelCostGuide.astro');
+
+  assert.match(visual, /\.model-guide__scene,\s*\.model-guide__scene \*\s*\{[^}]*transition:\s*none !important;[^}]*animation:\s*none !important;/s);
 });
 
 test('le registre expose la scène modèles et coûts', async () => {
