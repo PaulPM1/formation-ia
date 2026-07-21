@@ -145,12 +145,33 @@ test("l'ouverture A1 fournit une distribution illustrative valide pour chaque to
 test('le checkpoint A1 contient les cinq affirmations nuancées validées', () => {
   const checkpoint = PRESENTATION_SLIDES.find((slide) => slide.id === 'a1-plausible');
   const statements = checkpoint?.visual.data.statements as Array<{ text: string; answer: string; reason: string }>;
-  assert.equal(statements.length, 5);
-  assert.deepEqual(statements.map(({ answer }) => answer), ['Exacte', 'À vérifier', 'Exacte', 'Exacte', 'Exacte']);
-  statements.forEach(({ text, reason }) => {
-    assert.ok(text.length > 40);
-    assert.ok(reason.length > 60);
-  });
+  assert.deepEqual(statements, [
+    {
+      text: "Une erreur souvent répétée peut être plus probable qu'une vérité rarement formulée.",
+      answer: 'Exacte',
+      reason: 'La fréquence des formulations influence la plausibilité statistique ; elle ne constitue pas une preuve.',
+    },
+    {
+      text: "Le mot généré n'est pas nécessairement celui qui avait la probabilité la plus élevée.",
+      answer: 'À vérifier',
+      reason: "Cela dépend du décodage : l'échantillonnage peut retenir un token moins probable ; le décodage glouton choisit le premier.",
+    },
+    {
+      text: 'Répéter une information dans le contexte peut renforcer son influence sans la rendre plus vraie.',
+      answer: 'Exacte',
+      reason: 'La répétition renforce le signal présent dans le contexte, sans modifier la réalité extérieure.',
+    },
+    {
+      text: "Quand un LLM justifie sa réponse, il ne restitue pas forcément le calcul qui l'a réellement produite.",
+      answer: 'Exacte',
+      reason: "Une justification générée peut être utile, mais elle n'est pas une lecture garantie des opérations internes du modèle.",
+    },
+    {
+      text: 'Des mots plausibles pris un par un ne garantissent pas une réponse cohérente dans son ensemble.',
+      answer: 'Exacte',
+      reason: 'La prédiction est locale ; la cohérence globale doit encore être construite et contrôlée sur toute la réponse.',
+    },
+  ]);
 });
 
 test('conserve les contenus canoniques revus de B0, A5 et P.A.C.T.E.', () => {

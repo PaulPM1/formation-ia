@@ -144,7 +144,7 @@ const resultId = `${slide.id}-audit-result`;
         if (fallback) fallback.hidden = true;
         let active = 0;
 
-        const renderPanel = () => {
+        const renderPanel = (focusChoice = false) => {
           panels.forEach((panel, index) => { panel.hidden = index !== active; });
           indexLabel.textContent = String(active + 1);
           next.disabled = true;
@@ -159,6 +159,7 @@ const resultId = `${slide.id}-audit-result`;
           choices.forEach((choice) => { choice.checked = false; });
           if (reveal) reveal.disabled = true;
           if (result) result.hidden = true;
+          if (focusChoice) choices[0]?.focus();
         };
 
         panels.forEach((panel) => {
@@ -190,7 +191,7 @@ const resultId = `${slide.id}-audit-result`;
           active = active === panels.length - 1
             ? 0
             : advanceClassificationSequence(active, panels.length);
-          renderPanel();
+          renderPanel(true);
         });
 
         renderPanel();

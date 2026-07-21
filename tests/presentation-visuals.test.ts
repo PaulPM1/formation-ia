@@ -330,6 +330,31 @@ test('le checkpoint A1 expose cinq corrections natives hors JavaScript', async (
   assert.match(audit, /statement\.reason/);
 });
 
+test('le checkpoint A1 transfère le focus seulement après une progression demandée', async () => {
+  const audit = await read('src/components/presentation/visuals/a/VerificationAudit.astro');
+  assert.match(audit, /const renderPanel = \(focusChoice = false\)/);
+  assert.match(audit, /if \(focusChoice\) choices\[0\]\?\.focus\(\)/);
+  assert.match(audit, /renderPanel\(true\)/);
+  assert.match(audit, /renderPanel\(\);\s*return;/);
+});
+
+test('la QA durable du checkpoint A1 protège son verrou, son focus, son replay et son repli', async () => {
+  const [qa, packageJson] = await Promise.all([
+    read('scripts/qa-a1-checkpoint.mjs'),
+    read('package.json'),
+  ]);
+
+  assert.match(packageJson, /"qa:a1-checkpoint":\s*"node scripts\/qa-a1-checkpoint\.mjs"/);
+  assert.match(qa, /a1-plausible/);
+  assert.match(qa, /document\.activeElement/);
+  assert.match(qa, /data-sequence-choice/);
+  assert.match(qa, /data-sequence-reveal/);
+  assert.match(qa, /data-sequence-next/);
+  assert.match(qa, /Rejouer le checkpoint/);
+  assert.match(qa, /javaScriptEnabled:\s*false/);
+  assert.match(qa, /audit__sequence-fallback/);
+});
+
 test('la progression conserve tout le contenu sans JavaScript puis isole le panneau actif', async () => {
   const state = await import('../src/components/presentation/visuals/a/visual-state').catch(() => null);
   assert.ok(state, 'les helpers d’état du bloc A doivent exister');
