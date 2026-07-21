@@ -311,7 +311,7 @@ const defaultVolume = 100;
 </SceneFrame>
 ```
 
-Add a module script using `onPresenterPage`. It must set `data-enhanced="true"`, update `data-active` on tier rows after a radio `change`, update `[data-volume-heading]` to `1 dossier`, `10 dossiers`, or `100 dossiers`, and update every `[data-cost-output]` from its numeric `data-unit-cost` after a volume `change`. Use `formatUsd`; do not hide nonactive rows and do not add a live region because the focused radio and adjacent visible amounts already expose the change.
+Add a module script using `onPresenterPage`. It must set `data-enhanced="true"`, update `data-active` on tier rows after a radio `change`, update `[data-volume-heading]` to `1 dossier`, `10 dossiers`, or `100 dossiers`, and update every `[data-cost-output]` from its numeric `data-unit-cost` after a volume `change`. Use `formatUsd`; do not hide nonactive rows. Final review intentionally strengthens the accessibility contract with one polite atomic summary for the selected volume and the minimum/maximum costs; individual cells must not become live regions.
 
 Add component-scoped CSS with these concrete layout rules:
 

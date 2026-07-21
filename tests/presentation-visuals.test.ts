@@ -230,7 +230,7 @@ test('enregistre tous les visuels du bloc A', async () => {
 test('A3 utilise des contrôles natifs et conserve ses données sans JavaScript', async () => {
   const visual = await read('src/components/presentation/visuals/a/ModelCostGuide.astro');
 
-  assert.match(visual, /<fieldset class="model-guide__tier-controls">/);
+  assert.match(visual, /<fieldset class="model-guide__tier-controls" data-enhancement-control>/);
   assert.match(visual, /type="radio"[^>]*data-tier-choice/);
   assert.match(visual, /<table class="model-guide__cost-table">/);
   assert.match(visual, /<caption>/);
@@ -240,6 +240,52 @@ test('A3 utilise des contrôles natifs et conserve ses données sans JavaScript'
   assert.match(visual, /min-block-size:\s*3rem/);
   assert.match(visual, /prefers-reduced-motion:\s*reduce/);
   assert.doesNotMatch(visual, /onclick=/);
+});
+
+test('A3 valide localement chaque branche de données avant son rendu', async () => {
+  const visual = await read('src/components/presentation/visuals/a/ModelCostGuide.astro');
+
+  assert.match(visual, /type ModelCostGuideData\s*=/);
+  assert.match(visual, /variant:\s*'models'/);
+  assert.match(visual, /variant:\s*'costs'/);
+  assert.match(visual, /variant:\s*'access'/);
+  assert.match(visual, /assertModelCostGuideData/);
+  assert.match(visual, /data\.variant === 'models'/);
+  assert.match(visual, /data\.variant === 'costs'/);
+  assert.match(visual, /data\.variant === 'access'/);
+  for (const requiredString of [
+    'interaction', 'rule', 'snapshot', 'caseLabel', 'caveat',
+    'subscriptionTitle', 'apiTitle', 'hybrid', 'conclusion',
+    'reference', 'intensivePlans',
+  ]) {
+    assert.match(visual, new RegExp(`isString\\(data\\.${requiredString}\\)`), requiredString);
+  }
+  assert.match(visual, /isWorkload\(data\.workload\)/);
+  assert.match(visual, /data\.tiers\.every\(isTier\)/);
+  assert.match(visual, /data\.prices\.every\(isPrice\)/);
+  assert.match(visual, /isStringArray\(data\.subscriptionPoints\)/);
+  assert.match(visual, /isStringArray\(data\.apiPoints\)/);
+  assert.doesNotMatch(visual, /String\(data\.variant/);
+  assert.doesNotMatch(visual, /as string\[\]|as Tier\[\]|as Price\[\]|as \{ inputTokens/);
+});
+
+test('A3 réserve les sélecteurs à la version améliorée et annonce le volume de coûts', async () => {
+  const visual = await read('src/components/presentation/visuals/a/ModelCostGuide.astro');
+
+  assert.match(visual, /data-enhancement-control/);
+  assert.match(visual, /\[data-enhanced='true'\] \[data-enhancement-control\]/);
+  assert.match(visual, /data-cost-summary/);
+  assert.match(visual, /aria-live="polite"/);
+  assert.match(visual, /aria-atomic="true"/);
+  assert.match(visual, /unitCosts/);
+});
+
+test('A3 rend les repères tarifaires et la comparaison API de la slide accès', async () => {
+  const visual = await read('src/components/presentation/visuals/a/ModelCostGuide.astro');
+
+  assert.match(visual, /data\.intensivePlans/);
+  assert.match(visual, /data\.reference/);
+  assert.match(visual, /data\.snapshot/);
 });
 
 test('A3 conserve des libellés visibles pour chaque coût au format mobile', async () => {

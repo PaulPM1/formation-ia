@@ -239,6 +239,17 @@ test('A3 contient trois décisions sans mission ni checkpoint et les tarifs vali
     { inputPerMTok: 5, outputPerMTok: 30 },
     { inputPerMTok: 2, outputPerMTok: 12 },
   ]);
+
+  const access = slideData('a3-access');
+  assert.equal(access.reference, '100 dossiers via API : environ 22,50 à 150 $ selon le modèle');
+  assert.equal(access.intensivePlans, 'Offres intensives : 100 à 250 $/mois · quotas non équivalents');
+  assert.equal(access.snapshot, 'Ordres de grandeur au 21 juillet 2026');
+
+  const accessSlide = a3Slides.find((candidate) => candidate.id === 'a3-access');
+  assert.ok(accessSlide?.links.some((link) => (
+    link.label === 'ChatGPT Pro'
+      && link.href === 'https://help.openai.com/en/articles/9793128/'
+  )));
 });
 
 test('conserve un audit fictif concret', () => {

@@ -8,6 +8,9 @@ const routes = {
   access: '/presenter/a3/a3-access/',
 };
 const hybridConclusion = 'Aujourd’hui, l’abonnement peut donner une capacité qui coûterait davantage au tarif API. Ce rapport peut changer.';
+const accessReference = '100 dossiers via API : environ 22,50 à 150 $ selon le modèle';
+const intensivePlans = 'Offres intensives : 100 à 250 $/mois · quotas non équivalents';
+const accessSnapshot = 'Ordres de grandeur au 21 juillet 2026';
 const failures = [];
 let preview;
 
@@ -52,6 +55,14 @@ const inspectLayout = (page) => page.evaluate(() => {
       if (style.display === 'none'
         || style.visibility === 'hidden'
         || Number(style.opacity) === 0) return true;
+      const isVisuallyHidden = current.matches('.visually-hidden')
+        && style.position === 'absolute'
+        && current.clientWidth <= 1
+        && current.clientHeight <= 1
+        && style.clipPath !== 'none'
+        && ['hidden', 'clip'].includes(style.overflowX)
+        && ['hidden', 'clip'].includes(style.overflowY);
+      if (isVisuallyHidden) return true;
       const isMobileTableHead = current.matches('.model-guide__cost-table thead')
         && style.position === 'absolute'
         && style.clipPath === 'inset(50%)'
@@ -162,6 +173,7 @@ try {
   const tierChoices = page.locator('input[type="radio"][data-tier-choice]');
   const tierRows = page.locator('[data-tier-row]');
   if (await tierChoices.count() !== 3) failures.push('modèles desktop : trois niveaux de contrôle attendus');
+  if (!await page.locator('.model-guide__tier-controls').isVisible()) failures.push('modèles desktop : sélecteur amélioré invisible');
   if (await tierRows.count() !== 3) failures.push('modèles desktop : trois lignes de niveau attendues');
   const exigenceRadio = page.locator('input[type="radio"][data-tier-choice][value="exigence"]');
   if (await exigenceRadio.count() !== 1) {
@@ -178,6 +190,7 @@ try {
 
   await page.goto(`${baseURL}${routes.costs}`, { waitUntil: 'load' });
   await stabilize(page);
+  if (!await page.locator('.model-guide__volume-controls').isVisible()) failures.push('coûts desktop : sélecteur amélioré invisible');
   const fableRow = page.locator('tbody tr').filter({ hasText: 'Claude Fable 5' });
   if (await fableRow.count() !== 1) failures.push('coûts desktop : ligne Claude Fable 5 absente');
   const volumeExpectations = [
@@ -202,6 +215,34 @@ try {
         failures.push(`coûts desktop : volume ${expectation.volume}, Fable ${JSON.stringify(fableCost)} au lieu de ${JSON.stringify(expectation.cost)}`);
       }
     }
+    const expectedSummary = {
+      '1': '1 dossier : coûts de 0,225 à 1,50 dollars',
+      '10': '10 dossiers : coûts de 2,25 à 15 dollars',
+      '100': '100 dossiers : coûts de 22,50 à 150 dollars',
+    }[expectation.volume];
+    const summary = page.locator('[data-cost-summary]');
+    if (await summary.count() !== 1
+      || await summary.getAttribute('aria-live') !== 'polite'
+      || await summary.getAttribute('aria-atomic') !== 'true'
+      || await normalizedText(summary) !== expectedSummary) {
+      failures.push(`coûts desktop : résumé vocal incorrect pour ${expectation.volume} dossiers`);
+    }
+  }
+  const costCollision = await page.evaluate(() => {
+    const controlsTop = document.querySelector('.presentation-controls')?.getBoundingClientRect().top ?? window.innerHeight;
+    const lastRow = document.querySelector('.model-guide__cost-table tbody tr:last-child')?.getBoundingClientRect();
+    const caveat = document.querySelector('.model-guide__caveat')?.getBoundingClientRect();
+    return {
+      controlsTop,
+      lastRowBottom: lastRow?.bottom ?? Number.POSITIVE_INFINITY,
+      caveatTop: caveat?.top ?? Number.NEGATIVE_INFINITY,
+      caveatBottom: caveat?.bottom ?? Number.POSITIVE_INFINITY,
+    };
+  });
+  if (costCollision.lastRowBottom > costCollision.controlsTop - 1
+    || costCollision.caveatBottom > costCollision.controlsTop - 1
+    || costCollision.caveatTop < costCollision.lastRowBottom - 1) {
+    failures.push(`coûts desktop 1280 × 720 : tableau ou réserve chevauche les contrôles (${JSON.stringify(costCollision)})`);
   }
 
   await page.goto(`${baseURL}${routes.access}`, { waitUntil: 'load' });
@@ -216,6 +257,12 @@ try {
   if (!await conclusion.isVisible() || await normalizedText(conclusion) !== hybridConclusion) {
     failures.push('accès desktop : conclusion hybride absente ou incomplète');
   }
+  for (const exactText of [accessReference, intensivePlans, accessSnapshot]) {
+    const locator = page.getByText(exactText, { exact: true });
+    if (await locator.count() !== 1 || !await locator.isVisible()) {
+      failures.push(`accès desktop : repère absent ${JSON.stringify(exactText)}`);
+    }
+  }
   await desktop.close();
 
   const mobile = await browser.newContext({ viewport: { width: 390, height: 844 } });
@@ -229,7 +276,14 @@ try {
         const hierarchy = await mobilePage.evaluate(() => {
           const checkedTier = document.querySelector('[data-tier-choice]:checked')?.value ?? '';
           const visibleRows = [...document.querySelectorAll('[data-tier-row]')]
-            .filter((row) => getComputedStyle(row).display !== 'none');
+            .filter((row) => {
+              const style = getComputedStyle(row);
+              const rect = row.getBoundingClientRect();
+              return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+            });
+          const visuallyFirstTier = visibleRows
+            .map((row) => ({ tier: row.dataset.tierRow ?? '', top: row.getBoundingClientRect().top }))
+            .sort((left, right) => left.top - right.top)[0]?.tier ?? '';
           const activeHeading = visibleRows
             .find((row) => row.dataset.tierRow === checkedTier)
             ?.querySelector('h3');
@@ -237,14 +291,16 @@ try {
             ?? window.innerHeight;
           return {
             checkedTier,
-            firstVisibleTier: visibleRows[0]?.dataset.tierRow ?? '',
+            visibleTierCount: visibleRows.length,
+            visuallyFirstTier,
             activeHeadingBottom: activeHeading?.getBoundingClientRect().bottom ?? Number.POSITIVE_INFINITY,
             effectiveViewportBottom: Math.min(window.innerHeight, controlsTop),
           };
         });
-        if (hierarchy.firstVisibleTier !== hierarchy.checkedTier
+        if (hierarchy.visibleTierCount !== 3
+          || hierarchy.visuallyFirstTier !== hierarchy.checkedTier
           || hierarchy.activeHeadingBottom > hierarchy.effectiveViewportBottom + 1) {
-          failures.push(`modèles mobile 390 px : le résultat sélectionné ${hierarchy.checkedTier || 'absent'} n'est pas le premier résultat lisible`);
+          failures.push(`modèles mobile 390 px : les trois niveaux doivent rester visibles et ${hierarchy.checkedTier || 'absent'} doit être géométriquement premier`);
         }
       }
       await mobilePage.locator('[data-tier-choice][value="balance"]').check();
@@ -280,6 +336,14 @@ try {
         for (let current = element; current && guide.contains(current); current = current.parentElement) {
           const style = getComputedStyle(current);
           if (style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) === 0) return true;
+          const isVisuallyHidden = current.matches('.visually-hidden')
+            && style.position === 'absolute'
+            && current.clientWidth <= 1
+            && current.clientHeight <= 1
+            && style.clipPath !== 'none'
+            && ['hidden', 'clip'].includes(style.overflowX)
+            && ['hidden', 'clip'].includes(style.overflowY);
+          if (isVisuallyHidden) return true;
           const isMobileTableHead = current.matches('.model-guide__cost-table thead')
             && style.position === 'absolute'
             && style.clipPath === 'inset(50%)'
@@ -320,6 +384,10 @@ try {
   if (await noScriptPage.locator('[data-tier-row]:visible').count() !== 3) {
     failures.push('modèles sans JavaScript : les trois niveaux ne sont pas visibles');
   }
+  if (await noScriptPage.locator('.model-guide__tier-controls:visible').count() !== 0
+    || await noScriptPage.locator('[data-tier-choice]:visible').count() !== 0) {
+    failures.push('modèles sans JavaScript : le sélecteur inopérant reste visible');
+  }
   const noScriptModelsLayout = await inspectLayout(noScriptPage);
   checkHorizontalOverflow(noScriptModelsLayout, 'modèles sans JavaScript');
   if (noScriptModelsLayout.clippedText.length) failures.push(`modèles sans JavaScript : texte visible rogné (${noScriptModelsLayout.clippedText.join(', ')})`);
@@ -328,6 +396,10 @@ try {
   await noScriptPage.waitForTimeout(100);
   const noScriptCostRows = noScriptPage.locator('.model-guide__cost-table tbody tr:visible');
   if (await noScriptCostRows.count() !== 6) failures.push('coûts sans JavaScript : six lignes attendues');
+  if (await noScriptPage.locator('.model-guide__volume-controls:visible').count() !== 0
+    || await noScriptPage.locator('[data-volume-choice]:visible').count() !== 0) {
+    failures.push('coûts sans JavaScript : le sélecteur inopérant reste visible');
+  }
   for (let index = 0; index < await noScriptCostRows.count(); index += 1) {
     const row = noScriptCostRows.nth(index);
     const unitCell = row.locator('[data-label="1 dossier"]');

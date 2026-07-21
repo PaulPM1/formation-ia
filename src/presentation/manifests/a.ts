@@ -63,6 +63,11 @@ const openaiPlans = externalLink(
   'ChatGPT Plus',
   'https://help.openai.com/en/articles/6950777',
 );
+const chatgptProPlans = externalLink(
+  'official',
+  'ChatGPT Pro',
+  'https://help.openai.com/en/articles/9793128/',
+);
 const googleModels = externalLink(
   'official',
   'Modèles Gemini',
@@ -661,10 +666,11 @@ export const A_DECKS = [
             hybrid: 'Abonnement pour le quotidien · API pour les workflows mesurés',
             conclusion: 'Aujourd’hui, l’abonnement peut donner une capacité qui coûterait davantage au tarif API. Ce rapport peut changer.',
             reference: '100 dossiers via API : environ 22,50 à 150 $ selon le modèle',
+            intensivePlans: 'Offres intensives : 100 à 250 $/mois · quotas non équivalents',
             snapshot: 'Ordres de grandeur au 21 juillet 2026',
           },
         },
-        links: [anthropicPlans, openaiPlans, googlePlans],
+        links: [anthropicPlans, openaiPlans, chatgptProPlans, googlePlans],
         speaker: {
           durationMinutes: 2,
           notes: 'Ne pas présenter l’abonnement comme un préachat de tokens ni promettre cent dossiers. Distinguer le modèle visible dans l’interface de l’identifiant API et rappeler que prix, limites et inclusions évoluent.',

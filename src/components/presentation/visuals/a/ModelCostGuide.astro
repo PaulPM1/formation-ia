@@ -6,23 +6,123 @@ import { SUPPORTED_VOLUMES, calculateApiCost, formatUsd } from './model-cost-sta
 interface Props { slide: RoutedSlide; }
 interface Tier { id: string; label: string; signal: string; models: Array<{ vendor: string; name: string; note?: string }>; }
 interface Price { tier: string; vendor: string; model: string; inputPerMTok: number; outputPerMTok: number; note?: string; }
+interface Workload { inputTokens: number; outputTokens: number; }
+
+type ModelCostGuideData =
+  | {
+    variant: 'models';
+    interaction: string;
+    tiers: Tier[];
+    rule: string;
+    snapshot: string;
+  }
+  | {
+    variant: 'costs';
+    interaction: string;
+    caseLabel: string;
+    workload: Workload;
+    prices: Price[];
+    caveat: string;
+    snapshot: string;
+  }
+  | {
+    variant: 'access';
+    subscriptionTitle: string;
+    subscriptionPoints: string[];
+    apiTitle: string;
+    apiPoints: string[];
+    hybrid: string;
+    conclusion: string;
+    reference: string;
+    intensivePlans: string;
+    snapshot: string;
+  };
+
+const isRecord = (value: unknown): value is Record<string, unknown> => (
+  typeof value === 'object' && value !== null
+);
+const isString = (value: unknown): value is string => typeof value === 'string';
+const isStringArray = (value: unknown): value is string[] => Array.isArray(value) && value.every(isString);
+const isModel = (value: unknown): value is Tier['models'][number] => (
+  isRecord(value)
+  && isString(value.vendor)
+  && isString(value.name)
+  && (value.note === undefined || isString(value.note))
+);
+const isTier = (value: unknown): value is Tier => (
+  isRecord(value)
+  && isString(value.id)
+  && isString(value.label)
+  && isString(value.signal)
+  && Array.isArray(value.models)
+  && value.models.every(isModel)
+);
+const isPrice = (value: unknown): value is Price => (
+  isRecord(value)
+  && isString(value.tier)
+  && isString(value.vendor)
+  && isString(value.model)
+  && typeof value.inputPerMTok === 'number'
+  && typeof value.outputPerMTok === 'number'
+  && (value.note === undefined || isString(value.note))
+);
+const isWorkload = (value: unknown): value is Workload => (
+  isRecord(value)
+  && typeof value.inputTokens === 'number'
+  && typeof value.outputTokens === 'number'
+);
+
+function assertModelCostGuideData(data: Record<string, unknown>): asserts data is ModelCostGuideData {
+  if (data.variant === 'models'
+    && isString(data.interaction)
+    && Array.isArray(data.tiers)
+    && data.tiers.every(isTier)
+    && isString(data.rule)
+    && isString(data.snapshot)) return;
+
+  if (data.variant === 'costs'
+    && isString(data.interaction)
+    && isString(data.caseLabel)
+    && isWorkload(data.workload)
+    && Array.isArray(data.prices)
+    && data.prices.every(isPrice)
+    && isString(data.caveat)
+    && isString(data.snapshot)) return;
+
+  if (data.variant === 'access'
+    && isString(data.subscriptionTitle)
+    && isStringArray(data.subscriptionPoints)
+    && isString(data.apiTitle)
+    && isStringArray(data.apiPoints)
+    && isString(data.hybrid)
+    && isString(data.conclusion)
+    && isString(data.reference)
+    && isString(data.intensivePlans)
+    && isString(data.snapshot)) return;
+
+  throw new Error(`Données ModelCostGuide invalides pour la slide ${slide.id}.`);
+}
 
 const { slide } = Astro.props;
 const data = slide.visual.data;
-const variant = String(data.variant ?? 'models');
-const tiers = Array.isArray(data.tiers) ? data.tiers as Tier[] : [];
-const prices = Array.isArray(data.prices) ? data.prices as Price[] : [];
-const workload = data.workload as { inputTokens: number; outputTokens: number } | undefined;
+assertModelCostGuideData(data);
 const defaultVolume = 100;
+const unitCosts = data.variant === 'costs'
+  ? data.prices.map((price) => calculateApiCost(price, data.workload, 1))
+  : [];
+const summaryAmount = (amount: number) => formatUsd(amount).replace(/\s\$$/, '');
+const initialCostSummary = data.variant === 'costs'
+  ? `${defaultVolume} dossiers : coûts de ${summaryAmount(Math.min(...unitCosts) * defaultVolume)} à ${summaryAmount(Math.max(...unitCosts) * defaultVolume)} dollars`
+  : '';
 ---
 
 <SceneFrame title={slide.claim} description={slide.accessibleDescription} visualKey={slide.visual.key} class="model-guide">
-  <div class="model-guide__scene" data-model-cost-guide data-variant={variant}>
-    {variant === 'models' && (
+  <div class="model-guide__scene" data-model-cost-guide data-variant={data.variant}>
+    {data.variant === 'models' && (
       <section class="model-guide__models" aria-labelledby={`${slide.id}-models-title`}>
-        <fieldset class="model-guide__tier-controls">
-          <legend id={`${slide.id}-models-title`}>{String(data.interaction)}</legend>
-          {tiers.map((tier, index) => (
+        <fieldset class="model-guide__tier-controls" data-enhancement-control>
+          <legend id={`${slide.id}-models-title`}>{data.interaction}</legend>
+          {data.tiers.map((tier, index) => (
             <label for={`${slide.id}-${tier.id}`}>
               <input id={`${slide.id}-${tier.id}`} name={`${slide.id}-tier`} type="radio" value={tier.id} checked={index === 1} aria-controls={`${slide.id}-${tier.id}-result`} data-tier-choice />
               <span>{tier.label}</span>
@@ -30,43 +130,49 @@ const defaultVolume = 100;
           ))}
         </fieldset>
         <div class="model-guide__tier-grid" role="list">
-          {tiers.map((tier) => (
+          {data.tiers.map((tier) => (
             <article id={`${slide.id}-${tier.id}-result`} role="listitem" data-tier-row={tier.id} data-active={tier.id === 'balance' ? 'true' : 'false'}>
               <header><h3>{tier.label}</h3><p>{tier.signal}</p></header>
               <ul role="list">{tier.models.map((model) => <li><small>{model.vendor}</small><strong>{model.name}</strong>{model.note && <span>{model.note}</span>}</li>)}</ul>
             </article>
           ))}
         </div>
-        <p class="model-guide__rule">{String(data.rule)}</p>
+        <p class="model-guide__rule">{data.rule}</p>
       </section>
     )}
 
-    {variant === 'costs' && workload && (
+    {data.variant === 'costs' && (
       <section class="model-guide__costs" aria-labelledby={`${slide.id}-cost-title`}>
-        <header><p id={`${slide.id}-cost-title`}>{String(data.caseLabel)}</p><strong>{workload.inputTokens.toLocaleString('fr-FR')} tokens lus + {workload.outputTokens.toLocaleString('fr-FR')} produits</strong></header>
-        <fieldset class="model-guide__volume-controls">
-          <legend>{String(data.interaction)}</legend>
+        <header><p id={`${slide.id}-cost-title`}>{data.caseLabel}</p><strong>{data.workload.inputTokens.toLocaleString('fr-FR')} tokens lus + {data.workload.outputTokens.toLocaleString('fr-FR')} produits</strong></header>
+        <fieldset class="model-guide__volume-controls" data-enhancement-control>
+          <legend>{data.interaction}</legend>
           {SUPPORTED_VOLUMES.map((volume) => <label for={`${slide.id}-volume-${volume}`}><input id={`${slide.id}-volume-${volume}`} name={`${slide.id}-volume`} type="radio" value={volume} checked={volume === defaultVolume} data-volume-choice /><span>{volume} dossier{volume > 1 ? 's' : ''}</span></label>)}
         </fieldset>
         <div class="model-guide__table-wrap">
           <table class="model-guide__cost-table">
             <caption>Coût API du cas de référence, relevé le 21 juillet 2026</caption>
             <thead><tr><th scope="col">Niveau</th><th scope="col">Modèle</th><th scope="col">Entrée / MTok</th><th scope="col">Sortie / MTok</th><th scope="col">1 dossier</th><th scope="col"><span data-volume-heading>100 dossiers</span></th></tr></thead>
-            <tbody>{prices.map((price) => {
-              const unit = calculateApiCost(price, workload, 1);
+            <tbody>{data.prices.map((price) => {
+              const unit = calculateApiCost(price, data.workload, 1);
               return <tr><td data-label="Niveau">{price.tier}</td><th scope="row" data-label="Modèle"><strong>{price.model}</strong><small>{price.vendor}{price.note ? ` · ${price.note}` : ''}</small></th><td data-label="Entrée / MTok">{formatUsd(price.inputPerMTok)}</td><td data-label="Sortie / MTok">{formatUsd(price.outputPerMTok)}</td><td data-label="1 dossier">{formatUsd(unit)}</td><td data-label="100 dossiers" data-volume-cost><output data-cost-output data-unit-cost={unit}>{formatUsd(unit * defaultVolume)}</output></td></tr>;
             })}</tbody>
           </table>
         </div>
-        <p class="model-guide__caveat">{String(data.caveat)}</p>
+        <output class="visually-hidden" data-cost-summary aria-live="polite" aria-atomic="true">{initialCostSummary}</output>
+        <p class="model-guide__caveat">{data.caveat}</p>
       </section>
     )}
 
-    {variant === 'access' && (
+    {data.variant === 'access' && (
       <section class="model-guide__access" aria-label="Comparer abonnement, API et usage hybride">
-        <article><p class="scene-label">Abonnement</p><h3>{String(data.subscriptionTitle)}</h3><ul role="list">{(data.subscriptionPoints as string[]).map((point) => <li>{point}</li>)}</ul></article>
-        <div class="model-guide__hybrid"><span>≈ 20 $ / mois</span><strong>{String(data.hybrid)}</strong><p>{String(data.conclusion)}</p></div>
-        <article><p class="scene-label">API</p><h3>{String(data.apiTitle)}</h3><ul role="list">{(data.apiPoints as string[]).map((point) => <li>{point}</li>)}</ul></article>
+        <article><p class="scene-label">Abonnement</p><h3>{data.subscriptionTitle}</h3><ul role="list">{data.subscriptionPoints.map((point) => <li>{point}</li>)}</ul></article>
+        <div class="model-guide__hybrid"><span>≈ 20 $ / mois</span><strong>{data.hybrid}</strong><p>{data.conclusion}</p></div>
+        <article><p class="scene-label">API</p><h3>{data.apiTitle}</h3><ul role="list">{data.apiPoints.map((point) => <li>{point}</li>)}</ul></article>
+        <p class="model-guide__access-facts">
+          <span>{data.reference}</span>
+          <span>{data.intensivePlans}</span>
+          <span>{data.snapshot}</span>
+        </p>
       </section>
     )}
   </div>
@@ -81,7 +187,8 @@ const defaultVolume = 100;
       guide.dataset.enhanced = 'true';
 
       guide.addEventListener('change', (event) => {
-        const choice = event.target as HTMLInputElement;
+        const choice = event.target;
+        if (!(choice instanceof HTMLInputElement)) return;
 
         if (choice.matches('[data-tier-choice]')) {
           guide.querySelectorAll<HTMLElement>('[data-tier-row]').forEach((row) => {
@@ -103,6 +210,15 @@ const defaultVolume = 100;
             const unitCost = Number(output.dataset.unitCost);
             output.value = formatUsd(unitCost * volume);
           });
+
+          const unitCosts = [...guide.querySelectorAll<HTMLOutputElement>('[data-cost-output]')]
+            .map((output) => Number(output.dataset.unitCost))
+            .filter(Number.isFinite);
+          const summary = guide.querySelector<HTMLOutputElement>('[data-cost-summary]');
+          const amount = (value: number) => formatUsd(value).replace(/\s\$$/, '');
+          if (summary && unitCosts.length) {
+            summary.value = `${volumeLabel} : coûts de ${amount(Math.min(...unitCosts) * volume)} à ${amount(Math.max(...unitCosts) * volume)} dollars`;
+          }
         }
       });
     });
@@ -115,6 +231,8 @@ const defaultVolume = 100;
   .model-guide__costs { display: grid; gap: .7rem; align-content: center; min-inline-size: 0; }
   .model-guide__tier-controls,
   .model-guide__volume-controls { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0; padding: 0; border: 0; }
+  .model-guide__scene [data-enhancement-control] { display: none; }
+  .model-guide__scene[data-enhanced='true'] [data-enhancement-control] { display: flex; }
   .model-guide__tier-controls legend,
   .model-guide__volume-controls legend { inline-size: 100%; margin-block-end: .15rem; font-family: var(--font-display); font-weight: 760; }
   .model-guide__tier-controls label,
@@ -168,17 +286,26 @@ const defaultVolume = 100;
   .model-guide__hybrid span { font-family: var(--font-mono); font-size: .8rem; }
   .model-guide__hybrid strong { font-family: var(--font-display); font-size: 1.2rem; }
   .model-guide__hybrid p { margin: 0; font-size: .82rem; line-height: 1.35; }
+  .model-guide__access-facts { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; margin: 0; }
+  .model-guide__access-facts span { min-inline-size: 0; padding: .45rem .55rem; border-block-start: 1px solid var(--presentation-line); font-size: .75rem; line-height: 1.25; text-align: center; overflow-wrap: anywhere; }
 
   @container (max-width: 52rem) {
     .model-guide__tier-grid,
     .model-guide__access { grid-template-columns: 1fr; }
-    .model-guide__scene[data-enhanced='true'] .model-guide__tier-grid article:not([data-active='true']) { display: none; }
+    .model-guide__tier-grid article[data-active='true'] { order: -1; }
     .model-guide__tier-grid ul { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .model-guide__table-wrap { overflow-x: visible; }
     .model-guide__cost-table thead { position: absolute; clip-path: inset(50%); inline-size: 1px; block-size: 1px; overflow: hidden; }
     .model-guide__cost-table tr { display: grid; grid-template-columns: 1fr 1fr; }
     .model-guide__cost-table :is(th, td) { min-inline-size: 0; }
     .model-guide__cost-table tbody :is(th, td)::before { content: attr(data-label); display: block; margin-block-end: .15rem; font-family: var(--font-mono); font-size: .75rem; font-weight: 700; }
+    .model-guide__access-facts { grid-template-columns: 1fr; }
+  }
+
+  @media (min-width: 53rem) and (max-height: 45rem) {
+    .model-guide__costs { gap: .35rem; }
+    .model-guide__cost-table caption { padding-block-end: .18rem; }
+    .model-guide__cost-table :is(th, td) { padding-block: .2rem; }
   }
 
   @media (prefers-reduced-motion: reduce) {
