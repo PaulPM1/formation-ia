@@ -1184,16 +1184,16 @@ progress::-moz-progress-bar {
   margin: 0;
 }
 
-.stage-card h2 {
+.stage-card :where(h2, h3) {
   margin: 0;
   font-size: clamp(1.5rem, 1.3rem + 0.8vw, 1.9rem);
 }
 
-.stage-card h2 a {
+.stage-card :where(h2, h3) a {
   text-decoration: none;
 }
 
-.stage-card h2 a:hover {
+.stage-card :where(h2, h3) a:hover {
   text-decoration: underline;
 }
 
@@ -1442,6 +1442,283 @@ progress::-moz-progress-bar {
 
   .stage-pager .button {
     inline-size: 100%;
+  }
+}
+
+/* Atelier : déroulé du week-end */
+
+.weekend-section,
+.socle-section,
+.catalogue-section {
+  margin-block-start: clamp(4rem, 9vw, 6rem);
+}
+
+.section-lede {
+  max-inline-size: 62ch;
+  margin: 1rem 0 0;
+  color: var(--muted);
+}
+
+.section-heading > div {
+  display: grid;
+  gap: 0;
+}
+
+.weekend-track {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.weekend-step {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1.4rem 1.25rem;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+.weekend-when {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--text-label);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.weekend-label {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: var(--weight-display);
+}
+
+.weekend-detail {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+/* Atelier : catalogue de projets */
+
+[data-projet="assistant"] { --family-accent: var(--brick-yellow); }
+[data-projet="coach"] { --family-accent: var(--brick-blue); }
+[data-projet="radar"] { --family-accent: var(--brick-violet); }
+[data-projet="archiviste"] { --family-accent: var(--brick-green); }
+[data-projet="portfolio"] { --family-accent: var(--brick-coral); }
+
+.projet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(21rem, 1fr));
+  gap: clamp(1.5rem, 3vw, 2rem);
+  margin-block-start: clamp(2rem, 5vw, 3rem);
+}
+
+.projet-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.9rem;
+  padding: 1.75rem;
+  padding-block-start: 2.1rem;
+  overflow: hidden;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  transition: box-shadow 180ms ease, transform 180ms ease;
+}
+
+.projet-card::before {
+  position: absolute;
+  inset: 0 0 auto;
+  block-size: 0.55rem;
+  border-block-end: 2px solid var(--ink);
+  background: var(--family-accent);
+  content: "";
+}
+
+.projet-card:hover {
+  box-shadow: var(--shadow-block);
+  transform: translate(-0.1rem, -0.1rem);
+}
+
+.projet-card:focus-within {
+  box-shadow: var(--shadow-block);
+}
+
+.projet-card .card-kicker {
+  align-self: stretch;
+  margin: 0;
+}
+
+.projet-card h3 {
+  margin: 0;
+  font-size: clamp(1.4rem, 1.2rem + 0.7vw, 1.75rem);
+}
+
+.projet-card h3 a {
+  text-decoration: none;
+}
+
+.projet-card h3 a:hover {
+  text-decoration: underline;
+}
+
+.projet-tagline {
+  max-inline-size: 46ch;
+  margin: 0;
+  color: var(--muted);
+}
+
+.projet-difficulty {
+  margin: 0;
+}
+
+.badge[data-difficulty="accessible"] {
+  background: var(--brick-green);
+}
+
+.badge[data-difficulty="intermediaire"] {
+  background: var(--brick-yellow);
+}
+
+.badge[data-difficulty="ambitieux"] {
+  background: var(--brick-coral);
+}
+
+.projet-card .text-link {
+  margin-block-start: auto;
+  padding-block-start: 0.5rem;
+}
+
+/* Atelier : page projet */
+
+.projet-content .step-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0 0 1.25rem;
+}
+
+.step-when,
+.step-tag {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 1.7rem;
+  padding-inline: 0.55rem;
+  border: 1.5px solid var(--ink);
+  border-radius: var(--radius-sm);
+  font-size: 0.7rem;
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.step-when {
+  background: var(--family-accent);
+}
+
+.step-tag {
+  background: var(--paper);
+  border-style: dashed;
+  color: var(--muted);
+}
+
+.hint-stack {
+  margin: 1.5rem 0 3rem;
+  padding: 1.1rem 1.25rem 1.25rem;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-md);
+  background: var(--paper);
+}
+
+.hint-label {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: var(--weight-display);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.brick-content details.hint {
+  margin: 0 0 0.5rem;
+  border: 1.5px solid var(--ink);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+
+.brick-content details.hint:last-child {
+  margin-block-end: 0;
+}
+
+.brick-content details.hint > summary {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.92rem;
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+  list-style: none;
+}
+
+.brick-content details.hint > summary::-webkit-details-marker {
+  display: none;
+}
+
+.brick-content details.hint > summary::before {
+  display: inline-grid;
+  place-items: center;
+  inline-size: 1.4rem;
+  block-size: 1.4rem;
+  flex: none;
+  border: 1.5px solid var(--ink);
+  border-radius: 2px;
+  background: var(--family-accent);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  content: "+";
+}
+
+.brick-content details.hint[open] > summary::before {
+  content: "−";
+}
+
+.brick-content details.hint > summary:focus-visible {
+  outline: 0.22rem solid var(--brick-coral);
+  outline-offset: 0.15rem;
+}
+
+.brick-content details.hint > :not(summary) {
+  margin: 0 0.9rem 0.9rem;
+  font-size: 0.95rem;
+}
+
+.brick-content .hint-prompt {
+  padding: 0.85rem 1rem;
+  border: 1.5px dashed var(--ink);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 43rem) {
+  .weekend-track {
+    grid-template-columns: 1fr;
+  }
+
+  .projet-grid {
+    grid-template-columns: 1fr;
   }
 }
 

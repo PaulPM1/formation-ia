@@ -1,0 +1,39 @@
+---
+import { getCollection } from 'astro:content';
+
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ProjetCard from '../../../components/ProjetCard.astro';
+
+const projets = (await getCollection('projets')).toSorted(
+  (left, right) => left.data.order - right.data.order,
+);
+const bricks = await getCollection('briques');
+const brickTitles = new Map(bricks.map((brick) => [brick.data.id, brick.data.title]));
+---
+
+<BaseLayout
+  title="Atelier · Les projets"
+  description="Les cinq projets de l'atelier : même socle technique, même colonne vertébrale en six étapes, cinq finalités différentes."
+>
+  <div class="detail-page">
+    <a class="back-link" href="/atelier/"><span aria-hidden="true">←</span> L'atelier</a>
+
+    <header class="detail-header">
+      <div class="detail-title">
+        <p class="eyebrow">Atelier · Le catalogue</p>
+        <h1>Les cinq projets</h1>
+      </div>
+      <p class="lede">
+        Même socle technique, même colonne vertébrale en six étapes, cinq matières
+        et cinq finalités différentes. Chaque page contient le cahier des charges,
+        les six étapes détaillées et les aides à ouvrir quand vous bloquez.
+      </p>
+    </header>
+
+    <div class="projet-grid">
+      {projets.map((projet) => (
+        <ProjetCard projet={projet} brickTitles={brickTitles} />
+      ))}
+    </div>
+  </div>
+</BaseLayout>

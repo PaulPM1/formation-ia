@@ -1,90 +1,115 @@
 ---
 id: p2
 order: 2
-title: "Le cerveau"
-subtitle: "Une mémoire structurée, versionnée sur GitHub, et un assistant qui sait toujours où chercher."
+title: "La matière"
+subtitle: "La matière première de votre projet, rangée dans une structure que vous avez décidée, versionnée sur GitHub."
 durationLabel: "Samedi matin"
 budgetMinutes: 150
-organe: "Cerveau"
+organe: "Matière"
 bricks:
   - e1
-  - d1
-  - d2
+  - e2
   - d2-bis
-goal: "Construire la mémoire de votre assistant : une structure de dossiers que vous avez décidée, des règles de routage qu'il applique, et de vrais documents rangés au bon endroit."
-outcome: "Un cerveau organisé et versionné sur GitHub, qui répond aux questions en citant ses sources."
-prideCriterion: "Votre voisin pose trois questions pièges sur vos documents : score 3 sur 3, réponses sourcées."
-kit: "L'inbox : 8 documents variés à faire trier, dont un piège sans catégorie évidente."
+goal: "Faire entrer la matière première de votre projet dans le dossier, sous une structure que vous avez conçue et des règles de routage que Claude applique."
+outcome: "Une arborescence remplie de vraie matière, des règles de format écrites dans le CLAUDE.md, et le tout poussé sur GitHub."
+prideCriterion: "Quelqu'un pose trois questions sur votre matière : trois réponses justes, chacune citant le fichier d'où elle vient."
+kit: "Un jeu de documents d'exercice à faire trier, dont un cas ambigu sans catégorie évidente."
 ---
 
-Une matinée pour donner un cerveau à votre assistant. Le principe reste le même tout du long : l'assistant exécute, vous décidez. Et après chaque victoire, un commit.
+Un projet sans matière ne prouve rien. Cette matinée sert à faire entrer la vôtre dans le dossier et à lui donner un ordre. Le principe reste le même tout du long : Claude exécute, vous décidez. Et après chaque victoire, un commit.
 
-## Tâche 1 : la structure et les règles de routage
+## Tâche 1 : identifier votre matière première
 
-Concevez la structure de dossiers de la mémoire, par exemple `profil/`, `projets/`, `connaissances/`, `journal/`, `inbox/`, puis écrivez les règles de routage dans le `CLAUDE.md` : quel type de document va où. Discutez-en avec votre assistant si vous hésitez, mais la décision est à vous, et le tout tient en cinq lignes maximum.
+Repérez ce que votre projet va manipuler et rassemblez-en un premier lot, disponible aujourd'hui. Selon votre projet :
 
-**But :** une mémoire utile est une mémoire où l'on sait où chercher, avant d'être une mémoire qui contient beaucoup.
+- **Assistant à mémoire** : notes, comptes rendus, décisions, choses à ne pas oublier.
+- **Coach de révisions** : cours, fiches, annales, chapitres à travailler.
+- **Radar de veille** : sources à suivre, articles déjà lus, sujets qui vous intéressent.
+- **Archiviste de fichiers** : un dossier en désordre, tel qu'il est aujourd'hui.
+- **Portfolio vivant** : projets menés, expériences, réalisations, traces de ce que vous savez faire.
+
+**But :** travailler sur du réel dès la première heure, pas sur un jeu de démonstration.
 
 <ul class="task-checklist" role="list">
-  <li><label><input type="checkbox" /> Choisir vos dossiers (partez des cinq proposés, adaptez à votre vie)</label></li>
+  <li><label><input type="checkbox" /> Lister ce que votre projet manipule</label></li>
+  <li><label><input type="checkbox" /> Rassembler un premier lot que vous avez sous la main</label></li>
+  <li><label><input type="checkbox" /> Écarter ce qui est sensible : ni mot de passe, ni donnée d'autrui</label></li>
+</ul>
+
+**Preuve :** vous avez un lot de matière réelle, prêt à être rangé.
+
+<aside class="task-why">
+  <p><strong>Pourquoi ça compte.</strong> Ce que vous ferez cet après-midi ne vaudra que par ce que vous rangez ce matin. Un projet nourri de vrai contenu vous sert dès lundi, un projet nourri d'exemples reste une démonstration.</p>
+</aside>
+
+## Tâche 2 : la structure et les règles de routage
+
+Concevez l'arborescence de votre projet, puis écrivez les règles de routage dans le `CLAUDE.md` : quel type de contenu va où, sous quel nom, dans quel format. Discutez-en avec Claude si vous hésitez, mais la décision est à vous, et le tout tient en cinq lignes maximum.
+
+**But :** un dossier utile est un dossier où l'on sait où chercher, avant d'être un dossier qui contient beaucoup.
+
+<ul class="task-checklist" role="list">
+  <li><label><input type="checkbox" /> Décider vos dossiers et leur rôle</label></li>
+  <li><label><input type="checkbox" /> Fixer une convention de nommage et un format de fichier</label></li>
   <li><label><input type="checkbox" /> Écrire les règles de routage dans le <code>CLAUDE.md</code>, cinq lignes max</label></li>
-  <li><label><input type="checkbox" /> Demander à l'assistant de reformuler « où chercher quoi » pour vérifier qu'il a compris</label></li>
+  <li><label><input type="checkbox" /> Faire reformuler « où va quoi » par Claude pour vérifier qu'il a compris</label></li>
   <li><label><input type="checkbox" /> Commit</label></li>
 </ul>
 
-**Preuve :** « où chercher quoi » tient en cinq lignes et l'assistant les restitue sans se tromper.
+**Preuve :** « où va quoi » tient en cinq lignes et Claude les restitue sans se tromper.
 
 <aside class="task-why">
-  <p><strong>Pourquoi ça compte.</strong> Chaque skill de cet après-midi lira ces dossiers. Une structure claire maintenant, ce sont des briefs justes demain matin. Et cinq lignes, c'est la taille d'une règle qu'on relit vraiment.</p>
+  <p><strong>Pourquoi ça compte.</strong> Le skill de cet après-midi lira ces dossiers. Une structure claire maintenant, ce sont des résultats justes demain. Et cinq lignes, c'est la taille d'une règle qu'on relit vraiment.</p>
 </aside>
 
-## Tâche 2 : le grand tri
+## Tâche 3 : le grand tri
 
-Déposez les 8 documents du kit dans `inbox/`. Demandez à votre assistant de proposer un rangement document par document : à chaque proposition, vous validez ou vous corrigez. Un des documents est un piège, sans catégorie évidente : si une proposition vous fait hésiter, ce n'est pas un échec, c'est une règle de routage à amender.
+Le kit fournit un jeu de documents d'exercice, dont un cas ambigu sans catégorie évidente. Déposez-les dans le dossier d'entrée et demandez un rangement pièce par pièce : à chaque proposition, vous validez ou vous corrigez. Si une proposition vous fait hésiter, ce n'est pas un échec, c'est une règle de routage à amender.
 
 **But :** déléguer l'exécution du tri en gardant chaque décision de rangement.
 
 <ul class="task-checklist" role="list">
-  <li><label><input type="checkbox" /> Déposer les 8 documents du kit dans <code>inbox/</code></label></li>
-  <li><label><input type="checkbox" /> Faire proposer un rangement, document par document</label></li>
+  <li><label><input type="checkbox" /> Déposer les documents du kit dans votre dossier d'entrée</label></li>
+  <li><label><input type="checkbox" /> Faire proposer un rangement, pièce par pièce</label></li>
   <li><label><input type="checkbox" /> Valider ou corriger chaque proposition</label></li>
-  <li><label><input type="checkbox" /> Amender les règles de routage quand une hésitation apparaît</label></li>
-  <li><label><input type="checkbox" /> Vider l'inbox, puis commit</label></li>
+  <li><label><input type="checkbox" /> Amender les règles de routage dès qu'une hésitation apparaît</label></li>
+  <li><label><input type="checkbox" /> Vider le dossier d'entrée, puis commit</label></li>
 </ul>
 
-**Preuve :** l'inbox est vide et au moins une règle de routage a été amendée pendant le tri.
+**Preuve :** le dossier d'entrée est vide et au moins une règle de routage a été amendée pendant le tri.
 
 <aside class="task-why">
-  <p><strong>Pourquoi ça compte.</strong> C'est le geste que vous referez toute l'année : des choses en vrac arrivent, l'assistant propose, vous tranchez. Le document piège vous entraîne au cas réel, celui qui ne rentre dans aucune case.</p>
+  <p><strong>Pourquoi ça compte.</strong> C'est le geste que vous referez toute l'année : des choses en vrac arrivent, Claude propose, vous tranchez. Le cas ambigu vous entraîne à la situation réelle, celle qui ne rentre dans aucune case.</p>
 </aside>
 
-## Tâche 3 : trois vrais documents
+## Tâche 4 : ingérer votre vraie matière
 
-Ajoutez 3 documents personnels : des notes, une liste, un début de projet, ce que vous avez sous la main et acceptez de mettre dans le repo. L'assistant les range selon vos règles. Puis posez trois questions dont les réponses se trouvent dans ces documents.
+Passez maintenant à votre lot de la tâche 1. Claude range selon vos règles, vous surveillez et vous corrigez. Puis posez trois questions dont les réponses se trouvent dans ce que vous venez de ranger, et exigez la source pour chacune.
 
-**But :** passer du kit d'exercice à votre vraie vie, et exiger des réponses sourcées.
+**But :** passer de l'exercice à votre sujet, et exiger des réponses vérifiables.
 
 <ul class="task-checklist" role="list">
-  <li><label><input type="checkbox" /> Choisir 3 documents personnels (rien de sensible : ni mot de passe, ni donnée d'autrui)</label></li>
-  <li><label><input type="checkbox" /> Les faire ranger selon vos règles</label></li>
-  <li><label><input type="checkbox" /> Poser trois questions dont les réponses sont dans ces documents</label></li>
-  <li><label><input type="checkbox" /> Exiger la source (le fichier) pour chaque réponse, puis commit</label></li>
+  <li><label><input type="checkbox" /> Faire ranger votre lot réel selon vos règles</label></li>
+  <li><label><input type="checkbox" /> Relire l'arborescence obtenue et corriger ce qui est mal placé</label></li>
+  <li><label><input type="checkbox" /> Poser trois questions dont les réponses sont dans cette matière</label></li>
+  <li><label><input type="checkbox" /> Exiger le fichier source pour chaque réponse, puis commit</label></li>
 </ul>
 
 **Preuve :** trois questions, trois réponses justes, chacune citant le fichier d'où elle vient.
 
 <aside class="task-why">
-  <p><strong>Pourquoi ça compte.</strong> Une réponse sans source ne se vérifie pas. En exigeant le fichier d'origine dès maintenant, vous prenez l'habitude qui distingue une mémoire fiable d'un générateur de réponses plausibles.</p>
+  <p><strong>Pourquoi ça compte.</strong> Une réponse sans source ne se vérifie pas. En exigeant le fichier d'origine dès maintenant, vous prenez l'habitude qui distingue une base fiable d'un générateur de réponses plausibles.</p>
 </aside>
 
-## Tâche 4 : la mise sur GitHub
+## Tâche 5 : la mise sur GitHub
 
-Le cerveau vaut maintenant la peine d'être protégé. Faites le rituel D2-bis en entier : création du repo GitHub, premier push. À partir d'ici, la règle du checkpoint s'applique : un commit après chaque victoire, poussé régulièrement.
+Votre matière vaut maintenant la peine d'être protégée. Faites le rituel D2-bis en entier : création du repo GitHub, premier push. À partir d'ici, la règle du checkpoint s'applique : un commit après chaque victoire, poussé régulièrement.
 
-**But :** mettre la mémoire à l'abri et rendre l'historique lisible depuis n'importe où.
+**But :** mettre le travail à l'abri et rendre l'historique lisible depuis n'importe où.
 
 <ul class="task-checklist" role="list">
   <li><label><input type="checkbox" /> Créer le repo GitHub (rituel D2-bis complet)</label></li>
+  <li><label><input type="checkbox" /> Vérifier ce qui ne doit pas être poussé avant le premier push</label></li>
   <li><label><input type="checkbox" /> Pousser l'historique du week-end</label></li>
   <li><label><input type="checkbox" /> Vérifier sur github.com que les dossiers et l'historique sont là</label></li>
 </ul>
@@ -92,24 +117,24 @@ Le cerveau vaut maintenant la peine d'être protégé. Faites le rituel D2-bis e
 **Preuve :** le repo est visible sur GitHub et l'historique raconte la matinée, commit par commit.
 
 <aside class="task-why">
-  <p><strong>Pourquoi ça compte.</strong> Versionné et poussé, votre cerveau devient indestructible : vous pourrez tenter n'importe quoi cet après-midi avec les skills, le pire des cas est un retour en arrière.</p>
+  <p><strong>Pourquoi ça compte.</strong> Versionné et poussé, votre projet devient difficile à perdre : vous pourrez tenter n'importe quoi cet après-midi, le pire des cas est un retour en arrière.</p>
 </aside>
 
-## Tâche 5 : le quiz du voisin
+## Tâche 6 : le quiz croisé
 
-Échangez avec votre voisin ou votre voisine : chacun pose trois questions pièges sur les documents de l'autre. Les réponses doivent être justes et sourcées, sinon le point ne compte pas. Score sur 3.
+Échangez avec quelqu'un d'autre : chacun pose trois questions pièges sur la matière de l'autre. Les réponses doivent être justes et sourcées, sinon le point ne compte pas. Score sur 3.
 
-**But :** faire évaluer votre cerveau par quelqu'un qui cherche la faille, pas par vous.
+**But :** faire évaluer votre rangement par quelqu'un qui cherche la faille, pas par vous.
 
 <ul class="task-checklist" role="list">
-  <li><label><input type="checkbox" /> Recevoir trois questions pièges de votre voisin ou voisine</label></li>
-  <li><label><input type="checkbox" /> Laisser l'assistant répondre, source à l'appui</label></li>
+  <li><label><input type="checkbox" /> Recevoir trois questions pièges</label></li>
+  <li><label><input type="checkbox" /> Laisser Claude répondre, source à l'appui</label></li>
   <li><label><input type="checkbox" /> Compter les points : juste et sourcé, sinon zéro</label></li>
-  <li><label><input type="checkbox" /> Si un point manque : corriger (règle ou document), puis commit</label></li>
+  <li><label><input type="checkbox" /> Si un point manque : corriger (règle ou fichier), puis commit</label></li>
 </ul>
 
-**Preuve :** 3 sur 3, réponses sourcées. C'est le critère de fierté du plateau.
+**Preuve :** 3 sur 3, réponses sourcées. C'est le critère de fierté de l'étape.
 
 <aside class="task-why">
-  <p><strong>Pourquoi ça compte.</strong> Vous connaissez vos documents par cœur, votre voisin non : ses questions révèlent ce qu'un regard neuf ne trouve pas dans votre cerveau. Ce qui résiste au quiz résistera à votre usage quotidien.</p>
+  <p><strong>Pourquoi ça compte.</strong> Vous connaissez votre matière par cœur, la personne en face non : ses questions révèlent ce qu'un regard neuf ne trouve pas chez vous. Ce qui résiste au quiz résistera à votre usage quotidien.</p>
 </aside>
