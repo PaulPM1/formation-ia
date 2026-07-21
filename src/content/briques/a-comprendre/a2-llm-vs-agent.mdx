@@ -1,10 +1,10 @@
 ---
 id: a2
-title: "LLM vs Agent"
+title: "Choisir la bonne solution IA"
 family: a
 order: 2
 priority: socle
-durationMinutes: 15
+durationMinutes: 25
 type: concept
 platforms:
   - commun
@@ -12,106 +12,122 @@ prerequisites:
   - a1
 status: a-relire
 owner: a-attribuer
-learningObjective: "Distinguer une réponse de modèle, un workflow déterministe et une boucle agentique."
-expectedOutcome: "Le participant classe trois cas d'usage et justifie quand une action nécessite un agent et un contrôle humain."
+learningObjective: "Choisir entre les solutions Claude et OpenAI selon la sortie attendue, le contexte nécessaire, les actions autorisées et la preuve de réussite."
+expectedOutcome: "Le participant choisit la solution minimale pour quatre situations professionnelles et justifie pourquoi une alternative serait trop faible ou trop large."
 ---
 
 ## Cap
 
-**Objectif :** savoir ce que l'on délègue lorsque Claude ne se contente plus de répondre, mais utilise des outils et agit sur un environnement.
+**Objectif :** choisir un établi adapté au résultat attendu au lieu de transformer chaque demande en tâche agentique.
 
-- Durée cible : 15 minutes.
+- Durée cible : 25 minutes.
 - Prérequis : A1, « C'est quoi un LLM ».
-- Résultat attendu : vous distinguez réponse, workflow et agent, puis choisissez le niveau d'autonomie adapté.
+- Résultat attendu : vous distinguez réponse, objet éditable, livrable multiétape et changement vérifié dans un projet.
 
 ## Concept durable
 
-Un **LLM** reçoit un contexte et génère une réponse. Un **agent** utilise un modèle comme moteur de décision dans une boucle :
+Le choix commence par la **sortie attendue**, pas par la marque ni par une promesse de puissance. Quatre questions suffisent :
 
-```text
-Objectif → observation → choix d'une action → utilisation d'un outil
-        → observation du résultat → correction ou arrêt
-```
+1. **Sortie :** faut-il une réponse, un objet, un livrable ou un changement dans un projet ?
+2. **Contexte :** la conversation suffit-elle, ou faut-il des fichiers, des applications ou un dépôt ?
+3. **Action :** que peut lire, créer, modifier ou exécuter la solution ?
+4. **Preuve :** relire un texte, tester un aperçu, contrôler un livrable ou vérifier des tests et un diff ?
 
-Entre les deux existe le **workflow** : une suite d'étapes décidée à l'avance. Par exemple, « extraire les dates, les trier, puis produire un tableau » est un workflow. L'ordre est connu avant le départ.
+| Besoin | Claude | OpenAI | Sortie observable |
+| --- | --- | --- | --- |
+| Réponse conversationnelle | Claude Chat | ChatGPT Chat | Texte, plan ou tableau à relire |
+| Objet éditable | Claude Artifacts | ChatGPT Canvas | Document, code ou mini-outil prévisualisable |
+| Livrable multiétape | Claude Cowork | ChatGPT Work | Document, tableau, présentation, rapport ou site fini |
+| Projet vérifié | Claude Code | Codex | Modification relue avec tests, commandes et diff |
 
-Un agent devient utile lorsque le chemin exact dépend de ce qu'il découvre : il inspecte un dossier, choisit les fichiers pertinents, tente une modification, lance un test et adapte la suite au résultat. Ses outils peuvent lire un fichier, appeler une API, chercher sur le Web ou exécuter une commande.
+### Claude Chat et ChatGPT Chat
 
-Plus le système peut agir, plus il faut préciser :
+Le contexte est fourni dans la conversation ou dans un projet de discussion. Le flux reste court : contexte, échange, réponse, relecture. C'est le meilleur niveau lorsque la réponse elle-même est le livrable et qu'aucun environnement ne doit être modifié.
 
-- son **objectif** et son critère d'arrêt ;
-- son **périmètre** : dossiers, outils et données autorisés ;
-- les actions qui nécessitent une **confirmation** ;
-- la manière de **vérifier** le résultat et de revenir en arrière.
+### Claude Artifacts et ChatGPT Canvas
 
-L'autonomie n'est pas « tout ou rien ». On peut demander un plan sans action, autoriser seulement la lecture, valider chaque modification ou déléguer une tâche bornée et réversible.
+L'échange produit un objet visible que l'on peut éditer, prévisualiser et faire évoluer. Un Artifact peut devenir un document, une visualisation ou un mini-outil interactif ; Canvas fournit un espace d'édition pour l'écriture ou le code. Ces environnements restent bornés : ils ne remplacent pas l'intégration, le build et les tests d'un projet réel.
+
+### Claude Cowork et ChatGPT Work
+
+Ces solutions prennent en charge un objectif long, plusieurs sources et plusieurs étapes avant de livrer un résultat fini. Elles peuvent utiliser des fichiers, des connecteurs ou des applications autorisées. Leur intérêt vient du travail coordonné ; leur limite vient des permissions et données auxquelles elles accèdent. Le plan, les sources et le livrable doivent rester observables et relus.
+
+### Claude Code et Codex
+
+Ces agents travaillent dans un dépôt et un environnement d'exécution. Leur boucle inspecte le projet, choisit une action, modifie, lance des commandes ou des tests, puis relit le résultat. La preuve attendue est technique : tests, diff, état Git ou revue. Cet accès est inutilement large pour une réponse courte ou un prototype isolé.
+
+Les notions de **réponse**, de **workflow** et d'**agent** restent utiles pour lire les parcours. Elles ne sont toutefois pas des produits à choisir : un chat peut utiliser des outils, un workflow peut être lancé dans plusieurs surfaces, et un agent n'est pertinent que si son contexte et ses actions servent la preuve attendue.
+
+À capacité suffisante, préférez la solution déjà autorisée qui demande le moins d'accès. Les fonctionnalités et leur disponibilité peuvent varier selon le forfait et le workspace : vérifiez toujours la documentation officielle au moment de décider.
 
 ## Pratique avec Claude
 
-Comparez ces deux demandes :
+Pour un besoin réel, complétez cette phrase avant d'ouvrir un outil :
 
 ```text
-Donne-moi une méthode en 5 étapes pour classer les fichiers d'un dossier.
-Ne touche à aucun fichier.
+Je veux obtenir [sortie observable].
+La solution doit connaître [contexte nécessaire].
+Elle peut [actions autorisées] mais ne doit pas [limite].
+Je considérerai le travail fini lorsque [preuve].
 ```
 
-```text
-Inspecte les copies de fichiers dans le dossier Atelier. Propose un classement,
-attends ma validation, puis déplace uniquement les fichiers approuvés.
-Ne supprime rien et termine par la liste des changements.
-```
-
-Dans la première, Claude produit du texte. Dans la seconde, un environnement outillé pourrait observer, proposer, agir et rendre compte. Soulignez les mots qui bornent l'action.
+Éliminez ensuite les solutions trop faibles pour produire la preuve, puis celles qui demandent plus d'accès que nécessaire. Utilisez l'écosystème déjà disponible pour départager deux solutions de même niveau.
 
 ## Mission commune
 
-Classez chaque situation dans la catégorie **réponse**, **workflow** ou **agent** :
+Pour chaque situation, choisissez **une seule solution prioritaire** parmi Claude Chat, ChatGPT Chat, Claude Artifacts, ChatGPT Canvas, Claude Cowork, ChatGPT Work, Claude Code et Codex.
 
-1. Résumer un article fourni.
-2. Chaque vendredi, récupérer trois sources autorisées, comparer les nouveautés et produire une note.
-3. Convertir une liste de contacts en tableau selon cinq colonnes définies.
-4. Explorer un projet, trouver la cause d'un test en échec, proposer une correction puis relancer le test.
+1. Dans un projet ChatGPT, un email client est déjà collé. Proposez une réponse de cinq lignes sans créer ni modifier de fichier.
+2. Dans Claude, créez un calculateur interactif de budget formation, testez-le puis partagez son aperçu, sans modifier de projet existant.
+3. Un projet ChatGPT contient douze entretiens clients. Analysez-les et livrez une synthèse ainsi qu'un tableau de priorités.
+4. Le dépôt local du site est déjà ouvert dans Claude Code avec ses consignes. Corrigez le formulaire mobile, lancez les tests et présentez le diff.
 
-Pour chaque cas, indiquez : l'entrée, l'action éventuelle, le contrôle humain et le critère de fin.
+Après chaque choix, nommez l'alternative la plus tentante et expliquez pourquoi elle serait trop faible, trop large ou demanderait un changement d'environnement inutile.
 
-**Critère de réussite :** votre classement s'appuie sur la variabilité du chemin et non sur la longueur de la tâche.
+**Critère de réussite :** quatre décisions sur quatre, justifiées par la sortie, le contexte, l'action et la preuve.
 
 ## Livrable
 
-Un tableau de quatre lignes comportant : `situation`, `type`, `outil ou action`, `validation humaine`, `preuve de fin`.
+Une grille de quatre lignes comportant : `situation`, `solution prioritaire`, `signal décisif`, `alternative écartée`, `preuve de fin`.
 
 ## Notes formateur
 
-- **0–3 min :** rappeler qu'un modèle génère ; faire nommer des outils possibles.
-- **3–7 min :** tracer la boucle agentique et comparer avec une recette fixe.
-- **7–12 min :** faire classer les quatre situations en binômes.
-- **12–15 min :** corriger, puis insister sur le périmètre et la preuve de fin.
+- **0–3 min :** faire nommer la sortie avant de révéler les marques.
+- **3–15 min :** comparer les quatre paires avec les mêmes champs : contexte, workflow, sortie, action, limite, preuve et accès.
+- **15–18 min :** appliquer les quatre questions de décision.
+- **18–25 min :** faire voter, valider et corriger les quatre situations.
 
-Ne pas définir l'agent par « une IA plus puissante ». La différence vient de la boucle, des outils et de l'autonomie accordée. Transition : les interfaces Claude donnent accès à différents degrés de cette boucle.
+Ne pas classer les solutions par puissance, prix ou performance absolue. Les produits évoluent ; la grille sortie–contexte–action–preuve reste transférable. Quand deux solutions ont la même capacité, l'environnement déjà autorisé et le moindre accès tranchent.
 
 ## Défis avancés
 
-- Transformez un cas agentique en workflow plus sûr en fixant les étapes à l'avance.
+- Transformez un cas agentique en solution plus simple en réduisant la sortie attendue.
 - Ajoutez trois niveaux d'autorisation : lecture, écriture réversible, action externe.
-- Identifiez une tâche où l'agent coûte plus cher qu'une procédure classique sans apporter de valeur.
+- Décrivez un cas où changer d'écosystème coûterait plus que la différence de capacité entre deux solutions.
 
 ## Variantes
 
-- **Administratif :** réponse à un email, publipostage, traitement d'une boîte partagée.
-- **Pédagogie :** expliquer une notion, corriger selon une grille, adapter un parcours.
-- **Développement :** expliquer une fonction, lancer une suite de tests, diagnostiquer puis corriger.
+- **Administratif :** réponse à un email, révision d'un document, analyse d'un dossier, mise à jour d'un outil interne.
+- **Pédagogie :** expliquer une notion, créer un simulateur, synthétiser des évaluations, intégrer un module dans une plateforme.
+- **Développement :** expliquer une fonction, prototyper une interface, produire une documentation, diagnostiquer puis corriger un test.
 
 ## Dépannage
 
-- **Tout est classé « agent » :** demandez si l'ordre des étapes est déjà connu. Si oui, un workflow suffit souvent.
-- **Confusion avec l'automatisation :** une tâche planifiée peut lancer un workflow fixe ou un agent ; le calendrier ne détermine pas le type.
-- **Confusion avec le chatbot :** une interface de chat peut piloter un agent si elle lui donne des outils.
+- **Tout devient agentique :** demandez si la preuve peut être obtenue par la simple relecture d'une réponse ou d'un aperçu.
+- **Deux solutions semblent identiques :** regardez l'écosystème déjà utilisé, le contexte déjà chargé et les permissions déjà accordées.
+- **Une fonction n'apparaît pas :** vérifiez le forfait, la plateforme, le workspace et l'état de déploiement ; utilisez l'alternative de même niveau.
+- **La situation est trop vaste :** réduisez-la à une sortie réalisable et vérifiable pendant l'atelier.
 
 ## Ressources
 
-- [Building effective agents — Anthropic](https://www.anthropic.com/engineering/building-effective-agents)
-- [Présentation de Claude Code — Anthropic](https://code.claude.com/docs/en/overview)
+- [Présentation de Claude et de ses capacités](https://platform.claude.com/docs/en/intro)
+- [Artifacts — Claude Help Center](https://support.claude.com/en/articles/9487310-what-are-artifacts-and-how-do-i-use-them)
+- [Bien démarrer avec Cowork — Claude Help Center](https://support.claude.com/en/articles/13345190-get-started-with-claude-cowork)
+- [Comment fonctionne Claude Code — Anthropic](https://code.claude.com/docs/en/how-claude-code-works)
+- [ChatGPT Work et Codex — OpenAI](https://help.openai.com/en/articles/20001275/)
+- [Canvas dans ChatGPT — OpenAI](https://help.openai.com/en/articles/9930697-what-is-the-canvas-feature-in-chatgpt-and-how-do-i-use-it)
+- [Bien démarrer avec Codex — OpenAI](https://openai.com/codex/get-started/)
 
 ## Ouverture
 
-Nous utiliserons plusieurs interfaces qui exposent progressivement plus de contexte et d'actions : Chat, Artifacts, Cowork et Claude Code.
+Plus une solution lit, agit et se corrige, plus elle mobilise de contexte et d'étapes. La brique suivante explique ce que cela consomme et comment borner l'usage.

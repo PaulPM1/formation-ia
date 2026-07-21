@@ -16,7 +16,6 @@ const contentDirectory = fileURLToPath(
 const DRAFTED_BRICK_IDS = [
   'a1',
   'a2',
-  'a3',
   'a4',
   'a5',
   'b0',
@@ -30,12 +29,13 @@ const DRAFTED_BRICK_IDS = [
   'c3',
 ] as const;
 
-test('charge exactement les 24 briques issues de Notion dans le bon ordre', async () => {
+test('charge exactement les 23 briques fusionnées dans le bon ordre', async () => {
   const documents = await loadBrickDocuments(contentDirectory);
   const ids = documents
     .toSorted((left, right) => Number(left.data.order) - Number(right.data.order))
     .map((document) => document.data.id);
 
+  assert.equal(documents.length, 23);
   assert.deepEqual(ids, EXPECTED_IMPORTED_BRICK_IDS);
 });
 

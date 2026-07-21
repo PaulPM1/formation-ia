@@ -106,7 +106,7 @@ test('les tokens typographiques des slides gardent un plancher de 0,75 rem', asy
   }
 });
 
-test('la QA durable mesure les textes HTML et SVG à 12 px sur 76 routes et au zoom 200 %', async () => {
+test('la QA durable mesure les textes HTML et SVG à 12 px sur 73 routes et au zoom 200 %', async () => {
   const [qa, packageJson] = await Promise.all([
     read('scripts/qa-font-floor.mjs'),
     read('package.json'),
@@ -116,7 +116,26 @@ test('la QA durable mesure les textes HTML et SVG à 12 px sur 76 routes et au z
   assert.match(qa, /const FONT_FLOOR_PX = 11\.99/);
   assert.match(qa, /querySelectorAll\(['"]svg text['"]\)/);
   assert.match(qa, /deviceScaleFactor:\s*2/);
-  assert.match(qa, /routes\.length[^\n]*76|76[^\n]*routes\.length/);
+  assert.match(qa, /routes\.length[^\n]*73|73[^\n]*routes\.length/);
+});
+
+test('la QA A2 couvre clavier, progression, score, replay, mobile, zoom et repli sans JavaScript', async () => {
+  const [qa, packageJson] = await Promise.all([
+    read('scripts/qa-a2-prioritizer.mjs'),
+    read('package.json'),
+  ]);
+
+  assert.match(packageJson, /"qa:a2-prioritizer":\s*"node scripts\/qa-a2-prioritizer\.mjs"/);
+  assert.match(qa, /a2-prioritize/);
+  assert.match(qa, /keyboard\.press\(['"]Space['"]\)/);
+  assert.match(qa, /data-prioritizer-next/);
+  assert.match(qa, /data-prioritizer-score/);
+  assert.match(qa, /data-prioritizer-replay/);
+  assert.match(qa, /javaScriptEnabled:\s*false/);
+  assert.match(qa, /data-prioritizer-correction/);
+  assert.match(qa, /viewport:\s*\{ width: 390, height: 844 \}/);
+  assert.match(qa, /style\.zoom = ['"]2['"]/);
+  assert.match(qa, /reducedMotion:\s*['"]reduce['"]/);
 });
 
 test('la QA durable A5 ouvre la correction au clavier et exige un reflow au zoom 200 %', async () => {
@@ -172,9 +191,10 @@ test('les repères secondaires restent lisibles au projecteur', async () => {
 test('enregistre tous les visuels du bloc A', async () => {
   const registry = await read('src/components/presentation/VisualRegistry.astro');
   for (const name of [
-    'TokenPredictor', 'ContextComparison', 'ResponseWorkflowAgent',
-    'InterfaceContinuum', 'ContextBudget', 'VerificationAudit',
+    'TokenPredictor', 'ContextComparison', 'SolutionComparison',
+    'SolutionPrioritizer', 'ContextBudget', 'VerificationAudit',
   ]) assert.match(registry, new RegExp(name));
+  assert.doesNotMatch(registry, /ResponseWorkflowAgent|InterfaceContinuum/);
 });
 
 test('les interactions du bloc A produisent des états pédagogiques déterministes', async () => {
@@ -407,21 +427,37 @@ test('la progression conserve tout le contenu sans JavaScript puis isole le pann
 });
 
 test('les visuels du bloc A utilisent des contrôles natifs et des relations continues', async () => {
-  const [token, context, workflow, continuum, budget, audit] = await Promise.all([
+  const [token, context, comparison, prioritizer, budget, audit] = await Promise.all([
     read('src/components/presentation/visuals/a/TokenPredictor.astro'),
     read('src/components/presentation/visuals/a/ContextComparison.astro'),
-    read('src/components/presentation/visuals/a/ResponseWorkflowAgent.astro'),
-    read('src/components/presentation/visuals/a/InterfaceContinuum.astro'),
+    read('src/components/presentation/visuals/a/SolutionComparison.astro'),
+    read('src/components/presentation/visuals/a/SolutionPrioritizer.astro'),
     read('src/components/presentation/visuals/a/ContextBudget.astro'),
     read('src/components/presentation/visuals/a/VerificationAudit.astro'),
   ]).catch(() => [] as string[]);
 
   assert.match(token ?? '', /<button[^>]+type="button"/);
   assert.match(context ?? '', /aria-pressed/);
-  assert.match(workflow ?? '', /<path[^>]+marker-end/);
-  assert.match(continuum ?? '', /type="radio"/);
+  assert.match(comparison ?? '', /type="radio"/);
+  assert.match(prioritizer ?? '', /<form[^>]+data-solution-prioritizer/);
+  assert.match(prioritizer ?? '', /type="radio"/);
+  assert.match(prioritizer ?? '', /aria-live="polite"/);
   assert.match(budget ?? '', /type="checkbox"/);
   assert.match(audit ?? '', /type="radio"/);
+});
+
+test('A2 conserve ses comparatifs et corrections sans JavaScript', async () => {
+  const [comparison, prioritizer] = await Promise.all([
+    read('src/components/presentation/visuals/a/SolutionComparison.astro'),
+    read('src/components/presentation/visuals/a/SolutionPrioritizer.astro'),
+  ]);
+
+  assert.match(comparison, /data-solution-panel/);
+  assert.match(comparison, /data-enhanced/);
+  assert.match(prioritizer, /data-prioritizer-correction/);
+  assert.match(prioritizer, /data-prioritizer-summary/);
+  assert.match(prioritizer, /prefers-reduced-motion/);
+  assert.match(prioritizer, /:focus-visible/);
 });
 
 test('le prédicteur laisse réellement disparaître les tokens futurs', async () => {

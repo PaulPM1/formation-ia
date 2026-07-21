@@ -6,25 +6,22 @@ import { PRESENTATION_DECKS, PRESENTATION_SLIDES } from '../src/presentation/man
 import { validatePresentation } from '../src/presentation/presentation-validation';
 
 const expectedIds = [
-  'a1', 'a2', 'a3', 'a4', 'a5', 'b0', 'b1', 'b2', 'b3', 'b4', 'b4-bis',
+  'a1', 'a2', 'a4', 'a5', 'b0', 'b1', 'b2', 'b3', 'b4', 'b4-bis',
   'c1', 'c2', 'c3',
 ];
 
 const expectedSlides = [
   { id: 'a1-opening', claim: "À l'entraînement, le modèle apprend à prédire la suite.", visualKey: 'token-predictor' },
-  { id: 'a1-token-loop', claim: 'Une réponse se construit token après token.', visualKey: 'token-predictor' },
   { id: 'a1-context', claim: 'Le contexte change le sens avant de changer les mots.', visualKey: 'context-comparison' },
   { id: 'a1-plausible', claim: 'Probable, cohérent et vrai ne désignent pas la même chose.', visualKey: 'verification-audit' },
   { id: 'a1-mission', claim: 'Expliquez, repérez, puis améliorez la consigne.', visualKey: 'mission-board' },
-  { id: 'a2-three-modes', claim: 'Réponse, workflow et agent ne délèguent pas la même chose.', visualKey: 'response-workflow-agent' },
-  { id: 'a2-response', claim: 'Une réponse transforme du contexte en texte.', visualKey: 'response-workflow-agent' },
-  { id: 'a2-workflow', claim: "Un workflow suit un chemin décidé à l'avance.", visualKey: 'response-workflow-agent' },
-  { id: 'a2-agent-loop', claim: "Un agent choisit la prochaine action selon ce qu'il observe.", visualKey: 'response-workflow-agent' },
-  { id: 'a2-classify', claim: 'La variabilité du chemin détermine le bon mode.', visualKey: 'mission-board' },
-  { id: 'a3-right-surface', claim: "Le bon outil donne juste assez de contexte et d'action.", visualKey: 'interface-continuum' },
-  { id: 'a3-continuum', claim: "Chat, Artifacts, Cowork et Claude Code augmentent progressivement la capacité d'action.", visualKey: 'interface-continuum' },
-  { id: 'a3-choice', claim: "Toute tâche n'a pas besoin de devenir agentique.", visualKey: 'interface-continuum' },
-  { id: 'a3-mission', claim: 'Associez chaque prochaine action à la surface la plus simple.', visualKey: 'mission-board' },
+  { id: 'a2-landscape', claim: 'Le bon outil se choisit par la sortie attendue, pas par sa puissance supposée.', visualKey: 'solution-comparison' },
+  { id: 'a2-chat', claim: 'Claude Chat et ChatGPT suffisent quand la sortie est une réponse à relire.', visualKey: 'solution-comparison' },
+  { id: 'a2-object', claim: 'Artifacts et Canvas transforment l’échange en objet éditable.', visualKey: 'solution-comparison' },
+  { id: 'a2-work', claim: 'Cowork et Work prennent en charge un livrable multiétape.', visualKey: 'solution-comparison' },
+  { id: 'a2-code', claim: 'Claude Code et Codex travaillent dans un projet et prouvent leurs changements.', visualKey: 'solution-comparison' },
+  { id: 'a2-decision', claim: 'Sortie, contexte, action et preuve déterminent la solution minimale.', visualKey: 'solution-comparison' },
+  { id: 'a2-prioritize', claim: 'Choisissez une solution par situation, puis justifiez ce qu’elle évite.', visualKey: 'solution-prioritizer' },
   { id: 'a4-three-costs', claim: "Abonnement, limite d'usage et API sont trois réalités différentes.", visualKey: 'context-budget' },
   { id: 'a4-context-meter', claim: 'Chaque élément de contexte a un coût et une utilité.', visualKey: 'context-budget' },
   { id: 'a4-agentic', claim: 'Lire, agir et se corriger multiplie les étapes consommées.', visualKey: 'context-budget' },
@@ -118,7 +115,7 @@ test('couvre toutes les briques A1 à C3 dans l’ordre pédagogique', () => {
   assert.deepEqual(PRESENTATION_DECKS.map((deck) => deck.brickId), expectedIds);
 });
 
-test('contient les 76 étapes de compréhension validées', () => {
+test('contient les 73 étapes de compréhension validées', () => {
   assert.deepEqual(
     PRESENTATION_SLIDES.map((slide) => ({
       id: slide.id,
@@ -127,6 +124,23 @@ test('contient les 76 étapes de compréhension validées', () => {
     })),
     expectedSlides,
   );
+});
+
+test('A2 compare huit solutions et priorise quatre réponses contextualisées', () => {
+  const landscape = PRESENTATION_SLIDES.find((slide) => slide.id === 'a2-landscape');
+  const levels = landscape?.visual.data.levels as Array<{ solutions: string[] }>;
+  assert.deepEqual(levels.flatMap((level) => level.solutions), [
+    'Claude Chat', 'ChatGPT Chat',
+    'Claude Artifacts', 'ChatGPT Canvas',
+    'Claude Cowork', 'ChatGPT Work',
+    'Claude Code', 'Codex',
+  ]);
+
+  const exercise = PRESENTATION_SLIDES.find((slide) => slide.id === 'a2-prioritize');
+  const scenarios = exercise?.visual.data.scenarios as Array<{ answer: string }>;
+  assert.deepEqual(scenarios.map((scenario) => scenario.answer), [
+    'chatgpt-chat', 'claude-artifacts', 'chatgpt-work', 'claude-code',
+  ]);
 });
 
 test("l'ouverture A1 fournit une distribution illustrative valide pour chaque token", () => {

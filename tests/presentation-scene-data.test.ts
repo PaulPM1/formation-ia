@@ -22,7 +22,7 @@ const partitionKeys = (partition: ReturnType<typeof partitionSceneFields>) => [
 ];
 
 test('préserve un tableau vide avec un état textuel explicite', () => {
-  const fields = normalizeSceneFields(slide('a2-response').visual.data);
+  const fields = normalizeSceneFields({ tools: [] });
   const tools = fields.find((field) => field.key === 'tools');
 
   assert.deepEqual(tools?.values, ['Aucun élément']);
@@ -49,13 +49,18 @@ test('conserve la preuve A4 dans les détails du checkpoint', () => {
 });
 
 test('conserve interaction et instruction de mission sans doublon', () => {
-  const current = slide('a3-mission');
-  const partition = partitionSceneFields(current.visual.data, MISSION_FIELD_GROUPS);
+  const data = {
+    interaction: 'Ouvrir la mission.',
+    instruction: 'Pour chaque action, notez :',
+    mission: ['Choisir', 'Justifier'],
+    successCriterion: 'Une décision argumentée.',
+  };
+  const partition = partitionSceneFields(data, MISSION_FIELD_GROUPS);
 
-  assert.deepEqual(partition.groups.interaction[0]?.values, ['Ouvrir la mission A3.']);
+  assert.deepEqual(partition.groups.interaction[0]?.values, ['Ouvrir la mission.']);
   assert.deepEqual(partition.groups.instruction[0]?.values, ['Pour chaque action, notez :']);
-  assert.deepEqual(partitionKeys(partition).sort(), Object.keys(current.visual.data).sort());
-  assert.equal(new Set(partitionKeys(partition)).size, Object.keys(current.visual.data).length);
+  assert.deepEqual(partitionKeys(partition).sort(), Object.keys(data).sort());
+  assert.equal(new Set(partitionKeys(partition)).size, Object.keys(data).length);
 });
 
 test('décrit explicitement un rail de ressources vide', () => {
