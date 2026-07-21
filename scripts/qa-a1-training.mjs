@@ -106,7 +106,7 @@ try {
 
   for (let visit = 0; visit < 2; visit += 1) {
     await page.locator('[data-next]').click();
-    await page.waitForURL('**/presenter/a1/a1-token-loop/');
+    await page.waitForURL('**/presenter/a1/a1-context/');
     if (await page.evaluate(() => window.trainingTimerCount) !== 0) failures.push(`timeout conservé après sortie ${visit + 1}`);
     await page.locator('[data-previous]').click();
     await page.waitForURL('**/presenter/a1/a1-opening/');

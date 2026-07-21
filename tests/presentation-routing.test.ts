@@ -14,7 +14,13 @@ test('chaque slide possède une route unique', () => {
 test('la séquence relie la première slide à la deuxième', () => {
   const neighbors = getSlideNeighbors(PRESENTATION_SLIDES, 'a1-opening');
   assert.equal(neighbors.previous, null);
-  assert.equal(neighbors.next?.id, 'a1-token-loop');
+  assert.equal(neighbors.next?.id, 'a1-context');
+});
+
+test('la fusion A2 rejoint directement A4 et ne conserve aucune route A3', () => {
+  const neighbors = getSlideNeighbors(PRESENTATION_SLIDES, 'a2-prioritize');
+  assert.equal(neighbors.next?.id, 'a4-three-costs');
+  assert.ok(PRESENTATION_SLIDES.every((slide) => !slide.id.startsWith('a3-')));
 });
 
 test('le contrôleur ignore les raccourcis lorsque le focus est dans un contrôle', async () => {
@@ -40,7 +46,7 @@ test('le shell expose un état plein écran initial et une zone d’annonce', as
   assert.match(source, /data-presenter-announcer/);
 });
 
-test('la QA navigateur durable couvre navigation native, 404, plein écran et les 76 mobiles', async () => {
+test('la QA navigateur durable couvre navigation native, 404, plein écran et les 73 mobiles', async () => {
   const source = await readFile(
     new URL('../scripts/qa-presenter.mjs', import.meta.url),
     'utf8',

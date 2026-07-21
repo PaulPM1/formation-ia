@@ -8,7 +8,6 @@ import type { BrickDocumentInput } from './brick-model';
 export const EXPECTED_IMPORTED_BRICK_IDS = [
   'a1',
   'a2',
-  'a3',
   'a4',
   'a5',
   'b0',

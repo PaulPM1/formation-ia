@@ -11,6 +11,7 @@ const allowedDownloadHosts = new Set(['claude.com', 'code.visualstudio.com']);
 const allowedOfficialHosts = new Set([
   'agentskills.io', 'anthropic.com', 'www.anthropic.com', 'claude.ai',
   'claude.com', 'code.claude.com', 'code.visualstudio.com',
+  'developers.openai.com', 'help.openai.com', 'openai.com',
   'modelcontextprotocol.io', 'platform.claude.com', 'status.claude.com',
   'support.claude.com',
 ]);

@@ -26,7 +26,7 @@ const links = {
 
 export const B_DECKS = [
   {
-    brickId: 'b0', family: 'b', order: 6, title: 'Setup Claude', slides: [
+    brickId: 'b0', family: 'b', order: 5, title: 'Setup Claude', slides: [
       slide({
         id: 'b0-layers', role: 'opening',
         claim: 'Compte, surface, fonctionnalités et API sont quatre couches distinctes.',
@@ -114,7 +114,7 @@ export const B_DECKS = [
     ],
   },
   {
-    brickId: 'b1', family: 'b', order: 7, title: 'Claude Chat', slides: [
+    brickId: 'b1', family: 'b', order: 6, title: 'Claude Chat', slides: [
       slide({
         id: 'b1-vague', role: 'opening',
         claim: 'Une demande vague force Claude à inventer le brief.',
@@ -200,7 +200,7 @@ export const B_DECKS = [
     ],
   },
   {
-    brickId: 'b2', family: 'b', order: 8, title: 'Artifacts', slides: [
+    brickId: 'b2', family: 'b', order: 7, title: 'Artifacts', slides: [
       slide({
         id: 'b2-object', role: 'opening',
         claim: 'Un Artifact fait sortir le résultat du fil de discussion.',
@@ -302,7 +302,7 @@ export const B_DECKS = [
     ],
   },
   {
-    brickId: 'b3', family: 'b', order: 9, title: 'Cowork', slides: [
+    brickId: 'b3', family: 'b', order: 8, title: 'Cowork', slides: [
       slide({
         id: 'b3-delegation', role: 'opening',
         claim: 'Cowork délègue le travail, jamais la responsabilité.',
@@ -408,7 +408,7 @@ export const B_DECKS = [
     ],
   },
   {
-    brickId: 'b4', family: 'b', order: 10, title: 'Claude Code', slides: [
+    brickId: 'b4', family: 'b', order: 9, title: 'Claude Code', slides: [
       slide({
         id: 'b4-context', role: 'opening',
         claim: "Claude Code agit dans le contexte réel d'un dossier.",
@@ -522,7 +522,7 @@ export const B_DECKS = [
     ],
   },
   {
-    brickId: 'b4-bis', family: 'b', order: 11, title: 'Setup VS Code', slides: [
+    brickId: 'b4-bis', family: 'b', order: 10, title: 'Setup VS Code', slides: [
       slide({
         id: 'b4bis-workspace', role: 'opening',
         claim: 'Un workspace est un dossier ouvert avec son contexte.',

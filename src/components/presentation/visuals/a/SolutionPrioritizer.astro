@@ -1,0 +1,290 @@
+---
+import type { RoutedSlide } from '../../../../presentation/presentation-model';
+import SceneFrame from '../../scenes/SceneFrame.astro';
+
+interface Option {
+  id: string;
+  name: string;
+  need: string;
+  ecosystem: string;
+}
+
+interface Scenario {
+  title: string;
+  situation: string;
+  signals: string[];
+  answer: string;
+  reason: string;
+  tempting: string;
+  temptingReason: string;
+}
+
+interface Props { slide: RoutedSlide }
+
+const { slide } = Astro.props;
+const data = slide.visual.data;
+const options = Array.isArray(data.options) ? data.options as Option[] : [];
+const scenarios = Array.isArray(data.scenarios) ? data.scenarios as Scenario[] : [];
+const needs = [...new Set(options.map((option) => option.need))];
+const optionName = (id: string) => options.find((option) => option.id === id)?.name ?? id;
+---
+
+<SceneFrame
+  title={slide.claim}
+  description={slide.accessibleDescription}
+  visualKey={slide.visual.key}
+  class="solution-prioritizer"
+>
+  <form data-solution-prioritizer data-total={scenarios.length}>
+    <div class="prioritizer__progress" aria-hidden="true">
+      {scenarios.map((scenario, index) => <span data-progress-step={index}>{index + 1}<small>{scenario.title}</small></span>)}
+    </div>
+
+    <div class="prioritizer__scenarios">
+      {scenarios.map((scenario, scenarioIndex) => (
+        <section
+          class="prioritizer__scenario"
+          data-prioritizer-scenario={scenarioIndex}
+          data-answer={scenario.answer}
+        >
+          <header>
+            <p class="scene-label">Situation {scenarioIndex + 1} sur {scenarios.length}</p>
+            <h2>{scenario.title}</h2>
+            <p>{scenario.situation}</p>
+          </header>
+
+          <ul class="prioritizer__signals" aria-label="Signaux de décision">
+            {scenario.signals.map((signal) => <li>{signal}</li>)}
+          </ul>
+
+          <fieldset>
+            <legend>Quelle solution faut-il prioriser ?</legend>
+            <div class="prioritizer__options">
+              {needs.map((need) => (
+                <div class="prioritizer__need" role="group" aria-label={need}>
+                  <strong>{need}</strong>
+                  {options.filter((option) => option.need === need).map((option, optionIndex) => (
+                    <label data-option-label={option.id}>
+                      <input
+                        type="radio"
+                        name={`${slide.id}-scenario-${scenarioIndex}`}
+                        value={option.id}
+                        required={optionIndex === 0}
+                      />
+                      <span><small>{option.ecosystem}</small>{option.name}</span>
+                    </label>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </fieldset>
+
+          <div class="prioritizer__actions">
+            <button type="submit" data-prioritizer-validate>Valider ce choix</button>
+            <button type="button" data-prioritizer-next hidden>
+              {scenarioIndex === scenarios.length - 1 ? 'Voir le score' : 'Situation suivante'}
+            </button>
+          </div>
+
+          <section class="prioritizer__correction" data-prioritizer-correction>
+            <p><strong>Réponse prioritaire · {optionName(scenario.answer)}</strong>{scenario.reason}</p>
+            <p><strong>Alternative trompeuse · {optionName(scenario.tempting)}</strong>{scenario.temptingReason}</p>
+          </section>
+        </section>
+      ))}
+    </div>
+
+    <section class="prioritizer__summary" data-prioritizer-summary>
+      <p class="scene-label">Bilan</p>
+      <h2><span data-prioritizer-score>—</span> / {scenarios.length}</h2>
+      <p>{String(data.successCriterion ?? '')}</p>
+      <button type="button" data-prioritizer-replay>Recommencer</button>
+    </section>
+
+    <p class="prioritizer__status" aria-live="polite" aria-atomic="true" data-prioritizer-status>
+      Sans JavaScript, les quatre corrections restent affichées après chaque situation.
+    </p>
+  </form>
+</SceneFrame>
+
+<script>
+  import { onPresenterPage } from '../../../../scripts/on-presenter-page';
+  import {
+    advancePrioritizer,
+    chooseSolution,
+    createPrioritizerState,
+    revealPrioritizerAnswer,
+  } from './solution-prioritizer-state';
+
+  onPresenterPage(() => {
+    document.querySelectorAll<HTMLFormElement>('[data-solution-prioritizer]').forEach((form) => {
+      const scenarios = Array.from(form.querySelectorAll<HTMLElement>('[data-prioritizer-scenario]'));
+      const progress = Array.from(form.querySelectorAll<HTMLElement>('[data-progress-step]'));
+      const summary = form.querySelector<HTMLElement>('[data-prioritizer-summary]');
+      const score = form.querySelector<HTMLElement>('[data-prioritizer-score]');
+      const status = form.querySelector<HTMLElement>('[data-prioritizer-status]');
+      const replay = form.querySelector<HTMLButtonElement>('[data-prioritizer-replay]');
+      let state = createPrioritizerState();
+
+      form.dataset.enhanced = 'true';
+
+      const render = () => {
+        scenarios.forEach((scenario, index) => {
+          scenario.hidden = state.complete || index !== state.index;
+          const correction = scenario.querySelector<HTMLElement>('[data-prioritizer-correction]');
+          const validate = scenario.querySelector<HTMLButtonElement>('[data-prioritizer-validate]');
+          const next = scenario.querySelector<HTMLButtonElement>('[data-prioritizer-next]');
+          const inputs = Array.from(scenario.querySelectorAll<HTMLInputElement>('input[type="radio"]'));
+
+          if (correction) correction.hidden = !state.revealed || index !== state.index;
+          if (validate) validate.hidden = state.revealed;
+          if (next) next.hidden = !state.revealed;
+          inputs.forEach((input) => {
+            input.disabled = state.complete || index !== state.index || state.revealed;
+          });
+        });
+
+        progress.forEach((step, index) => {
+          step.dataset.state = index < state.index || state.complete ? 'done' : index === state.index ? 'current' : 'upcoming';
+        });
+        if (summary) summary.hidden = !state.complete;
+        if (score) score.textContent = String(state.score);
+      };
+
+      form.addEventListener('change', (event) => {
+        const input = event.target as HTMLInputElement;
+        if (input.matches('input[type="radio"]')) state = chooseSolution(state, input.value);
+      });
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const scenario = scenarios[state.index];
+        const selected = scenario?.querySelector<HTMLInputElement>('input[type="radio"]:checked');
+        if (!selected) {
+          scenario?.querySelector<HTMLInputElement>('input[type="radio"]')?.reportValidity();
+          if (status) status.textContent = 'Choisissez une solution avant de valider.';
+          return;
+        }
+
+        state = chooseSolution(state, selected.value);
+        const answer = scenario.dataset.answer ?? '';
+        state = revealPrioritizerAnswer(state, answer);
+        const correct = selected.value === answer;
+        const selectedLabel = scenario.querySelector<HTMLElement>(`[data-option-label="${CSS.escape(selected.value)}"]`);
+        const answerLabel = scenario.querySelector<HTMLElement>(`[data-option-label="${CSS.escape(answer)}"]`);
+        if (selectedLabel) selectedLabel.dataset.result = correct ? 'correct' : 'incorrect';
+        if (answerLabel) answerLabel.dataset.answer = 'true';
+        if (status) status.textContent = correct
+          ? `Bonne décision. Score provisoire : ${state.score} sur ${scenarios.length}.`
+          : `Décision à revoir. La réponse prioritaire est ${answerLabel?.innerText.trim() ?? answer}.`;
+        render();
+      });
+
+      form.addEventListener('click', (event) => {
+        const target = event.target as HTMLElement;
+        if (target.closest('[data-prioritizer-next]')) {
+          state = advancePrioritizer(state, scenarios.length);
+          if (status) status.textContent = state.complete
+            ? `Exercice terminé : ${state.score} bonne${state.score > 1 ? 's' : ''} décision${state.score > 1 ? 's' : ''} sur ${scenarios.length}.`
+            : `Situation ${state.index + 1} sur ${scenarios.length}.`;
+          render();
+          (state.complete ? summary : scenarios[state.index])?.focus({ preventScroll: true });
+        }
+      });
+
+      replay?.addEventListener('click', () => {
+        form.reset();
+        form.querySelectorAll<HTMLElement>('[data-result], [data-answer]').forEach((element) => {
+          delete element.dataset.result;
+          if (element.matches('[data-option-label]')) delete element.dataset.answer;
+        });
+        state = createPrioritizerState();
+        if (status) status.textContent = `Situation 1 sur ${scenarios.length}.`;
+        render();
+        scenarios[0]?.focus({ preventScroll: true });
+      });
+
+      scenarios.forEach((scenario) => { scenario.tabIndex = -1; });
+      if (summary) summary.tabIndex = -1;
+      if (status) status.textContent = `Situation 1 sur ${scenarios.length}.`;
+      render();
+    });
+  });
+</script>
+
+<style>
+  [data-solution-prioritizer] { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: .55rem; min-block-size: 100%; margin: 0; }
+  .prioritizer__progress { display: grid; grid-template-columns: repeat(4, 1fr); gap: .35rem; }
+  .prioritizer__progress > span { display: grid; grid-template-columns: auto 1fr; gap: .35rem; align-items: center; min-inline-size: 0; padding: .32rem .45rem; border: 1px solid var(--presentation-line); font-family: var(--font-mono); font-size: .78rem; }
+  .prioritizer__progress small { overflow: hidden; font-family: var(--font-body); font-size: .75rem; text-overflow: ellipsis; white-space: nowrap; }
+  .prioritizer__progress [data-state='current'] { border-color: var(--presentation-ink); border-block-end: .25rem solid var(--family-accent); font-weight: 800; }
+  .prioritizer__progress [data-state='done']::after { content: '✓'; font-weight: 900; }
+
+  .prioritizer__scenarios { min-block-size: 0; }
+  .prioritizer__scenario { display: grid; grid-template-columns: minmax(13rem, .8fr) minmax(0, 1.45fr); gap: .55rem .8rem; align-content: center; min-block-size: 100%; padding: .55rem; border: 1px solid var(--presentation-line); }
+  .prioritizer__scenario[hidden],
+  .prioritizer__summary[hidden],
+  .prioritizer__correction[hidden],
+  .prioritizer__actions button[hidden] { display: none; }
+  .prioritizer__scenario > header { display: grid; align-content: start; gap: .25rem; }
+  .prioritizer__scenario h2,
+  .prioritizer__summary h2 { margin: 0; font-family: var(--font-display); font-size: clamp(1.3rem, 1.1rem + .7vw, 1.9rem); }
+  .prioritizer__scenario header > p:last-child,
+  .prioritizer__summary p { margin: 0; font-size: .85rem; line-height: 1.32; }
+  .prioritizer__signals { display: grid; gap: .3rem; align-content: start; margin: 0; padding: 0; list-style: none; }
+  .prioritizer__signals li { padding: .32rem .45rem; border-inline-start: .24rem solid var(--family-accent); background: color-mix(in srgb, var(--family-accent), transparent 91%); font-size: .78rem; }
+
+  .prioritizer__scenario fieldset { grid-column: 2; grid-row: 1 / span 2; margin: 0; padding: 0; border: 0; }
+  .prioritizer__scenario legend { margin-block-end: .4rem; font-family: var(--font-display); font-size: 1rem; font-weight: 760; }
+  .prioritizer__options { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; }
+  .prioritizer__need { display: grid; grid-template-columns: 4.3rem 1fr 1fr; gap: .3rem; align-items: stretch; min-inline-size: 0; }
+  .prioritizer__need > strong { display: grid; place-items: center start; font-family: var(--font-mono); font-size: .75rem; text-transform: uppercase; color: var(--presentation-muted); }
+  .prioritizer__need label { display: grid; grid-template-columns: auto 1fr; gap: .35rem; align-items: center; min-block-size: 3rem; min-inline-size: 0; padding: .32rem .4rem; border: 1px solid var(--presentation-line); cursor: pointer; }
+  .prioritizer__need label:has(input:checked) { border-color: var(--presentation-ink); border-block-end: .22rem solid var(--family-accent); background: color-mix(in srgb, var(--family-accent), transparent 90%); }
+  .prioritizer__need label[data-result='correct'],
+  .prioritizer__need label[data-answer='true'] { outline: .18rem solid #247a4b; outline-offset: -.18rem; }
+  .prioritizer__need label[data-result='correct']::after { content: 'Juste'; font-size: .75rem; font-weight: 800; }
+  .prioritizer__need label[data-result='incorrect'] { outline: .18rem dashed #a83c35; outline-offset: -.18rem; }
+  .prioritizer__need label[data-result='incorrect']::after { content: 'À revoir'; font-size: .75rem; font-weight: 800; }
+  .prioritizer__need input { inline-size: 1.05rem; block-size: 1.05rem; accent-color: var(--presentation-ink); }
+  .prioritizer__need input:focus-visible,
+  .prioritizer__actions button:focus-visible,
+  .prioritizer__summary button:focus-visible { outline: .22rem solid var(--presentation-focus); outline-offset: .18rem; }
+  .prioritizer__need span { display: grid; min-inline-size: 0; font-size: .78rem; font-weight: 760; line-height: 1.15; }
+  .prioritizer__need small { font-family: var(--font-mono); font-size: .75rem; color: var(--presentation-muted); }
+
+  .prioritizer__actions { grid-column: 2; display: flex; justify-content: end; gap: .4rem; }
+  .prioritizer__actions button,
+  .prioritizer__summary button { min-block-size: 2.7rem; padding: .45rem .8rem; border: 1px solid var(--presentation-ink); background: var(--presentation-ink); color: var(--presentation-surface); font: inherit; font-size: .82rem; font-weight: 800; cursor: pointer; }
+  .prioritizer__actions button[data-prioritizer-next],
+  .prioritizer__summary button { background: var(--family-accent); color: var(--presentation-ink); }
+  .prioritizer__correction { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; }
+  .prioritizer__correction p { display: grid; gap: .18rem; margin: 0; padding: .45rem .55rem; border: 1px solid var(--presentation-line); font-size: .78rem; line-height: 1.25; }
+  .prioritizer__correction strong { font-size: .8rem; }
+  .prioritizer__correction p:first-child { border-inline-start: .3rem solid #247a4b; }
+  .prioritizer__correction p:last-child { border-inline-start: .3rem dashed #a83c35; }
+
+  .prioritizer__summary { display: grid; place-content: center; justify-items: start; gap: .55rem; min-block-size: 100%; padding: 1rem; border: 1px solid var(--presentation-line); border-inline-start: .45rem solid var(--family-accent); }
+  .prioritizer__status { margin: 0; min-block-size: 1.1rem; font-size: .78rem; color: var(--presentation-muted); }
+
+  [data-solution-prioritizer]:not([data-enhanced='true']) .prioritizer__progress,
+  [data-solution-prioritizer]:not([data-enhanced='true']) .prioritizer__actions,
+  [data-solution-prioritizer]:not([data-enhanced='true']) .prioritizer__summary { display: none; }
+  [data-solution-prioritizer]:not([data-enhanced='true']) .prioritizer__scenario { margin-block-end: .75rem; }
+  [data-solution-prioritizer]:not([data-enhanced='true']) .prioritizer__scenario input { display: none; }
+
+  @media (max-width: 760px) {
+    .prioritizer__progress small { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); }
+    .prioritizer__progress > span { grid-template-columns: 1fr; place-items: center; }
+    .prioritizer__scenario { grid-template-columns: 1fr; }
+    .prioritizer__scenario fieldset,
+    .prioritizer__actions { grid-column: 1; grid-row: auto; }
+    .prioritizer__options { grid-template-columns: 1fr; }
+    .prioritizer__need { grid-template-columns: 3.8rem 1fr 1fr; }
+    .prioritizer__correction { grid-template-columns: 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-solution-prioritizer] * { scroll-behavior: auto; transition-duration: .001ms !important; animation-duration: .001ms !important; }
+  }
+</style>
