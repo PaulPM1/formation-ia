@@ -246,6 +246,18 @@ test("l'ouverture A1 annonce une simulation et conserve son état final sans Jav
   assert.doesNotMatch(training, /candidates\.innerHTML/);
 });
 
+test("l'ouverture A1 masque les tokens futurs sans transition lisible", async () => {
+  const training = await read('src/components/presentation/visuals/a/TrainingPlayback.astro');
+  const tokenRule = training.match(/\.training-playback__sentence span\s*\{([^}]*)\}/s)?.[1] ?? '';
+  const transitions = tokenRule.match(/transition:\s*([^;]*)/)?.[1] ?? '';
+
+  assert.doesNotMatch(transitions, /(?:^|,)\s*color(?:\s|$)/);
+  assert.match(
+    training,
+    /\[data-enhanced='true'\][^{]*span:not\(\[data-revealed='true'\]\)\s*\{[^}]*color:\s*transparent/s,
+  );
+});
+
 test('la comparaison A1 relie contexte, interprétation et suite sans JavaScript', async () => {
   const context = await read('src/components/presentation/visuals/a/ContextComparison.astro');
 
