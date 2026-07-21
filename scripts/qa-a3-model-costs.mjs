@@ -223,6 +223,32 @@ try {
   for (const [name, route] of Object.entries(routes)) {
     await mobilePage.goto(`${baseURL}${route}`, { waitUntil: 'load' });
     await stabilize(mobilePage);
+    if (name === 'models') {
+      for (const tier of ['balance', 'volume', 'exigence']) {
+        await mobilePage.locator(`[data-tier-choice][value="${tier}"]`).check();
+        const hierarchy = await mobilePage.evaluate(() => {
+          const checkedTier = document.querySelector('[data-tier-choice]:checked')?.value ?? '';
+          const visibleRows = [...document.querySelectorAll('[data-tier-row]')]
+            .filter((row) => getComputedStyle(row).display !== 'none');
+          const activeHeading = visibleRows
+            .find((row) => row.dataset.tierRow === checkedTier)
+            ?.querySelector('h3');
+          const controlsTop = document.querySelector('.presentation-controls')?.getBoundingClientRect().top
+            ?? window.innerHeight;
+          return {
+            checkedTier,
+            firstVisibleTier: visibleRows[0]?.dataset.tierRow ?? '',
+            activeHeadingBottom: activeHeading?.getBoundingClientRect().bottom ?? Number.POSITIVE_INFINITY,
+            effectiveViewportBottom: Math.min(window.innerHeight, controlsTop),
+          };
+        });
+        if (hierarchy.firstVisibleTier !== hierarchy.checkedTier
+          || hierarchy.activeHeadingBottom > hierarchy.effectiveViewportBottom + 1) {
+          failures.push(`modèles mobile 390 px : le résultat sélectionné ${hierarchy.checkedTier || 'absent'} n'est pas le premier résultat lisible`);
+        }
+      }
+      await mobilePage.locator('[data-tier-choice][value="balance"]').check();
+    }
     const layout = await inspectLayout(mobilePage);
     checkHorizontalOverflow(layout, `${name} mobile 390 px`);
     if (layout.clippedText.length) {
@@ -284,7 +310,7 @@ try {
   await reduced.close();
 
   const noScript = await browser.newContext({
-    viewport: { width: 1280, height: 720 },
+    viewport: { width: 390, height: 844 },
     javaScriptEnabled: false,
   });
   const noScriptPage = await noScript.newPage();

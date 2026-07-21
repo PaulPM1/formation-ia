@@ -24,14 +24,14 @@ const defaultVolume = 100;
           <legend id={`${slide.id}-models-title`}>{String(data.interaction)}</legend>
           {tiers.map((tier, index) => (
             <label for={`${slide.id}-${tier.id}`}>
-              <input id={`${slide.id}-${tier.id}`} name={`${slide.id}-tier`} type="radio" value={tier.id} checked={index === 1} data-tier-choice />
+              <input id={`${slide.id}-${tier.id}`} name={`${slide.id}-tier`} type="radio" value={tier.id} checked={index === 1} aria-controls={`${slide.id}-${tier.id}-result`} data-tier-choice />
               <span>{tier.label}</span>
             </label>
           ))}
         </fieldset>
         <div class="model-guide__tier-grid" role="list">
           {tiers.map((tier) => (
-            <article role="listitem" data-tier-row={tier.id} data-active={tier.id === 'balance' ? 'true' : 'false'}>
+            <article id={`${slide.id}-${tier.id}-result`} role="listitem" data-tier-row={tier.id} data-active={tier.id === 'balance' ? 'true' : 'false'}>
               <header><h3>{tier.label}</h3><p>{tier.signal}</p></header>
               <ul role="list">{tier.models.map((model) => <li><small>{model.vendor}</small><strong>{model.name}</strong>{model.note && <span>{model.note}</span>}</li>)}</ul>
             </article>
@@ -172,6 +172,7 @@ const defaultVolume = 100;
   @container (max-width: 52rem) {
     .model-guide__tier-grid,
     .model-guide__access { grid-template-columns: 1fr; }
+    .model-guide__scene[data-enhanced='true'] .model-guide__tier-grid article:not([data-active='true']) { display: none; }
     .model-guide__tier-grid ul { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .model-guide__table-wrap { overflow-x: visible; }
     .model-guide__cost-table thead { position: absolute; clip-path: inset(50%); inline-size: 1px; block-size: 1px; overflow: hidden; }
