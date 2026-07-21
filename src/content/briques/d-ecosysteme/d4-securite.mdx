@@ -8,53 +8,110 @@ durationMinutes: 20
 type: concept
 platforms:
   - commun
-prerequisites: []
-status: a-rediger
-owner: a-attribuer
-learningObjective: null
-expectedOutcome: null
+prerequisites:
+  - d1
+status: a-relire
+owner: matthieu
+learningObjective: "Connaître les quatre règles d'or de la sécurité web et savoir les faire appliquer par l'IA avec des prompts prêts à l'emploi."
+expectedOutcome: "Le participant lance un audit de sécurité sur son propre projet, comprend le rapport et fait corriger la faille la plus grave."
 ---
 
 ## Cap
 
-{/* Renseigner l’objectif, les prérequis, la durée et le résultat attendu. */}
+**Objectif :** les réflexes qui évitent qu'un projet en ligne se retourne contre vous, et les prompts prêts à l'emploi pour que Claude les applique à votre place.
+
+- Durée cible : 20 minutes.
+- Prérequis : D1 (clé API, variable d'environnement, front-end et back-end).
+- Résultat attendu : vous connaissez les quatre règles d'or et vous repartez avec deux prompts à réutiliser sur chaque projet.
+
+La sécurité s'apprend sur la durée, pas en vingt minutes. Cette page reste disponible : revenez-y au début de chaque nouveau projet.
 
 ## Concept durable
 
-{/* Présenter la notion indépendamment d’un outil ou d’une interface particulière. */}
+Quatre règles couvrent l'essentiel des dégâts évitables.
+
+**1. Les secrets restent hors du code.** Une clé API est un mot de passe. Elle vit dans un fichier `.env`, jamais dans le code, et ce fichier ne part jamais en ligne : il est listé dans le `.gitignore`, la liste de ce que Git doit ignorer. Une clé qui a fui ne se « supprime » pas : l'historique Git garde tout (D2). Elle se révoque et se remplace.
+
+**2. Le front-end est public, le back-end est le garde.** Tout ce que contient le front est lisible par n'importe qui : le code, mais aussi les requêtes visibles dans le navigateur. Les vérifications qui comptent (droits d'accès, validation) se font côté serveur ; celles du front ne sont que du confort. Aucune donnée sensible dans les URL ni dans les réponses envoyées au navigateur.
+
+**3. Ne jamais faire confiance à ce qui entre.** Toute entrée utilisateur (formulaire, champ de recherche, URL) doit être validée côté serveur : type, taille, contenu. Un champ libre est une porte ; sans validation, elle est grande ouverte.
+
+**4. Poser des limites.** Le rate limiting plafonne le nombre de requêtes par utilisateur et par période. Il bloque les robots et protège votre budget : si votre projet appelle un service payant, une API d'IA par exemple, une absence de limite peut se transformer en facture surprise.
+
+Et la règle qui rend les quatre autres applicables : **vous n'avez pas à les appliquer vous-même, vous devez les faire appliquer**. L'IA écrit du code qui marche, pas forcément du code sûr. Elle sécurise quand on le lui demande. Votre travail n'est pas de connaître chaque technique, c'est de poser la bonne exigence.
 
 ## Pratique avec Claude
 
-{/* Préparer la démonstration ou la manipulation guidée. */}
+Deux prompts à copier tels quels.
+
+Au démarrage de chaque projet :
+
+```text
+Pour tout le code de ce projet, applique ces règles en permanence :
+jamais de clé ni de secret dans le code (fichier .env listé dans le
+.gitignore) ; toute entrée utilisateur validée côté serveur ; aucune
+donnée sensible dans les URL ou les réponses du front ; une limite de
+requêtes sur les routes qui coûtent. Signale-moi tout point du projet
+qui ne respecte pas ces règles.
+```
+
+Avant chaque mise en ligne :
+
+```text
+Fais un audit de sécurité de ce projet comme si tu étais un attaquant.
+Cherche en priorité : des secrets dans le code ou dans l'historique,
+des entrées utilisateur non validées, des données sensibles exposées
+côté front, des routes sans limite de requêtes. Classe ce que tu
+trouves par gravité et propose la correction la plus simple pour
+chaque point.
+```
+
+Copier, coller, lire le rapport : l'essentiel de la brique tient dans ces deux gestes.
 
 ## Mission commune
 
-{/* Définir la consigne commune et sa progression. */}
+1. Lancez le prompt d'audit sur votre projet du fil rouge.
+2. Lisez le rapport et identifiez le point le plus grave.
+3. Faites-le corriger par Claude, puis relancez l'audit pour vérifier que le point a disparu.
+
+**Critère de réussite :** vous savez expliquer à votre voisin la faille trouvée, pourquoi elle est dangereuse et pourquoi la correction la règle.
 
 ## Livrable
 
-{/* Décrire la preuve concrète produite par le participant. */}
+Les deux rapports d'audit de votre projet, avant et après correction, et les deux prompts conservés là où vous les retrouverez.
 
 ## Notes formateur
 
-{/* Préparer le déroulé, les messages essentiels, les pièges et la transition. */}
+- **0–3 min :** annoncer le contrat : rien à mémoriser, quatre règles et deux prompts, la page reste en ligne.
+- **3–10 min :** les quatre règles, une anecdote chacune (la clé qui fuit et la facture, le champ libre non validé).
+- **10–12 min :** démonstration : lancer l'audit sur un projet préparé contenant une clé API dans le code. Le rapport qui la trouve fait plus d'effet que dix slides.
+- **12–18 min :** mission commune sur leurs projets.
+- **18–20 min :** la règle finale (faire appliquer plutôt qu'appliquer) et le renvoi vers la page comme référence.
+
+Ne pas dériver vers le jargon (injection SQL, XSS, certificats) : les quatre règles suffisent à ce niveau, le reste s'apprendra sur les projets. Préparer le projet troué à l'avance et répéter la démonstration. Transition : l'outillage est complet, la suite est la méthode de travail (bloc E).
 
 ## Défis avancés
 
-{/* Ajouter uniquement les extensions destinées aux participants plus rapides. */}
+- Transformez les deux prompts en skill (C1) : une brique de savoir-faire qui applique vos exigences de sécurité sur chaque nouveau projet sans que vous ayez à y penser.
+- Demandez à Claude de simuler une entrée malveillante sur votre formulaire et observez ce que la validation bloque.
+- Demandez ce que signifie « révoquer une clé » chez le fournisseur de votre projet, et faites l'exercice sur une clé de test.
 
 ## Variantes
 
-{/* Prévoir les variantes utiles selon les cas d’usage. */}
+- **Projet sans back-end :** l'audit trouvera peu de choses ; demander alors à Claude ce qui changerait le jour où le projet stockera des données utilisateurs.
+- **Format express :** les quatre règles et la démonstration d'audit, mission à faire chez soi avec les prompts de la page.
 
 ## Dépannage
 
-{/* Lister les blocages prévisibles et leur résolution. */}
+- **« L'audit ne trouve rien » :** possible sur un petit projet ; vérifiez que le prompt complet a été utilisé et demandez « quels risques apparaîtraient si le projet grossissait ? ».
+- **« Une clé traîne dans l'historique Git » :** la retirer du code ne suffit pas ; révoquez-la chez le fournisseur et générez-en une nouvelle, puis mettez le `.env` en place.
+- **« Le rapport est trop technique » :** demandez « réexplique chaque point comme à quelqu'un qui n'a jamais codé, avec le risque concret pour moi ».
 
 ## Ressources
 
-{/* Ajouter les liens, commandes et références nécessaires. */}
+- [Variables d'environnement sur Vercel (documentation officielle)](https://vercel.com/docs/environment-variables)
+- [Retirer des données sensibles d'un repo (GitHub Docs)](https://docs.github.com/fr/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository)
 
 ## Ouverture
 
-{/* Indiquer le prolongement naturel vers une notion plus avancée. */}
+Votre projet est construit, versionné, en ligne et audité. Ce qui reste à acquérir n'est plus de l'outillage : c'est la manière de travailler. Le bloc E commence avec l'art de formuler ses demandes (E1).

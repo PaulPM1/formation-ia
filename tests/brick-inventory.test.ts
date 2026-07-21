@@ -27,7 +27,17 @@ const DRAFTED_BRICK_IDS = [
   'c1',
   'c2',
   'c3',
+  'd1',
+  'd2',
+  'd2-bis',
+  'd3',
+  'd4',
+  'e1',
+  'e2',
+  'e3',
 ] as const;
+
+const DRAFTED_BRICK_OWNERS = new Set(['paul', 'matthieu', 'a-attribuer']);
 
 test('charge exactement les 23 briques fusionnées dans le bon ordre', async () => {
   const documents = await loadBrickDocuments(contentDirectory);
@@ -45,7 +55,7 @@ test('tous les squelettes importés respectent leur structure', async () => {
   assert.deepEqual(validateBrickDocuments(documents), []);
 });
 
-test('les briques A1 à C3 sont rédigées et prêtes à relire', async () => {
+test('les briques rédigées sont complètes et prêtes à relire', async () => {
   const documents = await loadBrickDocuments(contentDirectory);
   const drafted = documents.filter((document) =>
     DRAFTED_BRICK_IDS.includes(
@@ -56,7 +66,7 @@ test('les briques A1 à C3 sont rédigées et prêtes à relire', async () => {
   assert.equal(drafted.length, DRAFTED_BRICK_IDS.length);
   for (const document of drafted) {
     assert.equal(document.data.status, 'a-relire', document.data.id);
-    assert.equal(document.data.owner, 'a-attribuer', document.data.id);
+    assert.ok(DRAFTED_BRICK_OWNERS.has(document.data.owner), document.data.id);
     assert.ok(document.data.learningObjective, document.data.id);
     assert.ok(document.data.expectedOutcome, document.data.id);
     assert.equal(hasVisibleEditorialContent(document.body), true, document.data.id);
@@ -95,7 +105,7 @@ test('la mission A2 propose quatre paires dans l’ordre Code, Chat, Work, Objec
   assert.doesNotMatch(mission, /parmi Claude Chat, ChatGPT Chat/);
 });
 
-test('les briques D1 à F2 restent des gabarits à rédiger', async () => {
+test('les briques restantes demeurent des gabarits à rédiger', async () => {
   const documents = await loadBrickDocuments(contentDirectory);
   const remaining = documents.filter(
     (document) =>
@@ -104,7 +114,7 @@ test('les briques D1 à F2 restent des gabarits à rédiger', async () => {
       ),
   );
 
-  assert.equal(remaining.length, 10);
+  assert.equal(remaining.length, 2);
   assert.equal(
     remaining.some((document) => hasVisibleEditorialContent(document.body)),
     false,
