@@ -3,7 +3,7 @@ import { mkdir } from 'node:fs/promises';
 import { chromium } from 'playwright';
 
 const baseURL = process.env.QA_BASE_URL ?? 'http://127.0.0.1:4380';
-const route = '/presenter/a5/a5-mission/';
+const route = '/presenter/a4/a4-mission/';
 const captureDirectory = new URL('../.context/qa-slides/', import.meta.url);
 const categories = [
   'fait vérifiable',
@@ -166,7 +166,7 @@ const exerciseDisclosure = async ({ javaScriptEnabled, zoom, label, capture, vie
   });
   if (capture) {
     await page.screenshot({
-      path: new URL('a5-mission-correction.png', captureDirectory).pathname,
+      path: new URL('a4-mission-correction.png', captureDirectory).pathname,
       fullPage: true,
     });
   }
@@ -218,5 +218,5 @@ if (failures.length) {
   console.error(failures.join('\n'));
   process.exitCode = 1;
 } else {
-  console.log(`Mission A5 : fermé/ouvert, clavier, zoom 200 %, mobile, no-JS, plein écran, impression, reflow, clipping, navigation et plancher 12 px validés. Figure zoom ${Math.round(zoomResult.open.figureHeight)} px ; contenu ${zoomResult.open.contentClientHeight}/${zoomResult.open.contentScrollHeight} px ; overlap navigation 0.`);
+  console.log(`Mission A4 : fermé/ouvert, clavier, zoom 200 %, mobile, no-JS, plein écran, impression, reflow, clipping, navigation et plancher 12 px validés. Figure zoom ${Math.round(zoomResult.open.figureHeight)} px ; contenu ${zoomResult.open.contentClientHeight}/${zoomResult.open.contentScrollHeight} px ; overlap navigation 0.`);
 }

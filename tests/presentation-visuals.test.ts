@@ -73,7 +73,7 @@ test('les missions denses du bloc A compactent les énoncés au lieu de les fair
   assert.match(css, /\.mission-board--statements \.mission-board__statements/);
 });
 
-test('la mission A5 sépare les affirmations de leur correction native', async () => {
+test('la mission A4 sépare les affirmations de leur correction native', async () => {
   const mission = await read('src/components/presentation/scenes/MissionBoard.astro');
 
   assert.match(mission, /<details class="mission-board__correction">/);
@@ -138,13 +138,13 @@ test('la QA A2 couvre clavier, progression, score, replay, mobile, zoom et repli
   assert.match(qa, /reducedMotion:\s*['"]reduce['"]/);
 });
 
-test('la QA durable A5 ouvre la correction au clavier et exige un reflow au zoom 200 %', async () => {
+test('la QA durable A4 ouvre la correction au clavier et exige un reflow au zoom 200 %', async () => {
   const [qa, packageJson] = await Promise.all([
-    read('scripts/qa-a5-mission.mjs'),
+    read('scripts/qa-a4-mission.mjs'),
     read('package.json'),
   ]);
 
-  assert.match(packageJson, /"qa:a5-mission":\s*"node scripts\/qa-a5-mission\.mjs"/);
+  assert.match(packageJson, /"qa:a4-mission":\s*"node scripts\/qa-a4-mission\.mjs"/);
   assert.match(qa, /document\.documentElement\.style\.zoom = String\(factor\)/);
   assert.match(qa, /page\.keyboard\.press\('Enter'\)/);
   assert.match(qa, /contentScrollHeight > result\.contentClientHeight/);
@@ -357,15 +357,15 @@ test('les visuels polymorphes choisissent une scène propre à chaque forme de d
   const data = (id: string) => slides.find((candidate) => candidate.id === id)?.visual.data ?? {};
 
   assert.equal(state.getVerificationVariant(data('a1-plausible')), 'classification-sequence');
-  assert.equal(state.getVerificationVariant(data('a5-convincing')), 'statements');
-  assert.equal(state.getVerificationVariant(data('a5-biases')), 'biases');
-  assert.equal(state.getVerificationVariant(data('a5-risk')), 'risk');
-  assert.equal(state.getVerificationVariant(data('a5-method')), 'method');
+  assert.equal(state.getVerificationVariant(data('a4-convincing')), 'statements');
+  assert.equal(state.getVerificationVariant(data('a4-biases')), 'biases');
+  assert.equal(state.getVerificationVariant(data('a4-risk')), 'risk');
+  assert.equal(state.getVerificationVariant(data('a4-method')), 'method');
 
-  assert.equal(state.getContextBudgetVariant(data('a4-three-costs')), 'layers');
-  assert.equal(state.getContextBudgetVariant(data('a4-context-meter')), 'meter');
-  assert.equal(state.getContextBudgetVariant(data('a4-agentic')), 'comparison');
-  assert.equal(state.getContextBudgetVariant(data('a4-budget')), 'mission');
+  assert.equal(state.getContextBudgetVariant(data('a3-three-costs')), 'layers');
+  assert.equal(state.getContextBudgetVariant(data('a3-context-meter')), 'meter');
+  assert.equal(state.getContextBudgetVariant(data('a3-agentic')), 'comparison');
+  assert.equal(state.getContextBudgetVariant(data('a3-budget')), 'mission');
 });
 
 test('le checkpoint A1 avance sans dépasser la cinquième affirmation', async () => {
@@ -458,6 +458,13 @@ test('A2 conserve ses comparatifs et corrections sans JavaScript', async () => {
   assert.match(prioritizer, /data-prioritizer-summary/);
   assert.match(prioritizer, /prefers-reduced-motion/);
   assert.match(prioritizer, /:focus-visible/);
+});
+
+test('le prioriteur A2 rend une radio par paire de solutions', async () => {
+  const source = await read('src/components/presentation/visuals/a/SolutionPrioritizer.astro');
+  assert.match(source, /option\.solutions/);
+  assert.match(source, /join\(['"] \/ ['"]\)/);
+  assert.doesNotMatch(source, /option\.ecosystem/);
 });
 
 test('le prédicteur laisse réellement disparaître les tokens futurs', async () => {

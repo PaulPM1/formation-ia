@@ -16,8 +16,8 @@ const contentDirectory = fileURLToPath(
 const DRAFTED_BRICK_IDS = [
   'a1',
   'a2',
+  'a3',
   'a4',
-  'a5',
   'b0',
   'b1',
   'b2',
@@ -62,6 +62,37 @@ test('les briques A1 à C3 sont rédigées et prêtes à relire', async () => {
     assert.equal(hasVisibleEditorialContent(document.body), true, document.data.id);
     assert.doesNotMatch(document.body, /\{\/\*[\s\S]*?\*\/\}/, document.data.id);
   }
+});
+
+test('la mission A2 propose quatre paires dans l’ordre Code, Chat, Work, Object', async () => {
+  const documents = await loadBrickDocuments(contentDirectory);
+  const a2 = documents.find((document) => document.data.id === 'a2');
+  assert.ok(a2);
+
+  const mission = a2.body.match(/## Mission commune([\s\S]*?)## Livrable/)?.[1];
+  assert.ok(mission);
+
+  const pairChoices = mission
+    .split('\n')
+    .filter((line) => line.startsWith('- **'));
+  assert.deepEqual(pairChoices, [
+    '- **Réponse :** Claude Chat / ChatGPT Chat',
+    '- **Objet :** Claude Artifacts / ChatGPT Canvas',
+    '- **Livrable :** Claude Cowork / ChatGPT Work',
+    '- **Projet :** Claude Code / Codex',
+  ]);
+
+  const scenarios = mission
+    .split('\n')
+    .filter((line) => /^\d+\./.test(line));
+  assert.deepEqual(scenarios, [
+    '1. Le dépôt local du site est ouvert dans votre agent de code avec ses consignes. Corrigez le formulaire mobile, lancez les tests et présentez le diff.',
+    '2. Un email client est déjà fourni dans la conversation. Proposez une réponse de cinq lignes sans créer ni modifier de fichier.',
+    "3. Votre espace de travail contient douze entretiens clients. Analysez-les et livrez une synthèse ainsi qu'un tableau de priorités.",
+    '4. Créez un calculateur interactif de budget formation, testez-le puis partagez son aperçu, sans modifier de projet existant.',
+  ]);
+  assert.match(mission, /une seule paire prioritaire/);
+  assert.doesNotMatch(mission, /parmi Claude Chat, ChatGPT Chat/);
 });
 
 test('les briques D1 à F2 restent des gabarits à rédiger', async () => {

@@ -4,9 +4,8 @@ import SceneFrame from '../../scenes/SceneFrame.astro';
 
 interface Option {
   id: string;
-  name: string;
   need: string;
-  ecosystem: string;
+  solutions: string[];
 }
 
 interface Scenario {
@@ -25,8 +24,8 @@ const { slide } = Astro.props;
 const data = slide.visual.data;
 const options = Array.isArray(data.options) ? data.options as Option[] : [];
 const scenarios = Array.isArray(data.scenarios) ? data.scenarios as Scenario[] : [];
-const needs = [...new Set(options.map((option) => option.need))];
-const optionName = (id: string) => options.find((option) => option.id === id)?.name ?? id;
+const optionName = (id: string) => options
+  .find((option) => option.id === id)?.solutions.join(' / ') ?? id;
 ---
 
 <SceneFrame
@@ -60,21 +59,20 @@ const optionName = (id: string) => options.find((option) => option.id === id)?.n
           <fieldset>
             <legend>Quelle solution faut-il prioriser ?</legend>
             <div class="prioritizer__options">
-              {needs.map((need) => (
-                <div class="prioritizer__need" role="group" aria-label={need}>
-                  <strong>{need}</strong>
-                  {options.filter((option) => option.need === need).map((option, optionIndex) => (
-                    <label data-option-label={option.id}>
-                      <input
-                        type="radio"
-                        name={`${slide.id}-scenario-${scenarioIndex}`}
-                        value={option.id}
-                        required={optionIndex === 0}
-                      />
-                      <span><small>{option.ecosystem}</small>{option.name}</span>
-                    </label>
-                  ))}
-                </div>
+              {options.map((option, optionIndex) => (
+                <label
+                  for={`${slide.id}-scenario-${scenarioIndex}-${option.id}`}
+                  data-option-label={option.id}
+                >
+                  <input
+                    id={`${slide.id}-scenario-${scenarioIndex}-${option.id}`}
+                    type="radio"
+                    name={`${slide.id}-scenario-${scenarioIndex}`}
+                    value={option.id}
+                    required={optionIndex === 0}
+                  />
+                  <span><small>{option.need}</small>{option.solutions.join(' / ')}</span>
+                </label>
               ))}
             </div>
           </fieldset>
@@ -237,21 +235,19 @@ const optionName = (id: string) => options.find((option) => option.id === id)?.n
   .prioritizer__scenario fieldset { grid-column: 2; grid-row: 1 / span 2; margin: 0; padding: 0; border: 0; }
   .prioritizer__scenario legend { margin-block-end: .4rem; font-family: var(--font-display); font-size: 1rem; font-weight: 760; }
   .prioritizer__options { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; }
-  .prioritizer__need { display: grid; grid-template-columns: 4.3rem 1fr 1fr; gap: .3rem; align-items: stretch; min-inline-size: 0; }
-  .prioritizer__need > strong { display: grid; place-items: center start; font-family: var(--font-mono); font-size: .75rem; text-transform: uppercase; color: var(--presentation-muted); }
-  .prioritizer__need label { display: grid; grid-template-columns: auto 1fr; gap: .35rem; align-items: center; min-block-size: 3rem; min-inline-size: 0; padding: .32rem .4rem; border: 1px solid var(--presentation-line); cursor: pointer; }
-  .prioritizer__need label:has(input:checked) { border-color: var(--presentation-ink); border-block-end: .22rem solid var(--family-accent); background: color-mix(in srgb, var(--family-accent), transparent 90%); }
-  .prioritizer__need label[data-result='correct'],
-  .prioritizer__need label[data-answer='true'] { outline: .18rem solid #247a4b; outline-offset: -.18rem; }
-  .prioritizer__need label[data-result='correct']::after { content: 'Juste'; font-size: .75rem; font-weight: 800; }
-  .prioritizer__need label[data-result='incorrect'] { outline: .18rem dashed #a83c35; outline-offset: -.18rem; }
-  .prioritizer__need label[data-result='incorrect']::after { content: 'À revoir'; font-size: .75rem; font-weight: 800; }
-  .prioritizer__need input { inline-size: 1.05rem; block-size: 1.05rem; accent-color: var(--presentation-ink); }
-  .prioritizer__need input:focus-visible,
+  .prioritizer__options > label { display: grid; grid-template-columns: auto 1fr; gap: .45rem; align-items: center; min-block-size: 3.5rem; min-inline-size: 0; padding: .42rem .5rem; border: 1px solid var(--presentation-line); cursor: pointer; }
+  .prioritizer__options > label:has(input:checked) { border-color: var(--presentation-ink); border-block-end: .22rem solid var(--family-accent); background: color-mix(in srgb, var(--family-accent), transparent 90%); }
+  .prioritizer__options > label[data-result='correct'],
+  .prioritizer__options > label[data-answer='true'] { outline: .18rem solid #247a4b; outline-offset: -.18rem; }
+  .prioritizer__options > label[data-result='correct']::after { content: 'Juste'; font-size: .75rem; font-weight: 800; }
+  .prioritizer__options > label[data-result='incorrect'] { outline: .18rem dashed #a83c35; outline-offset: -.18rem; }
+  .prioritizer__options > label[data-result='incorrect']::after { content: 'À revoir'; font-size: .75rem; font-weight: 800; }
+  .prioritizer__options input { inline-size: 1.05rem; block-size: 1.05rem; accent-color: var(--presentation-ink); }
+  .prioritizer__options input:focus-visible,
   .prioritizer__actions button:focus-visible,
   .prioritizer__summary button:focus-visible { outline: .22rem solid var(--presentation-focus); outline-offset: .18rem; }
-  .prioritizer__need span { display: grid; min-inline-size: 0; font-size: .78rem; font-weight: 760; line-height: 1.15; }
-  .prioritizer__need small { font-family: var(--font-mono); font-size: .75rem; color: var(--presentation-muted); }
+  .prioritizer__options span { display: grid; min-inline-size: 0; font-size: .78rem; font-weight: 760; line-height: 1.15; }
+  .prioritizer__options small { font-family: var(--font-mono); font-size: .75rem; color: var(--presentation-muted); }
 
   .prioritizer__actions { grid-column: 2; display: flex; justify-content: end; gap: .4rem; }
   .prioritizer__actions button,
@@ -280,7 +276,6 @@ const optionName = (id: string) => options.find((option) => option.id === id)?.n
     .prioritizer__scenario fieldset,
     .prioritizer__actions { grid-column: 1; grid-row: auto; }
     .prioritizer__options { grid-template-columns: 1fr; }
-    .prioritizer__need { grid-template-columns: 3.8rem 1fr 1fr; }
     .prioritizer__correction { grid-template-columns: 1fr; }
   }
 

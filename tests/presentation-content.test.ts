@@ -6,7 +6,7 @@ import { PRESENTATION_DECKS, PRESENTATION_SLIDES } from '../src/presentation/man
 import { validatePresentation } from '../src/presentation/presentation-validation';
 
 const expectedIds = [
-  'a1', 'a2', 'a4', 'a5', 'b0', 'b1', 'b2', 'b3', 'b4', 'b4-bis',
+  'a1', 'a2', 'a3', 'a4', 'b0', 'b1', 'b2', 'b3', 'b4', 'b4-bis',
   'c1', 'c2', 'c3',
 ];
 
@@ -22,16 +22,16 @@ const expectedSlides = [
   { id: 'a2-code', claim: 'Claude Code et Codex travaillent dans un projet et prouvent leurs changements.', visualKey: 'solution-comparison' },
   { id: 'a2-decision', claim: 'Sortie, contexte, action et preuve déterminent la solution minimale.', visualKey: 'solution-comparison' },
   { id: 'a2-prioritize', claim: 'Choisissez une solution par situation, puis justifiez ce qu’elle évite.', visualKey: 'solution-prioritizer' },
-  { id: 'a4-three-costs', claim: "Abonnement, limite d'usage et API sont trois réalités différentes.", visualKey: 'context-budget' },
-  { id: 'a4-context-meter', claim: 'Chaque élément de contexte a un coût et une utilité.', visualKey: 'context-budget' },
-  { id: 'a4-agentic', claim: 'Lire, agir et se corriger multiplie les étapes consommées.', visualKey: 'context-budget' },
-  { id: 'a4-budget', claim: 'Optimiser consiste à fournir le contexte utile une fois.', visualKey: 'context-budget' },
-  { id: 'a4-checkpoint', claim: "Un point d'arrêt évite de relancer sans preuve.", visualKey: 'checkpoint' },
-  { id: 'a5-convincing', claim: 'Une erreur bien formulée reste une erreur.', visualKey: 'verification-audit' },
-  { id: 'a5-biases', claim: 'Nos biais transforment la fluidité en confiance excessive.', visualKey: 'verification-audit' },
-  { id: 'a5-risk', claim: "L'effort de vérification doit suivre le niveau de risque.", visualKey: 'verification-audit' },
-  { id: 'a5-method', claim: "Stop — Source — Test — Décision rend l'incertitude visible.", visualKey: 'verification-audit' },
-  { id: 'a5-mission', claim: 'Auditez une réponse avant de décider.', visualKey: 'mission-board' },
+  { id: 'a3-three-costs', claim: "Abonnement, limite d'usage et API sont trois réalités différentes.", visualKey: 'context-budget' },
+  { id: 'a3-context-meter', claim: 'Chaque élément de contexte a un coût et une utilité.', visualKey: 'context-budget' },
+  { id: 'a3-agentic', claim: 'Lire, agir et se corriger multiplie les étapes consommées.', visualKey: 'context-budget' },
+  { id: 'a3-budget', claim: 'Optimiser consiste à fournir le contexte utile une fois.', visualKey: 'context-budget' },
+  { id: 'a3-checkpoint', claim: "Un point d'arrêt évite de relancer sans preuve.", visualKey: 'checkpoint' },
+  { id: 'a4-convincing', claim: 'Une erreur bien formulée reste une erreur.', visualKey: 'verification-audit' },
+  { id: 'a4-biases', claim: 'Nos biais transforment la fluidité en confiance excessive.', visualKey: 'verification-audit' },
+  { id: 'a4-risk', claim: "L'effort de vérification doit suivre le niveau de risque.", visualKey: 'verification-audit' },
+  { id: 'a4-method', claim: "Stop — Source — Test — Décision rend l'incertitude visible.", visualKey: 'verification-audit' },
+  { id: 'a4-mission', claim: 'Auditez une réponse avant de décider.', visualKey: 'mission-board' },
   { id: 'b0-layers', claim: 'Compte, surface, fonctionnalités et API sont quatre couches distinctes.', visualKey: 'setup-diagnostic' },
   { id: 'b0-diagnostic', claim: 'Le setup commence par un état observable.', visualKey: 'setup-diagnostic' },
   { id: 'b0-test', claim: '« Atelier prêt » prouve que la conversation fonctionne.', visualKey: 'setup-diagnostic' },
@@ -126,20 +126,23 @@ test('contient les 73 étapes de compréhension validées', () => {
   );
 });
 
-test('A2 compare huit solutions et priorise quatre réponses contextualisées', () => {
-  const landscape = PRESENTATION_SLIDES.find((slide) => slide.id === 'a2-landscape');
-  const levels = landscape?.visual.data.levels as Array<{ solutions: string[] }>;
-  assert.deepEqual(levels.flatMap((level) => level.solutions), [
-    'Claude Chat', 'ChatGPT Chat',
-    'Claude Artifacts', 'ChatGPT Canvas',
-    'Claude Cowork', 'ChatGPT Work',
-    'Claude Code', 'Codex',
-  ]);
-
+test('A2 propose quatre paires équivalentes dans un ordre non progressif', () => {
   const exercise = PRESENTATION_SLIDES.find((slide) => slide.id === 'a2-prioritize');
+  const options = exercise?.visual.data.options as Array<{
+    id: string;
+    need: string;
+    solutions: string[];
+  }>;
   const scenarios = exercise?.visual.data.scenarios as Array<{ answer: string }>;
+
+  assert.deepEqual(options, [
+    { id: 'chat', need: 'Réponse', solutions: ['Claude Chat', 'ChatGPT Chat'] },
+    { id: 'object', need: 'Objet', solutions: ['Claude Artifacts', 'ChatGPT Canvas'] },
+    { id: 'work', need: 'Livrable', solutions: ['Claude Cowork', 'ChatGPT Work'] },
+    { id: 'code', need: 'Projet', solutions: ['Claude Code', 'Codex'] },
+  ]);
   assert.deepEqual(scenarios.map((scenario) => scenario.answer), [
-    'chatgpt-chat', 'claude-artifacts', 'chatgpt-work', 'claude-code',
+    'code', 'chat', 'work', 'object',
   ]);
 });
 
@@ -187,7 +190,7 @@ test('le checkpoint A1 contient les cinq affirmations nuancées validées', () =
   ]);
 });
 
-test('conserve les contenus canoniques revus de B0, A5 et P.A.C.T.E.', () => {
+test('conserve les contenus canoniques revus de B0, A4 et P.A.C.T.E.', () => {
   const b0Test = slideData('b0-test');
   assert.match(String(b0Test.prompt), /Atelier prêt/);
   assert.match(String(b0Test.prompt), /date du jour/);
@@ -202,7 +205,7 @@ test('conserve les contenus canoniques revus de B0, A5 et P.A.C.T.E.', () => {
   });
   assert.ok(!pacte.some((item) => item.name === 'Trace'));
 
-  const biases = slideData('a5-biases').biases as Array<{ name: string }>;
+  const biases = slideData('a4-biases').biases as Array<{ name: string }>;
   assert.deepEqual(biases.map((bias) => bias.name), [
     "Biais d'automatisation",
     'Biais de confirmation',
@@ -213,14 +216,14 @@ test('conserve les contenus canoniques revus de B0, A5 et P.A.C.T.E.', () => {
 });
 
 test('emploie des relations qualitatives et un audit fictif concret', () => {
-  for (const slideId of ['a4-context-meter', 'a4-agentic']) {
+  for (const slideId of ['a3-context-meter', 'a3-agentic']) {
     const serialized = JSON.stringify(slideData(slideId));
     for (const unsupportedKey of ['probability', 'size', 'utility', 'reads', 'toolCalls', 'outputs', 'loops']) {
       assert.ok(!serialized.includes(`\"${unsupportedKey}\"`), `${slideId}: ${unsupportedKey}`);
     }
   }
 
-  for (const slideId of ['a5-convincing', 'a5-mission']) {
+  for (const slideId of ['a4-convincing', 'a4-mission']) {
     const statements = slideData(slideId).statements as Array<{ category: string; fictional: boolean; text: string }>;
     assert.equal(statements.length, 5, slideId);
     assert.deepEqual(statements.map((statement) => statement.category), [
