@@ -54,7 +54,7 @@ const defaultVolume = 100;
             <thead><tr><th scope="col">Niveau</th><th scope="col">Modèle</th><th scope="col">Entrée / MTok</th><th scope="col">Sortie / MTok</th><th scope="col">1 dossier</th><th scope="col"><span data-volume-heading>100 dossiers</span></th></tr></thead>
             <tbody>{prices.map((price) => {
               const unit = calculateApiCost(price, workload, 1);
-              return <tr><td>{price.tier}</td><th scope="row"><strong>{price.model}</strong><small>{price.vendor}{price.note ? ` · ${price.note}` : ''}</small></th><td>{formatUsd(price.inputPerMTok)}</td><td>{formatUsd(price.outputPerMTok)}</td><td>{formatUsd(unit)}</td><td><output data-cost-output data-unit-cost={unit}>{formatUsd(unit * defaultVolume)}</output></td></tr>;
+              return <tr><td data-label="Niveau">{price.tier}</td><th scope="row" data-label="Modèle"><strong>{price.model}</strong><small>{price.vendor}{price.note ? ` · ${price.note}` : ''}</small></th><td data-label="Entrée / MTok">{formatUsd(price.inputPerMTok)}</td><td data-label="Sortie / MTok">{formatUsd(price.outputPerMTok)}</td><td data-label="1 dossier">{formatUsd(unit)}</td><td data-label="100 dossiers" data-volume-cost><output data-cost-output data-unit-cost={unit}>{formatUsd(unit * defaultVolume)}</output></td></tr>;
             })}</tbody>
           </table>
         </div>
@@ -91,8 +91,13 @@ const defaultVolume = 100;
 
         if (choice.matches('[data-volume-choice]')) {
           const volume = Number(choice.value);
+          const volumeLabel = `${volume} dossier${volume > 1 ? 's' : ''}`;
           const heading = guide.querySelector<HTMLElement>('[data-volume-heading]');
-          if (heading) heading.textContent = `${volume} dossier${volume > 1 ? 's' : ''}`;
+          if (heading) heading.textContent = volumeLabel;
+
+          guide.querySelectorAll<HTMLElement>('[data-volume-cost]').forEach((volumeCost) => {
+            volumeCost.dataset.label = volumeLabel;
+          });
 
           guide.querySelectorAll<HTMLOutputElement>('[data-cost-output]').forEach((output) => {
             const unitCost = Number(output.dataset.unitCost);
@@ -170,6 +175,7 @@ const defaultVolume = 100;
     .model-guide__cost-table thead { position: absolute; clip-path: inset(50%); inline-size: 1px; block-size: 1px; overflow: hidden; }
     .model-guide__cost-table tr { display: grid; grid-template-columns: 1fr 1fr; }
     .model-guide__cost-table :is(th, td) { min-inline-size: 0; }
+    .model-guide__cost-table tbody :is(th, td)::before { content: attr(data-label); display: block; margin-block-end: .15rem; font-family: var(--font-mono); font-size: .75rem; font-weight: 700; }
   }
 
   @media (prefers-reduced-motion: reduce) {

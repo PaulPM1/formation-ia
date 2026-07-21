@@ -212,6 +212,17 @@ test('A3 utilise des contrôles natifs et conserve ses données sans JavaScript'
   assert.doesNotMatch(visual, /onclick=/);
 });
 
+test('A3 conserve des libellés visibles pour chaque coût au format mobile', async () => {
+  const visual = await read('src/components/presentation/visuals/a/ModelCostGuide.astro');
+
+  assert.match(visual, /<td data-label="Entrée \/ MTok">/);
+  assert.match(visual, /<td data-label="Sortie \/ MTok">/);
+  assert.match(visual, /<td data-label="1 dossier">/);
+  assert.match(visual, /<td data-label="100 dossiers" data-volume-cost>/);
+  assert.match(visual, /content:\s*attr\(data-label\)/);
+  assert.match(visual, /volumeCost\.dataset\.label\s*=\s*volumeLabel/);
+});
+
 test('le registre expose la scène modèles et coûts', async () => {
   const [model, registry] = await Promise.all([
     read('src/presentation/presentation-model.ts'),
