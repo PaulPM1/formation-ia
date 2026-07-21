@@ -20,7 +20,8 @@ test('la séquence relie la première slide à la deuxième', () => {
 test('la fusion A2 rejoint directement A3 et ne conserve aucune route A5', () => {
   const neighbors = getSlideNeighbors(PRESENTATION_SLIDES, 'a2-prioritize');
   const obsoletePrefix = ['a', '5-'].join('');
-  assert.equal(neighbors.next?.id, 'a3-three-costs');
+  assert.equal(neighbors.next?.id, 'a3-model-fit');
+  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'a3-access').next?.id, 'a4-convincing');
   assert.ok(PRESENTATION_SLIDES.every((slide) => !slide.id.startsWith(obsoletePrefix)));
 });
 

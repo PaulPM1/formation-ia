@@ -3,7 +3,6 @@ import test from 'node:test';
 
 import { PRESENTATION_SLIDES } from '../src/presentation/manifests';
 import {
-  CHECKPOINT_FIELD_GROUPS,
   MISSION_FIELD_GROUPS,
   getResourceEmptyState,
   normalizeSceneFields,
@@ -39,13 +38,14 @@ test('normalise chaque champ structuré des manifestes exactement une fois', () 
   }
 });
 
-test('conserve la preuve A3 dans les détails du checkpoint', () => {
-  const current = slide('a3-checkpoint');
-  const partition = partitionSceneFields(current.visual.data, CHECKPOINT_FIELD_GROUPS);
-  const proof = partition.details.find((field) => field.key === 'proof');
+test('conserve la charge de référence et les six tarifs API A3', () => {
+  const current = slide('a3-api-cost');
 
-  assert.deepEqual(proof?.values, ['Critère atteint et résultat vérifié']);
-  assert.deepEqual(partitionKeys(partition).sort(), Object.keys(current.visual.data).sort());
+  assert.deepEqual(current.visual.data.workload, {
+    inputTokens: 100_000,
+    outputTokens: 10_000,
+  });
+  assert.equal((current.visual.data.prices as unknown[]).length, 6);
 });
 
 test('conserve interaction et instruction de mission sans doublon', () => {

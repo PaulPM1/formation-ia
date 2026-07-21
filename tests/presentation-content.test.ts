@@ -22,11 +22,9 @@ const expectedSlides = [
   { id: 'a2-code', claim: 'Claude Code et Codex travaillent dans un projet et prouvent leurs changements.', visualKey: 'solution-comparison' },
   { id: 'a2-decision', claim: 'Sortie, contexte, action et preuve déterminent la solution minimale.', visualKey: 'solution-comparison' },
   { id: 'a2-prioritize', claim: 'Choisissez une solution par situation, puis justifiez ce qu’elle évite.', visualKey: 'solution-prioritizer' },
-  { id: 'a3-three-costs', claim: "Abonnement, limite d'usage et API sont trois réalités différentes.", visualKey: 'context-budget' },
-  { id: 'a3-context-meter', claim: 'Chaque élément de contexte a un coût et une utilité.', visualKey: 'context-budget' },
-  { id: 'a3-agentic', claim: 'Lire, agir et se corriger multiplie les étapes consommées.', visualKey: 'context-budget' },
-  { id: 'a3-budget', claim: 'Optimiser consiste à fournir le contexte utile une fois.', visualKey: 'context-budget' },
-  { id: 'a3-checkpoint', claim: "Un point d'arrêt évite de relancer sans preuve.", visualKey: 'checkpoint' },
+  { id: 'a3-model-fit', claim: 'Le bon modèle dépend du niveau d’exigence.', visualKey: 'model-cost-guide' },
+  { id: 'a3-api-cost', claim: 'Le même dossier coûte de 0,23 à 1,50 $ selon le modèle.', visualKey: 'model-cost-guide' },
+  { id: 'a3-access', claim: 'L’abonnement achète une capacité privilégiée, pas des tokens.', visualKey: 'model-cost-guide' },
   { id: 'a4-convincing', claim: 'Une erreur bien formulée reste une erreur.', visualKey: 'verification-audit' },
   { id: 'a4-biases', claim: 'Nos biais transforment la fluidité en confiance excessive.', visualKey: 'verification-audit' },
   { id: 'a4-risk', claim: "L'effort de vérification doit suivre le niveau de risque.", visualKey: 'verification-audit' },
@@ -115,7 +113,7 @@ test('couvre toutes les briques A1 à C3 dans l’ordre pédagogique', () => {
   assert.deepEqual(PRESENTATION_DECKS.map((deck) => deck.brickId), expectedIds);
 });
 
-test('contient les 73 étapes de compréhension validées', () => {
+test('contient les 71 étapes de compréhension validées', () => {
   assert.deepEqual(
     PRESENTATION_SLIDES.map((slide) => ({
       id: slide.id,
@@ -215,14 +213,35 @@ test('conserve les contenus canoniques revus de B0, A4 et P.A.C.T.E.', () => {
   ]);
 });
 
-test('emploie des relations qualitatives et un audit fictif concret', () => {
-  for (const slideId of ['a3-context-meter', 'a3-agentic']) {
-    const serialized = JSON.stringify(slideData(slideId));
-    for (const unsupportedKey of ['probability', 'size', 'utility', 'reads', 'toolCalls', 'outputs', 'loops']) {
-      assert.ok(!serialized.includes(`\"${unsupportedKey}\"`), `${slideId}: ${unsupportedKey}`);
-    }
-  }
+test('A3 contient trois décisions sans mission ni checkpoint et les tarifs validés', () => {
+  const a3Slides = PRESENTATION_SLIDES.filter((slide) => slide.id.startsWith('a3-'));
+  assert.equal(a3Slides.length, 3);
+  assert.ok(a3Slides.every((slide) => !['mission', 'checkpoint'].includes(slide.role)));
 
+  const tiers = slideData('a3-model-fit').tiers as Array<{
+    models: Array<{ vendor: string }>;
+  }>;
+  assert.equal(tiers.length, 3);
+  assert.ok(tiers.every((tier) => tier.models.length === 3));
+  assert.ok(tiers.every((tier) =>
+    tier.models.map((model) => model.vendor).join(',') === 'Anthropic,OpenAI,Google'
+  ));
+
+  const prices = slideData('a3-api-cost').prices as Array<{
+    inputPerMTok: number;
+    outputPerMTok: number;
+  }>;
+  assert.deepEqual(prices.map(({ inputPerMTok, outputPerMTok }) => ({ inputPerMTok, outputPerMTok })), [
+    { inputPerMTok: 2, outputPerMTok: 10 },
+    { inputPerMTok: 2.5, outputPerMTok: 15 },
+    { inputPerMTok: 1.5, outputPerMTok: 7.5 },
+    { inputPerMTok: 10, outputPerMTok: 50 },
+    { inputPerMTok: 5, outputPerMTok: 30 },
+    { inputPerMTok: 2, outputPerMTok: 12 },
+  ]);
+});
+
+test('conserve un audit fictif concret', () => {
   for (const slideId of ['a4-convincing', 'a4-mission']) {
     const statements = slideData(slideId).statements as Array<{ category: string; fictional: boolean; text: string }>;
     assert.equal(statements.length, 5, slideId);

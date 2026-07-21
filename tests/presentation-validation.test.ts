@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { wikiLink } from '../src/presentation/presentation-links';
+import { externalLink, wikiLink } from '../src/presentation/presentation-links';
 import {
   flattenSlides,
   getSlideNeighbors,
@@ -111,6 +111,17 @@ test('rejette les domaines qui imitent le wiki canonique', () => {
   assert.ok(issue);
   assert.match(issue, /formation-ia-ruby\.vercel\.app\.evil\.example/);
   assert.match(issue, /attendue.*formation-ia-ruby\.vercel\.app/i);
+});
+
+test('accepte les deux hôtes Google officiels utilisés par A3', () => {
+  const googleSources = invalidSlide({
+    links: [
+      externalLink('official', 'Tarification Gemini API', 'https://ai.google.dev/gemini-api/docs/pricing'),
+      externalLink('official', 'Forfaits Google AI', 'https://one.google.com/intl/fr_fr/about/google-ai-plans/'),
+    ],
+  });
+
+  assert.deepEqual(validatePresentation([googleSources]), []);
 });
 
 test('aplatit la séquence et calcule ses voisins', () => {
