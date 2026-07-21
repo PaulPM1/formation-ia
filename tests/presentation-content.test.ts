@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { isTrainingExample } from '../src/components/presentation/visuals/a/training-example';
 
 import { PRESENTATION_DECKS, PRESENTATION_SLIDES } from '../src/presentation/manifests';
 import { validatePresentation } from '../src/presentation/presentation-validation';
@@ -10,10 +11,10 @@ const expectedIds = [
 ];
 
 const expectedSlides = [
-  { id: 'a1-opening', claim: "Une réponse fluide n'est pas une preuve.", visualKey: 'token-predictor' },
+  { id: 'a1-opening', claim: "À l'entraînement, le modèle apprend à prédire la suite.", visualKey: 'token-predictor' },
   { id: 'a1-token-loop', claim: 'Une réponse se construit token après token.', visualKey: 'token-predictor' },
-  { id: 'a1-context', claim: 'Changer le contexte change la suite plausible.', visualKey: 'context-comparison' },
-  { id: 'a1-plausible', claim: 'Plausible et vrai sont deux questions différentes.', visualKey: 'verification-audit' },
+  { id: 'a1-context', claim: 'Le contexte change le sens avant de changer les mots.', visualKey: 'context-comparison' },
+  { id: 'a1-plausible', claim: 'Probable, cohérent et vrai ne désignent pas la même chose.', visualKey: 'verification-audit' },
   { id: 'a1-mission', claim: 'Expliquez, repérez, puis améliorez la consigne.', visualKey: 'mission-board' },
   { id: 'a2-three-modes', claim: 'Réponse, workflow et agent ne délèguent pas la même chose.', visualKey: 'response-workflow-agent' },
   { id: 'a2-response', claim: 'Une réponse transforme du contexte en texte.', visualKey: 'response-workflow-agent' },
@@ -88,6 +89,25 @@ const expectedSlides = [
   { id: 'c3-mission', claim: "Concevez une automatisation que quelqu'un d'autre peut arrêter.", visualKey: 'mission-board' },
 ];
 
+test('A1 résout la même amorce dans deux univers sémantiques', () => {
+  const contextSlide = PRESENTATION_SLIDES.find((slide) => slide.id === 'a1-context');
+  assert.equal(contextSlide?.visual.data.sharedPrompt, 'Le navigateur a ouvert…');
+  assert.deepEqual(contextSlide?.visual.data.contexts, [
+    {
+      label: 'En mer',
+      leadIn: "Le vent se lève, l'équipage quitte le port.",
+      interpretation: 'Un membre de l’équipage',
+      completion: 'les voiles',
+    },
+    {
+      label: 'Sur ordinateur',
+      leadIn: 'La page ne répond plus, il relance Chrome.',
+      interpretation: 'Le logiciel de navigation',
+      completion: 'un nouvel onglet',
+    },
+  ]);
+});
+
 function slideData(slideId: string) {
   const slide = PRESENTATION_SLIDES.find((candidate) => candidate.id === slideId);
   assert.ok(slide, slideId);
@@ -107,6 +127,50 @@ test('contient les 76 étapes de compréhension validées', () => {
     })),
     expectedSlides,
   );
+});
+
+test("l'ouverture A1 fournit une distribution illustrative valide pour chaque token", () => {
+  const opening = PRESENTATION_SLIDES.find((slide) => slide.id === 'a1-opening');
+  const training = opening?.visual.data.trainingExample;
+  assert.ok(isTrainingExample(training));
+
+  assert.equal(training.tokens.length, training.steps.length);
+  training.steps.forEach((step, index) => {
+    assert.equal(step.target, training.tokens[index]);
+    assert.equal(step.candidates.reduce((sum, candidate) => sum + candidate.probability, 0), 100);
+  });
+});
+
+test('le checkpoint A1 contient les cinq affirmations nuancées validées', () => {
+  const checkpoint = PRESENTATION_SLIDES.find((slide) => slide.id === 'a1-plausible');
+  const statements = checkpoint?.visual.data.statements as Array<{ text: string; answer: string; reason: string }>;
+  assert.deepEqual(statements, [
+    {
+      text: "Une erreur souvent répétée peut être plus probable qu'une vérité rarement formulée.",
+      answer: 'Exacte',
+      reason: 'La fréquence des formulations influence la plausibilité statistique ; elle ne constitue pas une preuve.',
+    },
+    {
+      text: "Le mot généré n'est pas nécessairement celui qui avait la probabilité la plus élevée.",
+      answer: 'À vérifier',
+      reason: "Cela dépend du décodage : l'échantillonnage peut retenir un token moins probable ; le décodage glouton choisit le premier.",
+    },
+    {
+      text: 'Répéter une information dans le contexte peut renforcer son influence sans la rendre plus vraie.',
+      answer: 'Exacte',
+      reason: 'La répétition renforce le signal présent dans le contexte, sans modifier la réalité extérieure.',
+    },
+    {
+      text: "Quand un LLM justifie sa réponse, il ne restitue pas forcément le calcul qui l'a réellement produite.",
+      answer: 'Exacte',
+      reason: "Une justification générée peut être utile, mais elle n'est pas une lecture garantie des opérations internes du modèle.",
+    },
+    {
+      text: 'Des mots plausibles pris un par un ne garantissent pas une réponse cohérente dans son ensemble.',
+      answer: 'Exacte',
+      reason: 'La prédiction est locale ; la cohérence globale doit encore être construite et contrôlée sur toute la réponse.',
+    },
+  ]);
 });
 
 test('conserve les contenus canoniques revus de B0, A5 et P.A.C.T.E.', () => {
@@ -135,7 +199,7 @@ test('conserve les contenus canoniques revus de B0, A5 et P.A.C.T.E.', () => {
 });
 
 test('emploie des relations qualitatives et un audit fictif concret', () => {
-  for (const slideId of ['a1-opening', 'a4-context-meter', 'a4-agentic']) {
+  for (const slideId of ['a4-context-meter', 'a4-agentic']) {
     const serialized = JSON.stringify(slideData(slideId));
     for (const unsupportedKey of ['probability', 'size', 'utility', 'reads', 'toolCalls', 'outputs', 'loops']) {
       assert.ok(!serialized.includes(`\"${unsupportedKey}\"`), `${slideId}: ${unsupportedKey}`);

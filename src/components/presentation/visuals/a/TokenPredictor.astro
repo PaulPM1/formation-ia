@@ -1,6 +1,8 @@
 ---
 import type { RoutedSlide } from '../../../../presentation/presentation-model';
 import SceneFrame from '../../scenes/SceneFrame.astro';
+import TrainingPlayback from './TrainingPlayback.astro';
+import { isTrainingExample } from './training-example';
 
 interface Candidate {
   token: string;
@@ -23,6 +25,7 @@ const cleanTokens = tokens.filter(Boolean);
 const fullSentence = cleanTokens.join('');
 const loop = Array.isArray(data.loop) ? data.loop.map(String) : [];
 const descriptionId = `${slide.id}-token-description`;
+const trainingExample = isTrainingExample(data.trainingExample) ? data.trainingExample : null;
 ---
 
 <SceneFrame
@@ -31,6 +34,9 @@ const descriptionId = `${slide.id}-token-description`;
   visualKey={slide.visual.key}
   class="token-predictor"
 >
+  {trainingExample ? (
+    <TrainingPlayback slide={slide} training={trainingExample} />
+  ) : (
   <div
     class="token-predictor__scene"
     data-token-predictor
@@ -91,6 +97,7 @@ const descriptionId = `${slide.id}-token-description`;
     )}
 
   </div>
+  )}
 </SceneFrame>
 
 <script>

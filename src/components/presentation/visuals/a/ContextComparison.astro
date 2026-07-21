@@ -3,9 +3,10 @@ import type { RoutedSlide } from '../../../../presentation/presentation-model';
 import SceneFrame from '../../scenes/SceneFrame.astro';
 
 interface ContextOption {
-  audience: string;
-  constraints: string;
-  vocabulary: string;
+  label: string;
+  leadIn: string;
+  interpretation: string;
+  completion: string;
 }
 
 interface Props {
@@ -26,7 +27,7 @@ const laneId = `${slide.id}-prediction-lane`;
 >
   <div class="context-comparison__scene" data-context-comparison>
     <div class="context-comparison__source">
-      <p class="scene-label">Même demande</p>
+      <p class="scene-label">Même amorce</p>
       <blockquote>{String(data.sharedPrompt ?? slide.claim)}</blockquote>
       <div class="context-comparison__switch" aria-label={String(data.interaction ?? 'Choisir un contexte')}>
         {contexts.map((context, index) => (
@@ -38,7 +39,7 @@ const laneId = `${slide.id}-prediction-lane`;
             data-context-option={index}
           >
             <span aria-hidden="true">{index === 0 ? '●' : '◆'}</span>
-            {context.audience}
+            {context.label}
           </button>
         ))}
       </div>
@@ -51,14 +52,15 @@ const laneId = `${slide.id}-prediction-lane`;
     <div class="context-comparison__lanes" aria-live="polite">
       {contexts.map((context, index) => (
         <section id={`${laneId}-${index}`} class="context-comparison__lane" data-context-panel={index}>
-          <p class="scene-label">Suite orientée par le contexte</p>
-          <h2>{context.audience}</h2>
-          <dl>
-            <div><dt>Format</dt><dd>{context.constraints}</dd></div>
-            <div><dt>Vocabulaire</dt><dd>{context.vocabulary}</dd></div>
-          </dl>
+          <p class="scene-label">Contexte précédent</p>
+          <p class="context-comparison__lead-in">{context.leadIn}</p>
+          <p class="context-comparison__meaning">
+            <span>Interprétation</span>
+            <strong>{context.interpretation}</strong>
+          </p>
           <p class="context-comparison__prediction">
-            Une explication en {context.constraints}, avec « {context.vocabulary} ».
+            <span>{String(data.sharedPrompt ?? '')}</span>
+            <mark>{context.completion}</mark>
           </p>
         </section>
       ))}
@@ -110,7 +112,12 @@ const laneId = `${slide.id}-prediction-lane`;
     min-inline-size: 0;
   }
 
-  .context-comparison__lanes { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; min-inline-size: 0; }
+  .context-comparison__lanes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .7rem;
+    min-inline-size: 0;
+  }
   [data-enhanced='true'] .context-comparison__lanes { grid-template-columns: 1fr; }
   .context-comparison__lane[hidden] { display: none; }
 
@@ -170,29 +177,52 @@ const laneId = `${slide.id}-prediction-lane`;
   }
 
   .context-comparison__lane {
-    padding: clamp(0.85rem, 1.8vw, 1.5rem);
-    border-inline-start: 0.35rem solid var(--family-accent);
+    display: grid;
+    gap: .65rem;
+    align-content: center;
+    min-inline-size: 0;
+    padding: clamp(.8rem, 1.8vw, 1.4rem);
+    border-inline-start: .35rem solid var(--family-accent);
     background: color-mix(in srgb, var(--family-accent), transparent 86%);
   }
 
-  .context-comparison__lane h2 {
+  .context-comparison__lead-in {
+    margin: 0;
+    font-size: clamp(.95rem, .88rem + .25vw, 1.1rem);
+  }
+
+  .context-comparison__meaning {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: .5rem;
+    margin: 0;
+    padding-block: .45rem;
+    border-block: 1px solid var(--presentation-line);
+  }
+
+  .context-comparison__meaning span {
+    color: var(--presentation-muted);
+    font-family: var(--font-mono);
+    font-size: .78rem;
+    text-transform: uppercase;
+  }
+
+  .context-comparison__prediction {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem;
+    align-items: baseline;
     margin: 0;
     font-family: var(--font-display);
-    font-size: clamp(1.35rem, 1.05rem + 0.8vw, 2.1rem);
-    line-height: 1;
+    font-size: clamp(1.15rem, 1rem + .5vw, 1.55rem);
+    font-weight: 720;
   }
 
-  .context-comparison__lane dl {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.7rem;
-    margin: 0;
+  .context-comparison__prediction mark {
+    padding: .08em .2em;
+    background: var(--family-accent);
+    color: var(--presentation-ink);
   }
-
-  .context-comparison__lane dl div { border-block-start: 1px solid var(--presentation-line); padding-block-start: 0.4rem; }
-  .context-comparison__lane dt { color: var(--presentation-muted); font-family: var(--font-mono); font-size: 0.82rem; text-transform: uppercase; }
-  .context-comparison__lane dd { margin: 0; font-weight: 680; }
-  .context-comparison__prediction { margin: 0; font-size: clamp(0.9rem, 0.8rem + 0.28vw, 1.05rem); }
 
   .context-comparison__observation {
     display: flex;
@@ -207,6 +237,8 @@ const laneId = `${slide.id}-prediction-lane`;
 
   @media (max-width: 52rem) {
     .context-comparison__scene { grid-template-columns: 1fr; grid-template-rows: auto; }
+    .context-comparison__lanes { grid-template-columns: 1fr; }
+    .context-comparison__meaning { grid-template-columns: 1fr; }
     .context-comparison__connector { inline-size: 0.25rem; block-size: 2.4rem; margin-inline: auto; }
     .context-comparison__connector::after { inset-block-start: auto; inset-block-end: 0; inset-inline-end: 50%; transform: translateX(50%) rotate(135deg); }
   }

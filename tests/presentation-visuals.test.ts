@@ -203,13 +203,140 @@ test('les interactions du bloc A produisent des états pédagogiques déterminis
   ]), 'Source + contre-lecture');
 });
 
+test("la démonstration d'entraînement parcourt prédiction, comparaison et ajustement", async () => {
+  const state = await import('../src/components/presentation/visuals/a/visual-state');
+
+  assert.deepEqual(
+    state.advanceTrainingPlayback({ tokenIndex: 0, phase: 'predict', complete: false }, 3),
+    { tokenIndex: 0, phase: 'compare', complete: false },
+  );
+  assert.deepEqual(
+    state.advanceTrainingPlayback({ tokenIndex: 0, phase: 'compare', complete: false }, 3),
+    { tokenIndex: 0, phase: 'adjust', complete: false },
+  );
+  assert.deepEqual(
+    state.advanceTrainingPlayback({ tokenIndex: 0, phase: 'adjust', complete: false }, 3),
+    { tokenIndex: 1, phase: 'predict', complete: false },
+  );
+  assert.deepEqual(
+    state.advanceTrainingPlayback({ tokenIndex: 2, phase: 'adjust', complete: false }, 3),
+    { tokenIndex: 2, phase: 'adjust', complete: true },
+  );
+  assert.deepEqual(
+    state.advanceTrainingPlayback({ tokenIndex: 2, phase: 'adjust', complete: true }, 3),
+    { tokenIndex: 0, phase: 'predict', complete: false },
+  );
+});
+
+test("l'ouverture A1 annonce une simulation et conserve son état final sans JavaScript", async () => {
+  const [token, training] = await Promise.all([
+    read('src/components/presentation/visuals/a/TokenPredictor.astro'),
+    read('src/components/presentation/visuals/a/TrainingPlayback.astro'),
+  ]);
+
+  assert.match(token, /trainingExample/);
+  assert.match(training, /Simulation pédagogique/);
+  assert.match(training, /data-training-playback/);
+  assert.match(training, /data-training-toggle/);
+  assert.match(training, /<ol class="training-playback__cycle"/);
+  assert.match(training, /prefers-reduced-motion/);
+  assert.match(training, /Prédire/);
+  assert.match(training, /Comparer/);
+  assert.match(training, /Ajuster/);
+  assert.doesNotMatch(training, /candidates\.innerHTML/);
+});
+
+test("l'ouverture A1 masque les tokens futurs sans transition lisible", async () => {
+  const training = await read('src/components/presentation/visuals/a/TrainingPlayback.astro');
+  const tokenRule = training.match(/\.training-playback__sentence span\s*\{([^}]*)\}/s)?.[1] ?? '';
+  const transitions = tokenRule.match(/transition:\s*([^;]*)/)?.[1] ?? '';
+  const transitionProperties = tokenRule.match(/transition-property:\s*([^;]*)/)?.[1] ?? '';
+
+  assert.doesNotMatch(transitions, /(?:^|,)\s*(?:all|color)(?:\s|$)/);
+  assert.doesNotMatch(transitionProperties, /(?:^|,)\s*(?:all|color)\s*(?:,|$)/);
+  assert.match(
+    training,
+    /\[data-enhanced='true'\][^{]*span:not\(\[data-revealed='true'\]\)\s*\{[^}]*color:\s*transparent/s,
+  );
+});
+
+test("l'ouverture A1 partage un contrat validé pour son exemple d'entraînement", async () => {
+  const contract = await import('../src/components/presentation/visuals/a/training-example').catch(() => null);
+  assert.ok(contract, "le contrat d'entraînement partagé doit exister");
+  const opening = A_DECKS.flatMap((deck) => deck.slides).find((slide) => slide.id === 'a1-opening');
+  assert.equal(contract.isTrainingExample(opening?.visual.data.trainingExample), true);
+
+  const [token, training] = await Promise.all([
+    read('src/components/presentation/visuals/a/TokenPredictor.astro'),
+    read('src/components/presentation/visuals/a/TrainingPlayback.astro'),
+  ]);
+  assert.match(token, /isTrainingExample/);
+  assert.match(training, /TrainingExample/);
+  assert.match(training, /isTrainingExample\(trainingExample\)/);
+  assert.doesNotMatch(training, /trainingExample\s+as\s+\{/);
+  assert.doesNotMatch(training, /JSON\.parse\([^\n]+\)\s+as\s+/);
+});
+
+test('la comparaison A1 relie contexte, interprétation et suite sans JavaScript', async () => {
+  const context = await read('src/components/presentation/visuals/a/ContextComparison.astro');
+
+  assert.match(context, /context\.leadIn/);
+  assert.match(context, /context\.interpretation/);
+  assert.match(context, /context\.completion/);
+  assert.match(context, /data-context-panel/);
+  assert.match(context, /aria-pressed/);
+});
+
+test("l'entraînement annule son timeout et son écouteur de mouvement avant chaque transition Astro", async () => {
+  const training = await read('src/components/presentation/visuals/a/TrainingPlayback.astro');
+
+  assert.match(training, /const cleanup = \(\) => \{[\s\S]*?window\.clearTimeout\(timer\)/);
+  assert.match(training, /motionPreference\.removeEventListener\('change', handleMotionPreference\)/);
+  assert.match(training, /document\.addEventListener\('astro:before-swap', cleanup, \{ once: true \}\)/);
+});
+
+test("le bouton d'entraînement utilise le focus contrasté de la présentation", async () => {
+  const training = await read('src/components/presentation/visuals/a/TrainingPlayback.astro');
+
+  assert.match(
+    training,
+    /\.training-playback button:focus-visible\s*{[^}]*var\(--presentation-focus\)/s,
+  );
+  assert.doesNotMatch(
+    training,
+    /\.training-playback button:focus-visible\s*{[^}]*var\(--family-accent\)/s,
+  );
+});
+
+test("la QA durable A1 couvre autoplay, pause, repli et nettoyage des timers", async () => {
+  const [qa, packageJson] = await Promise.all([
+    read('scripts/qa-a1-training.mjs'),
+    read('package.json'),
+  ]);
+
+  assert.match(packageJson, /"qa:a1-training":\s*"node scripts\/qa-a1-training\.mjs"/);
+  assert.match(qa, /javaScriptEnabled:\s*false/);
+  assert.match(qa, /reducedMotion:\s*'reduce'/);
+  assert.match(qa, /data-training-status/);
+  assert.match(qa, /data-training-toggle/);
+  assert.match(qa, /data-training-playback/);
+  assert.match(qa, /data-next/);
+  assert.match(qa, /data-previous/);
+  assert.match(qa, /trainingTimerCount/);
+  assert.match(qa, /outlineColor/);
+  assert.match(qa, /emulateMedia\(\{ reducedMotion: 'reduce' \}\)/);
+  assert.match(qa, /training-playback__sentence[\s\S]*isVisible/);
+  assert.match(qa, /training-playback__cycle[\s\S]*isVisible/);
+  assert.match(qa, /transitionProperty/);
+});
+
 test('les visuels polymorphes choisissent une scène propre à chaque forme de données', async () => {
   const state = await import('../src/components/presentation/visuals/a/visual-state').catch(() => null);
   assert.ok(state, 'les helpers d’état du bloc A doivent exister');
   const slides = A_DECKS.flatMap((deck) => deck.slides);
   const data = (id: string) => slides.find((candidate) => candidate.id === id)?.visual.data ?? {};
 
-  assert.equal(state.getVerificationVariant(data('a1-plausible')), 'classification');
+  assert.equal(state.getVerificationVariant(data('a1-plausible')), 'classification-sequence');
   assert.equal(state.getVerificationVariant(data('a5-convincing')), 'statements');
   assert.equal(state.getVerificationVariant(data('a5-biases')), 'biases');
   assert.equal(state.getVerificationVariant(data('a5-risk')), 'risk');
@@ -219,6 +346,50 @@ test('les visuels polymorphes choisissent une scène propre à chaque forme de d
   assert.equal(state.getContextBudgetVariant(data('a4-context-meter')), 'meter');
   assert.equal(state.getContextBudgetVariant(data('a4-agentic')), 'comparison');
   assert.equal(state.getContextBudgetVariant(data('a4-budget')), 'mission');
+});
+
+test('le checkpoint A1 avance sans dépasser la cinquième affirmation', async () => {
+  const state = await import('../src/components/presentation/visuals/a/visual-state');
+  assert.equal(state.advanceClassificationSequence(0, 5), 1);
+  assert.equal(state.advanceClassificationSequence(4, 5), 4);
+  assert.equal(state.advanceClassificationSequence(0, 0), 0);
+});
+
+test('le checkpoint A1 expose cinq corrections natives hors JavaScript', async () => {
+  const audit = await read('src/components/presentation/visuals/a/VerificationAudit.astro');
+  assert.match(audit, /classification-sequence/);
+  assert.match(audit, /data-sequence-panel/);
+  assert.match(audit, /data-sequence-next/);
+  assert.match(audit, /<details class="audit__sequence-fallback"/);
+  assert.match(audit, /statement\.reason/);
+});
+
+test('le checkpoint A1 transfère le focus seulement après une progression demandée', async () => {
+  const audit = await read('src/components/presentation/visuals/a/VerificationAudit.astro');
+  assert.match(audit, /const renderPanel = \(focusChoice = false\)/);
+  assert.match(audit, /if \(focusChoice\) choices\[0\]\?\.focus\(\)/);
+  assert.match(audit, /renderPanel\(true\)/);
+  assert.match(audit, /renderPanel\(\);\s*return;/);
+});
+
+test('la QA durable du checkpoint A1 protège son verrou, son focus, son replay et son repli', async () => {
+  const [qa, packageJson] = await Promise.all([
+    read('scripts/qa-a1-checkpoint.mjs'),
+    read('package.json'),
+  ]);
+
+  assert.match(packageJson, /"qa:a1-checkpoint":\s*"node scripts\/qa-a1-checkpoint\.mjs"/);
+  assert.match(qa, /a1-plausible/);
+  assert.match(qa, /document\.activeElement/);
+  assert.match(qa, /data-sequence-choice/);
+  assert.match(qa, /data-sequence-reveal/);
+  assert.match(qa, /data-sequence-next/);
+  assert.match(qa, /Rejouer le checkpoint/);
+  assert.match(qa, /javaScriptEnabled:\s*false/);
+  assert.match(qa, /audit__sequence-fallback/);
+  assert.match(qa, /outlineColor/);
+  assert.match(qa, /outlineStyle/);
+  assert.match(qa, /outlineWidth/);
 });
 
 test('la progression conserve tout le contenu sans JavaScript puis isole le panneau actif', async () => {
