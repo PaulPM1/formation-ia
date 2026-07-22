@@ -34,11 +34,11 @@ function wikiLink(href: string): PresentationLink {
   };
 }
 
-test('contrôle les 105 slides et leurs cibles wiki sans accès réseau', async () => {
+test('contrôle les 110 slides et leurs cibles wiki sans accès réseau', async () => {
   const documents = await loadBrickDocuments(contentDirectory);
   const result = await checkPresentation(PRESENTATION_DECKS, documents);
 
-  assert.equal(result.slideCount, 105);
+  assert.equal(result.slideCount, 110);
   assert.deepEqual(result.issues, []);
 });
 
