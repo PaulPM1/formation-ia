@@ -1,7 +1,7 @@
 import { z } from 'astro/zod';
 
 export const BRICK_FAMILIES = ['a', 'b', 'c', 'd', 'e', 'f'] as const;
-export const BRICK_PRIORITIES = ['socle', 'bonus', 'facultatif', 'a-trancher'] as const;
+export const BRICK_PRIORITIES = ['socle', 'bonus', 'facultatif', 'rattrapage', 'a-trancher'] as const;
 export const BRICK_TYPES = [
   'concept',
   'demonstration',

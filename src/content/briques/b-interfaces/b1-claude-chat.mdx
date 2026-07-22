@@ -4,7 +4,7 @@ title: "Claude Chat"
 family: b
 order: 6
 priority: socle
-durationMinutes: 10
+durationMinutes: 12
 type: demonstration
 platforms:
   - commun
@@ -12,109 +12,100 @@ prerequisites:
   - b0
 status: a-relire
 owner: a-attribuer
-learningObjective: "Structurer une demande avec objectif, contexte, contraintes et forme attendue, puis l'améliorer par itération."
-expectedOutcome: "Le participant obtient une réponse exploitable à partir d'un prompt réutilisable et l'évalue avec des critères explicites."
+learningObjective: "Transformer six notes en brief traçable grâce à un prompt en quatre blocs, puis corriger sa longueur sans perdre les sources ni l’incertitude."
+expectedOutcome: "Le participant obtient trois sections, une source par action et un conflit conservé sous À confirmer, puis une version de six lignes."
 ---
 
 ## Cap
 
-**Objectif :** passer de « pose une question » à « construis une collaboration vérifiable ».
+**Objectif :** produire en 12 minutes un brief du jour vérifiable à partir des six notes du kit.
 
-- Durée cible : 10 minutes.
-- Prérequis : B0, accès à Claude validé.
-- Résultat attendu : un prompt en quatre blocs et une réponse améliorée en une itération.
+- 2 minutes : demande vague et hypothèses.
+- 2 minutes : quatre blocs du brief.
+- 6 minutes : mission individuelle avec `prompts/01-chat.md`.
+- 2 minutes : correction standard et contrôle.
 
 ## Concept durable
 
-Un bon prompt n'est pas une formule magique. C'est un **brief** qui réduit les interprétations inutiles. Quatre blocs suffisent souvent :
+« Organise mes notes » ne précise ni le résultat, ni les sources, ni le traitement des contradictions. Chat doit alors inventer le brief.
 
-1. **Objectif :** quel résultat voulez-vous obtenir et pour quel usage ?
-2. **Contexte :** quelles informations Claude doit-il connaître pour travailler ?
-3. **Contraintes :** que faut-il respecter, éviter ou vérifier ?
-4. **Forme attendue :** tableau, plan, brouillon, longueur, ton ou critères.
+Quatre blocs rendent la demande testable :
 
-La première réponse est un point de départ. Une boucle efficace consiste à évaluer, signaler l'écart le plus important, demander une modification précise puis vérifier à nouveau. Ouvrez un nouveau fil lorsque l'objectif change réellement.
+1. **Objectif :** un brief opérationnel du jour.
+2. **Contexte :** six notes fictives dans trois fichiers.
+3. **Contraintes :** une source par action, aucune invention, conflit non tranché.
+4. **Forme :** `Actions du jour`, `À confirmer`, `Plus tard`.
 
 ## Pratique avec Claude
 
-Commencez par une demande vague :
+Joignez les trois fichiers de `kits/bloc-b-assistant/inbox/`. Ouvrez ensuite `kits/bloc-b-assistant/prompts/01-chat.md` et copiez le prompt principal.
 
-```text
-Aide-moi à mieux m'organiser.
-```
-
-Puis utilisez les quatre blocs :
-
-```text
-Objectif : construire un planning réaliste pour préparer une présentation vendredi.
-Contexte : j'ai 3 créneaux de 45 minutes et le plan existe déjà.
-Contraintes : prévoir une répétition ; pas de travail jeudi soir ; 3 priorités maximum.
-Forme attendue : un tableau créneau / résultat / preuve de fin, puis un risque à surveiller.
-Avant de répondre, pose une seule question si une information indispensable manque.
-```
-
-Évaluez la différence : précision, actions visibles, respect des contraintes et facilité de vérification.
+La sortie doit couvrir les six identifiants N01 à N06. Chaque action reçoit un chemin de source. La contradiction entre le 18 et le 19 septembre reste explicitement sous `À confirmer`.
 
 ## Mission commune
 
-1. Choisissez une tâche réelle mais non sensible.
-2. Rédigez les quatre blocs.
-3. Envoyez le prompt et notez l'écart principal entre la réponse et votre besoin.
-4. Demandez une seule correction ciblée.
-5. Conservez la version finale et le critère qui prouve qu'elle est meilleure.
+1. Envoyez le prompt principal de `prompts/01-chat.md`.
+2. Vérifiez les trois sections dans l’ordre.
+3. Pointez la source de chaque action.
+4. Vérifiez que Claude n’a choisi ni le 18 ni le 19 septembre.
+5. Si tout passe, envoyez la correction standard du même fichier.
+6. Comptez six lignes de contenu, hors titres, puis refaites les trois contrôles.
 
-**Critère de réussite :** une autre personne comprend l'usage de la réponse sans vous demander ce que vous vouliez obtenir.
+## Critères de réussite
+
+- Les six notes sont couvertes.
+- Les sections sont `Actions du jour`, `À confirmer`, `Plus tard`.
+- Chaque action cite son fichier source.
+- L’échéance contradictoire reste à confirmer.
+- La correction standard produit six lignes de contenu sans perdre ces garanties.
 
 ## Livrable
 
-Un prompt réutilisable, la réponse finale et une phrase d'évaluation : « Cette version est meilleure parce que… ».
+Le prompt copié depuis `prompts/01-chat.md` et le brief final de six lignes, avec sources et incertitude visibles.
 
 ## Notes formateur
 
-- Montrer la demande vague sans la ridiculiser : elle sert à rendre les hypothèses visibles.
-- Faire repérer les quatre blocs à l'écran avec quatre couleurs.
-- Insister sur l'évaluation : un prompt détaillé n'est pas automatiquement un bon prompt.
-- Si le temps manque, réaliser la première itération collectivement.
-
-Transition : lorsqu'une sortie devient un objet autonome à modifier et tester, elle gagne à sortir du simple fil de discussion.
+- De 00:00 à 02:00 : envoyer « Organise mes notes » et relever les quatre hypothèses.
+- De 02:00 à 04:00 : assembler Objectif, Contexte, Contraintes et Forme.
+- De 04:00 à 10:00 : ouvrir `prompts/01-chat.md` et lancer la mission.
+- Couper la génération à 08:00 dans B1, puis passer à l’audit.
+- Couper B1 à 12:00.
+- Repli : ouvrir `kits/bloc-b-assistant-formateur/corriges/brief-chat-6-lignes.md` et faire contrôler sources, conflit et longueur.
 
 ## Défis avancés
 
-- Demandez à Claude de proposer deux stratégies opposées avant de recommander.
-- Ajoutez une grille d'évaluation avec trois critères et faites auto-critiquer la réponse.
-- Produisez un résumé de passation pour poursuivre dans un nouveau fil sans copier tout l'historique.
+- Repérer une formulation qui semble plausible mais n’existe dans aucune note.
+- Faire réduire le texte à quatre lignes et expliquer quelle garantie devient difficile à préserver.
 
 ## Variantes
 
-- **Écriture :** email, note de synthèse ou plan d'article.
-- **Analyse :** comparaison de trois options selon une grille fournie.
-- **Apprentissage :** explication suivie de trois questions de vérification.
+- **Sans pièce jointe :** copier les trois contenus de `inbox/` avant le prompt.
+- **Génération lente :** auditer directement la correction formateur.
+- **Réponse trop longue :** utiliser uniquement la correction standard, sans réécrire le prompt complet.
 
 ## Dépannage
 
-- **Claude pose trop de questions :** autorisez une seule question indispensable ou demandez des hypothèses explicites.
-- **La réponse ignore une contrainte :** citez la contrainte omise et demandez une révision, sans réécrire tout le brief.
-- **Le fil dérive :** résumez objectif, décisions et reste à faire, puis repartez dans une nouvelle conversation.
+- **Une source manque :** citer l’action concernée et demander de restaurer sa source sans autre changement.
+- **Le conflit est tranché :** demander de replacer les deux dates sous `À confirmer`.
+- **Une note disparaît :** fournir son identifiant N01 à N06 et demander une correction ciblée.
 
 ## Ressources
 
-- [Vue d'ensemble de l'ingénierie de prompt — Anthropic](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview)
-- [Centre d'aide Claude](https://support.claude.com/en/)
+- [Vue d’ensemble de l’ingénierie de prompt](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview)
+- [Ouvrir Claude](https://claude.ai/)
 
 ## Ouverture
 
-Le chat est idéal pour cadrer et itérer. La prochaine brique transforme le brief en contenu ou mini-outil autonome dans un Artifact.
+Le brief est traçable mais reste une réponse dans un fil. B2 le transforme en objet interactif que l’on peut réellement tester.
 
 ## Scénario de démonstration
 
-Point de départ : une participante doit préparer une présentation vendredi et demande seulement « aide-moi à mieux m'organiser ». Le formateur montre la réponse générique, construit le brief en quatre blocs, puis demande une correction sur la charge du dernier créneau.
-
-Résultat visible : un tableau de trois créneaux, chacun associé à un résultat et à une preuve de fin.
+Le formateur compare « Organise mes notes » au prompt de `prompts/01-chat.md`, puis montre que le 18 et le 19 septembre doivent rester visibles comme contradiction.
 
 ## Déroulé de démonstration
 
-1. Envoyer la demande vague et relever deux hypothèses prises par Claude.
-2. Coller le brief structuré.
-3. Vérifier chaque contrainte devant le groupe.
-4. Demander : « Le dernier créneau est trop chargé. Garde les contraintes et déplace la répétition plus tôt. »
-5. Comparer les deux versions et nommer le critère d'amélioration.
+1. Afficher les notes N03 et N05.
+2. Envoyer la demande vague.
+3. Assembler les quatre blocs.
+4. Auditer une source et la section `À confirmer`.
+5. Appliquer la correction standard et compter six lignes de contenu.

@@ -1,0 +1,7 @@
+*** Correction indicative, à ne pas appliquer avant B4 ***
+
+Dans renderCard(note), ajouter après le détail :
+
+  <p class="brief-card__source">Source : ${note.source}</p>
+
+Remplacer le test TODO par un test qui appelle renderBrief(notes), puis vérifie que chacun des trois chemins source est présent. Ne modifier ni sortNotes, ni l’ordre attendu.

@@ -25,12 +25,14 @@ test('la fusion A2 rejoint directement A3 et ne conserve aucune route A5', () =>
   assert.ok(PRESENTATION_SLIDES.every((slide) => !slide.id.startsWith(obsoletePrefix)));
 });
 
-test('le parcours principal contourne B4 et B4-bis, qui restent navigables comme branche facultative', () => {
-  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b3-mission').next?.id, 'c1-repeat');
-  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'c1-repeat').previous?.id, 'b3-mission');
-  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b4-context').previous?.id, 'b3-mission');
+test('les trois pistes relient le socle, le facultatif et le rattrapage comme prévu', () => {
+  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b3-check').next?.id, 'c1-repeat');
+  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'c1-repeat').previous?.id, 'b3-check');
+  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b4-context').previous?.id, 'b3-check');
   assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b4-context').next?.id, 'b4-ipmtr');
-  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b4bis-checkpoint').next?.id, 'c1-repeat');
+  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b4-test').next?.id, 'c1-repeat');
+  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b4bis-install').previous, null);
+  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b4bis-checkpoint').next, null);
 });
 
 test('le contrôleur ignore les raccourcis lorsque le focus est dans un contrôle', async () => {
@@ -56,7 +58,7 @@ test('le shell expose un état plein écran initial et une zone d’annonce', as
   assert.match(source, /data-presenter-announcer/);
 });
 
-test('la QA navigateur durable couvre navigation native, 404, plein écran et les 117 mobiles', async () => {
+test('la QA navigateur durable couvre navigation native, 404, plein écran et les 105 mobiles', async () => {
   const source = await readFile(
     new URL('../scripts/qa-presenter.mjs', import.meta.url),
     'utf8',
@@ -72,8 +74,10 @@ test('la QA navigateur durable couvre navigation native, 404, plein écran et le
   assert.match(source, /javaScriptEnabled:\s*false/);
   assert.match(source, /aria-pressed/);
   assert.match(source, /fullscreenchange/);
-  assert.match(source, /b3-mission/);
+  assert.match(source, /b3-check/);
   assert.match(source, /c1-repeat/);
-  assert.match(source, /optional-label/);
-  assert.match(source, /slideRoutes\.length[^\n]*117|117[^\n]*slideRoutes\.length/);
+  assert.match(source, /track-label/);
+  assert.match(source, /Rattrapage/);
+  assert.match(source, /removedBlockBRoutes/);
+  assert.match(source, /slideRoutes\.length[^\n]*105|105[^\n]*slideRoutes\.length/);
 });

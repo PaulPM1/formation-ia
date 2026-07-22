@@ -11,6 +11,8 @@ const { slide } = Astro.props;
 const data = slide.visual.data;
 const variant = getWorkspaceVariant(data);
 const sharedPath = workspaceSharedPath(data);
+const folderLabel = 'bloc-b-assistant/code';
+const fileLabel = 'brief.test.mjs';
 const destination = typeof data.destination === 'string' ? data.destination : '';
 const panes = (Array.isArray(data.panes) ? data.panes : []) as Pane[];
 const contents = Array.isArray(data.contents) ? data.contents.map(String) : [];
@@ -40,11 +42,11 @@ const windowsExpected = commands.find((item) => /Windows/i.test(item.shell))?.ex
         <g data-triptych-node="1"><circle cx="450" cy="175" r="24" /><text x="450" y="181" text-anchor="middle">2</text></g>
         <g data-triptych-node="2"><circle cx="745" cy="278" r="24" /><text x="745" y="284" text-anchor="middle">3</text></g>
         <text class="triptych__pane-title" x="55" y="87">EXPLORATEUR</text>
-        <text x="58" y="125">▾ atelier-ia</text><text x="78" y="153">bonjour.txt</text>
+        <text x="58" y="125">▾ {folderLabel}</text><text x="78" y="153">{fileLabel}</text>
         <text class="triptych__pane-title" x="350" y="87">ÉDITEUR</text>
-        <text x="350" y="125">bonjour.txt</text><text x="350" y="153">Bonjour, atelier IA.</text>
+        <text x="350" y="125">{fileLabel}</text><text x="350" y="153">test.todo("source")</text>
         <text class="triptych__pane-title" x="645" y="87">TERMINAL</text>
-        <text x="645" y="125">$ pwd</text><text x="645" y="153">…/atelier-ia</text>
+        <text x="645" y="125">$ node --test</text><text x="645" y="153">…/{folderLabel}</text>
       </svg>
       <div class="triptych__context-labels">
         <p class="triptych__shared"><span>Chemin partagé</span>{sharedPath}</p>
@@ -132,8 +134,9 @@ const windowsExpected = commands.find((item) => /Windows/i.test(item.shell))?.ex
 </script>
 
 <style>
-  .triptych { display: grid; grid-template-columns: minmax(22rem, 1.25fr) minmax(15rem, .75fr); gap: clamp(.8rem, 2vw, 1.7rem); align-items: center; min-block-size: 0; }
-  .triptych__workspace { display: grid; grid-template-columns: 1fr minmax(7rem, .28fr); gap: .35rem; align-items: center; }
+  .triptych { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr); gap: clamp(.8rem, 2vw, 1.7rem); align-items: center; min-block-size: 0; min-inline-size: 0; }
+  .triptych__workspace { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .28fr); gap: .35rem; min-inline-size: 0; align-items: center; }
+  .triptych__detail { min-inline-size: 0; overflow-wrap: anywhere; }
   .triptych__workspace svg { inline-size: 100%; max-block-size: 14rem; overflow: visible; }
   .triptych__workspace path { fill: none; stroke: var(--family-accent); stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }
   .triptych__workspace rect { fill: var(--presentation-surface); stroke: var(--presentation-ink); stroke-width: 3; }

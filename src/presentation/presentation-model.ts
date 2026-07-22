@@ -17,6 +17,7 @@ export const SLIDE_VISUAL_KEYS = [
 export type SlideRole = (typeof SLIDE_ROLES)[number];
 export type SlideVisualKey = (typeof SLIDE_VISUAL_KEYS)[number];
 export type PresentationFamily = BrickFrontmatter['family'];
+export type PresentationTrack = 'core' | 'optional' | 'recovery';
 
 export type PresentationLink = {
   kind: 'wiki' | 'official' | 'download' | 'digression';
@@ -43,7 +44,7 @@ export type PresentationDeck = {
   /** Position pédagogique, contiguë à partir de 1 et identique à l'index du tableau + 1. */
   order: number;
   title: string;
-  optional?: boolean;
+  track?: PresentationTrack;
   slides: PresentationSlide[];
 };
 
@@ -51,7 +52,7 @@ export type RoutedSlide = PresentationSlide & {
   brickId: string;
   family: PresentationFamily;
   brickTitle: string;
-  optional: boolean;
+  track: PresentationTrack;
   route: string;
   absoluteIndex: number;
   total: number;

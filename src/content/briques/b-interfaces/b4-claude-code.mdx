@@ -9,132 +9,114 @@ type: demonstration
 platforms:
   - commun
 prerequisites:
-  - a2
-  - a4
+  - b3
 status: a-relire
 owner: a-attribuer
-learningObjective: "Piloter Claude Code avec une boucle inspection, planification, modification, test et revue du diff."
-expectedOutcome: "Le participant réalise ou décrit une petite modification vérifiée dans un projet de démonstration sans autorisation excessive."
+learningObjective: "Faire ajouter uniquement la source sous chaque carte avec une inspection, un plan court, un test passant et une revue du diff dans VS Code."
+expectedOutcome: "La mini-page affiche les sources, conserve le tri, complète le test TODO et présente un diff limité aux fichiers attendus."
 ---
 
 ## Cap
 
-**Objectif :** comprendre comment collaborer avec un agent de code dans un vrai dossier de projet.
+**Objectif facultatif :** réaliser en 20 minutes une modification limitée et prouvée dans la mini-page du kit.
 
-- Durée cible : 20 minutes.
-- Prérequis : A2, A4 et un projet de démonstration fourni par le formateur.
-- Résultat attendu : une modification limitée, un test exécuté et un diff relu.
+- 2 minutes : contexte du dossier.
+- 4 minutes : boucle I.P.M.T.R.
+- 10 minutes : mission avec `prompts/04-claude-code.md`.
+- 4 minutes : page, test et diff.
 
-L'installation est préparée ou vérifiée séparément. Si Claude Code n'est pas disponible sur un poste, le participant suit la démonstration en binôme et réalise l'audit du plan et du diff.
+VS Code, Node et Claude Code doivent déjà fonctionner. Toute installation utilise B4-bis ou se termine hors chrono.
 
 ## Concept durable
 
-Claude Code travaille depuis le terminal dans le contexte d'un dossier. Il peut lire des fichiers, rechercher dans le projet, proposer un plan, modifier du code et exécuter des commandes. Cette capacité ne remplace pas la méthode ; elle la rend indispensable.
+Claude Code travaille dans le contexte réel d’un dossier. La boucle **I.P.M.T.R.** borne son action :
 
-Utilisez la boucle **I.P.M.T.R.** :
+1. **Inspecter** `brief.mjs`, `app.mjs` et `brief.test.mjs` sans écrire.
+2. **Planifier** trois étapes maximum et attendre l’accord.
+3. **Modifier** uniquement le rendu de la source et le test associé.
+4. **Tester** avec `node --test`.
+5. **Relire** le diff inline dans VS Code avant d’accepter.
 
-1. **Inspecter** le projet et les règles avant de demander une modification.
-2. **Planifier** une petite étape et définir le résultat attendu.
-3. **Modifier** uniquement les fichiers nécessaires.
-4. **Tester** avec une commande ou un scénario indépendant.
-5. **Relire** le diff avant de conserver, committer ou partager.
-
-Commencez en lecture et en planification. Une commande proposée peut avoir des effets au-delà du code : supprimer des fichiers, installer un paquet, contacter un service ou publier. Lisez la commande et son périmètre avant de l'autoriser.
+La page fonctionne déjà et trie les six cartes. La propriété `source` existe dans les données mais n’est pas affichée. Toute refonte, nouvelle dépendance ou modification du tri dépasse la mission.
 
 ## Pratique avec Claude
 
-Depuis le terminal ouvert dans le projet de démonstration :
+Ouvrez `kits/bloc-b-assistant/code/` dans VS Code. Dans le terminal intégré :
 
-```bash
-claude
+```sh
+node --test
 ```
 
-Commencez par une demande sans écriture :
-
-```text
-Inspecte ce projet sans modifier de fichier. Explique son objectif, indique la
-commande de test existante et propose un plan minimal pour remplacer le titre
-de la page par « Mon premier chantier IA ».
-```
-
-Après lecture du plan :
-
-```text
-Applique uniquement cette modification. Lance le test existant, puis résume les
-fichiers modifiés et ce que je dois vérifier moi-même. N'ajoute aucune dépendance.
-```
-
-À la fin, quittez ou ouvrez un second terminal et inspectez le diff avec l'outil Git du projet.
+Le test de tri passe et un test source est marqué TODO. Ouvrez ensuite Claude Code dans VS Code et copiez `kits/bloc-b-assistant/prompts/04-claude-code.md`.
 
 ## Mission commune
 
-Dans une copie du projet fourni :
+1. Demandez l’inspection sans modification.
+2. Relisez le plan de trois étapes maximum.
+3. Refusez toute refonte, dépendance ou changement hors `code/`.
+4. Approuvez uniquement l’ajout de la source et la complétion du test.
+5. Laissez Claude Code exécuter `node --test`.
+6. Ouvrez la page et vérifiez une source sous chaque carte.
+7. Relisez le diff inline dans VS Code, ligne par ligne.
 
-1. demandez une cartographie en lecture seule ;
-2. choisissez une modification visible d'une seule responsabilité ;
-3. faites produire un plan de trois étapes maximum ;
-4. autorisez uniquement les actions comprises ;
-5. lancez le test prévu ;
-6. relisez chaque ligne du diff ;
-7. acceptez, corrigez ou annulez la modification.
+## Critères de réussite
 
-**Critère de réussite :** le changement visible correspond à la demande, le test passe et aucune modification étrangère n'apparaît dans le diff.
+- Chaque carte affiche son chemin source.
+- Le tri initial reste `N01, N06, N03, N05, N02, N04`.
+- Le test TODO est remplacé par une assertion réelle.
+- `node --test` passe sans TODO.
+- Le diff ne contient aucune modification étrangère à la source et au test.
 
 ## Livrable
 
-Le prompt initial, le plan validé, la sortie du test et le diff final. Un commit est facultatif à ce stade ; le versionnement sera approfondi dans la famille D.
+Le plan approuvé, la sortie de `node --test`, une page montrant les sources et le diff relu dans VS Code.
 
 ## Notes formateur
 
-- Utiliser un dépôt jetable avec un test rapide et un changement évident.
-- Verbaliser chaque permission : ce que la commande lit, écrit ou contacte.
-- Montrer qu'il est légitime de refuser une commande et de demander une alternative.
-- Ne pas terminer sur le résumé de Claude : ouvrir le fichier, exécuter le test et lire le diff.
-
-Transition : pour se repérer dans un projet et utiliser un terminal confortablement, nous allons valider l'installation de VS Code.
+- De 00:00 à 02:00 : ouvrir `code/README.md` et lancer le test initial.
+- De 02:00 à 06:00 : parcourir I.P.M.T.R. et ses trois portes.
+- De 06:00 à 16:00 : ouvrir `prompts/04-claude-code.md`, inspecter, approuver et modifier.
+- Couper la génération à 16:00 dans B4.
+- De 16:00 à 20:00 : vérifier la page, relancer `node --test` et relire le diff inline.
+- Repli : utiliser `kits/bloc-b-assistant-formateur/corriges/claude-code.patch`, puis conserver le test et le diff en direct.
 
 ## Défis avancés
 
-- Demandez deux plans concurrents et choisissez le plus petit diff.
-- Ajoutez un test qui décrit le comportement avant la modification.
-- Faites expliquer une ligne du diff et demandez ce qui pourrait casser ailleurs.
+- Demander à Claude Code d’expliquer pourquoi le tri reste inchangé.
+- Ajouter un cas de test qui vérifie les trois chemins de source sans figer tout le HTML.
 
 ## Variantes
 
-- **Claude Code indisponible :** le formateur pilote ; les participants votent sur chaque permission et auditent le diff imprimé.
-- **Sans Git :** comparez une copie avant/après avec l'éditeur, sans prétendre remplacer le versionnement.
-- **Public développeur :** utiliser le mode plan, les tests ciblés et une branche jetable.
+- **Claude Code indisponible :** appliquer le patch formateur et faire auditer le diff.
+- **Sans serveur :** tester le HTML généré avec `renderBrief(notes)` et conserver `node --test` comme preuve.
+- **Temps court :** le formateur modifie, les participants approuvent ou refusent chaque étape.
 
 ## Dépannage
 
-- **`claude` est introuvable :** consulter le guide d'installation officiel et vérifier le terminal utilisé ; ne pas lancer une commande copiée d'une source non fiable.
-- **Claude ne voit pas le bon projet :** arrêter, vérifier le dossier courant avec `pwd` sur macOS/Linux ou `Get-Location` dans PowerShell, puis relancer au bon endroit.
-- **Une commande semble risquée :** refuser, demander son effet exact et une option en lecture seule.
-- **Le test échoue avant la modification :** noter l'état initial et ne pas attribuer cet échec au changement.
+- **Le test échoue avant modification :** arrêter et utiliser B4-bis ; ne pas attribuer cet échec au changement.
+- **Le plan refactorise la page :** demander une réduction à deux fichiers et une responsabilité.
+- **Le tri change :** revenir à l’état initial et restaurer le test d’ordre avant de reprendre.
+- **Le diff est trop large :** refuser, annuler et reformuler l’objectif unique.
 
 ## Ressources
 
+- [Claude Code dans VS Code](https://code.claude.com/docs/en/vs-code)
 - [Présentation de Claude Code](https://code.claude.com/docs/en/overview)
-- [Bien démarrer avec Claude Code](https://code.claude.com/docs/en/quickstart)
-- [Référence de la ligne de commande](https://code.claude.com/docs/en/cli-reference)
 - [Sécurité de Claude Code](https://code.claude.com/docs/en/security)
 
 ## Ouverture
 
-Claude Code agit dans un projet ; VS Code fournit une vue durable du dossier, des fichiers, du terminal et des changements à relire.
+B4 rejoint directement C1. B4-bis reste un rattrapage isolé accessible depuis B0 et les sommaires, jamais une étape automatique de la séquence.
 
 ## Scénario de démonstration
 
-Point de départ : une petite page affiche « Démonstration ». Le projet contient une commande de test qui vérifie le titre. Claude Code doit cartographier le projet, changer le titre demandé et mettre le test à jour seulement si le contrat le justifie.
-
-Résultat visible : la page affiche le nouveau titre, la commande de test réussit et le diff ne contient que les fichiers attendus.
+La mini-page trie déjà les six cartes. Claude Code inspecte le dossier, propose un plan court, ajoute la source au rendu, complète le test TODO et présente le diff dans VS Code.
 
 ## Déroulé de démonstration
 
-1. Afficher l'état initial et lancer le test avant Claude Code.
-2. Démarrer `claude`, puis demander une inspection sans écriture.
-3. Relire le plan avec le groupe et préciser le critère de réussite.
-4. Autoriser la petite modification ; refuser toute dépendance inutile.
-5. Observer le test lancé par Claude.
-6. Vérifier indépendamment la page et le diff.
-7. Demander au groupe ce qu'il accepterait ou corrigerait avant un commit.
+1. Lancer le test initial et montrer le TODO.
+2. Ouvrir la page sans sources.
+3. Coller `prompts/04-claude-code.md`.
+4. Relire et approuver le plan limité.
+5. Observer la modification et le test.
+6. Contrôler la page puis le diff inline.

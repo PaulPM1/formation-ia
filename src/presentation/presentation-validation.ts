@@ -3,6 +3,7 @@ import {
   SLIDE_ROLES,
   SLIDE_VISUAL_KEYS,
   type PresentationDeck,
+  type PresentationTrack,
   type RoutedSlide,
 } from './presentation-model';
 import { WIKI_BASE_URL } from './presentation-links';
@@ -18,6 +19,7 @@ const allowedOfficialHosts = new Set([
 const visualKeys = new Set<string>(SLIDE_VISUAL_KEYS);
 const slideRoles = new Set<string>(SLIDE_ROLES);
 const families = new Set<string>(BRICK_FAMILIES);
+const tracks = new Set<PresentationTrack>(['core', 'optional', 'recovery']);
 const linkKinds = new Set(['wiki', 'official', 'download', 'digression']);
 const brickIdPattern = /^[a-f]\d+(?:-bis)?$/;
 const slideIdPattern = /^[a-f]\d+(?:bis)?-[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -56,6 +58,9 @@ export function validatePresentation(decks: PresentationDeck[]): string[] {
     if (deckIds.has(deck.brickId)) issues.push(`Brique dupliquée : ${deck.brickId}`);
     deckIds.add(deck.brickId);
     if (!deck.title?.trim()) issues.push(`Titre de brique vide : ${deck.brickId}`);
+    if (deck.track !== undefined && !tracks.has(deck.track)) {
+      issues.push(`Piste de présentation invalide : ${String(deck.track)} (${deck.brickId})`);
+    }
     if (deck.slides.length === 0) issues.push(`Brique sans slide : ${deck.brickId}`);
 
     for (const slide of deck.slides) {
@@ -117,7 +122,9 @@ export function validatePresentation(decks: PresentationDeck[]): string[] {
             + `origine attendue : ${WIKI_BASE_URL}.`,
           );
         }
-        if (link.kind === 'download' && !allowedDownloadHosts.has(url.hostname)) {
+        if (link.kind === 'download'
+          && url.origin !== WIKI_BASE_URL
+          && !allowedDownloadHosts.has(url.hostname)) {
           issues.push(`Téléchargement non officiel : ${slide.id}`);
         }
         if (link.kind === 'official' && !allowedOfficialHosts.has(url.hostname)) {
@@ -138,7 +145,7 @@ export function flattenSlides(decks: PresentationDeck[]): RoutedSlide[] {
     brickId: deck.brickId,
     family: deck.family,
     brickTitle: deck.title,
-    optional: Boolean(deck.optional),
+    track: deck.track ?? 'core',
     route: `/presenter/${deck.brickId}/${slide.id}/`,
     absoluteIndex: absoluteIndex++,
     total,
@@ -148,9 +155,11 @@ export function flattenSlides(decks: PresentationDeck[]): RoutedSlide[] {
 export function getSlideNeighbors(slides: RoutedSlide[], slideId: string) {
   const current = slides.find((slide) => slide.id === slideId);
   if (!current) throw new Error(`Slide inconnue : ${slideId}`);
-  const sequence = current.optional
-    ? slides
-    : slides.filter((slide) => !slide.optional);
+  const sequence = current.track === 'recovery'
+    ? slides.filter((slide) => slide.track === 'recovery' && slide.brickId === current.brickId)
+    : current.track === 'optional'
+      ? slides.filter((slide) => slide.track !== 'recovery')
+      : slides.filter((slide) => slide.track === 'core');
   const index = sequence.findIndex((slide) => slide.id === slideId);
   return {
     previous: sequence[index - 1] ?? null,

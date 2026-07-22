@@ -790,6 +790,21 @@ p {
   background: #dedfdb;
 }
 
+.brick-card[data-priority="rattrapage"] {
+  border-color: color-mix(in srgb, #ed6a46, var(--ink) 35%);
+  background: color-mix(in srgb, var(--surface), #ed6a46 8%);
+}
+
+.brick-card[data-priority="rattrapage"]::before {
+  border-color: color-mix(in srgb, #ed6a46, var(--ink) 35%);
+  background: color-mix(in srgb, #ed6a46, var(--paper) 52%);
+}
+
+.brick-card[data-priority="rattrapage"] .card-kicker span:first-child {
+  border-color: color-mix(in srgb, #ed6a46, var(--ink) 35%);
+  background: color-mix(in srgb, #ed6a46, var(--paper) 68%);
+}
+
 .card-kicker {
   display: flex;
   align-items: center;
@@ -876,6 +891,11 @@ p {
 .badge[data-priority="facultatif"] {
   border-style: dashed;
   background: #e4e4e0;
+}
+
+.badge[data-priority="rattrapage"] {
+  border-style: solid;
+  background: color-mix(in srgb, #ed6a46, var(--paper) 68%);
 }
 
 .badge[data-priority="a-trancher"] {

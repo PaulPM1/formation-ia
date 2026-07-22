@@ -1,6 +1,7 @@
 import { spawn } from 'node:child_process';
 import { readdir } from 'node:fs/promises';
 import { chromium } from 'playwright';
+import { navigateAndWaitForFonts } from './qa-page-ready.mjs';
 
 const FONT_FLOOR_PX = 11.99;
 const baseURL = process.env.QA_BASE_URL ?? 'http://127.0.0.1:4379';
@@ -14,7 +15,7 @@ for (const brick of await readdir(new URL('../dist/presenter/', import.meta.url)
   }
 }
 routes.sort((a, b) => a.localeCompare(b, 'fr', { numeric: true }));
-if (routes.length !== 117) throw new Error(`117 routes attendues, ${routes.length} trouvées.`);
+if (routes.length !== 105) throw new Error(`105 routes attendues, ${routes.length} trouvées.`);
 
 const stopPreview = () => {
   if (preview && !preview.killed) preview.kill('SIGTERM');
@@ -45,10 +46,9 @@ try {
     const context = await browser.newContext({ viewport: mode.viewport, deviceScaleFactor: mode.deviceScaleFactor });
     const page = await context.newPage();
     for (const route of routes) {
-      await page.goto(`${baseURL}${route}`, { waitUntil: 'load' });
+      await navigateAndWaitForFonts(page, `${baseURL}${route}`);
       await page.evaluate((zoom) => {
         document.documentElement.style.zoom = String(zoom);
-        return document.fonts.ready;
       }, mode.zoom);
       await page.locator('details').evaluateAll((details) => {
         for (const disclosure of details) disclosure.open = true;
@@ -106,5 +106,5 @@ if (failures.length) {
   console.error(failures.join('\n'));
   process.exitCode = 1;
 } else {
-  console.log(`Plancher typographique : ${routes.length}/117 routes HTML, SVG et pseudo-contenus à au moins 12 px en desktop, mobile et zoom 200 %.`);
+  console.log(`Plancher typographique : ${routes.length}/105 routes HTML, SVG et pseudo-contenus à au moins 12 px en desktop, mobile et zoom 200 %.`);
 }

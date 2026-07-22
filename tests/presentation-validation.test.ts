@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { externalLink, wikiLink } from '../src/presentation/presentation-links';
+import { externalLink, kitLink, wikiLink } from '../src/presentation/presentation-links';
 import {
   flattenSlides,
   getSlideNeighbors,
@@ -92,6 +92,20 @@ test('construit uniquement des liens wiki canoniques', () => {
   );
 });
 
+test('construit le téléchargement du kit depuis l’origine canonique', () => {
+  assert.deepEqual(kitLink('bloc-b-assistant.zip', 'Télécharger le kit'), {
+    kind: 'download',
+    label: 'Télécharger le kit',
+    href: 'https://formation-ia-ruby.vercel.app/kits/bloc-b-assistant.zip',
+    target: '_blank',
+    rel: 'noopener noreferrer',
+  });
+  assert.throws(() => kitLink('../secret.zip', 'Télécharger'), /Chemin de kit invalide/);
+  assert.deepEqual(validatePresentation([invalidSlide({
+    links: [kitLink('bloc-b-assistant.zip', 'Télécharger le kit')],
+  })]), []);
+});
+
 test('rejette les domaines qui imitent le wiki canonique', () => {
   const lookalike = {
     ...deck,
@@ -133,26 +147,41 @@ test('aplatit la séquence et calcule ses voisins', () => {
   });
 });
 
-test('le parcours principal contourne un deck facultatif sans casser sa navigation interne', () => {
+test('les pistes principale, facultative et rattrapage gardent leurs navigations propres', () => {
   const requiredBefore = deck;
   const optional = {
     ...deck,
     brickId: 'a2',
     order: 2,
-    optional: true,
+    track: 'optional',
     slides: [{ ...deck.slides[0], id: 'a2-opening' }],
   } as PresentationDeck;
-  const requiredAfter = {
+  const recovery = {
     ...deck,
     brickId: 'a3',
     order: 3,
-    slides: [{ ...deck.slides[0], id: 'a3-opening' }],
-  };
-  const slides = flattenSlides([requiredBefore, optional, requiredAfter]);
+    track: 'recovery',
+    slides: [
+      { ...deck.slides[0], id: 'a3-opening' },
+      { ...deck.slides[0], id: 'a3-checkpoint' },
+    ],
+  } as PresentationDeck;
+  const requiredAfter = {
+    ...deck,
+    brickId: 'a4',
+    order: 4,
+    slides: [{ ...deck.slides[0], id: 'a4-opening' }],
+  } as PresentationDeck;
+  const slides = flattenSlides([requiredBefore, optional, recovery, requiredAfter]);
 
-  assert.equal(slides.find((slide) => slide.id === 'a2-opening')?.optional, true);
-  assert.equal(getSlideNeighbors(slides, 'a1-opening').next?.id, 'a3-opening');
-  assert.equal(getSlideNeighbors(slides, 'a3-opening').previous?.id, 'a1-opening');
+  assert.equal(slides.find((slide) => slide.id === 'a1-opening')?.track, 'core');
+  assert.equal(slides.find((slide) => slide.id === 'a2-opening')?.track, 'optional');
+  assert.equal(slides.find((slide) => slide.id === 'a3-opening')?.track, 'recovery');
+  assert.equal(getSlideNeighbors(slides, 'a1-opening').next?.id, 'a4-opening');
+  assert.equal(getSlideNeighbors(slides, 'a4-opening').previous?.id, 'a1-opening');
   assert.equal(getSlideNeighbors(slides, 'a2-opening').previous?.id, 'a1-opening');
-  assert.equal(getSlideNeighbors(slides, 'a2-opening').next?.id, 'a3-opening');
+  assert.equal(getSlideNeighbors(slides, 'a2-opening').next?.id, 'a4-opening');
+  assert.equal(getSlideNeighbors(slides, 'a3-opening').previous, null);
+  assert.equal(getSlideNeighbors(slides, 'a3-opening').next?.id, 'a3-checkpoint');
+  assert.equal(getSlideNeighbors(slides, 'a3-checkpoint').next, null);
 });

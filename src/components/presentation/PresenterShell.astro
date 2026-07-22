@@ -11,13 +11,15 @@ interface Props {
 }
 
 const { slide, previous, next } = Astro.props;
+const trackLabels = { core: '', optional: 'Facultatif', recovery: 'Rattrapage' } as const;
+const slideTrackLabel = slide.track === 'core' ? null : trackLabels[slide.track];
 ---
 
-<article class="presentation-stage presentation-slide" data-family={slide.family} aria-labelledby="slide-title">
+<article class="presentation-stage presentation-slide" data-family={slide.family} data-track={slide.track} aria-labelledby="slide-title">
   <header class="presentation-heading">
     <p>
       <span>{slide.brickId.toUpperCase()} · {slide.brickTitle}</span>
-      {slide.optional && <span class="presentation-heading__optional">Facultatif</span>}
+      {slideTrackLabel && <span class="presentation-heading__track">{slideTrackLabel}</span>}
     </p>
     <h1 id="slide-title" tabindex="-1">{slide.claim}</h1>
     {slide.support && <p class="presentation-support">{slide.support}</p>}
@@ -43,11 +45,11 @@ const { slide, previous, next } = Astro.props;
   <nav aria-label="Toutes les slides">
     <ol>
       {PRESENTATION_DECKS.map((deck) => (
-        <li data-optional={deck.optional ? 'true' : undefined}>
+        <li data-track={deck.track ?? 'core'}>
           <a href={`/presenter/${deck.brickId}/${deck.slides[0].id}/`}>
             {deck.brickId.toUpperCase()} · {deck.title}
           </a>
-          {deck.optional && <span class="optional-label">Facultatif</span>}
+          {deck.track && deck.track !== 'core' && <span class="track-label">{trackLabels[deck.track]}</span>}
         </li>
       ))}
     </ol>

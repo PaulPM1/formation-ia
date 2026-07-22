@@ -7,6 +7,8 @@
     "dev": "astro dev",
     "build": "npm run content:check && npm run presentation:check && npm run typecheck && astro build",
     "preview": "astro preview",
+    "kit:block-b": "node scripts/block-b-kit.mjs",
+    "kit:block-b:check": "node scripts/block-b-kit.mjs --check",
     "qa:block-b": "node scripts/qa-block-b.mjs",
     "qa:block-c": "node scripts/qa-block-c.mjs",
     "qa:a1-checkpoint": "node scripts/qa-a1-checkpoint.mjs",
@@ -30,6 +32,7 @@
     "@astrojs/check": "^0.9.9",
     "@astrojs/markdown-remark": "^7.2.1",
     "@types/node": "^26.1.1",
+    "fflate": "^0.8.3",
     "playwright": "^1.61.1",
     "tsx": "^4.23.1",
     "typescript": "^6.0.3"

@@ -51,7 +51,7 @@ test('expose le mode présentation dans la navigation et le workflow de contribu
   assert.match(readme, /nombre de slides/i);
 });
 
-test('signale les briques facultatives par du texte et un traitement grisé sans réduire leur opacité', async () => {
+test('signale les pistes facultative et rattrapage par du texte sans réduire leur opacité', async () => {
   const [brickIndex, presenterIndex, presenterShell, globalStyles, presentationStyles] = await Promise.all([
     read('src/pages/briques/index.astro'),
     read('src/pages/presenter/index.astro'),
@@ -61,13 +61,17 @@ test('signale les briques facultatives par du texte et un traitement grisé sans
   ]);
 
   assert.match(brickIndex, /class="brick-card"[^>]*data-priority=/s);
-  assert.match(presenterIndex, /data-optional=/);
+  assert.match(presenterIndex, /data-track=/);
   assert.match(presenterIndex, /Facultatif/);
-  assert.match(presenterShell, /data-optional=/);
+  assert.match(presenterIndex, /Rattrapage/);
+  assert.match(presenterShell, /data-track=/);
   assert.match(presenterShell, /Facultatif/);
+  assert.match(presenterShell, /Rattrapage/);
   assert.match(globalStyles, /\.brick-card\[data-priority="facultatif"\]/);
-  assert.match(presentationStyles, /\[data-optional="true"\]/);
-  assert.match(presentationStyles, /\.presentation-heading__optional/);
+  assert.match(globalStyles, /\.brick-card\[data-priority="rattrapage"\]/);
+  assert.match(presentationStyles, /\[data-track="optional"\]/);
+  assert.match(presentationStyles, /\[data-track="recovery"\]/);
+  assert.match(presentationStyles, /\.presentation-heading__track/);
   assert.doesNotMatch(
     globalStyles.match(/\.brick-card\[data-priority="facultatif"\][\s\S]*?\}/)?.[0] ?? '',
     /opacity/,
