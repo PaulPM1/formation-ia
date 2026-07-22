@@ -48,8 +48,8 @@ const slideRoutes = generatedPages
   .map((page) => `/presenter/${page.replaceAll(path.sep, '/').replace(/\/index\.html$/, '')}`)
   .toSorted();
 
-if (slideRoutes.length !== 119) failures.push(`inventaire slides ${slideRoutes.length}/119`);
-if (generatedPages.length !== 120) failures.push(`inventaire présentateur ${generatedPages.length}/120`);
+if (slideRoutes.length !== 117) failures.push(`inventaire slides ${slideRoutes.length}/117`);
+if (generatedPages.length !== 118) failures.push(`inventaire présentateur ${generatedPages.length}/118`);
 
 const browser = await chromium.launch({ channel: 'chrome', headless: true });
 
@@ -194,5 +194,5 @@ if (failures.length) {
   console.error(failures.join('\n'));
   process.exitCode = 1;
 } else {
-  console.log('QA présentateur : 119/119 routes mobiles, contrôleur natif, plein écran, 404, zoom, mouvement réduit et impression validés ; 120 pages générées.');
+  console.log('QA présentateur : 117/117 routes mobiles, contrôleur natif, plein écran, 404, zoom, mouvement réduit et impression validés ; 118 pages générées.');
 }

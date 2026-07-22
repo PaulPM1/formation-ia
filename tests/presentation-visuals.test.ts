@@ -5,6 +5,7 @@ import test from 'node:test';
 import { A_DECKS } from '../src/presentation/manifests/a';
 import { B_DECKS } from '../src/presentation/manifests/b';
 import { C_DECKS } from '../src/presentation/manifests/c';
+import { E_DECKS } from '../src/presentation/manifests/e';
 import { SLIDE_VISUAL_KEYS } from '../src/presentation/presentation-model';
 
 const read = (path: string) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
@@ -106,7 +107,7 @@ test('les tokens typographiques des slides gardent un plancher de 0,75 rem', asy
   }
 });
 
-test('la QA durable mesure les textes HTML et SVG à 12 px sur 119 routes et au zoom 200 %', async () => {
+test('la QA durable mesure les textes HTML et SVG à 12 px sur 117 routes et au zoom 200 %', async () => {
   const [qa, packageJson] = await Promise.all([
     read('scripts/qa-font-floor.mjs'),
     read('package.json'),
@@ -116,7 +117,7 @@ test('la QA durable mesure les textes HTML et SVG à 12 px sur 119 routes et au 
   assert.match(qa, /const FONT_FLOOR_PX = 11\.99/);
   assert.match(qa, /querySelectorAll\(['"]svg text['"]\)/);
   assert.match(qa, /deviceScaleFactor:\s*2/);
-  assert.match(qa, /routes\.length[^\n]*119|119[^\n]*routes\.length/);
+  assert.match(qa, /routes\.length[^\n]*117|117[^\n]*routes\.length/);
 });
 
 test('la QA A2 couvre clavier, progression, score, replay, mobile, zoom et repli sans JavaScript', async () => {
@@ -133,6 +134,31 @@ test('la QA A2 couvre clavier, progression, score, replay, mobile, zoom et repli
   assert.match(qa, /data-prioritizer-replay/);
   assert.match(qa, /javaScriptEnabled:\s*false/);
   assert.match(qa, /data-prioritizer-correction/);
+  assert.match(qa, /viewport:\s*\{ width: 390, height: 844 \}/);
+  assert.match(qa, /style\.zoom = ['"]2['"]/);
+  assert.match(qa, /reducedMotion:\s*['"]reduce['"]/);
+});
+
+test('la QA A3 couvre niveaux, volumes, mobile, zoom, mouvement réduit et repli sans JavaScript', async () => {
+  const [qa, packageJson] = await Promise.all([
+    read('scripts/qa-a3-model-costs.mjs'),
+    read('package.json'),
+  ]);
+
+  assert.match(packageJson, /"qa:a3-model-costs":\s*"node scripts\/qa-a3-model-costs\.mjs"/);
+  assert.match(qa, /a3-model-fit/);
+  assert.match(qa, /a3-api-cost/);
+  assert.match(qa, /a3-access/);
+  assert.match(qa, /input\[type="radio"\]\[data-tier-choice\]/);
+  assert.match(qa, /data-cost-output/);
+  assert.match(qa, /descendantOverflow/);
+  assert.match(qa, /outsideGuide/);
+  assert.match(qa, /getComputedStyle\(element, pseudo\)/);
+  assert.match(qa, /\['', '::before', '::after'\]/);
+  assert.match(qa, /unitCell\.isVisible\(\)/);
+  assert.match(qa, /hundredCell\.isVisible\(\)/);
+  assert.match(qa, /inspectLayout\(noScriptPage\)/);
+  assert.match(qa, /javaScriptEnabled:\s*false/);
   assert.match(qa, /viewport:\s*\{ width: 390, height: 844 \}/);
   assert.match(qa, /style\.zoom = ['"]2['"]/);
   assert.match(qa, /reducedMotion:\s*['"]reduce['"]/);
@@ -189,12 +215,114 @@ test('les repères secondaires restent lisibles au projecteur', async () => {
 });
 
 test('enregistre tous les visuels du bloc A', async () => {
-  const registry = await read('src/components/presentation/VisualRegistry.astro');
+  const [registry, model] = await Promise.all([
+    read('src/components/presentation/VisualRegistry.astro'),
+    read('src/presentation/presentation-model.ts'),
+  ]);
   for (const name of [
     'TokenPredictor', 'ContextComparison', 'SolutionComparison',
-    'SolutionPrioritizer', 'ContextBudget', 'VerificationAudit',
+    'SolutionPrioritizer', 'ModelCostGuide', 'ContextBudget', 'VerificationAudit',
   ]) assert.match(registry, new RegExp(name));
+  assert.match(registry, /'context-budget': ContextBudget/);
+  assert.match(model, /'context-budget'/);
   assert.doesNotMatch(registry, /ResponseWorkflowAgent|InterfaceContinuum/);
+});
+
+test('A3 utilise des contrôles natifs et conserve ses données sans JavaScript', async () => {
+  const visual = await read('src/components/presentation/visuals/a/ModelCostGuide.astro');
+
+  assert.match(visual, /<fieldset class="model-guide__tier-controls" data-enhancement-control>/);
+  assert.match(visual, /type="radio"[^>]*data-tier-choice/);
+  assert.match(visual, /<table class="model-guide__cost-table">/);
+  assert.match(visual, /<caption>/);
+  assert.match(visual, /scope="col"/);
+  assert.match(visual, /data-cost-output/);
+  assert.match(visual, /:focus-visible/);
+  assert.match(visual, /min-block-size:\s*3rem/);
+  assert.match(visual, /prefers-reduced-motion:\s*reduce/);
+  assert.doesNotMatch(visual, /onclick=/);
+});
+
+test('A3 valide localement chaque branche de données avant son rendu', async () => {
+  const visual = await read('src/components/presentation/visuals/a/ModelCostGuide.astro');
+
+  assert.match(visual, /type ModelCostGuideData\s*=/);
+  assert.match(visual, /variant:\s*'models'/);
+  assert.match(visual, /variant:\s*'costs'/);
+  assert.match(visual, /variant:\s*'access'/);
+  assert.match(visual, /assertModelCostGuideData/);
+  assert.match(visual, /data\.variant === 'models'/);
+  assert.match(visual, /data\.variant === 'costs'/);
+  assert.match(visual, /data\.variant === 'access'/);
+  for (const requiredString of [
+    'interaction', 'rule', 'snapshot', 'caseLabel', 'caveat',
+    'subscriptionTitle', 'apiTitle', 'hybrid', 'conclusion',
+    'reference', 'intensivePlans',
+  ]) {
+    assert.match(visual, new RegExp(`isString\\(data\\.${requiredString}\\)`), requiredString);
+  }
+  assert.match(visual, /isWorkload\(data\.workload\)/);
+  assert.match(visual, /data\.tiers\.every\(isTier\)/);
+  assert.match(visual, /data\.prices\.every\(isPrice\)/);
+  assert.match(visual, /isStringArray\(data\.subscriptionPoints\)/);
+  assert.match(visual, /isStringArray\(data\.apiPoints\)/);
+  assert.doesNotMatch(visual, /String\(data\.variant/);
+  assert.doesNotMatch(visual, /as string\[\]|as Tier\[\]|as Price\[\]|as \{ inputTokens/);
+});
+
+test('A3 réserve les sélecteurs à la version améliorée et annonce le volume de coûts', async () => {
+  const visual = await read('src/components/presentation/visuals/a/ModelCostGuide.astro');
+
+  assert.match(visual, /data-enhancement-control/);
+  assert.match(visual, /\[data-enhanced='true'\] \[data-enhancement-control\]/);
+  assert.match(visual, /data-cost-summary/);
+  assert.match(visual, /aria-live="polite"/);
+  assert.match(visual, /aria-atomic="true"/);
+  assert.match(visual, /unitCosts/);
+});
+
+test('A3 rend les repères tarifaires et la comparaison API de la slide accès', async () => {
+  const visual = await read('src/components/presentation/visuals/a/ModelCostGuide.astro');
+
+  assert.match(visual, /data\.intensivePlans/);
+  assert.match(visual, /data\.reference/);
+  assert.match(visual, /data\.snapshot/);
+});
+
+test('A3 conserve des libellés visibles pour chaque coût au format mobile', async () => {
+  const visual = await read('src/components/presentation/visuals/a/ModelCostGuide.astro');
+
+  assert.match(visual, /<td data-label="Entrée \/ MTok">/);
+  assert.match(visual, /<td data-label="Sortie \/ MTok">/);
+  assert.match(visual, /<td data-label="1 dossier">/);
+  assert.match(visual, /<td data-label="100 dossiers" data-volume-cost>/);
+  assert.match(visual, /content:\s*attr\(data-label\)/);
+  assert.match(visual, /volumeCost\.dataset\.label\s*=\s*volumeLabel/);
+});
+
+test('A3 autorise les colonnes d’accès à se contracter au zoom 200 %', async () => {
+  const visual = await read('src/components/presentation/visuals/a/ModelCostGuide.astro');
+
+  assert.match(visual, /grid-template-columns:\s*minmax\(0, 1fr\) minmax\(12rem, \.55fr\) minmax\(0, 1fr\)/);
+  assert.match(visual, /\.model-guide__access > \*\s*\{[^}]*min-inline-size:\s*0/s);
+  assert.match(visual, /\.model-guide__access article > \*\s*\{[^}]*min-inline-size:\s*0;[^}]*overflow-wrap:\s*anywhere/s);
+});
+
+test('A3 cible son propre nœud racine lorsque le mouvement est réduit', async () => {
+  const visual = await read('src/components/presentation/visuals/a/ModelCostGuide.astro');
+
+  assert.match(visual, /\.model-guide__scene,\s*\.model-guide__scene \*,\s*\.model-guide__scene::before,\s*\.model-guide__scene::after,\s*\.model-guide__scene \*::before,\s*\.model-guide__scene \*::after\s*\{[^}]*transition:\s*none !important;[^}]*animation:\s*none !important;/s);
+});
+
+test('le registre expose la scène modèles et coûts', async () => {
+  const [model, registry] = await Promise.all([
+    read('src/presentation/presentation-model.ts'),
+    read('src/components/presentation/VisualRegistry.astro'),
+  ]);
+
+  assert.match(model, /'model-cost-guide'/);
+  assert.match(registry, /ModelCostGuide/);
+  assert.match(registry, /'model-cost-guide': ModelCostGuide/);
 });
 
 test('les interactions du bloc A produisent des états pédagogiques déterministes', async () => {
@@ -362,10 +490,11 @@ test('les visuels polymorphes choisissent une scène propre à chaque forme de d
   assert.equal(state.getVerificationVariant(data('a4-risk')), 'risk');
   assert.equal(state.getVerificationVariant(data('a4-method')), 'method');
 
-  assert.equal(state.getContextBudgetVariant(data('a3-three-costs')), 'layers');
-  assert.equal(state.getContextBudgetVariant(data('a3-context-meter')), 'meter');
-  assert.equal(state.getContextBudgetVariant(data('a3-agentic')), 'comparison');
-  assert.equal(state.getContextBudgetVariant(data('a3-budget')), 'mission');
+  const eSlides = E_DECKS.flatMap((deck) => deck.slides);
+  const contextData = (id: string) => eSlides.find((candidate) => candidate.id === id)?.visual.data ?? {};
+  assert.equal(state.getContextBudgetVariant(contextData('e1-contexte')), 'meter');
+  assert.equal(state.getContextBudgetVariant(contextData('e2-roles')), 'comparison');
+  assert.equal(state.getContextBudgetVariant(contextData('e3-mvp')), 'meter');
 });
 
 test('le checkpoint A1 avance sans dépasser la cinquième affirmation', async () => {
@@ -427,12 +556,11 @@ test('la progression conserve tout le contenu sans JavaScript puis isole le pann
 });
 
 test('les visuels du bloc A utilisent des contrôles natifs et des relations continues', async () => {
-  const [token, context, comparison, prioritizer, budget, audit] = await Promise.all([
+  const [token, context, comparison, prioritizer, audit] = await Promise.all([
     read('src/components/presentation/visuals/a/TokenPredictor.astro'),
     read('src/components/presentation/visuals/a/ContextComparison.astro'),
     read('src/components/presentation/visuals/a/SolutionComparison.astro'),
     read('src/components/presentation/visuals/a/SolutionPrioritizer.astro'),
-    read('src/components/presentation/visuals/a/ContextBudget.astro'),
     read('src/components/presentation/visuals/a/VerificationAudit.astro'),
   ]).catch(() => [] as string[]);
 
@@ -442,7 +570,6 @@ test('les visuels du bloc A utilisent des contrôles natifs et des relations con
   assert.match(prioritizer ?? '', /<form[^>]+data-solution-prioritizer/);
   assert.match(prioritizer ?? '', /type="radio"/);
   assert.match(prioritizer ?? '', /aria-live="polite"/);
-  assert.match(budget ?? '', /type="checkbox"/);
   assert.match(audit ?? '', /type="radio"/);
 });
 

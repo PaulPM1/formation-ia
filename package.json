@@ -12,6 +12,7 @@
     "qa:a1-checkpoint": "node scripts/qa-a1-checkpoint.mjs",
     "qa:a1-training": "node scripts/qa-a1-training.mjs",
     "qa:a2-prioritizer": "node scripts/qa-a2-prioritizer.mjs",
+    "qa:a3-model-costs": "node scripts/qa-a3-model-costs.mjs",
     "qa:a4-mission": "node scripts/qa-a4-mission.mjs",
     "qa:font-floor": "node scripts/qa-font-floor.mjs",
     "qa:presenter": "node scripts/qa-presenter.mjs",

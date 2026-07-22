@@ -4,8 +4,9 @@ import CheckpointScene from './scenes/CheckpointScene.astro';
 import MissionBoard from './scenes/MissionBoard.astro';
 import ResourceRail from './scenes/ResourceRail.astro';
 import StaticConceptScene from './scenes/StaticConceptScene.astro';
-import ContextBudget from './visuals/a/ContextBudget.astro';
 import ContextComparison from './visuals/a/ContextComparison.astro';
+import ContextBudget from './visuals/a/ContextBudget.astro';
+import ModelCostGuide from './visuals/a/ModelCostGuide.astro';
 import SolutionComparison from './visuals/a/SolutionComparison.astro';
 import SolutionPrioritizer from './visuals/a/SolutionPrioritizer.astro';
 import TokenPredictor from './visuals/a/TokenPredictor.astro';
@@ -34,6 +35,7 @@ const sceneRegistry = {
   'context-comparison': ContextComparison,
   'solution-comparison': SolutionComparison,
   'solution-prioritizer': SolutionPrioritizer,
+  'model-cost-guide': ModelCostGuide,
   'context-budget': ContextBudget,
   'verification-audit': VerificationAudit,
   'setup-diagnostic': SetupDiagnostic,

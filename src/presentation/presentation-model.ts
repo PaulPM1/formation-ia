@@ -8,7 +8,7 @@ export const SLIDE_ROLES = [
 export const SLIDE_VISUAL_KEYS = [
   'mission-board', 'checkpoint', 'resource-rail',
   'token-predictor', 'context-comparison', 'solution-comparison',
-  'solution-prioritizer', 'context-budget', 'verification-audit',
+  'solution-prioritizer', 'model-cost-guide', 'context-budget', 'verification-audit',
   'setup-diagnostic', 'prompt-builder', 'artifact-test-loop',
   'pacte-workspace', 'ipmtr-loop', 'workspace-triptych',
   'skill-anatomy', 'mcp-connection-map', 'trigger-timeline',

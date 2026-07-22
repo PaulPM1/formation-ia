@@ -20,7 +20,8 @@ test('la séquence relie la première slide à la deuxième', () => {
 test('la fusion A2 rejoint directement A3 et ne conserve aucune route A5', () => {
   const neighbors = getSlideNeighbors(PRESENTATION_SLIDES, 'a2-prioritize');
   const obsoletePrefix = ['a', '5-'].join('');
-  assert.equal(neighbors.next?.id, 'a3-three-costs');
+  assert.equal(neighbors.next?.id, 'a3-model-fit');
+  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'a3-access').next?.id, 'a4-convincing');
   assert.ok(PRESENTATION_SLIDES.every((slide) => !slide.id.startsWith(obsoletePrefix)));
 });
 
@@ -47,7 +48,7 @@ test('le shell expose un état plein écran initial et une zone d’annonce', as
   assert.match(source, /data-presenter-announcer/);
 });
 
-test('la QA navigateur durable couvre navigation native, 404, plein écran et les 119 mobiles', async () => {
+test('la QA navigateur durable couvre navigation native, 404, plein écran et les 117 mobiles', async () => {
   const source = await readFile(
     new URL('../scripts/qa-presenter.mjs', import.meta.url),
     'utf8',
@@ -63,4 +64,5 @@ test('la QA navigateur durable couvre navigation native, 404, plein écran et le
   assert.match(source, /javaScriptEnabled:\s*false/);
   assert.match(source, /aria-pressed/);
   assert.match(source, /fullscreenchange/);
+  assert.match(source, /slideRoutes\.length[^\n]*117|117[^\n]*slideRoutes\.length/);
 });

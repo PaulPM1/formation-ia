@@ -33,15 +33,55 @@ const coworkGuide = externalLink(
   'Bien démarrer avec Cowork',
   'https://support.claude.com/en/articles/13345190-get-started-with-claude-cowork',
 );
-const planGuide = externalLink(
+const anthropicModels = externalLink(
   'official',
-  'Choisir un forfait Claude',
-  'https://support.claude.com/en/articles/11049762-choose-a-claude-plan',
+  'Modèles Claude',
+  'https://platform.claude.com/docs/en/about-claude/models/overview',
 );
-const apiPricing = externalLink(
+const anthropicPricing = externalLink(
   'official',
   "Tarification de l'API Claude",
   'https://platform.claude.com/docs/en/about-claude/pricing',
+);
+const anthropicPlans = externalLink(
+  'official',
+  'Forfaits Claude',
+  'https://claude.com/pricing',
+);
+const openaiModels = externalLink(
+  'official',
+  'Modèles OpenAI',
+  'https://developers.openai.com/api/docs/models',
+);
+const openaiPricing = externalLink(
+  'official',
+  'Tarification des modèles OpenAI',
+  'https://developers.openai.com/api/docs/models',
+);
+const openaiPlans = externalLink(
+  'official',
+  'ChatGPT Plus',
+  'https://help.openai.com/en/articles/6950777',
+);
+const chatgptProPlans = externalLink(
+  'official',
+  'ChatGPT Pro',
+  'https://help.openai.com/en/articles/9793128/',
+);
+const googleModels = externalLink(
+  'official',
+  'Modèles Gemini',
+  'https://ai.google.dev/gemini-api/docs/pricing',
+);
+const googlePricing = externalLink(
+  'official',
+  'Tarification de l\'API Gemini',
+  'https://ai.google.dev/gemini-api/docs/pricing',
+);
+const googlePlans = externalLink(
+  'official',
+  'Forfaits Google AI',
+  'https://one.google.com/intl/fr_fr/about/google-ai-plans/',
 );
 const hallucinationGuide = externalLink(
   'official',
@@ -504,7 +544,7 @@ export const A_DECKS = [
         speaker: {
           durationMinutes: 7,
           notes: 'Faire voter avant chaque validation. Après la correction, demander quelle permission ou quel contexte rend l’alternative trop faible ou trop large.',
-          transition: 'Une solution plus agentique mobilise davantage de contexte et d’étapes : regardons ce que cela consomme.',
+          transition: 'Après avoir choisi la bonne surface, choisissons la puissance réellement nécessaire.',
         },
         accessibleDescription: 'Quatre situations professionnelles proposent quatre paires de solutions équivalentes. Chaque correction nomme la paire prioritaire, le signal décisif et l’alternative trop faible ou trop large.',
       }),
@@ -514,154 +554,129 @@ export const A_DECKS = [
     brickId: 'a3',
     family: 'a',
     order: 3,
-    title: 'Les coûts',
+    title: 'Choisir son modèle et son mode de paiement',
     slides: [
       slide({
-        id: 'a3-three-costs',
+        id: 'a3-model-fit',
         role: 'opening',
-        claim: "Abonnement, limite d'usage et API sont trois réalités différentes.",
-        support: 'Accès au produit, capacité sur une période et facturation technique ne se lisent pas avec la même unité.',
+        claim: 'Le bon modèle dépend du niveau d’exigence.',
+        support: 'La bonne gamme dépend du compromis entre exigence, volume et coût.',
         visual: {
-          key: 'context-budget',
+          key: 'model-cost-guide',
           data: {
-            interaction: 'Sélectionner les trois couches.',
-            layers: [
-              { name: 'Abonnement', measures: 'Accès et capacité selon le forfait', check: 'Page des forfaits' },
-              { name: "Limite d'usage", measures: 'Travail possible sur une période', check: 'État d’usage du produit' },
-              { name: 'API', measures: 'Entrées, sorties et outils', check: 'Tarification et mesure réelles' },
+            variant: 'models',
+            interaction: 'Choisir le niveau d’exigence.',
+            tiers: [
+              {
+                id: 'volume',
+                label: 'Cadré et volumineux',
+                signal: 'Extraction, classement, reformulation et sous-tâches répétables',
+                models: [
+                  { vendor: 'Anthropic', name: 'Claude Haiku 4.5' },
+                  { vendor: 'OpenAI', name: 'GPT-5.6 Luna' },
+                  { vendor: 'Google', name: 'Gemini 3.5 Flash-Lite' },
+                ],
+              },
+              {
+                id: 'balance',
+                label: 'Professionnel courant',
+                signal: 'Rédaction nuancée, analyse, code et agents ordinaires',
+                models: [
+                  { vendor: 'Anthropic', name: 'Claude Sonnet 5' },
+                  { vendor: 'OpenAI', name: 'GPT-5.6 Terra' },
+                  { vendor: 'Google', name: 'Gemini 3.6 Flash' },
+                ],
+              },
+              {
+                id: 'exigence',
+                label: 'Très exigeant',
+                signal: 'Problème difficile, forte précision attendue ou agent long',
+                models: [
+                  { vendor: 'Anthropic', name: 'Claude Opus 4.8 / Fable 5', note: 'Opus : code complexe · Fable : agents longs' },
+                  { vendor: 'OpenAI', name: 'GPT-5.6 Sol' },
+                  { vendor: 'Google', name: 'Gemini 3.1 Pro Preview' },
+                ],
+              },
             ],
-            warning: 'Prix et quotas changent : consulter la source officielle',
+            rule: 'Commencer à l’équilibre, descendre pour le volume, monter seulement après un test insuffisant.',
+            snapshot: 'Relevé du 21 juillet 2026',
           },
         },
-        links: [wikiLink('a3', 'concept-durable', 'Les trois réalités du coût'), planGuide, usageLimits, apiPricing],
+        links: [anthropicModels, openaiModels, googleModels],
         speaker: {
-          durationMinutes: 4,
-          notes: 'Distinguer abonnement, limite et API sur trois colonnes, sans annoncer de quota universel.',
-          transition: 'Dans chaque couche, le contexte fourni influence la consommation.',
+          durationMinutes: 3,
+          notes: 'Faire comparer les trois niveaux sans transformer les marques en classement absolu. Commencer à l’équilibre, descendre pour le volume et ne monter qu’après un test insuffisant.',
+          transition: 'Appliquons la même charge à chaque modèle pour rendre l’écart de coût visible.',
         },
-        accessibleDescription: 'Trois colonnes différencient abonnement, limite d’usage et API par ce qu’ils mesurent et où les vérifier.',
+        accessibleDescription: 'Trois niveaux de tâche, du travail cadré et volumineux au problème très exigeant, affichent chacun un signal de décision et un modèle Anthropic, OpenAI et Google.',
       }),
       slide({
-        id: 'a3-context-meter',
+        id: 'a3-api-cost',
         role: 'demonstration',
-        claim: 'Chaque élément de contexte a un coût et une utilité.',
-        support: 'Demande, historique, documents, instructions et outils occupent l’entrée du modèle.',
+        claim: 'Le même dossier coûte de 0,23 à 1,50 $ selon le modèle.',
+        support: 'La charge reste identique : 100 000 tokens d’entrée et 10 000 tokens de sortie par dossier.',
         visual: {
-          key: 'context-budget',
+          key: 'model-cost-guide',
           data: {
-            interaction: 'Ajouter ou retirer du contexte.',
-            meter: [
-              { item: 'Objectif et critère', contextLoad: 'faible', relevance: 'directe', keep: true },
-              { item: 'Document concerné', contextLoad: 'significative', relevance: 'directe', keep: true },
-              { item: 'Historique long sur plusieurs sujets', contextLoad: 'élevée', relevance: 'faible', keep: false },
-              { item: 'Sujets sans rapport', contextLoad: 'inutile', relevance: 'nulle', keep: false },
-              { item: 'Résumé des décisions', contextLoad: 'faible', relevance: 'forte', keep: true },
+            variant: 'costs',
+            interaction: 'Comparer 1, 10 ou 100 dossiers.',
+            caseLabel: 'Cas de référence',
+            workload: { inputTokens: 100_000, outputTokens: 10_000 },
+            prices: [
+              { tier: 'Équilibre', vendor: 'Anthropic', model: 'Claude Sonnet 5', inputPerMTok: 2, outputPerMTok: 10, note: 'tarif de lancement jusqu’au 31 août 2026' },
+              { tier: 'Équilibre', vendor: 'OpenAI', model: 'GPT-5.6 Terra', inputPerMTok: 2.5, outputPerMTok: 15 },
+              { tier: 'Équilibre', vendor: 'Google', model: 'Gemini 3.6 Flash', inputPerMTok: 1.5, outputPerMTok: 7.5 },
+              { tier: 'Exigence', vendor: 'Anthropic', model: 'Claude Fable 5', inputPerMTok: 10, outputPerMTok: 50 },
+              { tier: 'Exigence', vendor: 'OpenAI', model: 'GPT-5.6 Sol', inputPerMTok: 5, outputPerMTok: 30 },
+              { tier: 'Exigence', vendor: 'Google', model: 'Gemini 3.1 Pro Preview', inputPerMTok: 2, outputPerMTok: 12, note: 'contexte ≤ 200k' },
             ],
-            legend: {
-              contextLoad: ['faible', 'significative', 'élevée', 'inutile'],
-              relevance: ['nulle', 'faible', 'forte', 'directe'],
-            },
-            objective: 'Conserver ce qui sert le résultat ou sa vérification',
+            caveat: 'USD hors taxes. Outils, recherche, cache, images, stockage et long contexte non inclus. Prix et modèles évolutifs.',
+            snapshot: 'Relevé du 21 juillet 2026',
           },
         },
-        links: [wikiLink('a3', 'pratique-avec-claude', 'Comparer les conversations A et B')],
+        links: [anthropicPricing, openaiPricing, googlePricing],
         speaker: {
           durationMinutes: 3,
-          notes: 'Comparer les conversations A et B et faire retirer ce qui consomme sans aider le résultat.',
-          transition: 'Une boucle agentique multiplie ces lectures et productions.',
+          notes: 'Conserver l’hypothèse 100 000 tokens d’entrée et 10 000 de sortie. Rappeler la date, le tarif de lancement de Sonnet 5 et les coûts exclus ; ce cas n’est ni une moyenne universelle ni une promesse de quota.',
+          transition: 'L’API facture cette consommation ; un abonnement achète un autre régime d’accès.',
         },
-        accessibleDescription: 'Une jauge qualitative compare cinq éléments selon leur charge de contexte, leur pertinence et la décision de les conserver.',
+        accessibleDescription: 'Un tableau compare six modèles à charge identique pour un et cent dossiers. Les montants vont de 0,225 à 1,50 dollar par dossier et restent lisibles sans graphique.',
       }),
       slide({
-        id: 'a3-agentic',
+        id: 'a3-access',
         role: 'explanation',
-        claim: 'Lire, agir et se corriger multiplie les étapes consommées.',
-        support: 'Une tâche agentique peut relire des fichiers, appeler des outils et produire plusieurs sorties intermédiaires.',
+        claim: 'L’abonnement achète une capacité privilégiée, pas des tokens.',
+        support: 'Abonnement et API répondent à deux régimes d’usage différents et peuvent être combinés.',
         visual: {
-          key: 'context-budget',
+          key: 'model-cost-guide',
           data: {
-            interaction: 'Comparer question et tâche agentique.',
-            comparisons: [
-              {
-                mode: 'Question courte',
-                context: 'ciblé',
-                toolUse: 'aucun',
-                progression: 'une réponse directe',
-              },
-              {
-                mode: 'Tâche agentique',
-                context: 'plus étendu et relu au fil de la tâche',
-                toolUse: 'plusieurs appels possibles',
-                progression: 'observations, actions et corrections successives',
-              },
+            variant: 'access',
+            subscriptionTitle: 'Capacité dans un produit',
+            subscriptionPoints: [
+              '≈ 20 $/mois pour les offres individuelles courantes',
+              'Fonctions et modèles inclus selon le forfait',
+              'Limites variables et partagées',
             ],
-            relationship: 'La tâche agentique mobilise généralement davantage de contexte et d’étapes.',
-            factors: ['Longueur', 'Complexité', 'Modèle', "Niveau d'effort", 'Fonctions utilisées'],
+            apiTitle: 'Consommation mesurée',
+            apiPoints: [
+              'Paiement exact à l’usage',
+              'Automatisation et choix explicite du modèle',
+              'Dépense ouverte à plafonner',
+            ],
+            hybrid: 'Abonnement pour le quotidien · API pour les workflows mesurés',
+            conclusion: 'Aujourd’hui, l’abonnement peut donner une capacité qui coûterait davantage au tarif API. Ce rapport peut changer.',
+            reference: '100 dossiers via API : environ 22,50 à 150 $ selon le modèle',
+            intensivePlans: 'Offres intensives : 100 à 250 $/mois · quotas non équivalents',
+            snapshot: 'Ordres de grandeur au 21 juillet 2026',
           },
         },
-        links: [usageLimits, apiPricing],
-        speaker: {
-          durationMinutes: 3,
-          notes: 'Expliquer les facteurs de consommation sans transformer l’exemple en estimation tarifaire universelle.',
-          transition: 'Le bon objectif n’est pas le prompt le plus court, mais le contexte utile une seule fois.',
-        },
-        accessibleDescription: 'Une comparaison qualitative oppose une question directe à une tâche agentique qui relit du contexte, appelle des outils et se corrige.',
-      }),
-      slide({
-        id: 'a3-budget',
-        role: 'mission',
-        claim: 'Optimiser consiste à fournir le contexte utile une fois.',
-        support: 'Réussite : chaque élément conservé sert directement le résultat ou sa vérification.',
-        visual: {
-          key: 'context-budget',
-          data: {
-            interaction: 'Construire une fiche budget.',
-            mission: "À partir d'une tâche de votre fil rouge, rédigez une fiche budget.",
-            fields: [
-              'Résultat réellement nécessaire',
-              'Contexte indispensable',
-              'Contexte que vous pouvez résumer ou retirer',
-              "Outil et niveau d'autonomie nécessaires",
-              "Point d'arrêt",
-              'Preuve qui évite de relancer la tâche inutilement',
-            ],
-            successCriterion: 'Chaque élément de contexte conservé sert directement le résultat ou sa vérification.',
-          },
-        },
-        links: [wikiLink('a3', 'mission-commune', 'Mission A3 complète')],
-        speaker: {
-          durationMinutes: 3,
-          notes: 'Faire produire puis partager les fiches budget en binômes. Optimiser signifie fournir le contexte utile une fois, au bon endroit.',
-          transition: 'Un budget a aussi besoin d’un point d’arrêt observable.',
-        },
-        accessibleDescription: 'Une fiche à six champs relie résultat, contexte, autonomie, arrêt et preuve ; le critère exige l’utilité de chaque élément.',
-      }),
-      slide({
-        id: 'a3-checkpoint',
-        role: 'checkpoint',
-        claim: "Un point d'arrêt évite de relancer sans preuve.",
-        support: 'Une charte simple transforme l’économie de contexte en habitudes répétables.',
-        visual: {
-          key: 'checkpoint',
-          data: {
-            interaction: 'Valider les cinq règles.',
-            rules: [
-              'Un fil par objectif',
-              'Demander un plan avant une longue exécution',
-              'Limiter les fichiers',
-              'Tester sur un petit échantillon',
-              'Arrêter quand le critère est atteint',
-            ],
-            proof: 'Critère atteint et résultat vérifié',
-          },
-        },
-        links: [wikiLink('a3', 'livrable', 'Charte personnelle')],
+        links: [anthropicPlans, openaiPlans, chatgptProPlans, googlePlans],
         speaker: {
           durationMinutes: 2,
-          notes: 'Faire choisir cinq règles concrètes et vérifier qu’au moins une règle définit explicitement la fin de tâche.',
-          transition: 'Économiser du contexte ne suffit pas si une réponse fausse paraît convaincante.',
+          notes: 'Ne pas présenter l’abonnement comme un préachat de tokens ni promettre cent dossiers. Distinguer le modèle visible dans l’interface de l’identifiant API et rappeler que prix, limites et inclusions évoluent.',
+          transition: 'Même le meilleur modèle ne transforme pas une réponse plausible en preuve.',
         },
-        accessibleDescription: 'Une checklist de cinq règles se termine par la preuve que le critère est atteint et le résultat vérifié.',
+        accessibleDescription: 'Deux colonnes opposent un abonnement à capacité variable et une API facturée à l’usage, puis les relient à un usage hybride explicitement nommé.',
       }),
     ],
   },

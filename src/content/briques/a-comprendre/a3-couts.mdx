@@ -1,10 +1,10 @@
 ---
 id: a3
-title: "Les coûts"
+title: "Choisir son modèle et son mode de paiement"
 family: a
 order: 3
 priority: socle
-durationMinutes: 15
+durationMinutes: 8
 type: concept
 platforms:
   - commun
@@ -12,98 +12,87 @@ prerequisites:
   - a1
 status: a-relire
 owner: a-attribuer
-learningObjective: "Distinguer abonnement, limite d'usage et facturation API, puis repérer les principaux facteurs de consommation."
-expectedOutcome: "Le participant produit cinq règles concrètes pour utiliser Claude efficacement sans figer un tarif ou un quota."
+learningObjective: "Choisir une gamme de modèles proportionnée au niveau d'exigence de la tâche, puis un mode d'accès adapté entre abonnement et API."
+expectedOutcome: "Le participant sait justifier un choix de modèle et de mode d'accès, puis produire une estimation API reproductible pour un cas simple."
 ---
 
 ## Cap
 
-**Objectif :** comprendre ce qui fait varier la consommation pour éviter les mauvaises surprises et garder de la capacité pour les tâches importantes.
+**Objectif :** choisir une gamme de modèles et un mode d'accès proportionnés à la tâche, sans confondre puissance, prix et capacité d'usage.
 
-- Durée cible : 15 minutes.
+- Durée cible : 8 minutes.
 - Prérequis : A1, « C'est quoi un LLM ».
-- Résultat attendu : vous savez expliquer la différence entre une limite d'abonnement et une facture API.
+- Résultat attendu : une décision modèle–accès justifiée et une estimation API reproductible.
 
 ## Concept durable
 
-Le mot « coût » recouvre trois réalités différentes :
+Le bon modèle n'est pas automatiquement le plus puissant. Il dépend du compromis entre le niveau d'exigence, le volume et le coût :
 
-1. **L'abonnement** donne accès à des produits et à une capacité d'usage selon le forfait.
-2. **La limite d'usage** détermine la quantité de travail possible sur une période. Elle n'est pas toujours un nombre fixe de messages.
-3. **La facturation API** mesure l'utilisation technique, notamment les tokens d'entrée et de sortie, selon le modèle et les outils employés.
+1. **Cadré et volumineux :** extraction, classement, reformulation et sous-tâches répétables.
+2. **Professionnel courant :** rédaction nuancée, analyse, code et agents ordinaires.
+3. **Très exigeant :** problème difficile, forte précision attendue ou agent long.
 
-Dans les produits Claude, la consommation dépend entre autres de la longueur et de la complexité des conversations, du modèle, du niveau d'effort et des fonctions utilisées. Une tâche agentique qui lit beaucoup de fichiers, lance plusieurs outils et se corrige pendant dix étapes consomme davantage qu'une question courte.
+La règle durable est de **commencer à l'équilibre, descendre pour le volume et monter seulement après un test insuffisant**. Les gammes ne constituent pas un classement absolu entre Anthropic, OpenAI et Google.
 
-Dans une API, l'entrée comprend votre demande, les instructions, l'historique, les documents et la description des outils. La sortie comprend la réponse et les actions générées. Certains outils ou traitements ont aussi leur propre tarification.
+Le mode d'accès répond ensuite à une autre question. Un abonnement achète une capacité privilégiée dans un produit, avec des fonctions et des limites variables. Une API facture une consommation mesurée, permet l'automatisation et demande de plafonner la dépense. Les deux peuvent être combinés.
 
-Les prix et quotas changent. La bonne habitude n'est donc pas de mémoriser un chiffre, mais de consulter la page officielle et de mesurer l'usage réel avant de déployer à grande échelle.
+Les offres individuelles payantes courantes se situent autour de 20 $ par mois ; les offres intensives donnent un ordre de grandeur de 100 à 250 $ par mois, sans quotas équivalents entre fournisseurs. À titre de comparaison, 100 dossiers du cas de référence représentent environ 22,50 à 150 $ via API selon le modèle.
+
+Les noms de modèles, prix, quotas et conditions d'accès évoluent. Les valeurs de cette brique sont un relevé daté du 21 juillet 2026, en dollars américains hors taxes.
 
 ## Pratique avec Claude
 
-Comparez ces deux stratégies :
+Le cas de référence contient **100 000 tokens d'entrée** et **10 000 tokens de sortie** par dossier. Pour des tarifs exprimés par million de tokens :
 
 ```text
-Conversation A : je garde 40 messages, plusieurs documents et trois sujets
-différents dans le même fil, puis je demande une petite correction.
+coût = 0,1 × prix d'entrée par million
+      + 0,01 × prix de sortie par million
 ```
 
-```text
-Conversation B : je résume les décisions utiles, j'ouvre un fil dédié et je
-fournis uniquement le document concerné avec un critère de réussite précis.
-```
+Exemple avec Gemini 3.6 Flash : `0,1 × 1,50 $ + 0,01 × 7,50 $ = 0,225 $` par dossier, soit `22,50 $` pour 100 dossiers identiques.
 
-Demandez à Claude d'identifier les facteurs de consommation, puis de proposer une version plus économe **sans dégrader le résultat attendu**.
+Cette formule rend l'estimation reproductible, mais ne comprend pas les outils, la recherche, le cache, les images, le stockage ni les paliers de long contexte. Le cas n'est ni une consommation moyenne universelle ni une promesse de quota.
 
 ## Mission commune
 
-À partir d'une tâche de votre fil rouge, rédigez une « fiche budget » :
-
-- résultat réellement nécessaire ;
-- contexte indispensable ;
-- contexte que vous pouvez résumer ou retirer ;
-- outil et niveau d'autonomie nécessaires ;
-- point d'arrêt ;
-- preuve qui évite de relancer la tâche inutilement.
-
-**Critère de réussite :** chaque élément de contexte conservé sert directement le résultat ou sa vérification.
+Aucun exercice participant n'est prévu pour cette courte brique conceptuelle. La comparaison guidée des trois slides suffit à installer la décision modèle–coût–accès.
 
 ## Livrable
 
-Votre charte personnelle en cinq règles. Exemple : « un fil par objectif », « demander un plan avant une longue exécution », « limiter les fichiers », « tester sur un petit échantillon », « arrêter quand le critère est atteint ».
+Aucun livrable participant n'est prévu pour cette courte brique conceptuelle. Le résultat attendu est une décision justifiable et un calcul que le participant saura reproduire lorsqu'un cas réel se présentera.
 
 ## Notes formateur
 
-- **0–4 min :** distinguer abonnement, limite et API sur trois colonnes.
-- **4–7 min :** expliquer les facteurs sans annoncer un quota universel.
-- **7–11 min :** comparer les conversations A et B.
-- **11–15 min :** produire puis partager les chartes en binômes.
+- **0–3 min :** faire comparer les trois niveaux d'exigence. Ne jamais présenter les marques comme un classement absolu ; distinguer Opus 4.8, orienté code agentique complexe, de Fable 5, orienté agents longs et raisonnements exigeants.
+- **3–6 min :** conserver la même hypothèse de 100 000 tokens d'entrée et 10 000 de sortie. Montrer le calcul, puis comparer 1, 10 et 100 dossiers.
+- **6–8 min :** opposer abonnement et API, puis montrer l'usage hybride. Environ 20 $ par mois est un ordre de grandeur pour les offres individuelles courantes, pas un préachat de tokens.
 
-Message essentiel : **optimiser ne signifie pas écrire le prompt le plus court ; cela signifie fournir le contexte utile une fois, au bon endroit.** Transition : économiser du contexte ne suffit pas si l'on accepte une réponse fausse parce qu'elle paraît convaincante.
+Rappeler que le tarif de Claude Sonnet 5 est un tarif de lancement annoncé jusqu'au 31 août 2026, que Gemini 3.1 Pro est en Preview et que le modèle visible dans une interface ne correspond pas nécessairement à l'identifiant API. Prix, limites et inclusions doivent être revérifiés sur les pages officielles.
 
 ## Défis avancés
 
-- Concevez un petit test sur cinq exemples avant de lancer une tâche sur cinq cents éléments.
-- Pour un usage API fictif, listez séparément entrée, sortie, appels d'outils et stockage éventuel.
-- Définissez un seuil d'arrêt humain : durée, nombre d'essais ou budget maximal.
+Pour prolonger hors de cette courte séquence, le formateur peut montrer comment recalculer le cas après un changement de tarif, séparer le coût des entrées et des sorties, ou tester un modèle équilibré avant d'autoriser une montée en gamme. Ces prolongements ne constituent pas un exercice requis dans A3.
 
 ## Variantes
 
-- **Usage uniquement par abonnement :** concentrez-vous sur les limites partagées entre Chat, Desktop et Claude Code.
-- **Public développeur :** ajoutez mise en cache du prompt, traitement par lots et mesure des tokens.
-- **Formation sans chiffres :** utilisez des jetons physiques pour représenter contexte, actions et sorties.
+- **Public non technique :** conserver uniquement le coût par dossier et l'ordre de grandeur pour 100 dossiers.
+- **Public développeur :** expliciter les deux coefficients `0,1` et `0,01`, puis nommer les coûts exclus sans les calculer.
+- **Usage uniquement dans une interface :** insister sur la capacité variable de l'abonnement et sur l'absence de volume garanti en tokens.
+- **Workflow automatisé :** insister sur le choix explicite du modèle, la mesure de consommation et le plafond de dépense API.
 
 ## Dépannage
 
-- **Un participant demande « combien de messages ? » :** expliquer que la capacité dépend de plusieurs facteurs et faire consulter la page de son forfait.
-- **Confusion abonnement/API :** rappeler qu'une clé API et un abonnement Claude sont deux modes d'accès distincts.
-- **Une conversation atteint sa limite de longueur :** produire un résumé de passation, vérifier les décisions importantes, puis démarrer un nouveau fil.
+- **« Quel est le meilleur modèle ? » :** revenir au niveau d'exigence et à un test concret ; ne pas classer globalement les éditeurs.
+- **Confusion abonnement/API :** rappeler que l'abonnement achète une capacité dans un produit tandis que l'API facture une consommation mesurée.
+- **Un montant diffère de la slide :** vérifier la date, le modèle exact, le palier de contexte, les taxes et les coûts additionnels sur la page officielle.
+- **Confusion interface/identifiant API :** préciser que le nom affiché dans le produit ne garantit pas un identifiant ni des conditions API identiques.
 
 ## Ressources
 
-- [Fonctionnement des limites d'usage et de longueur — Claude Help Center](https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work)
-- [Choisir un forfait Claude — Claude Help Center](https://support.claude.com/en/articles/11049762-choose-a-claude-plan)
-- [Tarification de l'API Claude — Anthropic](https://platform.claude.com/docs/en/about-claude/pricing)
+- Anthropic : [vue d'ensemble des modèles](https://platform.claude.com/docs/en/about-claude/models/overview), [tarification API](https://platform.claude.com/docs/en/about-claude/pricing) et [forfaits Claude](https://claude.com/pricing).
+- OpenAI : [catalogue des modèles](https://developers.openai.com/api/docs/models), [ChatGPT Plus](https://help.openai.com/en/articles/6950777) et [ChatGPT Pro](https://help.openai.com/en/articles/9793128/).
+- Google : [tarification Gemini API](https://ai.google.dev/gemini-api/docs/pricing) et [forfaits Google AI](https://one.google.com/intl/fr_fr/about/google-ai-plans/).
 
 ## Ouverture
 
-Une utilisation efficace réduit les itérations inutiles. La prochaine brique ajoute une autre économie : vérifier tôt une réponse plutôt que construire longtemps sur une erreur plausible.
+Même le meilleur modèle ne transforme pas une réponse plausible en preuve. La brique suivante apprend à ajuster l'effort de vérification au niveau de risque.

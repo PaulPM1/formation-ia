@@ -9,10 +9,10 @@ import { WIKI_BASE_URL } from './presentation-links';
 
 const allowedDownloadHosts = new Set(['claude.com', 'code.visualstudio.com']);
 const allowedOfficialHosts = new Set([
-  'agentskills.io', 'anthropic.com', 'www.anthropic.com', 'claude.ai',
+  'agentskills.io', 'ai.google.dev', 'anthropic.com', 'www.anthropic.com', 'claude.ai',
   'claude.com', 'code.claude.com', 'code.visualstudio.com',
   'developers.openai.com', 'help.openai.com', 'openai.com',
-  'modelcontextprotocol.io', 'platform.claude.com', 'status.claude.com',
+  'modelcontextprotocol.io', 'one.google.com', 'platform.claude.com', 'status.claude.com',
   'support.claude.com',
 ]);
 const visualKeys = new Set<string>(SLIDE_VISUAL_KEYS);

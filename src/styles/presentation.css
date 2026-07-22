@@ -1208,6 +1208,42 @@ dialog button,
   .presentation-stage::after {
     inset-inline-start: 0;
   }
+
+  @container (min-width: 53rem) {
+    /* A3 tient comme une scène complète dans le projecteur uniquement quand
+       la largeur effective le permet. Au zoom, le conteneur repasse sous ce
+       seuil et retrouve le flux vertical, même si le viewport reste large. */
+    .presentation-stage[data-family="a"]:has([data-model-cost-guide]) {
+      block-size: calc(100dvh - 4.3rem);
+      min-block-size: 0;
+      max-block-size: calc(100dvh - 4.3rem);
+      gap: 0.4rem;
+      padding-block: 0.5rem;
+    }
+
+    .presentation-stage[data-family="a"]:has([data-model-cost-guide]) .presentation-heading h1 {
+      font-size: 2rem;
+    }
+
+    .presentation-stage[data-family="a"]:has([data-model-cost-guide]) .presentation-visual figcaption {
+      padding-block: 0.25rem;
+      font-size: 0.75rem;
+      line-height: 1.1;
+    }
+
+    .presentation-stage[data-family="a"]:has([data-model-cost-guide]) .scene-frame__content {
+      padding-block: 0.25rem;
+    }
+
+    .presentation-stage[data-family="a"]:has([data-model-cost-guide]) .resource-rail {
+      min-block-size: 2.25rem;
+      gap: 0.5rem;
+    }
+
+    .presentation-stage[data-family="a"]:has([data-model-cost-guide]) .resource-rail ul {
+      gap: 0.3rem 1rem;
+    }
+  }
 }
 
 @media (max-width: 52rem) {
