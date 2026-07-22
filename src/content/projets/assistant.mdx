@@ -73,19 +73,30 @@ Vous faites cette étape pendant la séance de socle commun du vendredi après-m
 
 <p class="step-meta"><span class="step-when">Développement libre</span><span class="step-tag">Commun à tous les projets</span></p>
 
-**Objectif.** Une mémoire où chaque information a une adresse prévisible, et de la vraie matière dedans.
+**Objectif.** Une mémoire où chaque information a une place évidente, et de la vraie matière dedans.
 
-**Ce que vous faites.** Décidez de l'arborescence : notes, documents, journal, personnes. Fixez une convention de nommage (une date en tête, un sujet en clair) et écrivez-la dans un fichier de routage qui dit noir sur blanc où va quoi. Puis chargez la matière : au moins quinze éléments réels, vos notes récentes, vos documents utiles, quelques entrées de journal. Terminez en poussant le dépôt sur GitHub, avec un `.gitignore` avant le premier push, et un dépôt privé si la matière est personnelle.
+**Ce que vous faites.** Choisissez vos dossiers (par exemple : notes, documents, journal, personnes). Puis écrivez, dans un fichier texte, **la liste des règles de rangement** : une petite table qui dit, pour chaque type d'information, dans quel dossier elle va et comment nommer le fichier. C'est tout ce que veut dire « règles de rangement » : un aide-mémoire que l'assistant relit pour ne jamais hésiter sur où poser quoi.
 
-**Preuve de réussite.** Vous demandez « où ranges-tu une note prise en réunion avec Sofia jeudi ? » et l'assistant répond le chemin exact, sans hésiter, en citant votre règle de routage. Le dépôt est visible sur GitHub et ne contient rien que vous ne vouliez y voir.
+Par exemple :
+
+| Ce que je reçois | Ça va dans | Nom du fichier |
+| --- | --- | --- |
+| Une note de réunion | `notes/` | `2026-02-13-reunion-sofia.md` |
+| Une facture, un document | `documents/` | `2026-02-13-facture-electricite.pdf` |
+| Une pensée du jour | `journal/` | `2026-02-13.md` |
+| Une info sur quelqu'un | `personnes/` | `sofia.md` |
+
+Une fois cette table écrite, chargez la matière : au moins quinze éléments réels, vos notes récentes, vos documents utiles, quelques entrées de journal. Terminez en poussant le dépôt sur GitHub, avec un `.gitignore` avant le premier push, et un dépôt privé si la matière est personnelle.
+
+**Preuve de réussite.** Vous demandez « où ranges-tu une note prise en réunion avec Sofia jeudi ? » et l'assistant répond le chemin exact, sans hésiter, en citant votre table de rangement. Le dépôt est visible sur GitHub et ne contient rien que vous ne vouliez y voir.
 
 **Briques :** [E1](/briques/e1/), [E2](/briques/e2/), [D2-bis](/briques/d2-bis/).
 
 <div class="hint-stack">
   <p class="hint-label">Si vous bloquez</p>
-  <details class="hint"><summary>Indice</summary><p>Prenez trois informations très différentes (un compte rendu de réunion, une facture, une idée notée dans le métro). Savez-vous dire en une phrase où chacune doit aller ? Si vous hésitez, votre arborescence a un trou.</p></details>
-  <details class="hint"><summary>Piste</summary><p>Écrivez les règles de routage avant de créer les dossiers, pas après. Un tableau de trois colonnes suffit : type d'information, dossier de destination, format de nom de fichier. Les dossiers ne sont que la conséquence de ce tableau.</p></details>
-  <details class="hint"><summary>Le prompt de secours</summary><p class="hint-prompt">Voici les types d'informations que je veux stocker dans la mémoire de mon assistant : notes de réunion, documents administratifs, entrées de journal, fiches sur les personnes que je côtoie. Propose-moi une arborescence de dossiers, une convention de nommage unique et un fichier de règles de routage qui décrit, pour chaque type, le dossier de destination, le format du nom et les champs obligatoires en tête de fichier. Montre-moi le tableau avant de créer quoi que ce soit, puis crée l'arborescence et range les fichiers que je vais te donner en respectant ces règles.</p></details>
+  <details class="hint"><summary>Indice</summary><p>Prenez trois informations très différentes (un compte rendu de réunion, une facture, une idée notée dans le métro). Savez-vous dire en une phrase dans quel dossier chacune doit aller ? Si vous hésitez, votre liste de dossiers a un trou.</p></details>
+  <details class="hint"><summary>Piste</summary><p>Écrivez la table de rangement avant de créer les dossiers, pas après. Trois colonnes suffisent : ce que je reçois, dans quel dossier ça va, comment nommer le fichier. Les dossiers ne sont que la conséquence de cette table.</p></details>
+  <details class="hint"><summary>Le prompt de secours</summary><p class="hint-prompt">Voici les types d'informations que je veux garder dans la mémoire de mon assistant : notes de réunion, documents administratifs, entrées de journal, fiches sur les personnes que je côtoie. Propose-moi une liste de dossiers et une table de rangement qui décrit, pour chaque type, le dossier de destination et le format du nom de fichier (avec la date en tête). Montre-moi la table sous forme de tableau avant de créer quoi que ce soit, puis crée les dossiers et range les fichiers que je vais te donner en respectant ces règles.</p></details>
 </div>
 
 ## Étape 3 : Le savoir-faire
@@ -132,7 +143,7 @@ Vous faites cette étape pendant la séance de socle commun du vendredi après-m
 
 **Objectif.** Toute information brute arrive rangée au bon endroit, au bon format, sans que vous choisissiez le dossier.
 
-**Ce que vous faites.** Créez un skill de capture qui prend une phrase en vrac et la classe. « RDV dentiste jeudi 15 h » devient un événement daté. « Idée : refaire mon CV » devient une tâche. « Sofia part en congés en août » devient un fait ajouté à sa fiche. Le skill applique votre table de routage, écrit dans le bon fichier, et pose une question quand deux classements sont défendables plutôt que de trancher tout seul. Écrivez dix phrases de test dans le skill lui-même, avec le classement attendu, et faites-les passer.
+**Ce que vous faites.** Créez un skill de capture qui prend une phrase en vrac et la classe. « RDV dentiste jeudi 15 h » devient un événement daté. « Idée : refaire mon CV » devient une tâche. « Sofia part en congés en août » devient un fait ajouté à sa fiche. Le skill applique votre table de rangement, écrit dans le bon fichier, et pose une question quand deux classements sont défendables plutôt que de trancher tout seul. Écrivez dix phrases de test dans le skill lui-même, avec le classement attendu, et faites-les passer.
 
 **Preuve de réussite.** Dix captures d'affilée : au moins neuf atterrissent au bon endroit avec le bon format, et les cas ambigus déclenchent une question au lieu d'une décision silencieuse.
 
@@ -142,7 +153,7 @@ Vous faites cette étape pendant la séance de socle commun du vendredi après-m
   <p class="hint-label">Si vous bloquez</p>
   <details class="hint"><summary>Indice</summary><p>Qu'est-ce qui distingue une tâche d'une note, dans votre mémoire ? Si vous ne savez pas le dire en une phrase, le skill ne le saura pas non plus.</p></details>
   <details class="hint"><summary>Piste</summary><p>Le vrai travail est la table de décision, pas le code. Écrivez d'abord : type d'entrée, indices qui le trahissent (une date, un verbe d'action, un nom propre), dossier de destination, format obligatoire. Le skill n'est que l'application de cette table.</p></details>
-  <details class="hint"><summary>Le prompt de secours</summary><p class="hint-prompt">Je veux un skill de capture pour mon assistant. Entrée : une phrase brute que je te donne. Sortie : l'information rangée dans le bon fichier de ma mémoire, au format défini par mes règles de routage. Commence par lire mes règles de routage et propose-moi une table de décision qui liste, pour chaque type d'information, les indices qui permettent de le reconnaître. Ajoute une règle obligatoire : si deux types sont possibles, tu me poses la question au lieu de choisir. Puis écris le skill, teste-le sur ces dix phrases, et montre-moi le classement proposé avant d'écrire quoi que ce soit sur le disque.</p></details>
+  <details class="hint"><summary>Le prompt de secours</summary><p class="hint-prompt">Je veux un skill de capture pour mon assistant. Entrée : une phrase brute que je te donne. Sortie : l'information rangée dans le bon fichier de ma mémoire, au format défini par ma table de rangement. Commence par lire ma table de rangement et propose-moi une table de décision qui liste, pour chaque type d'information, les indices qui permettent de le reconnaître. Ajoute une règle obligatoire : si deux types sont possibles, tu me poses la question au lieu de choisir. Puis écris le skill, teste-le sur ces dix phrases, et montre-moi le classement proposé avant d'écrire quoi que ce soit sur le disque.</p></details>
 </div>
 
 ## Étape 6 : L'autonomie
