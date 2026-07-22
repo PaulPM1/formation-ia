@@ -36,17 +36,18 @@ const DRAFTED_BRICK_IDS = [
   'e1',
   'e2',
   'e3',
+  'e4',
 ] as const;
 
 const DRAFTED_BRICK_OWNERS = new Set(['paul', 'matthieu', 'a-attribuer']);
 
-test('charge exactement les 23 briques fusionnées dans le bon ordre', async () => {
+test('charge exactement les 24 briques fusionnées dans le bon ordre', async () => {
   const documents = await loadBrickDocuments(contentDirectory);
   const ids = documents
     .toSorted((left, right) => Number(left.data.order) - Number(right.data.order))
     .map((document) => document.data.id);
 
-  assert.equal(documents.length, 23);
+  assert.equal(documents.length, 24);
   assert.deepEqual(ids, EXPECTED_IMPORTED_BRICK_IDS);
 });
 
