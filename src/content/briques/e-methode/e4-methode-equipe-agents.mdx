@@ -39,7 +39,7 @@ Le déroulé tient en trois temps :
 
 Ce qui change tout : le plan est **écrit et relisible**. Vous le corrigez avant que la première ligne existe, quand corriger ne coûte rien. C'est l'inverse du projet qui part dans tous les sens et qu'on ne rattrape plus.
 
-Cette approche porte un nom dans le monde du développement assisté par IA : les méthodes dites « agentiques agiles », dont la plus connue est **BMAD** (Breakthrough Method for Agile AI-Driven Development), un projet libre qui outille précisément cette idée d'une équipe d'agents spécialisés. Vous n'avez pas besoin de l'installer pour en tirer profit : un simple prompt suffit à faire jouer les rôles.
+Cette approche porte un nom dans le monde du développement assisté par IA : les méthodes dites « agentiques agiles », dont la plus connue est **BMAD** (Breakthrough Method for Agile AI-Driven Development), un projet libre qui outille précisément cette idée d'une équipe d'agents spécialisés. Le prompt ci-dessous suffit pour débuter ; pour un projet ambitieux, BMAD va beaucoup plus loin (voir la section suivante).
 
 ## Pratique avec Claude
 
@@ -63,6 +63,20 @@ en une page.
 ```
 
 Le résultat est un plan que vous relisez et amendez. Ensuite seulement, vous demandez : « construis l'étape 1 de ce plan ».
+
+## Passer à l'outil complet : BMAD
+
+Le prompt de cadrage rejoue les rôles à la main. **BMAD** installe cette même équipe pour de bon dans votre projet, avec des agents spécialisés (chef de produit, architecte, développeur, testeur) et des étapes guidées qui couvrent tout le cycle, de l'idée à la revue de code. C'est libre et gratuit.
+
+L'installation tient en une commande, à lancer dans le dossier du projet :
+
+```text
+npx bmad-method install
+```
+
+L'installeur pose quelques questions, puis dépose la méthode dans votre projet. Vous invoquez ensuite les agents et les étapes depuis Claude Code. Un point d'entrée est fait pour ne jamais être perdu : demandez `bmad-help`, il vous dit quoi faire ensuite et ce qui est optionnel. Les commandes exactes évoluent avec les versions ; le tutoriel officiel « Getting Started » donne toujours la marche à jour.
+
+Quand vaut-il le coup ? Pas pour un premier petit projet de week-end, où le prompt de cadrage suffit. Mais dès qu'un projet devient ambitieux (plusieurs fonctionnalités, du vrai code à maintenir), la structure de BMAD évite qu'il parte dans tous les sens. C'est un investissement de mise en place qui se rentabilise sur la durée.
 
 ## Mission commune
 

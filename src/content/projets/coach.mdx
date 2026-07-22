@@ -27,24 +27,24 @@ Vous ouvrez une page, vous choisissez un chapitre, et dix questions arrivent : d
 
 ## Cahier des charges
 
-### Exigences minimales
+### Le minimum pour un coach réussi
 
-- Un dossier de projet suivi par git, avec un `CLAUDE.md` qui décrit ce que vous étudiez, vos échéances et le niveau d'exigence attendu.
-- Une arborescence de cours (par matière, puis par chapitre) et des règles de nommage écrites.
-- Au moins trois chapitres réels chargés, avec leur contenu, pas seulement leur titre.
-- Un skill qui génère un quiz de dix questions sur un chapitre choisi, avec la réponse attendue et le passage du cours qui la justifie.
-- Un skill ou une extension qui produit une fiche de révision d'une page à partir d'un chapitre.
-- Une correction qui explique l'erreur en s'appuyant sur le cours, jamais sur une connaissance extérieure non sourcée.
-- Une page web déployée qui permet de lancer un quiz et d'en voir le résultat.
-- Un audit de sécurité passé : aucun secret dans le dépôt.
+- **Il connaît votre programme.** Un fichier d'identité (le `CLAUDE.md`) dit ce que vous étudiez, vos échéances et le niveau d'exigence que vous attendez, pour qu'il ne vous interroge jamais comme un manuel générique.
+- **Il range vos cours à des endroits prévisibles.** Vous classez vos cours par matière puis par chapitre, et vous écrivez une note simple qui dit où va quoi et comment nommer les fichiers : « une prise de notes en classe va dans le dossier de la matière, avec sa date en tête de nom ».
+- **Ses cours sont de vrais cours :** au moins trois chapitres réels chargés avec tout leur contenu, pas seulement leur titre.
+- **Il vous interroge sur votre cours à vous.** Un skill produit un quiz de dix questions sur le chapitre que vous choisissez, chacune avec la réponse attendue et le passage du cours qui la justifie.
+- **Il vous résume un chapitre en une page.** Un skill produit une fiche de révision d'une page à partir d'un chapitre.
+- **Il corrige en citant le cours.** Quand vous vous trompez, il explique l'erreur en s'appuyant sur votre cours, jamais sur une connaissance extérieure qu'il ne peut pas montrer.
+- **Il est jouable en ligne.** Une page déployée permet de lancer un quiz et d'en voir le résultat.
+- **Il est sûr.** Un audit de sécurité confirme qu'aucun secret n'est parti dans le dépôt.
 
 ### Pour aller plus loin
 
-- Un historique des réponses et un classement des notions fragiles.
-- Une relance ciblée : le quiz suivant repioche en priorité dans ce qui a été raté.
-- Un mode examen chronométré, sans correction avant la fin.
-- Un export de fiches imprimables pour la veille du contrôle.
-- Des questions de plusieurs formats : vrai ou faux, question ouverte, exercice à trous.
+- **Il retient ce que vous ratez.** Un historique de vos réponses et un classement de vos notions les plus fragiles.
+- **Il revient sur vos points faibles.** Le quiz suivant repioche en priorité dans ce que vous avez raté.
+- **Il vous met en conditions d'examen.** Un mode chronométré, sans correction avant la fin.
+- **Il vous prépare des fiches pour la veille du contrôle.** Un export de fiches imprimables.
+- **Il varie ses questions.** Plusieurs formats : vrai ou faux, question ouverte, exercice à trous.
 
 > **Avant de vous lancer.** Pour transformer ce cahier des charges en plan d'action, utilisez la méthode d'équipe ([E4](/briques/e4/)) : collez son prompt de cadrage et l'IA joue l'analyste, le chef de produit et l'architecte pour vous sortir un plan ordonné à partir des exigences ci-dessus. Vous validez le plan, puis vous déroulez les étapes.
 
