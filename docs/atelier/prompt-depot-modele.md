@@ -29,32 +29,25 @@ Principe directeur. On prémâche la saisie, on garde la décision. Tout ce qui
 est dactylographie fastidieuse doit être déjà écrit ; tout ce qui demande un
 choix reste à faire par la personne.
 
-Structure attendue :
+Structure attendue. Un starter minimal et universel : il ne contient aucun
+code, aucun dossier de contenu imposé, et rien de propre à un projet
+particulier. Il sert de point de départ commun à tous les projets de
+l'atelier. Quatre éléments à la racine, pas un de plus :
 
-README.md à la racine : ce qu'est ce dépôt, comment le récupérer, comment
-choisir entre les deux variantes ci-dessous, comment l'ouvrir dans VS Code, et
-dans quel ordre travailler pendant les deux heures.
-
-Deux dossiers, debutant/ et avance/, contenant chacun les mêmes fichiers :
-- CLAUDE.md : l'identité du projet, en sections (qui je suis, ce que fait ce
-  projet, pour qui, comment je veux que Claude me réponde, les règles du
-  projet, où trouver quoi).
-- README.md : le README du projet de la personne.
-- DOSSIERS.md : à quoi sert chaque dossier, avec une ligne par projet parmi
-  les cinq.
+- README.md : ce qu'est ce dépôt, ce qu'il contient, comment le récupérer,
+  comment l'ouvrir dans VS Code, et dans quel ordre travailler pendant les
+  deux heures (comptes, dépôt, interview, premier commit).
+- CLAUDE.md : le fichier d'identité du projet, VIDE au départ. Il ne contient
+  que les titres de sections (qui je suis, ce que fait ce projet, pour qui,
+  comment je veux que Claude me réponde, les règles du projet, où trouver
+  quoi) avec sous chacun un commentaire disant que l'interview le remplira. On
+  ne pré-remplit rien : c'est l'interview qui écrit ce fichier, source unique.
 - .gitignore : commenté en français, couvrant secrets et fichiers .env,
   dépendances, fichiers système macOS et Windows.
-- matiere/, sorties/, notes/ : chacun avec un fichier .gitkeep.
 - prompts/interview.md et prompts/securite.md.
 
-Différence entre les deux variantes : dans debutant/, CLAUDE.md, README.md et
-DOSSIERS.md sont entièrement rédigés avec un exemple crédible (prends
-l'assistant à mémoire comme exemple) et des marqueurs très visibles du type
-[À REMPLACER : ...] partout où il faut personnaliser. Dans avance/, ces trois
-fichiers ne contiennent que les titres de sections et, sous chacun, une
-consigne d'une ligne expliquant quoi écrire. Le .gitignore et les deux
-prompts sont identiques dans les deux variantes : la sécurité et l'interview
-ne sont pas des exercices.
+Pas de variantes débutant/avancé, pas de dossiers matiere/sorties/notes :
+chaque projet créera sa propre structure au moment de l'étape « La matière ».
 
 Contenu de prompts/interview.md : le prompt à copier pour que Claude
 interviewe la personne et rédige lui-même son CLAUDE.md. Il doit poser une

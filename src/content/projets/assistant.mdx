@@ -75,27 +75,54 @@ Vous faites cette étape pendant la séance de socle commun du vendredi après-m
 
 **Objectif.** Une mémoire où chaque information a une place évidente, et de la vraie matière dedans.
 
-**Ce que vous faites.** Choisissez vos dossiers (par exemple : notes, documents, journal, personnes). Puis écrivez, dans un fichier texte, **la liste des règles de rangement** : une petite table qui dit, pour chaque type d'information, dans quel dossier elle va et comment nommer le fichier. C'est tout ce que veut dire « règles de rangement » : un aide-mémoire que l'assistant relit pour ne jamais hésiter sur où poser quoi.
+**Ce que vous faites.** Choisissez quelques dossiers, un par grand type d'information, et donnez-vous une règle de nommage simple : la date en tête, puis le sujet. C'est votre arborescence : la carte qui dit où vit quoi. L'assistant la relit pour ne jamais hésiter sur l'endroit où poser une nouvelle information.
 
-Par exemple :
+<figure class="tree-figure" aria-label="Exemple d'arborescence de la mémoire de l'assistant">
+  <svg viewBox="0 0 520 232" role="img" xmlns="http://www.w3.org/2000/svg">
+    <title>Le dossier mon-assistant contient quatre dossiers : notes, documents, journal, personnes, chacun avec un exemple de fichier.</title>
+    <g font-family="var(--font-mono, monospace)" font-size="14">
+      <rect x="12" y="10" width="20" height="15" rx="2" fill="var(--brick-yellow, #ffbf3f)" stroke="var(--ink, #16221d)" stroke-width="1.5"/>
+      <text x="40" y="22" fill="var(--ink, #16221d)" font-weight="700">mon-assistant/</text>
+      <path d="M22 28 V210" stroke="var(--ink, #16221d)" stroke-width="1.5" fill="none"/>
+      <g>
+        <path d="M22 52 H44" stroke="var(--ink,#16221d)" stroke-width="1.5"/>
+        <rect x="48" y="44" width="20" height="15" rx="2" fill="var(--brick-blue, #72c1e5)" stroke="var(--ink,#16221d)" stroke-width="1.5"/>
+        <text x="76" y="56" fill="var(--ink,#16221d)">notes/</text>
+        <text x="150" y="56" fill="var(--muted,#59645e)">2026-02-13-reunion-sofia.md</text>
+      </g>
+      <g>
+        <path d="M22 92 H44" stroke="var(--ink,#16221d)" stroke-width="1.5"/>
+        <rect x="48" y="84" width="20" height="15" rx="2" fill="var(--brick-blue, #72c1e5)" stroke="var(--ink,#16221d)" stroke-width="1.5"/>
+        <text x="76" y="96" fill="var(--ink,#16221d)">documents/</text>
+        <text x="180" y="96" fill="var(--muted,#59645e)">facture-electricite.pdf</text>
+      </g>
+      <g>
+        <path d="M22 132 H44" stroke="var(--ink,#16221d)" stroke-width="1.5"/>
+        <rect x="48" y="124" width="20" height="15" rx="2" fill="var(--brick-blue, #72c1e5)" stroke="var(--ink,#16221d)" stroke-width="1.5"/>
+        <text x="76" y="136" fill="var(--ink,#16221d)">journal/</text>
+        <text x="160" y="136" fill="var(--muted,#59645e)">2026-02-13.md</text>
+      </g>
+      <g>
+        <path d="M22 172 H44" stroke="var(--ink,#16221d)" stroke-width="1.5"/>
+        <rect x="48" y="164" width="20" height="15" rx="2" fill="var(--brick-blue, #72c1e5)" stroke="var(--ink,#16221d)" stroke-width="1.5"/>
+        <text x="76" y="176" fill="var(--ink,#16221d)">personnes/</text>
+        <text x="170" y="176" fill="var(--muted,#59645e)">sofia.md</text>
+      </g>
+    </g>
+  </svg>
+  <figcaption>Un dossier par type d'information, un nom de fichier qui commence par la date. Rien de plus.</figcaption>
+</figure>
 
-| Ce que je reçois | Ça va dans | Nom du fichier |
-| --- | --- | --- |
-| Une note de réunion | `notes/` | `2026-02-13-reunion-sofia.md` |
-| Une facture, un document | `documents/` | `2026-02-13-facture-electricite.pdf` |
-| Une pensée du jour | `journal/` | `2026-02-13.md` |
-| Une info sur quelqu'un | `personnes/` | `sofia.md` |
+Une fois l'arborescence posée, chargez la matière : au moins quinze éléments réels, vos notes récentes, vos documents utiles, quelques entrées de journal. Terminez en poussant le dépôt sur GitHub, avec un `.gitignore` avant le premier push, et un dépôt privé si la matière est personnelle.
 
-Une fois cette table écrite, chargez la matière : au moins quinze éléments réels, vos notes récentes, vos documents utiles, quelques entrées de journal. Terminez en poussant le dépôt sur GitHub, avec un `.gitignore` avant le premier push, et un dépôt privé si la matière est personnelle.
-
-**Preuve de réussite.** Vous demandez « où ranges-tu une note prise en réunion avec Sofia jeudi ? » et l'assistant répond le chemin exact, sans hésiter, en citant votre table de rangement. Le dépôt est visible sur GitHub et ne contient rien que vous ne vouliez y voir.
+**Preuve de réussite.** Vous demandez « où ranges-tu une note prise en réunion avec Sofia jeudi ? » et l'assistant répond le chemin exact, sans hésiter, d'après votre arborescence. Le dépôt est visible sur GitHub et ne contient rien que vous ne vouliez y voir.
 
 **Briques :** [E1](/briques/e1/), [E2](/briques/e2/), [D2-bis](/briques/d2-bis/).
 
 <div class="hint-stack">
   <p class="hint-label">Si vous bloquez</p>
   <details class="hint"><summary>Indice</summary><p>Prenez trois informations très différentes (un compte rendu de réunion, une facture, une idée notée dans le métro). Savez-vous dire en une phrase dans quel dossier chacune doit aller ? Si vous hésitez, votre liste de dossiers a un trou.</p></details>
-  <details class="hint"><summary>Piste</summary><p>Écrivez la table de rangement avant de créer les dossiers, pas après. Trois colonnes suffisent : ce que je reçois, dans quel dossier ça va, comment nommer le fichier. Les dossiers ne sont que la conséquence de cette table.</p></details>
+  <details class="hint"><summary>Piste</summary><p>Décidez de votre arborescence avant de créer les dossiers. Pour chaque type d'information, une ligne : ce que je reçois, dans quel dossier ça va, comment je nomme le fichier. Les dossiers ne sont que la conséquence de cette liste.</p></details>
   <details class="hint"><summary>Le prompt de secours</summary><p class="hint-prompt">Voici les types d'informations que je veux garder dans la mémoire de mon assistant : notes de réunion, documents administratifs, entrées de journal, fiches sur les personnes que je côtoie. Propose-moi une liste de dossiers et une table de rangement qui décrit, pour chaque type, le dossier de destination et le format du nom de fichier (avec la date en tête). Montre-moi la table sous forme de tableau avant de créer quoi que ce soit, puis crée les dossiers et range les fichiers que je vais te donner en respectant ces règles.</p></details>
 </div>
 

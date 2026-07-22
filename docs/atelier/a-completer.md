@@ -35,5 +35,5 @@ build, en résolution lisible sur vidéoprojecteur, puis à déposer dans
       décider si les comptes doivent être créés avant l'arrivée.
 - [ ] Le prompt d'authentification GitHub fonctionne-t-il tel quel sur Mac
       et sur Windows ?
-- [ ] La formulation « remonte le contenu de la variante à la racine » est
-      elle comprise et exécutée correctement par Claude ?
+- [ ] Le clonage du dépôt modèle et l'ouverture dans VS Code se font-ils sans
+      accroc, y compris « Use this template » pour un débutant ?
