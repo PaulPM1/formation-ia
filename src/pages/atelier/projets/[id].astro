@@ -5,9 +5,9 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import { formatDifficulty } from '../../../content/projet-model';
 
 export async function getStaticPaths() {
-  const projets = (await getCollection('projets')).toSorted(
-    (left, right) => left.data.order - right.data.order,
-  );
+  const projets = (await getCollection('projets'))
+    .filter((projet) => !projet.data.hidden)
+    .toSorted((left, right) => left.data.order - right.data.order);
 
   return projets.map((projet, index) => ({
     params: { id: projet.data.id },

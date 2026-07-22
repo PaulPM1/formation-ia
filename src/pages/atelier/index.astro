@@ -8,9 +8,9 @@ import { formatBudgetMinutes } from '../../content/atelier-model';
 const stages = (await getCollection('atelier')).toSorted(
   (left, right) => left.data.order - right.data.order,
 );
-const projets = (await getCollection('projets')).toSorted(
-  (left, right) => left.data.order - right.data.order,
-);
+const projets = (await getCollection('projets'))
+  .filter((projet) => !projet.data.hidden)
+  .toSorted((left, right) => left.data.order - right.data.order);
 const bricks = await getCollection('briques');
 const brickTitles = new Map(bricks.map((brick) => [brick.data.id, brick.data.title]));
 
@@ -41,7 +41,7 @@ const weekend = [
 
 <BaseLayout
   title="Atelier"
-  description="Un socle technique commun, cinq projets au choix : construisez le vôtre sur un week-end."
+  description="Un socle technique commun, six projets au choix : construisez le vôtre sur un week-end."
 >
   <header class="catalog-hero">
     <div>
@@ -87,8 +87,8 @@ const weekend = [
       <div>
         <h2 id="catalogue-titre">Choisissez votre projet</h2>
         <p class="section-lede">
-          C'est ici que se joue l'essentiel du week-end. Cinq projets, cinq
-          matières, cinq finalités. Chaque page donne le cahier des charges, les
+          C'est ici que se joue l'essentiel du week-end. Six projets, à
+          chacun sa matière et sa finalité. Chaque page donne le cahier des charges, les
           étapes, les preuves de réussite et trois niveaux d'aide à ouvrir quand
           vous bloquez. Choisissez celui dont vous avez déjà la matière première
           sous la main : c'est le meilleur critère.
