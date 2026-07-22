@@ -3,11 +3,20 @@ import { readdir } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
+import { navigateAndWaitForFonts } from './qa-page-ready.mjs';
 
 const projectDirectory = fileURLToPath(new URL('..', import.meta.url));
 const presenterDirectory = path.join(projectDirectory, 'dist/presenter');
 const baseURL = process.env.QA_BASE_URL ?? 'http://127.0.0.1:4380';
 const failures = [];
+const removedBlockBRoutes = [
+  '/presenter/b0/b0-diagnostic/', '/presenter/b0/b0-fallback/', '/presenter/b0/b0-ready/',
+  '/presenter/b1/b1-builder/',
+  '/presenter/b2/b2-anatomy/', '/presenter/b2/b2-tests/',
+  '/presenter/b3/b3-permissions/', '/presenter/b3/b3-observe/',
+  '/presenter/b4/b4-permission/', '/presenter/b4/b4-transition/',
+  '/presenter/b4-bis/b4bis-triptych/', '/presenter/b4-bis/b4bis-path/',
+];
 let preview;
 
 // The generated route inventory is the static-host equivalent of PRESENTATION_SLIDES.
@@ -48,8 +57,14 @@ const slideRoutes = generatedPages
   .map((page) => `/presenter/${page.replaceAll(path.sep, '/').replace(/\/index\.html$/, '')}`)
   .toSorted();
 
-if (slideRoutes.length !== 117) failures.push(`inventaire slides ${slideRoutes.length}/117`);
-if (generatedPages.length !== 118) failures.push(`inventaire présentateur ${generatedPages.length}/118`);
+if (slideRoutes.length !== 105) failures.push(`inventaire slides ${slideRoutes.length}/105`);
+if (generatedPages.length !== 106) failures.push(`inventaire présentateur ${generatedPages.length}/106`);
+for (const route of removedBlockBRoutes) {
+  const response = await fetch(`${baseURL}${route}`, { redirect: 'manual' });
+  if (response.status !== 404 || response.headers.has('location')) {
+    failures.push(`ancienne route ${route} : statut ${response.status}, redirection ${response.headers.get('location') ?? 'absente'}`);
+  }
+}
 
 const browser = await chromium.launch({ channel: 'chrome', headless: true });
 
@@ -82,12 +97,11 @@ try {
   const mobileContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
   const mobilePage = await mobileContext.newPage();
   for (const route of slideRoutes) {
-    const response = await mobilePage.goto(`${baseURL}${route}`, { waitUntil: 'load' });
+    const { response } = await navigateAndWaitForFonts(mobilePage, `${baseURL}${route}`);
     if (!response?.ok()) {
       failures.push(`${route} HTTP ${response?.status() ?? 'absent'}`);
       continue;
     }
-    await mobilePage.evaluate(() => document.fonts.ready);
     const layout = await inspectHorizontalLayout(mobilePage);
     if (layout.documentWidth > layout.documentClientWidth + 1 || layout.offenders.length) {
       failures.push(`${route} mobile ${layout.documentClientWidth}/${layout.documentWidth}px ${layout.offenders.map((item) => `${item.name}:${item.left.toFixed(1)}..${item.right.toFixed(1)}`).join(', ')}`);
@@ -100,34 +114,51 @@ try {
   const pageErrors = [];
   controllerPage.on('pageerror', (error) => pageErrors.push(error.message));
 
-  await controllerPage.goto(`${baseURL}/presenter/`, { waitUntil: 'load' });
-  const optionalLabels = controllerPage.locator('.presentation-family-list [data-optional="true"] .optional-label');
-  if (await optionalLabels.count() !== 2) failures.push('sommaire présentateur : deux briques facultatives attendues');
-  for (let index = 0; index < await optionalLabels.count(); index += 1) {
-    if ((await optionalLabels.nth(index).textContent())?.trim() !== 'Facultatif') {
-      failures.push(`sommaire présentateur : libellé facultatif incorrect à l’index ${index}`);
-    }
+  await navigateAndWaitForFonts(controllerPage, `${baseURL}/presenter/`);
+  const optionalLabels = controllerPage.locator('.presentation-family-list [data-track="optional"] .track-label');
+  const recoveryLabels = controllerPage.locator('.presentation-family-list [data-track="recovery"] .track-label');
+  if (await optionalLabels.count() !== 1 || (await optionalLabels.first().textContent())?.trim() !== 'Facultatif') {
+    failures.push('sommaire présentateur : badge Facultatif unique attendu');
+  }
+  if (await recoveryLabels.count() !== 1 || (await recoveryLabels.first().textContent())?.trim() !== 'Rattrapage') {
+    failures.push('sommaire présentateur : badge Rattrapage unique attendu');
   }
 
-  await controllerPage.goto(`${baseURL}/presenter/b3/b3-mission/`, { waitUntil: 'load' });
+  await navigateAndWaitForFonts(controllerPage, `${baseURL}/presenter/b3/b3-check/`);
   const requiredNext = controllerPage.locator('[data-next]');
   if (await requiredNext.getAttribute('href') !== '/presenter/c1/c1-repeat/') {
     failures.push('parcours principal : B3 ne pointe pas directement vers C1');
   }
-  await requiredNext.click();
-  await controllerPage.waitForURL('**/presenter/c1/c1-repeat/');
+  await Promise.all([
+    controllerPage.waitForURL('**/presenter/c1/c1-repeat/', { waitUntil: 'domcontentloaded' }),
+    requiredNext.click({ noWaitAfter: true }),
+  ]);
   const requiredPrevious = controllerPage.locator('[data-previous]');
-  if (await requiredPrevious.getAttribute('href') !== '/presenter/b3/b3-mission/') {
+  if (await requiredPrevious.getAttribute('href') !== '/presenter/b3/b3-check/') {
     failures.push('parcours principal : C1 ne revient pas directement vers B3');
   }
 
-  await controllerPage.goto(`${baseURL}/presenter/b4/b4-context/`, { waitUntil: 'load' });
-  const optionalHeading = controllerPage.locator('.presentation-heading__optional');
+  await navigateAndWaitForFonts(controllerPage, `${baseURL}/presenter/b4/b4-context/`);
+  const optionalHeading = controllerPage.locator('.presentation-heading__track');
   if (!await optionalHeading.isVisible() || (await optionalHeading.textContent())?.trim() !== 'Facultatif') {
     failures.push('branche facultative : repère de slide absent sur B4');
   }
 
-  await controllerPage.goto(`${baseURL}/presenter/a4/a4-mission/`, { waitUntil: 'load' });
+  await navigateAndWaitForFonts(controllerPage, `${baseURL}/presenter/b4/b4-test/`);
+  if (await controllerPage.locator('[data-next]').getAttribute('href') !== '/presenter/c1/c1-repeat/') {
+    failures.push('branche facultative : B4 ne rejoint pas C1');
+  }
+
+  await navigateAndWaitForFonts(controllerPage, `${baseURL}/presenter/b4-bis/b4bis-install/`);
+  const recoveryHeading = controllerPage.locator('.presentation-heading__track');
+  if (!await recoveryHeading.isVisible() || (await recoveryHeading.textContent())?.trim() !== 'Rattrapage') {
+    failures.push('rattrapage : repère de slide absent sur B4-bis');
+  }
+  if (await controllerPage.locator('[data-previous]').count()) failures.push('rattrapage : la première slide possède un précédent');
+  await navigateAndWaitForFonts(controllerPage, `${baseURL}/presenter/b4-bis/b4bis-checkpoint/`);
+  if (await controllerPage.locator('[data-next]').count()) failures.push('rattrapage : la dernière slide possède une suivante');
+
+  await navigateAndWaitForFonts(controllerPage, `${baseURL}/presenter/a4/a4-mission/`);
   const summary = controllerPage.locator('.mission-board__correction summary');
   const details = controllerPage.locator('.mission-board__correction');
   const summaryURL = controllerPage.url();
@@ -140,7 +171,7 @@ try {
   if (await details.getAttribute('open') === null) failures.push('summary Enter n’ouvre pas details');
   if (controllerPage.url() !== summaryURL) failures.push('summary Enter déclenche la navigation globale');
 
-  await controllerPage.goto(`${baseURL}/presenter/a4/a4-risk/`, { waitUntil: 'load' });
+  await navigateAndWaitForFonts(controllerPage, `${baseURL}/presenter/a4/a4-risk/`);
   const riskURL = controllerPage.url();
   const radio = controllerPage.locator('input[type="radio"]').first();
   await radio.focus();
@@ -174,7 +205,7 @@ try {
     ['/presenter/a9/unknown-slide/', 'Slide introuvable'],
     ['/generic-unknown/', 'Page introuvable'],
   ]) {
-    const response = await controllerPage.goto(`${baseURL}${pathname}`, { waitUntil: 'load' });
+    const { response } = await navigateAndWaitForFonts(controllerPage, `${baseURL}${pathname}`);
     if (response?.status() !== 404) failures.push(`${pathname} statut ${response?.status() ?? 'absent'} au lieu de 404`);
     if ((await controllerPage.locator('h1').textContent())?.trim() !== expectedTitle) failures.push(`${pathname} récupération 404 incorrecte`);
     if (!await controllerPage.locator('.error-copy a[href="/presenter/"]').isVisible()) failures.push(`${pathname} lien vers le sommaire absent`);
@@ -186,7 +217,7 @@ try {
   });
   const noScriptPage = await noScriptContext.newPage();
   for (const pathname of ['/presenter/a9/unknown-slide/', '/generic-unknown/']) {
-    const response = await noScriptPage.goto(`${baseURL}${pathname}`, { waitUntil: 'load' });
+    const { response } = await navigateAndWaitForFonts(noScriptPage, `${baseURL}${pathname}`);
     if (response?.status() !== 404) failures.push(`${pathname} no-JS statut ${response?.status() ?? 'absent'} au lieu de 404`);
     if ((await noScriptPage.locator('h1').textContent())?.trim() !== 'Page introuvable') failures.push(`${pathname} no-JS devrait conserver le message générique`);
     if (!await noScriptPage.locator('.error-copy a[href="/presenter/"]').isVisible()) failures.push(`${pathname} no-JS lien vers le présentateur absent`);
@@ -196,10 +227,10 @@ try {
 
   for (const route of [
     '/presenter/a4/a4-risk/',
-    '/presenter/b2/b2-tests/',
+    '/presenter/b2/b2-mission/',
     '/presenter/c2/c2-permissions/',
   ]) {
-    await controllerPage.goto(`${baseURL}${route}`, { waitUntil: 'load' });
+    await navigateAndWaitForFonts(controllerPage, `${baseURL}${route}`);
     await controllerPage.evaluate(() => { document.documentElement.style.zoom = '2'; });
     const layout = await inspectHorizontalLayout(controllerPage);
     if (layout.documentWidth > layout.documentClientWidth + 1 || layout.offenders.length) failures.push(`${route} zoom 200 % déborde`);
@@ -221,5 +252,5 @@ if (failures.length) {
   console.error(failures.join('\n'));
   process.exitCode = 1;
 } else {
-  console.log('QA présentateur : 117/117 routes mobiles, contrôleur natif, plein écran, 404, zoom, mouvement réduit et impression validés ; 118 pages générées.');
+  console.log('QA présentateur : 105/105 routes mobiles, trois pistes, 12 anciennes routes en 404 sans redirection, contrôleur natif, plein écran, zoom, mouvement réduit et impression validés ; 106 pages générées.');
 }

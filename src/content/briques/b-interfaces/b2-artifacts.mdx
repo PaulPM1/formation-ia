@@ -4,7 +4,7 @@ title: "Artifacts"
 family: b
 order: 7
 priority: socle
-durationMinutes: 15
+durationMinutes: 18
 type: demonstration
 platforms:
   - commun
@@ -12,110 +12,97 @@ prerequisites:
   - b1
 status: a-relire
 owner: a-attribuer
-learningObjective: "Créer, tester et améliorer un contenu autonome ou un mini-outil interactif dans un Artifact."
-expectedOutcome: "Le participant obtient un Artifact fonctionnel, le teste avec trois cas et corrige au moins un écart observable."
+learningObjective: "Transformer le brief en boîte de tri à trois états, tester ses comportements et corriger l’archivage sans régression."
+expectedOutcome: "Le participant obtient six cartes, trois compteurs, une remise à zéro et une confirmation d’archivage, puis rejoue tous les tests."
 ---
 
 ## Cap
 
-**Objectif :** passer d'une réponse à un objet visible que l'on peut utiliser, modifier et partager.
+**Objectif :** construire et corriger une boîte de tri en 18 minutes.
 
-- Durée cible : 15 minutes.
-- Prérequis : B1, prompt structuré.
-- Résultat attendu : un petit outil autonome testé sur trois cas.
+- 2 minutes : de la réponse à l’objet.
+- 3 minutes : périmètre minimal.
+- 10 minutes : construction et quatre tests avec `prompts/02-artifact.md`.
+- 3 minutes : correction d’archivage et nouvelle passe de tests.
 
 ## Concept durable
 
-Un **Artifact** est un contenu substantiel et autonome affiché à côté de la conversation : document, code, diagramme, page Web ou composant interactif. La conversation sert à donner les instructions ; l'Artifact devient l'objet de travail.
+Un Artifact transforme le brief en objet manipulable. Le MVP ne conserve qu’une relation : lorsqu’une note change d’état, les compteurs changent sans que le total de six varie.
 
-Cette séparation facilite trois gestes :
-
-- **voir** le résultat sans le chercher dans l'historique ;
-- **itérer** en demandant une modification ciblée ;
-- **versionner** les essais et revenir à une version précédente.
-
-Un prototype n'est pas encore un produit. Selon le type d'Artifact, le stockage persistant, les appels à des services externes ou certaines capacités peuvent être indisponibles. Ne mettez pas de secret dans le code ou les données. Avant de partager, testez ce que le lien expose et retirez toute information sensible.
+Les trois états sont exactement `Aujourd’hui`, `Plus tard` et `Archiver`. Au départ, les six cartes sont dans `Aujourd’hui`. Une `Remise à zéro` restaure cette distribution. Aucun compte, stockage distant ou service externe n’est nécessaire.
 
 ## Pratique avec Claude
 
-Demandez un minuteur de révision simple :
+Dans la conversation B1, ouvrez `kits/bloc-b-assistant/prompts/02-artifact.md` et copiez la section Construction.
 
-```text
-Crée un Artifact interactif de minuteur de révision.
-
-Fonctions : choisir 5, 15 ou 25 minutes ; démarrer ; mettre en pause ; réinitialiser.
-Affichage : temps restant très lisible et état actuel en texte.
-Contraintes : fonctionnement sans compte, sans API externe et sans stockage de données.
-Accessibilité : boutons nommés clairement et utilisables au clavier.
-
-Avant de construire, résume les critères de réussite en 5 points.
-```
-
-Une fois l'Artifact créé, testez 5 minutes, pause/reprise et réinitialisation. Demandez une correction seulement après avoir décrit un écart observable.
+Exécutez ensuite les quatre tests du fichier : tri, archivage, total constant et remise à zéro. N’acceptez pas un résumé de Claude à la place des clics réels.
 
 ## Mission commune
 
-Créez un mini-outil lié à votre fil rouge : quiz de cinq questions, calculateur simple, checklist, générateur de planning ou tableau de décision.
+1. Construisez l’Artifact à partir des six notes.
+2. Déplacez une note vers `Plus tard` et contrôlez les compteurs.
+3. Déplacez une note vers `Archiver`.
+4. Faites deux déplacements et vérifiez que le total reste égal à six.
+5. Utilisez `Remise à zéro` et contrôlez les six états initiaux.
+6. Envoyez la correction standard : confirmation avant archivage seulement.
+7. Rejouez les quatre tests depuis zéro.
 
-1. Limitez le MVP à une action principale.
-2. Définissez trois tests avant la construction.
-3. Faites créer l'Artifact.
-4. Exécutez les trois tests.
-5. Corrigez l'écart le plus important.
+## Critères de réussite
 
-**Critère de réussite :** une autre personne peut utiliser l'action principale sans explication orale.
+- Les six cartes sont visibles.
+- Les trois états portent les libellés exacts.
+- Chaque état affiche un compteur et le total reste égal à six.
+- `Remise à zéro` replace les six cartes dans `Aujourd’hui`.
+- Une confirmation précède l’archivage.
+- Le tri, les compteurs et la remise à zéro passent encore après correction.
 
 ## Livrable
 
-Le lien ou la version conservée de l'Artifact, accompagné de la liste des trois tests et du défaut corrigé. Si le partage public n'est pas approprié, gardez une capture et le prompt.
+L’Artifact conservé, la liste des quatre tests et le résultat de la seconde passe après confirmation d’archivage.
 
 ## Notes formateur
 
-- Choisir un exemple assez petit pour que le test soit visible en quinze minutes.
-- Faire écrire les tests avant la génération : le groupe doit savoir ce que « terminé » signifie.
-- Montrer une modification ciblée plutôt qu'une réécriture complète.
-- Rappeler qu'un prototype séduisant peut encore contenir des erreurs de logique.
-
-Transition : un Artifact est un objet autonome ; Cowork, lui, prend en charge une tâche en plusieurs étapes avec des fichiers et des outils.
+- De 00:00 à 02:00 : montrer le passage du brief à l’objet.
+- De 02:00 à 05:00 : retirer les fonctions hors MVP.
+- De 05:00 à 15:00 : ouvrir `prompts/02-artifact.md`, générer et tester.
+- Couper la génération à 15:00 dans B2, même si le rendu n’est pas parfait.
+- De 15:00 à 18:00 : appliquer la correction et rejouer les quatre tests.
+- Repli : ouvrir l’Artifact préparé selon `kits/bloc-b-assistant-formateur/corriges/artifact-correction.md` et consacrer le temps aux tests.
 
 ## Défis avancés
 
-- Ajouter un état vide, une erreur de saisie et une confirmation de réinitialisation.
-- Faire tester l'Artifact par un binôme sans lui montrer le prompt.
-- Revenir à une version antérieure, créer une variante et comparer les deux chemins.
+- Tester une remise à zéro après plusieurs archives confirmées.
+- Vérifier le parcours au clavier et la présence d’un texte d’état, sans dépendre uniquement de la couleur.
 
 ## Variantes
 
-- **Sans code interactif :** créer une procédure, un diagramme ou une fiche de décision autonome.
-- **Temps court :** personnaliser un Artifact existant au lieu de partir de zéro.
-- **Partage interdit :** tester localement dans le compte et ne pas publier.
+- **Génération lente :** tester l’Artifact formateur.
+- **Code désactivé :** utiliser une simulation préparée et rédiger les cas de test.
+- **Petit écran :** vérifier que les trois états restent atteignables sans perte de carte.
 
 ## Dépannage
 
-- **Aucun Artifact n'apparaît :** demander explicitement « crée un Artifact » et vérifier que le contenu est autonome.
-- **Le bouton ne fonctionne pas :** décrire l'action, l'état attendu et l'état observé ; demander un diagnostic avant la correction.
-- **La version régresse :** revenir à la dernière version fonctionnelle puis demander une modification plus petite.
-- **Le partage expose trop d'informations :** dépublier, retirer les données et tester le lien dans une fenêtre privée.
+- **Un compteur diverge :** décrire le déplacement, l’état attendu et l’état observé.
+- **Le reset perd une note :** revenir à la dernière version fonctionnelle et demander une correction unique.
+- **L’archive reste immédiate :** reprendre mot pour mot la correction standard du prompt.
 
 ## Ressources
 
-- [Que sont les Artifacts ? — Claude Help Center](https://support.claude.com/en/articles/9487310-what-are-artifacts-and-how-do-i-use-them)
-- [Découvrir, personnaliser et partager des Artifacts](https://support.claude.com/en/articles/9547008-publish-and-share-artifacts)
+- [Prérequis et usage des Artifacts](https://support.claude.com/en/articles/9487310-what-are-artifacts-and-how-do-i-use-them)
+- [Découvrir et partager des Artifacts](https://support.claude.com/en/articles/9547008-publish-and-share-artifacts)
 
 ## Ouverture
 
-Vous savez créer un objet interactif. La prochaine étape consiste à confier un résultat plus large à un agent, tout en gardant un périmètre et des points de contrôle.
+L’Artifact agit dans son propre objet. B3 confie maintenant une tâche multiétape à Cowork tout en protégeant les fichiers sources.
 
 ## Scénario de démonstration
 
-Point de départ : un minuteur de révision décrit par cinq critères. Claude construit l'Artifact ; le test révèle que la réinitialisation redémarre immédiatement le compte à rebours. Le formateur demande une correction ciblée.
-
-Résultat visible : le minuteur satisfait les trois scénarios et affiche clairement son état.
+La boîte de tri passe trois tests mais archive immédiatement une note. La correction ajoute une confirmation, puis la seconde passe prouve que le tri et la remise à zéro n’ont pas régressé.
 
 ## Déroulé de démonstration
 
-1. Montrer le brief et faire voter sur les critères manquants.
-2. Demander à Claude de résumer les critères avant de construire.
-3. Lancer l'Artifact et exécuter les trois tests à voix haute.
-4. Décrire le défaut sans proposer le code de la solution.
-5. Appliquer la correction, rejouer les trois tests et montrer l'historique de versions.
+1. Montrer les six cartes et les trois compteurs.
+2. Exécuter les quatre tests à voix haute.
+3. Nommer l’écart d’archivage sans proposer de code.
+4. Coller la correction standard.
+5. Rejouer les quatre tests depuis l’état initial.

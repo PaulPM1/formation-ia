@@ -46,4 +46,5 @@ test('calcule la complétude de la structure attendue pour un atelier', () => {
 
 test('nomme explicitement la priorité facultative', () => {
   assert.equal(PRIORITY_LABELS.facultatif, 'Facultatif');
+  assert.equal(PRIORITY_LABELS.rattrapage, 'Rattrapage');
 });

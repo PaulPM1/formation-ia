@@ -1,140 +1,120 @@
 ---
 id: b0
-title: "Setup Claude"
+title: "Préflight Bloc B"
 family: b
 order: 5
 priority: socle
-durationMinutes: null
+durationMinutes: 5
 type: setup
 platforms:
   - commun
 prerequisites: []
 status: a-relire
 owner: a-attribuer
-learningObjective: "Accéder à Claude sur une surface disponible, vérifier son compte et réaliser un premier échange sans donnée sensible."
-expectedOutcome: "Le participant ouvre Claude, identifie son mode d'accès et obtient une réponse test dans une nouvelle conversation."
+learningObjective: "Vérifier en cinq minutes que Chat, Artifacts, Cowork et le kit local sont prêts avant de lancer la mission."
+expectedOutcome: "Chaque participant ouvre le kit, obtient une réponse Chat et identifie immédiatement son parcours principal ou son rattrapage."
 ---
 
 ## Cap
 
-**Objectif :** rendre chaque participant autonome pour accéder à Claude avant de commencer les exercices.
+**Objectif :** démarrer une mission individuelle continue sans consommer le temps de pratique en installation.
 
-- Durée indicative : 15 à 30 minutes selon le groupe et les mises à jour nécessaires.
-- Prérequis : un compte Claude et une connexion Internet.
-- Résultat attendu : une conversation de test fonctionne sur le Web ou dans l'application.
+- Durée exacte : 5 minutes.
+- Socle B0 à B3 : 55 minutes, plus 5 minutes de marge de transitions.
+- Parcours facultatif B4 : 20 minutes.
+- Rattrapage B4-bis : 10 minutes, isolé du parcours principal.
 
-Ce setup ne demande aucune clé API. Ne saisissez jamais de mot de passe, de jeton ou de donnée professionnelle sensible dans une conversation de test.
+Chaque participant dispose avant le chrono d’un compte compatible, de la création d’Artifacts activée, de Claude Desktop connecté pour Cowork et du kit décompressé. Une installation complète se termine hors chrono.
 
 ## Concept durable
 
-Un service d'IA comporte plusieurs couches qu'il est utile de distinguer :
+Les quatre outils travaillent sur la même matière mais ne prouvent pas la même chose :
 
-- le **compte**, qui porte l'identité et le forfait ;
-- la **surface**, par exemple navigateur, application de bureau ou mobile ;
-- les **fonctionnalités**, dont la disponibilité peut dépendre du forfait, de la plateforme et d'un déploiement progressif ;
-- l'**API**, qui est un accès technique séparé et n'est pas nécessaire pour utiliser Claude Chat.
+1. Chat produit un brief sourcé.
+2. Artifact rend ce brief manipulable et testable.
+3. Cowork crée un fichier dans un périmètre borné.
+4. Claude Code modifie la mini-page, exécute un test et présente un diff.
 
-Quand une fonction manque, ne concluez pas immédiatement à une panne. Vérifiez d'abord le compte actif, la plateforme, la version de l'application et la documentation officielle.
+Le cas contient six notes entièrement fictives réparties dans trois fichiers. Deux notes donnent volontairement des dates contradictoires, le 18 et le 19 septembre.
 
 ## Pratique avec Claude
 
-1. Ouvrez [claude.ai](https://claude.ai/) dans un navigateur récent ou lancez l'application Claude déjà installée.
-2. Connectez-vous avec le compte prévu pour la formation.
-3. Ouvrez une nouvelle conversation.
-4. Envoyez ce message sans ajouter d'information personnelle :
+Ouvrez `kits/bloc-b-assistant/README.md`, puis envoyez dans Chat :
 
 ```text
-Réponds uniquement par : « Atelier prêt » puis ajoute la date du jour.
+Réponds uniquement par « Atelier prêt » puis donne la date du jour.
 ```
 
-5. Vérifiez que la réponse apparaît et que vous savez démarrer un nouveau fil.
-
-La date sert ici de contrôle simple : elle ne valide pas l'exactitude générale de Claude.
+Vérifiez ensuite que la création d’Artifacts est activée et que Claude Desktop est ouvert, connecté et affiche Cowork.
 
 ## Mission commune
 
-Complétez la fiche de diagnostic :
+Effectuez les quatre contrôles dans l’ordre :
 
-- surface utilisée : Web, macOS, Windows ou mobile ;
-- compte actif vérifié : oui/non ;
-- conversation de test réussie : oui/non ;
-- accès visible à Artifacts : oui/non/à vérifier ;
-- accès visible à Cowork : oui/non/à vérifier ;
-- solution de repli choisie si une fonction manque.
+1. Chat répond « Atelier prêt » avec la date du jour.
+2. La création d’Artifacts est disponible.
+3. Cowork est visible dans Claude Desktop connecté.
+4. `kits/bloc-b-assistant/README.md` et les trois fichiers de `inbox/` s’ouvrent.
 
-**Critère de réussite :** vous pouvez ouvrir une nouvelle conversation et obtenir « Atelier prêt » sans partager de donnée sensible.
+Si un seul maillon manque sur un poste presque prêt, ouvrez B4-bis depuis le sommaire. Ne lancez pas une installation longue.
 
 ## Livrable
 
-Une capture de la réponse de test ou, si les captures sont interdites, la fiche de diagnostic cochée. Masquez l'adresse email et toute information de compte avant un partage.
+Une checklist de quatre contrôles. Le résultat attendu est `4/4` ou un repli explicitement choisi avant le départ.
 
 ## Notes formateur
 
-- Afficher un QR code et l'adresse `claude.ai` en toutes lettres.
-- Regrouper rapidement les participants par état : prêt, connexion, mise à jour, compte.
-- Faire travailler en binôme pendant les téléchargements, mais ne jamais demander de partager un mot de passe.
-- Garder le navigateur comme repli pour Chat lorsqu'une application pose problème.
-
-Message essentiel : **le setup est réussi lorsqu'une action observable fonctionne, pas lorsqu'un logiciel semble installé.** Transition : la prochaine brique apprend à structurer le dialogue.
+- De 00:00 à 02:00 : afficher `kits/bloc-b-assistant/README.md` et la chaîne des quatre preuves.
+- De 02:00 à 05:00 : faire exécuter les quatre contrôles.
+- Couper à 05:00, même si un poste n’est pas totalement installé.
+- Repli : fournir le dossier déjà décompressé, utiliser Chat dans le navigateur et orienter un poste presque prêt vers B4-bis.
+- Toute donnée reste fictive ; aucun mot de passe, jeton ou document professionnel n’est partagé.
 
 ## Défis avancés
 
-- Repérez où consulter l'aide, les paramètres et les informations de forfait sans les modifier.
-- Testez une deuxième surface et vérifiez que vous utilisez le même compte.
-- Consultez la page de statut du service et identifiez où vérifier un incident général.
+- Ouvrir le kit depuis le terminal sans modifier de fichier.
+- Vérifier que `node --test` passe dans `kits/bloc-b-assistant/code/` si B4 est prévu.
 
 ## Variantes
 
-- **Compte géré par une organisation :** suivre les consignes de l'administrateur et ne pas activer de fonction externe sans accord.
-- **Fonction indisponible :** observer la démonstration du formateur et utiliser le cas de repli indiqué dans chaque brique.
-- **Connexion lente :** conserver un seul onglet Claude et éviter les téléchargements simultanés.
+- **Socle uniquement :** B0 à B3, puis C1.
+- **Parcours complet :** B0 à B3, 5 minutes de marge, puis B4.
+- **Poste presque prêt :** B4-bis depuis le sommaire, sans entrer dans la séquence principale.
 
 ## Dépannage
 
-- **Boucle de connexion :** fermer les onglets Claude, autoriser temporairement les cookies nécessaires ou essayer une fenêtre privée.
-- **Mauvais compte :** se déconnecter puis vérifier l'adresse avant de reprendre ; ne pas afficher l'adresse au vidéoprojecteur.
-- **Page blanche ou réponse bloquée :** recharger, tester un autre navigateur puis consulter la page de statut.
-- **Fonction absente :** mettre l'application à jour, vérifier le forfait et le déploiement ; utiliser le Web ou la démonstration du formateur.
+- **Artifact absent :** vérifier le réglage de création de code et utiliser l’Artifact formateur préparé.
+- **Cowork absent :** vérifier le compte et Claude Desktop ; basculer sur le scénario observateur si nécessaire.
+- **Kit introuvable :** redécompresser `bloc-b-assistant.zip` dans un dossier local connu.
+- **Installation requise :** noter le maillon manquant et poursuivre avec le repli préparé.
 
 ## Ressources
 
 - [Ouvrir Claude](https://claude.ai/)
-- [Télécharger les applications Claude](https://claude.com/download)
-- [Centre d'aide Claude](https://support.claude.com/en/)
-- [État des services Claude](https://status.claude.com/)
+- [Prérequis et usage des Artifacts](https://support.claude.com/en/articles/9487310-what-are-artifacts-and-how-do-i-use-them)
+- [Bien démarrer avec Claude Cowork](https://support.claude.com/en/articles/13345190-get-started-with-claude-cowork)
+- [Télécharger le kit public](https://formation-ia-ruby.vercel.app/kits/bloc-b-assistant.zip)
 
 ## Ouverture
 
-Votre accès est validé. Vous pouvez maintenant apprendre à transformer une demande vague en conversation utile et contrôlable.
+Les six notes sont prêtes. B1 commence par une demande volontairement vague afin de rendre visibles les décisions que Chat serait obligé d’inventer.
 
 ## Diagnostic initial
 
-Avant toute installation ou reconnexion, demandez :
-
-1. Claude s'ouvre-t-il déjà dans un navigateur ou une application ?
-2. Une nouvelle conversation accepte-t-elle un message ?
-3. Le compte affiché est-il celui prévu pour la formation ?
-4. Un filtrage réseau, un VPN ou une politique d'entreprise peut-il bloquer le service ?
-
-Ne changez que ce qui empêche le test final.
+Demandez uniquement : Chat répond-il, Artifact est-il activé, Cowork est-il connecté, le kit est-il lisible ? Toute autre configuration sort du préflight.
 
 ## Test final
 
-Dans une **nouvelle** conversation, envoyez le message de test. Le setup est validé si :
-
-- la réponse « Atelier prêt » apparaît ;
-- vous savez revenir à la liste des conversations ;
-- vous savez ouvrir un nouveau fil ;
-- vous avez identifié une solution de repli.
+Le préflight passe avec quatre preuves observables : réponse Chat, accès Artifact, accès Cowork et dossier local ouvert. Une apparence d’installation ne suffit pas.
 
 ## Dépannage Mac
 
-- Si l'application est bloquée après téléchargement, vérifiez qu'elle se trouve dans `Applications`, puis ouvrez-la depuis ce dossier.
-- Si macOS demande une confirmation de sécurité, lisez l'éditeur affiché avant d'autoriser l'ouverture.
-- Si le navigateur fonctionne mais pas l'application, poursuivez temporairement sur le Web et mettez l'application à jour plus tard.
+- Vérifier que Claude Desktop est ouvert depuis `Applications` et connecté.
+- Décompresser le ZIP dans `Documents` si le dossier est encore lu depuis l’archive.
+- Pour B4, ouvrir directement `kits/bloc-b-assistant/code/` dans VS Code.
 
 ## Dépannage Windows
 
-- Utilisez la version correspondant à l'architecture proposée par la page officielle.
-- Si l'installation est interdite par l'organisation, utilisez Claude sur le Web et contactez l'administrateur au lieu de contourner la règle.
-- Si une protection réseau bloque la connexion, testez sans VPN uniquement si la politique de l'organisation l'autorise.
+- Vérifier que Claude Desktop est ouvert et connecté, pas seulement présent dans le menu Démarrer.
+- Extraire tout le ZIP avant d’ouvrir les fichiers.
+- Pour B4, ouvrir `kits\bloc-b-assistant\code` comme dossier dans VS Code.

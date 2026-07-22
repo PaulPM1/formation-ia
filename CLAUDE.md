@@ -11,7 +11,7 @@ ses propres projets, et un assistant personnel construit pendant l'atelier.
 - `/briques` : 24 fiches pédagogiques MDX (`src/content/briques/`, familles A
   à F), documentation canonique. Frontmatter strict validé par
   `npm run content:check`.
-- `/presenter` : 122 slides pilotées par les manifestes TypeScript
+- `/presenter` : 105 slides pilotées par les manifestes TypeScript
   (`src/presentation/manifests/`), scènes réutilisables, validées par
   `npm run presentation:check`.
 - `/atelier` : le TP fil rouge « Construis ton assistant personnel », 5
@@ -23,7 +23,7 @@ ses propres projets, et un assistant personnel construit pendant l'atelier.
 - Briques D1 à E3 : rédigées par Matthieu, statut `a-relire`.
 - F1 et F2 : gabarits vides ; F1 sera dérivée de l'onglet Atelier une fois le
   prototype validé.
-- Slides : blocs A à E complets (122). Aucune slide F.
+- Slides : blocs A à E complets (105). Aucune slide F.
 - Prototype fil rouge : plan dans `docs/atelier/prototype-second-brain.md`,
   à construire par Matthieu (produit aussi les kits du TP : prompt
   d'interview, inbox de tri, skill capture, template dashboard).

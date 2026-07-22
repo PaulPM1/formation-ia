@@ -37,10 +37,10 @@ const reported = Array.isArray(data.reported) ? data.reported.map(String) : [];
         <rect x="286" y="151" width="140" height="88" rx="44" class="pacte__permission-node" />
         <rect x="430" y="255" width="140" height="88" rx="8" />
         <rect x="38" y="267" width="110" height="88" rx="8" class="pacte__original-node" />
-        <text x="93" y="76" text-anchor="middle">SOURCES</text><text x="93" y="101" text-anchor="middle">copies</text>
+        <text x="93" y="76" text-anchor="middle">INBOX</text><text x="93" y="101" text-anchor="middle">lecture seule</text>
         <text x="260" y="76" text-anchor="middle">PLAN</text><text x="260" y="101" text-anchor="middle">approuvé</text>
         <text x="356" y="188" text-anchor="middle">PERMISSIONS</text><text x="356" y="211" text-anchor="middle">limite active</text>
-        <text x="500" y="288" text-anchor="middle">SORTIE</text><text x="500" y="313" text-anchor="middle">fichiers créés</text>
+        <text x="500" y="288" text-anchor="middle">SORTIE</text><text x="500" y="313" text-anchor="middle">un fichier</text>
         <text x="93" y="300" text-anchor="middle">ORIGINAUX</text><text x="93" y="325" text-anchor="middle">inchangés</text>
       </svg>
       <p class="pacte__map-rule">Les originaux restent reliés à la preuve, jamais à la zone d’écriture.</p>
@@ -98,8 +98,9 @@ const reported = Array.isArray(data.reported) ? data.reported.map(String) : [];
 </script>
 
 <style>
-  .pacte { display: grid; grid-template-columns: minmax(17rem, .9fr) minmax(18rem, 1.1fr); gap: clamp(.8rem, 2vw, 2rem); align-items: center; min-block-size: 0; }
-  .pacte__map { display: grid; grid-template-columns: 1fr minmax(7rem, .34fr); gap: .35rem; align-items: center; }
+  .pacte { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(.8rem, 2vw, 2rem); align-items: center; min-block-size: 0; min-inline-size: 0; }
+  .pacte__map { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .34fr); gap: .35rem; min-inline-size: 0; align-items: center; }
+  .pacte__detail { min-inline-size: 0; }
   .pacte__map svg { inline-size: 100%; max-block-size: 14rem; overflow: visible; }
   .pacte__map path { fill: none; stroke: var(--presentation-ink); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
   .pacte__map .pacte__protected-line { stroke: #72af80; stroke-dasharray: 9 7; }
@@ -109,7 +110,7 @@ const reported = Array.isArray(data.reported) ? data.reported.map(String) : [];
   /* Exception : texte SVG dimensionné dans le viewBox, pas dans le flux HTML. */
   .pacte__map text { fill: var(--presentation-ink); font: 700 19px var(--font-mono); }
   .pacte__map text:nth-of-type(even) { font: 680 18px var(--font-display); }
-  .pacte__map-rule { margin: 0; padding-inline-start: .55rem; border-inline-start: .3rem solid #72af80; font: 700 var(--b-font-body)/1.16 var(--font-display); }
+  .pacte__map-rule { min-inline-size: 0; max-inline-size: 100%; margin: 0; padding-inline-start: .55rem; border-inline-start: .3rem solid #72af80; overflow-wrap: anywhere; font: 700 var(--b-font-body)/1.16 var(--font-display); }
   .pacte__workspace-lane { display: grid; grid-template-columns: auto 1fr; gap: .2rem .5rem; padding: .5rem; border: 1px solid var(--presentation-line); }
   .pacte__workspace-lane span { color: var(--presentation-muted); font: var(--b-font-meta) var(--font-mono); text-transform: uppercase; }
   .pacte__workspace-lane strong { font-size: var(--b-font-body); }
@@ -121,7 +122,7 @@ const reported = Array.isArray(data.reported) ? data.reported.map(String) : [];
   .pacte__letters, .pacte__timeline ol, .pacte__check ol { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
   .pacte__letters { position: relative; grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .pacte__letters::before { content: ''; position: absolute; z-index: 0; inset-block-start: 1rem; inset-inline: 1.1rem; block-size: .25rem; background: var(--presentation-ink); }
-  .pacte__letters li { position: relative; display: grid; gap: .18rem; align-content: start; min-block-size: 0; padding-inline: .14rem; }
+  .pacte__letters li { position: relative; display: grid; gap: .18rem; align-content: start; min-block-size: 0; min-inline-size: 0; padding-inline: .14rem; overflow-wrap: anywhere; }
   .pacte__letters li > span { position: relative; z-index: 1; display: grid; place-items: center; align-self: start; inline-size: 2.2rem; aspect-ratio: 1; border: 3px solid var(--presentation-ink); border-radius: 50%; background: var(--family-accent); font: 800 .9rem var(--font-display); }
   .pacte__letters div { padding-block: .1rem .25rem; border-block-start: 1px solid var(--presentation-line); }
   .pacte__letters strong { font: 750 var(--b-font-body) var(--font-display); }

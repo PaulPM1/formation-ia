@@ -12,6 +12,21 @@ export function wikiLink(brickId: string, anchor: string, label: string): Presen
   };
 }
 
+export function kitLink(path: string, label: string): PresentationLink {
+  const normalized = path.replace(/^\/+/, '');
+  if (!normalized || normalized.includes('..') || /^https?:/i.test(normalized)) {
+    throw new Error(`Chemin de kit invalide : ${path || '(vide)'}`);
+  }
+  const kitPath = normalized.startsWith('kits/') ? normalized : `kits/${normalized}`;
+  return {
+    kind: 'download',
+    label,
+    href: `${WIKI_BASE_URL}/${kitPath}`,
+    target: '_blank',
+    rel: 'noopener noreferrer',
+  };
+}
+
 export function externalLink(
   kind: Exclude<PresentationLink['kind'], 'wiki'>,
   label: string,

@@ -49,7 +49,7 @@ if (variant === 'mvp') panels = [
   { label: 'Objet testable', title: String(data.retained ?? ''), body: String(data.primaryAction ?? '') },
 ];
 if (variant === 'tests') panels = [
-  { label: 'Objet', title: 'Quiz de cinq questions', body: String(data.state ?? '') },
+  { label: 'Objet', title: String(data.objectTitle ?? 'Boîte de tri à six notes'), body: String(data.state ?? '') },
   ...tests.map((item) => ({ label: item.name, title: item.action, body: item.expected })),
   { label: 'Correction', title: 'Un écart précis', body: 'Modifier uniquement le comportement qui échoue.' },
 ];
@@ -58,12 +58,11 @@ if (variant === 'correction') panels = [
   { label: 'Correction ciblée', title: String(data.targetedChange ?? ''), body: String(data.evidence ?? '') },
   { label: 'Itération 2', title: `✓ ${(iteration2.passing ?? []).join(', ')}`, body: (iteration2.failing ?? []).length ? `Échec : ${iteration2.failing.join(', ')}` : 'Aucun test en échec' },
 ];
-const loopCoordinates = panels.length === 5
-  ? [[280,54],[454,128],[438,275],[225,330],[105,180]]
-  : [[120,195],[280,70],[440,195]];
-const loopPath = panels.length === 5
-  ? 'M280 54 C430 54 500 128 470 230 C442 330 330 355 220 330 C100 302 64 195 112 112 C144 57 205 48 280 54 Z'
-  : 'M120 195 Q280 15 440 195 Q280 365 120 195 Z';
+const loopCoordinates = panels.map((_, index) => {
+  const angle = (-Math.PI / 2) + (index * 2 * Math.PI) / panels.length;
+  return [280 + Math.cos(angle) * 185, 195 + Math.sin(angle) * 140];
+});
+const loopPath = 'M280 55 C430 55 475 115 475 195 C475 275 420 335 280 335 C140 335 85 275 85 195 C85 115 130 55 280 55 Z';
 ---
 
 <SceneFrame title={slide.claim} description={slide.accessibleDescription} visualKey={slide.visual.key} class="artifact-test-loop">
@@ -193,8 +192,8 @@ const loopPath = panels.length === 5
 </script>
 
 <style>
-  .artifact { min-block-size: 0; }
-  .artifact[data-variant='tests'], .artifact[data-variant='correction'] { display: grid; grid-template-columns: minmax(17rem, .75fr) minmax(22rem, 1.25fr); gap: clamp(.65rem, 1.5vw, 1.2rem); align-items: center; }
+  .artifact { min-block-size: 0; min-inline-size: 0; }
+  .artifact[data-variant='tests'], .artifact[data-variant='correction'] { display: grid; grid-template-columns: minmax(0, .75fr) minmax(0, 1.25fr); gap: clamp(.65rem, 1.5vw, 1.2rem); align-items: center; }
   .artifact__transfer, .artifact__anatomy { display: grid; grid-template-columns: minmax(22rem, 1.4fr) minmax(12rem, .6fr); gap: clamp(.8rem, 2vw, 1.7rem); align-items: center; }
   .artifact__transfer svg, .artifact__anatomy svg { inline-size: 100%; max-block-size: 17rem; overflow: visible; }
   .artifact__transfer > svg > path, .artifact__anatomy > svg > path { fill: none; stroke: var(--presentation-ink); stroke-width: 7; stroke-linecap: round; }
@@ -234,16 +233,16 @@ const loopPath = panels.length === 5
   .artifact__orbit .artifact__orbit-label { font: 750 21px var(--font-display); }
   .artifact__rule { display: grid; gap: .2rem; margin: 0; padding-inline-start: .6rem; border-inline-start: .3rem solid var(--family-accent); font: 720 var(--b-font-body)/1.16 var(--font-display); }
   .artifact__rule span { color: var(--presentation-muted); font: 600 var(--b-font-meta) var(--font-mono); text-transform: uppercase; }
-  .artifact__inspection { display: grid; gap: .18rem; min-block-size: 0; }
+  .artifact__inspection { display: grid; gap: .18rem; min-block-size: 0; min-inline-size: 0; }
   .artifact__stage-buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(4rem, 1fr)); align-content: center; }
-  .artifact__stage-buttons button { display: grid; grid-template-columns: auto 1fr; gap: .12rem .4rem; min-block-size: 2rem; padding: .14rem .22rem; border: 0; border-block-start: 1px solid var(--presentation-line); background: transparent; color: var(--presentation-ink); font: 710 var(--b-font-control) var(--font-display); text-align: start; cursor: pointer; }
+  .artifact__stage-buttons button { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .12rem .4rem; min-block-size: 2rem; min-inline-size: 0; padding: .14rem .22rem; overflow-wrap: anywhere; border: 0; border-block-start: 1px solid var(--presentation-line); background: transparent; color: var(--presentation-ink); font: 710 var(--b-font-control) var(--font-display); text-align: start; cursor: pointer; }
   .artifact__stage-buttons .artifact__overview { grid-column: auto; display: block; min-block-size: 1.8rem; text-align: center; }
   .artifact__stage-buttons button[aria-pressed='true'] { border-block-start-width: .28rem; border-color: var(--family-accent); background: color-mix(in srgb, var(--family-accent), transparent 86%); }
   .artifact__stage-buttons button:disabled { cursor: default; }
   .artifact__stage-buttons span { color: var(--presentation-muted); font: var(--b-font-meta) var(--font-mono); }
-  .artifact__panels { display: grid; grid-template-columns: repeat(var(--artifact-panel-count), minmax(0, 1fr)); gap: .25rem; align-content: center; }
+  .artifact__panels { display: grid; grid-template-columns: repeat(var(--artifact-panel-count), minmax(0, 1fr)); gap: .25rem; min-inline-size: 0; align-content: center; }
   [data-enhanced='true'][data-artifact-view='isolated'] .artifact__panels { grid-template-columns: 1fr; }
-  .artifact__panels article { display: grid; gap: .08rem; align-content: center; min-block-size: 0; padding: .25rem .3rem; border: 1px solid var(--presentation-line); border-block-start: .25rem solid var(--family-accent); background: var(--presentation-surface); }
+  .artifact__panels article { display: grid; gap: .08rem; align-content: center; min-block-size: 0; min-inline-size: 0; padding: .25rem .3rem; overflow-wrap: anywhere; border: 1px solid var(--presentation-line); border-block-start: .25rem solid var(--family-accent); background: var(--presentation-surface); }
   .artifact__panels article p, .artifact__panels article h3, .artifact__panels article strong { margin: 0; }
   .artifact__panels article p { color: var(--presentation-muted); font: var(--b-font-meta) var(--font-mono); text-transform: uppercase; }
   .artifact__panels article h3 { font: 750 clamp(.82rem, .9vw, .92rem)/1.05 var(--font-display); }

@@ -107,9 +107,10 @@ test('les tokens typographiques des slides gardent un plancher de 0,75 rem', asy
   }
 });
 
-test('la QA durable mesure les textes HTML et SVG à 12 px sur 117 routes et au zoom 200 %', async () => {
-  const [qa, packageJson] = await Promise.all([
+test('la QA durable mesure les textes HTML et SVG à 12 px sur 105 routes et au zoom 200 %', async () => {
+  const [qa, ready, packageJson] = await Promise.all([
     read('scripts/qa-font-floor.mjs'),
+    read('scripts/qa-page-ready.mjs'),
     read('package.json'),
   ]);
 
@@ -117,7 +118,11 @@ test('la QA durable mesure les textes HTML et SVG à 12 px sur 117 routes et au 
   assert.match(qa, /const FONT_FLOOR_PX = 11\.99/);
   assert.match(qa, /querySelectorAll\(['"]svg text['"]\)/);
   assert.match(qa, /deviceScaleFactor:\s*2/);
-  assert.match(qa, /routes\.length[^\n]*117|117[^\n]*routes\.length/);
+  assert.match(qa, /routes\.length[^\n]*105|105[^\n]*routes\.length/);
+  assert.match(qa, /navigateAndWaitForFonts/);
+  assert.match(ready, /waitUntil:\s*'domcontentloaded'/);
+  assert.match(ready, /Promise\.race/);
+  assert.match(ready, /FONT_WAIT_TIMEOUT_MS\s*=\s*1500/);
 });
 
 test('la QA A2 couvre clavier, progression, score, replay, mobile, zoom et repli sans JavaScript', async () => {
@@ -607,25 +612,20 @@ test('enregistre tous les visuels du bloc B', async () => {
   ]) assert.match(registry, new RegExp(name));
 });
 
-test('les 27 routes spécialisées du bloc B choisissent leur variante réelle', async () => {
+test('les 21 routes du bloc B choisissent leur variante réelle', async () => {
   const state = await import('../src/components/presentation/visuals/b/visual-state').catch(() => null);
   assert.ok(state, "les helpers d’état du bloc B doivent exister");
 
-  const specialized = B_DECKS.flatMap((deck) => deck.slides)
-    .filter((slide) => !['mission-board', 'checkpoint'].includes(slide.visual.key));
-  assert.equal(specialized.length, 27);
+  const specialized = B_DECKS.flatMap((deck) => deck.slides);
+  assert.equal(specialized.length, 21);
 
   const expected = new Map<string, string>([
-    ['b0-layers', 'layers'], ['b0-diagnostic', 'checks'], ['b0-test', 'test'],
-    ['b0-fallback', 'fallback'], ['b4bis-install', 'platforms'],
-    ['b1-vague', 'comparison'], ['b1-four-blocks', 'blocks'], ['b1-builder', 'builder'], ['b1-loop', 'loop'],
-    ['b2-object', 'transfer'], ['b2-anatomy', 'anatomy'], ['b2-mvp', 'mvp'],
-    ['b2-tests', 'tests'], ['b2-correction', 'correction'],
-    ['b3-delegation', 'delegation'], ['b3-pacte', 'pacte'], ['b3-permissions', 'permissions'],
-    ['b3-observe', 'timeline'], ['b3-check', 'check'],
-    ['b4-context', 'context'], ['b4-ipmtr', 'process'], ['b4-permission', 'permission'], ['b4-test', 'proof'],
-    ['b4-transition', 'panes'], ['b4bis-workspace', 'workspace'],
-    ['b4bis-triptych', 'panes'], ['b4bis-path', 'path'],
+    ['b0-layers', 'layers'], ['b0-test', 'test'],
+    ['b1-vague', 'comparison'], ['b1-four-blocks', 'blocks'], ['b1-mission', 'builder'], ['b1-loop', 'loop'],
+    ['b2-object', 'transfer'], ['b2-mvp', 'mvp'], ['b2-mission', 'tests'], ['b2-correction', 'correction'],
+    ['b3-delegation', 'delegation'], ['b3-pacte', 'pacte'], ['b3-mission', 'timeline'], ['b3-check', 'check'],
+    ['b4-context', 'context'], ['b4-ipmtr', 'process'], ['b4-mission', 'permission'], ['b4-test', 'proof'],
+    ['b4bis-install', 'panes'], ['b4bis-workspace', 'workspace'], ['b4bis-checkpoint', 'path'],
   ]);
 
   const resolverByKey = {
@@ -736,15 +736,15 @@ test('le comparatif de prompt conserve toujours le vrai état après du manifest
   assert.doesNotMatch(target, /Sélectionnez/);
 });
 
-test('le triptyque sépare la destination de transition du chemin partagé', async () => {
+test('le triptyque B4-bis conserve le même dossier dans ses trois vues', async () => {
   const state = await import('../src/components/presentation/visuals/b/visual-state').catch(() => null);
   assert.ok(state, "les helpers d’état du bloc B doivent exister");
   const slides = B_DECKS.flatMap((deck) => deck.slides);
   const data = (id: string) => slides.find((slide) => slide.id === id)?.visual.data ?? {};
 
-  assert.equal(state.workspaceSharedPath(data('b4-transition')), 'atelier-ia/bonjour.txt');
-  assert.equal(state.workspaceSharedPath(data('b4bis-triptych')), 'atelier-ia');
-  assert.notEqual(state.workspaceSharedPath(data('b4-transition')), data('b4-transition').destination);
+  assert.equal(state.workspaceSharedPath(data('b4bis-install')), 'kits/bloc-b-assistant/code/');
+  assert.equal(state.workspaceSharedPath(data('b4bis-workspace')), 'kits/bloc-b-assistant/code');
+  assert.equal(state.workspaceSharedPath(data('b4bis-checkpoint')), 'kits/bloc-b-assistant/code');
 });
 
 test('Artifact route chaque claim vers un visuel central distinct et synchronisable', async () => {
@@ -880,7 +880,7 @@ test('Prompt, Setup et Triptyque restent intrinsèquement fluides', async () => 
   assert.match(triptych, /\.triptych__shared, \.triptych__destination\s*{[^}]*var\(--font-display\)/s);
 });
 
-test('le sweep QA B contrôle les descendants calculés et les cinq labels Setup', async () => {
+test('le sweep QA B contrôle les 21 routes, trois vues et les cinq labels du préflight', async () => {
   const qa = await read('scripts/qa-block-b.mjs').catch(() => '');
   assert.match(qa, /getComputedStyle/);
   assert.match(qa, /getBoundingClientRect/);
@@ -888,10 +888,13 @@ test('le sweep QA B contrôle les descendants calculés et les cinq labels Setup
   assert.match(qa, /fontSize/);
   assert.match(qa, /overflowX/);
   assert.match(qa, /setup__route-label/);
-  assert.match(qa, /Compte.*Surface.*Fonctions.*Test.*Repli/s);
+  assert.match(qa, /Chat.*Artifact.*Cowork.*Kit.*Départ/s);
   assert.match(qa, /b4-context.*b4bis-checkpoint/s);
-  assert.match(qa, /presentation-heading__optional/);
+  assert.match(qa, /presentation-heading__track/);
   assert.match(qa, /Facultatif/);
+  assert.match(qa, /Rattrapage/);
+  assert.match(qa, /zoom-200/);
+  assert.match(qa, /navigateAndWaitForFonts/);
 });
 
 test('enregistre tous les visuels du bloc C', async () => {

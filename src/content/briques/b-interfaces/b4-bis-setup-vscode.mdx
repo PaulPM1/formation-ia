@@ -1,10 +1,10 @@
 ---
 id: b4-bis
-title: "Setup VS Code"
+title: "Rattrapage VS Code"
 family: b
 order: 10
-priority: facultatif
-durationMinutes: null
+priority: rattrapage
+durationMinutes: 10
 type: setup
 platforms:
   - commun
@@ -12,138 +12,108 @@ prerequisites:
   - b0
 status: a-relire
 owner: a-attribuer
-learningObjective: "Installer ou valider VS Code, ouvrir un dossier de confiance et utiliser l'explorateur, un fichier et le terminal intégré."
-expectedOutcome: "Le participant ouvre le dossier atelier dans VS Code, crée bonjour.txt et exécute une commande simple dans le terminal intégré."
+learningObjective: "Réaligner en dix minutes le dossier ouvert, le terminal Node et l’extension Claude Code sur un poste presque prêt."
+expectedOutcome: "VS Code ouvre kits/bloc-b-assistant/code, node --test passe dans ce dossier et le panneau Claude Code s’ouvre."
 ---
 
 ## Cap
 
-**Objectif :** disposer d'un espace de travail commun pour voir les fichiers, ouvrir un terminal et suivre les modifications d'un projet.
+**Objectif de rattrapage :** corriger uniquement le maillon manquant sur un poste presque prêt.
 
-- Durée indicative : 15 à 30 minutes selon les droits d'installation.
-- Prérequis : accès au Web et droit d'installer VS Code, ou version déjà présente.
-- Résultat attendu : le dossier `atelier-ia` est ouvert, `bonjour.txt` existe et le terminal intégré répond.
+- 3 minutes : diagnostiquer dossier, terminal ou extension.
+- 4 minutes : aligner Explorateur, fichier et terminal.
+- 3 minutes : exécuter le test et ouvrir Claude Code.
 
-VS Code est l'éditeur utilisé pendant la formation. Les étapes de base se valident sans extension ; l'extension Claude Code s'ajoute ensuite, et c'est elle qui rend le travail confortable.
+Une installation complète de VS Code, Node ou Claude Code ne tient pas dans cette piste. Elle se termine avant la séance ou hors chrono.
 
 ## Concept durable
 
-Un **éditeur de code** travaille sur des fichiers et des dossiers. Dans VS Code :
+Un workspace utile relie trois vues du même dossier :
 
-- l'**Explorateur** montre l'arborescence réelle ;
-- l'**éditeur** affiche le contenu du fichier actif ;
-- le **terminal intégré** exécute les mêmes outils qu'un terminal séparé ;
-- le **workspace** est le dossier ouvert et peut contenir des réglages propres au projet.
+- l’Explorateur montre `kits/bloc-b-assistant/code/` ;
+- l’Éditeur ouvre un fichier de ce dossier ;
+- le Terminal exécute les commandes depuis ce même chemin.
 
-Ouvrir un dossier donne du contexte aux outils. N'accordez la confiance qu'aux dossiers dont vous connaissez l'origine : un projet téléchargé peut contenir des tâches ou réglages exécutables.
-
-Une **extension** ajoute une capacité à l'éditeur : un langage, un formateur, un outil. Elles s'installent depuis la vue Extensions et se désactivent aussi facilement.
-
-L'extension qui change le quotidien ici est **Claude Code**. Elle apporte dans l'éditeur ce que le terminal montre mal : les modifications proposées s'affichent en comparaison côte à côte, avec accepter ou refuser pour chacune ; le plan d'action se relit et s'amende avant exécution ; les fichiers se désignent par mention plutôt que par chemin complet ; et l'historique des conversations reste accessible. C'est la manière recommandée d'utiliser Claude Code dans VS Code. Le terminal garde son intérêt : certaines commandes n'existent que là, et les deux partagent la même conversation.
+Le poste est prêt seulement si `node --test` passe à cet endroit et si le panneau Claude Code s’ouvre dans VS Code.
 
 ## Pratique avec Claude
 
-1. Téléchargez VS Code depuis la page officielle si nécessaire.
-2. Installez la version Stable adaptée à votre système.
-3. Créez un dossier `atelier-ia` dans `Documents`.
-4. Dans VS Code, choisissez **Fichier → Ouvrir le dossier**, puis sélectionnez `atelier-ia`.
-5. Créez `bonjour.txt` avec :
+Ouvrez `kits/bloc-b-assistant/code/` comme dossier dans VS Code, pas seulement `index.html`.
 
-```text
-Mon atelier IA est prêt.
+Dans le terminal intégré :
+
+```sh
+node --test
 ```
 
-6. Ouvrez **Terminal → Nouveau terminal** et vérifiez que son chemin se termine par `atelier-ia`.
-7. Exécutez `code --version` si la commande `code` est configurée. Sinon, le test du terminal reste valide et la configuration est traitée dans le dépannage.
-8. Ouvrez la vue Extensions, cherchez « Claude Code » et installez l'extension officielle publiée par Anthropic.
-9. Ouvrez le panneau Claude depuis l'éditeur, puis connectez-vous avec votre compte Claude. Aucune clé d'API n'est demandée.
-10. Demandez une modification simple de `bonjour.txt` et observez la comparaison proposée avant d'accepter ou de refuser.
+Ouvrez ensuite le panneau Claude Code et vérifiez qu’il utilise ce workspace. Aucune modification de la mini-page n’est demandée ici.
 
 ## Mission commune
 
-Sans aide du formateur, fermez puis rouvrez VS Code, ouvrez `atelier-ia`, modifiez `bonjour.txt` et utilisez le terminal pour afficher le dossier courant.
-
-- macOS avec zsh : `pwd`
-- Windows PowerShell : `Get-Location`
-- Git Bash : `pwd`
-
-**Critère de réussite :** le fichier est visible dans l'Explorateur et le terminal indique le même dossier.
+1. Identifiez le seul maillon en échec : dossier, terminal Node ou extension.
+2. Ouvrez `code/` dans l’Explorateur.
+3. Ouvrez `brief.test.mjs` dans l’Éditeur.
+4. Créez un nouveau terminal intégré.
+5. Vérifiez le chemin courant.
+6. Exécutez `node --test`.
+7. Ouvrez le panneau Claude Code.
 
 ## Livrable
 
-Le dossier `atelier-ia` contenant `bonjour.txt`, plus la sortie de la commande de localisation. Ce dossier servira de zone de travail non sensible pour les exercices suivants.
+Trois preuves concordantes : chemin `kits/bloc-b-assistant/code`, test passant et panneau Claude Code ouvert.
 
 ## Notes formateur
 
-- Séparer les participants par système pendant les cinq minutes d'installation.
-- Demander le test final avant d'ajouter des extensions ou de personnaliser l'interface.
-- Expliquer le triptyque « dossier, fichier, terminal » au vidéoprojecteur.
-- Ne pas utiliser de projet téléchargé pour le premier test de Workspace Trust.
-
-Transition : un environnement visible et un terminal fonctionnel permettent d'aborder les extensions réutilisables, les connexions MCP et les automatisations.
+- De 00:00 à 03:00 : diagnostiquer le maillon manquant.
+- De 03:00 à 07:00 : ouvrir `code/` et réaligner le terminal.
+- De 07:00 à 10:00 : exécuter `node --test` et ouvrir Claude Code.
+- Couper B4-bis à 10:00 sans prolongation.
+- Repli : placer le participant en observation sur un poste prêt ; terminer toute installation après le bloc.
 
 ## Défis avancés
 
-- Configurer la commande `code` puis ouvrir le dossier depuis le terminal avec `code .`.
-- Ouvrir la palette de commandes et retrouver « Terminal: Create New Terminal ».
-- Comparer réglages utilisateur et réglages du workspace sans modifier les fichiers de configuration.
+- Ouvrir le dossier depuis le terminal avec `code .` si la commande existe déjà.
+- Expliquer la différence entre un fichier ouvert et un workspace ouvert.
 
 ## Variantes
 
-- **Installation interdite :** utiliser la version déjà approuvée par l'organisation ou suivre la démonstration ; ne pas contourner les politiques.
-- **Autre éditeur déjà maîtrisé :** valider malgré tout l'ouverture du dossier et du terminal dans VS Code pour partager les mêmes repères pendant la formation.
-- **Clavier non français :** utiliser les menus plutôt que les raccourcis.
+- **macOS ou Git Bash :** vérifier le chemin avec `pwd`.
+- **Windows PowerShell :** vérifier le chemin avec `Get-Location`.
+- **Commande `code` absente :** utiliser Fichier > Ouvrir le dossier ; cela ne bloque pas le checkpoint.
 
 ## Dépannage
 
-- **Le dossier n'apparaît pas :** utiliser « Ouvrir le dossier », pas seulement « Ouvrir un fichier ».
-- **Le terminal s'ouvre ailleurs :** fermer le terminal, rouvrir le bon dossier puis créer un nouveau terminal.
-- **Workspace Trust apparaît :** n'accorder la confiance qu'au dossier `atelier-ia` créé par vous-même.
-- **`code` est introuvable :** suivre les étapes propres au système ci-dessous ; cela ne bloque pas l'usage de VS Code par les menus.
-- **L'extension reste invisible après installation :** recharger la fenêtre depuis la palette de commandes, puis ouvrir un fichier ; certains points d'entrée n'apparaissent qu'avec un fichier ouvert.
-- **La commande `claude` reste introuvable dans le terminal intégré :** l'extension embarque sa propre copie pour son panneau, mais la commande du terminal s'installe séparément. Les deux peuvent coexister et partagent l'historique des conversations.
+- **Le test ne trouve aucun fichier :** fermer le terminal, rouvrir `code/` comme dossier et créer un nouveau terminal intégré.
+- **Node est introuvable :** sortir du chrono et utiliser le poste observateur.
+- **Claude Code ne s’ouvre pas :** vérifier l’extension déjà installée et la connexion ; ne lancer aucune installation longue.
+- **Workspace Trust apparaît :** n’accorder la confiance qu’au kit fictif fourni et connu.
 
 ## Ressources
 
-- [Télécharger VS Code](https://code.visualstudio.com/download)
+- [Claude Code dans VS Code](https://code.claude.com/docs/en/vs-code)
 - [Bien démarrer avec VS Code](https://code.visualstudio.com/docs/getstarted/overview)
-- [Utiliser VS Code en ligne de commande](https://code.visualstudio.com/docs/configure/command-line)
 - [Comprendre Workspace Trust](https://code.visualstudio.com/docs/editing/workspaces/workspace-trust)
-- [Utiliser Claude Code dans VS Code (documentation officielle)](https://code.claude.com/docs/en/vs-code)
 
 ## Ouverture
 
-Vous disposez maintenant d'un dossier de travail explicite, d'un éditeur et d'un terminal. La famille C montre comment ajouter à Claude des méthodes, des connexions et des déclencheurs.
+Cette piste s’arrête au checkpoint. Revenez au sommaire ; ne naviguez pas automatiquement vers B4 ni C1.
 
 ## Diagnostic initial
 
-Avant d'installer :
-
-1. recherchez « Visual Studio Code » dans les applications ;
-2. ouvrez-le et consultez **Aide → À propos** sur Windows ou **Code → À propos** sur macOS ;
-3. tentez d'ouvrir un dossier et un terminal ;
-4. n'effectuez une installation que si un de ces tests essentiels échoue.
+Testez dans cet ordre : `code/` visible dans l’Explorateur, `node --test` disponible dans le terminal, panneau Claude Code ouvrable. Ne corrigez que le premier échec.
 
 ## Test final
 
-Le setup est validé lorsque :
-
-- VS Code ouvre `atelier-ia` comme dossier ;
-- l'Explorateur affiche `bonjour.txt` ;
-- le fichier contient « Mon atelier IA est prêt. » ;
-- le terminal intégré pointe vers `atelier-ia` ;
-- vous savez fermer puis rouvrir ce dossier.
+Le setup passe lorsque le terminal affiche le chemin de `kits/bloc-b-assistant/code`, que `node --test` réussit et que Claude Code s’ouvre dans ce workspace.
 
 ## Dépannage Mac
 
-1. Ouvrez le fichier `.dmg` officiel et glissez **Visual Studio Code.app** dans `Applications`.
-2. Lancez VS Code depuis `Applications` ou Spotlight.
-3. Pour ajouter `code` au `PATH`, ouvrez la palette avec `Cmd+Shift+P`, cherchez **Shell Command: Install 'code' command in PATH**, exécutez-la puis ouvrez un nouveau terminal.
-4. Si la commande reste absente, poursuivez avec les menus et redémarrez le terminal après la session.
+- Utiliser `pwd` pour contrôler le dossier courant.
+- Ouvrir le dossier depuis VS Code si `code .` n’est pas configuré.
+- Si Node manque, ne pas installer pendant les dix minutes.
 
 ## Dépannage Windows
 
-1. Utilisez de préférence le **User Setup** officiel si vous n'avez pas les droits administrateur.
-2. Fermez puis rouvrez les terminaux après l'installation afin qu'ils récupèrent le `PATH` mis à jour.
-3. Si `code` n'est pas reconnu, vérifiez l'option d'ajout au `PATH` ou réinstallez depuis la source officielle.
-4. En environnement géré, demandez l'installation au support interne au lieu d'utiliser une archive non approuvée.
+- Utiliser `Get-Location` dans PowerShell.
+- Vérifier que le chemin se termine par `kits\bloc-b-assistant\code`.
+- Si Node ou l’extension manque, basculer sur le poste observateur et terminer hors chrono.

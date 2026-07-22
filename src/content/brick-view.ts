@@ -18,6 +18,7 @@ export const PRIORITY_LABELS = {
   socle: 'Socle',
   bonus: 'Bonus',
   facultatif: 'Facultatif',
+  rattrapage: 'Rattrapage',
   'a-trancher': 'À trancher',
 } as const;
 

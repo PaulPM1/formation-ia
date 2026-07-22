@@ -17,12 +17,12 @@ const states = Array.isArray(data.states) ? data.states.map(String) : [];
 const steps = Array.isArray(data.steps) ? data.steps.map(String) : [];
 const situations = (Array.isArray(data.situations) ? data.situations : []) as Situation[];
 const platforms = (Array.isArray(data.platforms) ? data.platforms : []) as Platform[];
-const graph = ['Compte', 'Surface', 'Fonctions', 'Test', 'Repli'];
+const graph = ['Chat', 'Artifact', 'Cowork', 'Kit', 'Départ'];
 ---
 
 <SceneFrame title={slide.claim} description={slide.accessibleDescription} visualKey={slide.visual.key} class="setup-diagnostic">
   <div class="setup" data-setup-diagnostic data-variant={variant} data-enhanced="false">
-    <ol class="setup__route" aria-label="Chaîne de diagnostic : compte, surface, fonctionnalités, test observable et chemin de repli">
+    <ol class="setup__route" aria-label="Séquence de préflight : Chat, Artifact, Cowork, kit puis départ">
       {graph.map((name, index) => (
         <li><span>{index + 1}</span><strong class="setup__route-label">{name}</strong></li>
       ))}

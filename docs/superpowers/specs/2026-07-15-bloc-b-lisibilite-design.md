@@ -1,10 +1,10 @@
-# Bloc B — lisibilité vidéoprojecteur
+# Bloc B : lisibilité vidéoprojecteur
 
 ## Objectif
 
-Rendre les 33 slides du bloc B lisibles à 1280×720 sans scroll interne, sans
+Rendre les 21 slides du bloc B lisibles à 1280×720, 390×844 et zoom 200 % sans
 masquer de contenu et sans modifier le bloc C. Le repli sans JavaScript reste
-complet et les interactions existantes conservent leur sens pédagogique.
+complet et les interactions conservent leur sens pédagogique.
 
 ## Système typographique
 
@@ -32,5 +32,5 @@ et regroupent les métadonnées sans modifier leur ordre DOM.
 Une garde de test analyse `presentation.css` et les six composants B. Elle
 refuse les déclarations de police visibles inférieures aux planchers et exige
 les tokens B. Le contrôle final comprend tests, build, `git diff --check`, puis
-un sweep des 33 routes à 1280×720 et 390×844 avec comparaison des dimensions
-client/scroll.
+un sweep des 21 routes à 1280×720, 390×844 et zoom 200 % avec comparaison des
+dimensions client/scroll.
