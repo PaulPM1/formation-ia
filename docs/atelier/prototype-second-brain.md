@@ -28,8 +28,7 @@ Règle de calibrage : budget participant = double du temps Matthieu.
 
 ## Bloc 1 : le socle commun (budget : 2 h)
 
-Le vendredi des participants. À faire depuis le kit `debutant`, puis à
-retester rapidement depuis `avance` pour vérifier que les deux tiennent.
+Le vendredi des participants. À faire depuis le kit de départ minimal.
 
 | Étape | Budget | Test de vérification | Temps réel |
 | --- | --- | --- | --- |
@@ -39,7 +38,6 @@ retester rapidement depuis `avance` pour vérifier que les deux tiennent.
 | Choix du projet | 5 min | Le sujet est écrit noir sur blanc | |
 | Interview par Claude (`prompts/interview.md`), CLAUDE.md rédigé | 30 min | Conversation neuve : Claude sait sur quoi vous travaillez | |
 | Premier commit poussé | 10 min | Le commit apparaît sur GitHub | |
-| Contre-test avec le kit `avance` | 10 min | Le squelette guide sans bloquer | |
 
 **Critère de fin :** une conversation neuve connaît le projet, et le dépôt est
 en ligne.

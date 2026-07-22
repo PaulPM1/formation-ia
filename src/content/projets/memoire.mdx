@@ -28,24 +28,26 @@ Vous venez de finir un chapitre. Vous lancez la passe de vérification, et le ve
 
 ## Cahier des charges
 
-### Exigences minimales
+### Le minimum pour un directeur de mémoire réussi
 
-- Un dossier de projet suivi par git, avec un `CLAUDE.md` qui décrit le document, son lecteur, l'échéance et les règles du jeu.
-- La règle fondatrice, écrite noir sur blanc : le directeur ne rédige pas le document à votre place ; il questionne, vérifie, relit et conteste.
-- Le document découpé en chapitres, un fichier par chapitre, versionné : l'historique git est l'historique de l'écriture.
-- Une bibliothèque de sources : un fichier par source, avec la référence complète, vos notes de lecture et les citations exactes que vous comptez utiliser.
-- Un skill de vérification qui extrait les affirmations d'un chapitre et classe chacune : couverte par une source (laquelle), orpheline, ou opinion assumée.
-- Un skill de relecture qui joue le jury : les questions dures qu'un lecteur exigeant poserait sur le chapitre.
-- Une page web déployée qui montre l'état du document : chapitres, avancement, taux d'affirmations sourcées.
-- Un audit de sécurité passé : aucun secret dans le dépôt, et un dépôt privé si le document n'est pas destiné à être public.
+- **Il connaît votre document.** Un fichier d'identité (le `CLAUDE.md`) décrit le document, son lecteur, l'échéance et les règles du jeu.
+- **Il n'écrit jamais à votre place.** La règle fondatrice, écrite noir sur blanc : il questionne, vérifie, relit et conteste, mais il ne rédige pas le document pour vous.
+- **Votre document vit sous git.** Découpé en chapitres, un fichier par chapitre : l'historique git raconte, commit après commit, comment le texte s'est écrit.
+- **Il a vraiment lu vos sources.** Une bibliothèque de sources, un fichier par source, avec la référence complète, vos notes de lecture et les citations exactes que vous comptez utiliser.
+- **Il traque les affirmations sans source.** Un skill de vérification qui prend chaque affirmation d'un chapitre et dit si elle est couverte par une source (laquelle), sans source du tout, ou assumée comme votre opinion.
+- **Il vous relit comme un jury.** Un skill de relecture qui pose les questions dures qu'un lecteur exigeant poserait sur le chapitre.
+- **Il montre l'état du document en ligne.** Une page déployée montre les chapitres, l'avancement et la part d'affirmations appuyées sur une source.
+- **Il est sûr.** Un audit de sécurité confirme qu'aucun secret n'est parti dans le dépôt, avec un dépôt privé si le document n'est pas destiné à être public.
 
 ### Pour aller plus loin
 
-- Le suivi des promesses : ce que l'introduction et le plan annoncent, confronté à ce que les chapitres tiennent réellement.
-- La chasse aux sources suspectes : référence introuvable, citation que le texte source ne contient pas.
-- Un export de la bibliographie au format exigé par votre établissement.
-- Une soutenance blanche : le jury simulé interroge sur tout le document, et vous préparez les réponses.
-- Un rapport d'avancement périodique, généré par une tâche planifiée, qui compare l'état du document à l'échéance.
+- **Il vérifie que vous tenez vos promesses.** Ce que l'introduction et le plan annoncent, confronté à ce que les chapitres tiennent réellement.
+- **Il débusque les sources douteuses.** Une référence introuvable, une citation que le texte source ne contient pas.
+- **Il exporte votre bibliographie au bon format.** Celui qu'exige votre établissement.
+- **Il vous fait passer une soutenance blanche.** Un jury simulé qui vous interroge sur tout le document pendant que vous préparez vos réponses.
+- **Il vous rend un point d'avancement régulier.** Un rapport périodique, produit par une tâche planifiée, qui compare l'état du document à l'échéance.
+
+> **Avant de vous lancer.** Pour transformer ce cahier des charges en plan d'action, utilisez la méthode d'équipe ([E4](/briques/e4/)) : collez son prompt de cadrage et l'IA joue l'analyste, le chef de produit et l'architecte pour vous sortir un plan ordonné à partir des exigences ci-dessus. Vous validez le plan, puis vous déroulez les étapes.
 
 ## Étape 1 : Le socle commun
 

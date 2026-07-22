@@ -56,7 +56,7 @@ $RECYCLE.BIN/
 *.swp
 
 # Matière personnelle
-# Décommentez la ligne suivante si votre matière première contient des données
-# que vous ne voulez publier nulle part. Le projet fonctionnera toujours chez
-# vous, mais le dépôt restera vide de ce contenu.
-# matiere/
+# Quand votre projet aura ses propres dossiers de contenu, ajoutez ici ceux
+# qui contiennent des données que vous ne voulez publier nulle part. Le projet
+# fonctionnera toujours chez vous, mais le dépôt restera vide de ce contenu.
+# exemple : mon-dossier-prive/

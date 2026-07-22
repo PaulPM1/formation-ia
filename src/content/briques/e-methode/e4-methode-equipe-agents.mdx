@@ -1,0 +1,124 @@
+---
+id: e4
+title: "La méthode d'équipe : planifier avant de coder"
+family: e
+order: 22
+priority: bonus
+durationMinutes: 20
+type: concept
+platforms:
+  - commun
+prerequisites:
+  - e1
+  - e3
+status: a-relire
+owner: matthieu
+learningObjective: "Faire jouer à l'IA les rôles d'une équipe de développement pour transformer une idée floue en plan structuré avant d'écrire la moindre ligne."
+expectedOutcome: "Le participant obtient, à partir d'un cahier des charges, un plan de projet avec étapes ordonnées et critères, produit par une IA qui a raisonné comme un analyste, un chef de produit et un architecte."
+---
+
+## Cap
+
+**Objectif :** obtenir un plan solide avant de coder, en demandant à l'IA de raisonner comme une équipe entière plutôt que comme un exécutant pressé.
+
+- Durée cible : 20 minutes.
+- Prérequis : E1 (formuler une demande), E3 (découper en étapes testables).
+- Résultat attendu : un plan de projet écrit, avec des étapes ordonnées et vérifiables, avant la première ligne de code.
+
+## Concept durable
+
+Une équipe qui construit un logiciel ne se jette pas sur le clavier. Elle passe d'abord par des rôles : un **analyste** clarifie le besoin, un **chef de produit** définit ce qui doit exister et dans quel ordre, un **architecte** décide comment les pièces s'agencent. Le code ne vient qu'ensuite, guidé par ces décisions.
+
+Seul face à une IA, on saute ces rôles : on demande « fais-moi l'application » et on récupère un tas de code qu'on ne contrôle plus (le risque nommé en E2). La méthode consiste à **faire jouer ces rôles à l'IA**, un par un, avant de coder. Vous ne devenez ni analyste ni architecte : vous demandez à l'IA d'endosser ces casquettes successivement, et vous gardez la décision à chaque étape.
+
+Le déroulé tient en trois temps :
+
+1. **Cadrer** : l'IA joue l'analyste et le chef de produit. À partir de votre idée, elle pose des questions, puis rédige ce que le projet doit faire, pour qui, et ce qu'il ne fera pas. C'est le prolongement direct de E1 et E3.
+2. **Architecturer** : l'IA joue l'architecte. Elle propose l'organisation des fichiers et l'ordre de construction, du plus simple au plus utile (le MVP de E3 en premier).
+3. **Construire** : seulement là, l'IA code, étape par étape, en suivant le plan validé.
+
+Ce qui change tout : le plan est **écrit et relisible**. Vous le corrigez avant que la première ligne existe, quand corriger ne coûte rien. C'est l'inverse du projet qui part dans tous les sens et qu'on ne rattrape plus.
+
+Cette approche porte un nom dans le monde du développement assisté par IA : les méthodes dites « agentiques agiles », dont la plus connue est **BMAD** (Breakthrough Method for Agile AI-Driven Development), un projet libre qui outille précisément cette idée d'une équipe d'agents spécialisés. Le prompt ci-dessous suffit pour débuter ; pour un projet ambitieux, BMAD va beaucoup plus loin (voir la section suivante).
+
+## Pratique avec Claude
+
+Le prompt de cadrage à copier, à lancer sur une idée de projet :
+
+```text
+Nous allons planifier mon projet avant d'écrire du code. Joue successivement
+trois rôles, un par message, et attends ma validation entre chaque.
+
+1. En tant qu'analyste : pose-moi les questions qui manquent pour comprendre
+   ce que je veux, une par une.
+2. En tant que chef de produit : rédige ce que le projet doit faire, pour qui,
+   et surtout ce qu'il ne fera pas. Propose la plus petite version qui rend
+   déjà service.
+3. En tant qu'architecte : propose l'organisation des fichiers et l'ordre de
+   construction, en commençant par cette plus petite version, puis liste les
+   étapes suivantes, chacune vérifiable seule.
+
+Ne code rien tant que je n'ai pas validé les trois. Termine par le plan complet
+en une page.
+```
+
+Le résultat est un plan que vous relisez et amendez. Ensuite seulement, vous demandez : « construis l'étape 1 de ce plan ».
+
+## Passer à l'outil complet : BMAD
+
+Le prompt de cadrage rejoue les rôles à la main. **BMAD** installe cette même équipe pour de bon dans votre projet, avec des agents spécialisés (chef de produit, architecte, développeur, testeur) et des étapes guidées qui couvrent tout le cycle, de l'idée à la revue de code. C'est libre et gratuit.
+
+L'installation tient en une commande, à lancer dans le dossier du projet :
+
+```text
+npx bmad-method install
+```
+
+L'installeur pose quelques questions, puis dépose la méthode dans votre projet. Vous invoquez ensuite les agents et les étapes depuis Claude Code. Un point d'entrée est fait pour ne jamais être perdu : demandez `bmad-help`, il vous dit quoi faire ensuite et ce qui est optionnel. Les commandes exactes évoluent avec les versions ; le tutoriel officiel « Getting Started » donne toujours la marche à jour.
+
+Quand vaut-il le coup ? Pas pour un premier petit projet de week-end, où le prompt de cadrage suffit. Mais dès qu'un projet devient ambitieux (plusieurs fonctionnalités, du vrai code à maintenir), la structure de BMAD évite qu'il parte dans tous les sens. C'est un investissement de mise en place qui se rentabilise sur la durée.
+
+## Mission commune
+
+Prenez une idée de projet, même vague. Lancez le prompt de cadrage et allez au bout des trois rôles, en corrigeant chaque étape avant de valider la suivante.
+
+**Critère de réussite :** vous obtenez un plan écrit dont vous pouvez dire, pour chaque étape, ce qu'elle produit et comment vérifier qu'elle marche, sans qu'une seule ligne de code ait encore été écrite.
+
+## Livrable
+
+Le plan de votre projet en une page : ce qu'il fait, pour qui, ce qu'il ne fait pas, l'organisation des fichiers, et les étapes ordonnées avec leur critère de vérification.
+
+## Notes formateur
+
+- **0–4 min :** l'analogie de l'équipe (analyste, chef de produit, architecte) et pourquoi on saute ces rôles quand on est seul.
+- **4–8 min :** les trois temps, cadrer, architecturer, construire ; insister sur « le plan est écrit, donc corrigeable à froid ».
+- **8–16 min :** mission commune, chacun lance le prompt sur son idée.
+- **16–20 min :** deux ou trois plans lus à voix haute ; nommer BMAD comme l'outillage complet de cette idée, à explorer plus tard.
+
+Garder le cap sur le concept, pas sur l'outil : la valeur est de faire raisonner l'IA par rôles avant de coder, BMAD n'est qu'une instance aboutie. Ne pas lancer l'installation de BMAD en séance avec des débutants, cela dépasse le cadre. Lien fort avec E3 : le plan produit ici est la version outillée du cadrage MVP. Transition vers la pratique : ce plan devient la feuille de route du projet de l'atelier.
+
+## Défis avancés
+
+- Installez le framework complet BMAD (`npx bmad-method install`) sur un projet de test et comparez son déroulé guidé avec le prompt de cadrage simple.
+- Ajoutez un quatrième rôle au prompt : un testeur qui définit, pour chaque étape, comment prouver qu'elle fonctionne avant qu'elle soit codée.
+- Faites rejouer le rôle d'architecte sur un projet existant et demandez ce qu'il changerait dans l'organisation actuelle.
+
+## Variantes
+
+- **Projet non logiciel :** la même méthode cadre l'organisation d'un événement ou d'un dossier ; les rôles deviennent analyste, organisateur, responsable logistique.
+- **Format express :** ne jouer que les rôles chef de produit et architecte, sauter l'analyste si le besoin est déjà clair.
+
+## Dépannage
+
+- **« L'IA code alors que je n'ai pas validé le plan » :** rappeler la contrainte dans le prompt, « ne code rien tant que je n'ai pas validé les trois rôles », et repartir de la dernière étape validée.
+- **« Le plan est trop gros » :** demander au chef de produit de réduire encore la première version ; un plan dont l'étape 1 tient en une heure est un bon plan.
+- **« Les rôles se ressemblent tous » :** demander à chaque rôle une sortie différente, des questions pour l'analyste, une liste de fonctions pour le chef de produit, une arborescence pour l'architecte.
+
+## Ressources
+
+- [BMAD Method, méthode agile pilotée par IA (dépôt officiel)](https://github.com/bmad-code-org/bmad-method)
+- [Bonnes pratiques Claude Code (Anthropic)](https://www.anthropic.com/engineering/claude-code-best-practices)
+
+## Ouverture
+
+Vous savez maintenant faire produire un plan avant de coder. Le bloc suivant est la pratique : vous appliquez ce plan sur un vrai projet, du choix du sujet à la mise en ligne.

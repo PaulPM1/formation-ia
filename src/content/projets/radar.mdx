@@ -33,24 +33,26 @@ Vous ouvrez une page le matin, et cinq éléments vous attendent. Pas cinquante 
 
 ## Cahier des charges
 
-### Exigences minimales
+### Le minimum pour un radar réussi
 
-- Un dossier de projet suivi par git, avec un `CLAUDE.md` qui décrit vos sujets de veille et ce qui vous intéresse dans chacun.
-- Une liste de sources écrite dans un fichier, avec pour chacune son adresse, son sujet et son état (accessible ou non, testé le jour même).
-- Au moins trois sources qui répondent réellement et dont vous savez récupérer le contenu.
-- Des critères de pertinence écrits noir sur blanc, séparés des sujets : ce qui vous intéresse, ce que vous avez déjà vu, ce que vous ne voulez plus voir.
-- Un skill qui collecte, filtre et résume : en sortie, au maximum cinq éléments retenus, chacun avec un résumé de trois lignes, un lien et une phrase de justification.
-- Une trace des éléments écartés avec le motif du rejet.
-- Une page web déployée qui affiche le dernier digest.
-- Un audit de sécurité passé : aucune clé d'accès dans le dépôt.
+- **Il sait ce que vous suivez.** Un fichier d'identité (le `CLAUDE.md`) décrit vos sujets de veille et ce qui vous intéresse précisément dans chacun.
+- **Il connaît ses sources.** Une liste de sources dans un fichier, avec pour chacune son adresse, son sujet et son état : accessible ou non, testée le jour même.
+- **Ses sources répondent vraiment :** au moins trois sources qui répondent et dont il sait récupérer le contenu, pas des adresses notées sans les avoir ouvertes.
+- **Il sait ce qui vous concerne, vous.** Vous écrivez à part ce qui vous fait ouvrir un lien : ce qui vous intéresse, ce que vous avez déjà vu, ce que vous ne voulez plus voir.
+- **Il vous sert cinq éléments, pas cinquante.** Un skill collecte, filtre et résume : en sortie, cinq éléments au maximum, chacun avec un résumé de trois lignes, un lien et une phrase qui dit pourquoi il est retenu.
+- **Il montre ce qu'il a écarté.** Une trace des éléments rejetés avec le motif du rejet, pour que vous puissiez juger son tri.
+- **Il est consultable en ligne.** Une page déployée affiche le dernier digest.
+- **Il est sûr.** Un audit de sécurité confirme qu'aucune clé d'accès n'est partie dans le dépôt.
 
 ### Pour aller plus loin
 
-- Un digest produit chaque jour par tâche planifiée.
-- Une mémoire des éléments déjà vus, pour ne jamais servir deux fois la même chose.
-- Un score de pertinence affiché et réglable.
-- Une source branchée par MCP ou par interface programmatique officielle plutôt que par lecture de page.
-- Un archivage des digests consultable par date.
+- **Il travaille tout seul.** Un digest préparé chaque matin par une tâche planifiée.
+- **Il ne se répète jamais.** Une mémoire des éléments déjà vus, pour ne jamais servir deux fois la même chose.
+- **Il montre ses notes.** Un score de pertinence affiché et réglable.
+- **Il puise à la source officielle.** Une source branchée par MCP ou par une API officielle plutôt que par lecture de page.
+- **Il garde ses archives.** Les anciens digests consultables par date.
+
+> **Avant de vous lancer.** Pour transformer ce cahier des charges en plan d'action, utilisez la méthode d'équipe ([E4](/briques/e4/)) : collez son prompt de cadrage et l'IA joue l'analyste, le chef de produit et l'architecte pour vous sortir un plan ordonné à partir des exigences ci-dessus. Vous validez le plan, puis vous déroulez les étapes.
 
 ## Étape 1 : Le socle commun
 

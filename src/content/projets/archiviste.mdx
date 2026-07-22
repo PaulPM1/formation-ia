@@ -29,25 +29,27 @@ Vous avez un dossier qui contient cent trente fichiers nommés « scan_0042 », 
 
 ## Cahier des charges
 
-### Exigences minimales
+### Le minimum pour un archiviste réussi
 
-- Un dossier de projet suivi par git, avec un `CLAUDE.md` qui décrit le type de dossier à traiter et vos règles de classement.
-- Un dossier de test réel d'au moins trente fichiers hétérogènes (documents, images, PDF), copié et non déplacé : l'original reste intact.
-- Une taxonomie écrite : les catégories, leurs critères de reconnaissance, et la catégorie de secours pour les cas non classables.
-- Une convention de renommage écrite, appliquée à tous les fichiers traités.
-- Un skill qui trie, renomme et extrait, en produisant un journal de toutes ses opérations.
-- Un tableau des informations extraites, exploitable, avec au moins un total ou un décompte par catégorie.
-- Une liste des cas douteux soumis à votre décision au lieu d'être tranchés en silence.
-- Une page web déployée qui montre le résultat du tri et le tableau.
-- Un audit de sécurité passé : aucun document personnel publié par inadvertance.
+- **Il connaît votre façon de classer.** Un fichier d'identité (le `CLAUDE.md`) décrit le type de dossier à traiter et vos règles de classement.
+- **Il travaille sur du vrai vrac, jamais sur l'original.** Un dossier de test réel d'au moins trente fichiers de types variés (documents, images, PDF), copié et non déplacé : votre dossier d'origine reste intact.
+- **Il a une liste de cases où ranger.** Vos catégories écrites, avec ce qui permet de reconnaître chacune et une catégorie de secours pour les fichiers qui n'entrent nulle part.
+- **Il nomme les fichiers de façon régulière.** Une règle de nommage écrite qui dit à quoi ressemble un nom de fichier (par exemple « date, catégorie, objet »), appliquée à tous les fichiers traités.
+- **Il trie, renomme et garde une trace de tout.** Un skill qui trie, renomme et extrait les informations, en tenant un journal de chacune de ses opérations.
+- **Il vous rend un tableau exploitable.** Un tableau des informations extraites, avec au moins un total ou un décompte par catégorie.
+- **Il vous soumet les cas douteux.** Une liste des fichiers incertains portée à votre décision au lieu d'être tranchée en silence.
+- **Il est consultable en ligne.** Une page déployée montre le résultat du tri et le tableau.
+- **Il est sûr.** Un audit de sécurité confirme qu'aucun document personnel n'est parti en ligne par inadvertance.
 
 ### Pour aller plus loin
 
-- Des graphiques dans l'interface : répartition par catégorie, évolution par mois, totaux.
-- La surveillance d'un dossier : tout nouveau fichier déposé est traité automatiquement.
-- Un export du tableau vers un tableur.
-- La détection des doublons et des quasi-doublons.
-- Un mode simulation qui montre ce qui serait fait avant de le faire.
+- **Il vous montre le dossier d'un coup d'œil.** Des graphiques : répartition par catégorie, évolution par mois, totaux.
+- **Il traite les nouveaux fichiers tout seul.** Une surveillance du dossier de dépôt : tout fichier ajouté est traité automatiquement par une tâche planifiée.
+- **Il exporte vers un tableur.** Le tableau récupérable dans un tableur.
+- **Il repère les doublons.** La détection des doublons et des quasi-doublons.
+- **Il vous montre avant d'agir.** Un mode simulation qui annonce ce qui serait fait avant de le faire.
+
+> **Avant de vous lancer.** Pour transformer ce cahier des charges en plan d'action, utilisez la méthode d'équipe ([E4](/briques/e4/)) : collez son prompt de cadrage et l'IA joue l'analyste, le chef de produit et l'architecte pour vous sortir un plan ordonné à partir des exigences ci-dessus. Vous validez le plan, puis vous déroulez les étapes.
 
 ## Étape 1 : Le socle commun
 

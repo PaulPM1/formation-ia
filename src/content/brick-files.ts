@@ -27,6 +27,7 @@ export const EXPECTED_IMPORTED_BRICK_IDS = [
   'e1',
   'e2',
   'e3',
+  'e4',
   'f1',
   'f2',
 ] as const;
