@@ -17,6 +17,7 @@ export const FAMILY_LABELS = {
 export const PRIORITY_LABELS = {
   socle: 'Socle',
   bonus: 'Bonus',
+  facultatif: 'Facultatif',
   'a-trancher': 'À trancher',
 } as const;
 

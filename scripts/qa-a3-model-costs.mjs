@@ -278,6 +278,19 @@ try {
   if (await tierChoices.count() !== 3) failures.push('modèles desktop : trois niveaux de contrôle attendus');
   if (!await page.locator('.model-guide__tier-controls').isVisible()) failures.push('modèles desktop : sélecteur amélioré invisible');
   if (await tierRows.count() !== 3) failures.push('modèles desktop : trois lignes de niveau attendues');
+  const tierControlsCentering = await page.locator('.model-guide__tier-controls').evaluate((controls) => {
+    const labels = [...controls.querySelectorAll('label')];
+    const controlsRect = controls.getBoundingClientRect();
+    const firstRect = labels.at(0)?.getBoundingClientRect();
+    const lastRect = labels.at(-1)?.getBoundingClientRect();
+    const choicesCenter = firstRect && lastRect
+      ? (firstRect.left + lastRect.right) / 2
+      : Number.POSITIVE_INFINITY;
+    return Math.abs(choicesCenter - (controlsRect.left + controlsRect.width / 2));
+  });
+  if (tierControlsCentering > 1) {
+    failures.push(`modèles desktop : le sélecteur est décentré de ${Math.round(tierControlsCentering)} px`);
+  }
   const exigenceRadio = page.locator('input[type="radio"][data-tier-choice][value="exigence"]');
   if (await exigenceRadio.count() !== 1) {
     failures.push('modèles desktop : choix exigence absent');

@@ -32,7 +32,7 @@ export const D_DECKS = [
           returnPath: ['Sauvegarder : brique D2', 'Mettre en ligne : brique D3', 'Protéger : brique D4'],
         } },
         links: [wikiLink('d1', 'concept-durable', 'Le voyage du code')],
-        speaker: { durationMinutes: 2, notes: 'Annoncer le contrat : dix minutes de vocabulaire pour ne plus jamais être perdu ensuite. Relier chaque étape à ce qui a déjà été vu en B4.', transition: 'Chaque terme mérite une image : allons la chercher sur le poste de travail.' },
+        speaker: { durationMinutes: 2, notes: 'Annoncer le contrat : dix minutes de vocabulaire pour ne plus jamais être perdu ensuite. Relier chaque étape à un élément visible du poste de travail.', transition: 'Chaque terme mérite une image : allons la chercher sur le poste de travail.' },
         accessibleDescription: 'Quatre nœuds enchaînent écrire, sauvegarder, mettre en ligne et protéger, avec les termes associés à chaque étape et le plan des briques suivantes.',
       }),
       slide({

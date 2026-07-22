@@ -25,6 +25,14 @@ test('la fusion A2 rejoint directement A3 et ne conserve aucune route A5', () =>
   assert.ok(PRESENTATION_SLIDES.every((slide) => !slide.id.startsWith(obsoletePrefix)));
 });
 
+test('le parcours principal contourne B4 et B4-bis, qui restent navigables comme branche facultative', () => {
+  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b3-mission').next?.id, 'c1-repeat');
+  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'c1-repeat').previous?.id, 'b3-mission');
+  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b4-context').previous?.id, 'b3-mission');
+  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b4-context').next?.id, 'b4-ipmtr');
+  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b4bis-checkpoint').next?.id, 'c1-repeat');
+});
+
 test('le contrôleur ignore les raccourcis lorsque le focus est dans un contrôle', async () => {
   const source = await readFile(
     new URL('../src/scripts/presentation-controller.ts', import.meta.url),
@@ -64,5 +72,8 @@ test('la QA navigateur durable couvre navigation native, 404, plein écran et le
   assert.match(source, /javaScriptEnabled:\s*false/);
   assert.match(source, /aria-pressed/);
   assert.match(source, /fullscreenchange/);
+  assert.match(source, /b3-mission/);
+  assert.match(source, /c1-repeat/);
+  assert.match(source, /optional-label/);
   assert.match(source, /slideRoutes\.length[^\n]*117|117[^\n]*slideRoutes\.length/);
 });

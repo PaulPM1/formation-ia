@@ -51,6 +51,29 @@ test('expose le mode présentation dans la navigation et le workflow de contribu
   assert.match(readme, /nombre de slides/i);
 });
 
+test('signale les briques facultatives par du texte et un traitement grisé sans réduire leur opacité', async () => {
+  const [brickIndex, presenterIndex, presenterShell, globalStyles, presentationStyles] = await Promise.all([
+    read('src/pages/briques/index.astro'),
+    read('src/pages/presenter/index.astro'),
+    read('src/components/presentation/PresenterShell.astro'),
+    read('src/styles/global.css'),
+    read('src/styles/presentation.css'),
+  ]);
+
+  assert.match(brickIndex, /class="brick-card"[^>]*data-priority=/s);
+  assert.match(presenterIndex, /data-optional=/);
+  assert.match(presenterIndex, /Facultatif/);
+  assert.match(presenterShell, /data-optional=/);
+  assert.match(presenterShell, /Facultatif/);
+  assert.match(globalStyles, /\.brick-card\[data-priority="facultatif"\]/);
+  assert.match(presentationStyles, /\[data-optional="true"\]/);
+  assert.match(presentationStyles, /\.presentation-heading__optional/);
+  assert.doesNotMatch(
+    globalStyles.match(/\.brick-card\[data-priority="facultatif"\][\s\S]*?\}/)?.[0] ?? '',
+    /opacity/,
+  );
+});
+
 test('la 404 distingue les URL du présentateur après chargement sans mentir sans JavaScript', async () => {
   const notFound = await read('src/pages/404.astro');
   assert.match(notFound, /data-presenter-recovery/);

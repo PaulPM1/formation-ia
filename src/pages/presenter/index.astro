@@ -29,10 +29,11 @@ const families = Object.entries(
             <h2>{familyLabels[family as keyof typeof familyLabels]}</h2>
             <ol>
               {decks?.map((deck) => (
-                <li>
+                <li data-optional={deck.optional ? 'true' : undefined}>
                   <a href={`/presenter/${deck.brickId}/${deck.slides[0].id}/`}>
                     <span>{deck.brickId.toUpperCase()}</span>
                     {deck.title}
+                    {deck.optional && <small class="optional-label">Facultatif</small>}
                   </a>
                 </li>
               ))}

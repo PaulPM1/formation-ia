@@ -43,6 +43,15 @@ const inspect = async (viewport, mode) => {
   for (const route of routes) {
     await page.goto(`${baseURL}${route}`, { waitUntil: 'load' });
     await page.evaluate(() => document.fonts.ready);
+    const optionalRoute = route.startsWith('/presenter/b4/') || route.startsWith('/presenter/b4-bis/');
+    const optionalMarker = page.locator('.presentation-heading__optional');
+    const optionalMarkerVisible = await optionalMarker.isVisible().catch(() => false);
+    if (optionalRoute && (!optionalMarkerVisible || (await optionalMarker.textContent())?.trim() !== 'Facultatif')) {
+      failures.push(`${mode} ${route} repère Facultatif absent`);
+    }
+    if (!optionalRoute && optionalMarkerVisible) {
+      failures.push(`${mode} ${route} repère Facultatif inattendu`);
+    }
     const result = await page.locator('.presentation-visual').evaluate((visual, { mode, setupLabels }) => {
       const tolerance = 1;
       const isHidden = (element) => {

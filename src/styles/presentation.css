@@ -220,9 +220,30 @@ a {
 }
 
 .presentation-heading > p:first-child {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.8rem;
+  align-items: center;
   grid-column: 1 / -1;
   padding-inline-start: 0.8rem;
   border-inline-start: 0.34rem solid var(--family-accent);
+}
+
+.presentation-heading__optional,
+.optional-label {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 1.5rem;
+  padding-inline: 0.45rem;
+  border: 1px dashed var(--presentation-muted);
+  border-radius: 0.2rem;
+  background: #e4e4e0;
+  color: var(--presentation-ink);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 720;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 .presentation-heading h1,
@@ -1016,6 +1037,16 @@ dialog ol {
   overflow: auto;
 }
 
+#presentation-toc li[data-optional="true"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.65rem;
+  align-items: center;
+  padding: 0.35rem 0.5rem;
+  border-inline-start: 0.25rem solid #9a9d98;
+  background: #efefeb;
+}
+
 dialog button,
 .presentation-start {
   display: inline-flex;
@@ -1079,12 +1110,18 @@ dialog button,
 
 .presentation-family-list a {
   display: grid;
-  grid-template-columns: 3rem 1fr;
+  grid-template-columns: 3rem minmax(0, 1fr) auto;
   gap: 1rem;
   padding-block: 0.75rem;
   border-block-end: 1px solid color-mix(in srgb, var(--presentation-line), transparent 45%);
   font-weight: 650;
   text-decoration: none;
+}
+
+.presentation-family-list li[data-optional="true"] a {
+  padding-inline: 0.65rem;
+  border-inline-start: 0.25rem solid #9a9d98;
+  background: #efefeb;
 }
 
 .presentation-family-list a:hover {

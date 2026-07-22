@@ -43,6 +43,7 @@ export type PresentationDeck = {
   /** Position pédagogique, contiguë à partir de 1 et identique à l'index du tableau + 1. */
   order: number;
   title: string;
+  optional?: boolean;
   slides: PresentationSlide[];
 };
 
@@ -50,6 +51,7 @@ export type RoutedSlide = PresentationSlide & {
   brickId: string;
   family: PresentationFamily;
   brickTitle: string;
+  optional: boolean;
   route: string;
   absoluteIndex: number;
   total: number;

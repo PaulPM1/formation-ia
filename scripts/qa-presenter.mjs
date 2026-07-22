@@ -100,6 +100,33 @@ try {
   const pageErrors = [];
   controllerPage.on('pageerror', (error) => pageErrors.push(error.message));
 
+  await controllerPage.goto(`${baseURL}/presenter/`, { waitUntil: 'load' });
+  const optionalLabels = controllerPage.locator('.presentation-family-list [data-optional="true"] .optional-label');
+  if (await optionalLabels.count() !== 2) failures.push('sommaire présentateur : deux briques facultatives attendues');
+  for (let index = 0; index < await optionalLabels.count(); index += 1) {
+    if ((await optionalLabels.nth(index).textContent())?.trim() !== 'Facultatif') {
+      failures.push(`sommaire présentateur : libellé facultatif incorrect à l’index ${index}`);
+    }
+  }
+
+  await controllerPage.goto(`${baseURL}/presenter/b3/b3-mission/`, { waitUntil: 'load' });
+  const requiredNext = controllerPage.locator('[data-next]');
+  if (await requiredNext.getAttribute('href') !== '/presenter/c1/c1-repeat/') {
+    failures.push('parcours principal : B3 ne pointe pas directement vers C1');
+  }
+  await requiredNext.click();
+  await controllerPage.waitForURL('**/presenter/c1/c1-repeat/');
+  const requiredPrevious = controllerPage.locator('[data-previous]');
+  if (await requiredPrevious.getAttribute('href') !== '/presenter/b3/b3-mission/') {
+    failures.push('parcours principal : C1 ne revient pas directement vers B3');
+  }
+
+  await controllerPage.goto(`${baseURL}/presenter/b4/b4-context/`, { waitUntil: 'load' });
+  const optionalHeading = controllerPage.locator('.presentation-heading__optional');
+  if (!await optionalHeading.isVisible() || (await optionalHeading.textContent())?.trim() !== 'Facultatif') {
+    failures.push('branche facultative : repère de slide absent sur B4');
+  }
+
   await controllerPage.goto(`${baseURL}/presenter/a4/a4-mission/`, { waitUntil: 'load' });
   const summary = controllerPage.locator('.mission-board__correction summary');
   const details = controllerPage.locator('.mission-board__correction');

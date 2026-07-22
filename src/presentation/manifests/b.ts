@@ -408,7 +408,7 @@ export const B_DECKS = [
     ],
   },
   {
-    brickId: 'b4', family: 'b', order: 9, title: 'Claude Code', slides: [
+    brickId: 'b4', family: 'b', order: 9, title: 'Claude Code', optional: true, slides: [
       slide({
         id: 'b4-context', role: 'opening',
         claim: "Claude Code agit dans le contexte réel d'un dossier.",
@@ -522,7 +522,7 @@ export const B_DECKS = [
     ],
   },
   {
-    brickId: 'b4-bis', family: 'b', order: 10, title: 'Setup VS Code', slides: [
+    brickId: 'b4-bis', family: 'b', order: 10, title: 'Setup VS Code', optional: true, slides: [
       slide({
         id: 'b4bis-workspace', role: 'opening',
         claim: 'Un workspace est un dossier ouvert avec son contexte.',
