@@ -6,6 +6,8 @@ export const PROJET_IDS = [
   'radar',
   'archiviste',
   'portfolio',
+  'chasseur',
+  'memoire',
 ] as const;
 
 export const PROJET_DIFFICULTIES = [
@@ -53,6 +55,8 @@ export const projetFrontmatterSchema = z
     /** À quoi ça sert après le week-end. */
     afterwards: z.string().trim().min(1),
     difficulty: z.enum(PROJET_DIFFICULTIES),
+    /** Retiré du catalogue et du site, mais conservé dans le dépôt. */
+    hidden: z.boolean().default(false),
     /** Format d'équipe conseillé, par exemple « Seul ou à deux ». */
     teamHint: z.string().trim().min(1),
     bricks: z.array(z.enum(VALID_BRICK_IDS)).min(1),

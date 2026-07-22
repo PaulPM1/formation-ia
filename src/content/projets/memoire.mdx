@@ -1,0 +1,164 @@
+---
+id: memoire
+order: 7
+title: "Le directeur de mémoire"
+tagline: "Il tient votre bibliographie, traque les affirmations sans source et relit vos chapitres comme un jury."
+deliverable: "Une page en ligne qui montre l'état du document : chapitres, taux d'affirmations sourcées, points faibles restants."
+afterwards: "Vous le gardez pour chaque rapport, dossier ou mémoire des années qui viennent : le document grandit sous contrôle et l'historique git raconte son écriture."
+difficulty: ambitieux
+teamHint: "Seul, chacun son document, mais l'échange de relectures entre binômes fonctionne très bien"
+bricks:
+  - b0
+  - b1
+  - b4-bis
+  - d1
+  - d2
+  - d2-bis
+  - e1
+  - e2
+  - c1
+  - b2
+  - d3
+  - d4
+  - a4
+  - e3
+---
+
+Vous venez de finir un chapitre. Vous lancez la passe de vérification, et le verdict tombe : trois affirmations sans source, une citation qui ne dit pas ce que vous lui faites dire, et une promesse de l'introduction que ce chapitre devait tenir et ne tient pas. Ce n'est pas une IA qui écrit à votre place : c'est un directeur de mémoire qui a lu toutes vos sources, se souvient de tout, et vous relit comme le fera le jury. Le texte reste le vôtre, phrase par phrase. Ce qui change, c'est que plus rien d'invérifiable ne passe.
+
+## Cahier des charges
+
+### Exigences minimales
+
+- Un dossier de projet suivi par git, avec un `CLAUDE.md` qui décrit le document, son lecteur, l'échéance et les règles du jeu.
+- La règle fondatrice, écrite noir sur blanc : le directeur ne rédige pas le document à votre place ; il questionne, vérifie, relit et conteste.
+- Le document découpé en chapitres, un fichier par chapitre, versionné : l'historique git est l'historique de l'écriture.
+- Une bibliothèque de sources : un fichier par source, avec la référence complète, vos notes de lecture et les citations exactes que vous comptez utiliser.
+- Un skill de vérification qui extrait les affirmations d'un chapitre et classe chacune : couverte par une source (laquelle), orpheline, ou opinion assumée.
+- Un skill de relecture qui joue le jury : les questions dures qu'un lecteur exigeant poserait sur le chapitre.
+- Une page web déployée qui montre l'état du document : chapitres, avancement, taux d'affirmations sourcées.
+- Un audit de sécurité passé : aucun secret dans le dépôt, et un dépôt privé si le document n'est pas destiné à être public.
+
+### Pour aller plus loin
+
+- Le suivi des promesses : ce que l'introduction et le plan annoncent, confronté à ce que les chapitres tiennent réellement.
+- La chasse aux sources suspectes : référence introuvable, citation que le texte source ne contient pas.
+- Un export de la bibliographie au format exigé par votre établissement.
+- Une soutenance blanche : le jury simulé interroge sur tout le document, et vous préparez les réponses.
+- Un rapport d'avancement périodique, généré par une tâche planifiée, qui compare l'état du document à l'échéance.
+
+## Étape 1 : Le socle commun
+
+<p class="step-meta"><span class="step-when">Vendredi après-midi</span><span class="step-tag">Socle commun</span></p>
+
+Vous faites cette étape pendant la séance de socle commun du vendredi après-midi, avec tout le groupe.
+
+**Objectif.** Donner à votre directeur un lieu, un historique et une identité qui connaît votre document et son exigence.
+
+**Ce que vous faites.** Créez un dossier de projet, ouvrez-le dans Claude Code, faites-y initialiser git. Puis inversez les rôles : demandez à Claude de vous interviewer avant d'écrire quoi que ce soit. Dix questions sur le document (rapport de stage, dossier, mémoire), le sujet, qui le lira et avec quel niveau d'exigence, l'échéance, les consignes de votre établissement, et le point sur lequel vous vous savez fragile (les sources, la structure, la régularité). Il rédige le `CLAUDE.md` à partir de vos réponses, vous relisez et corrigez. Inscrivez-y la règle fondatrice : il ne rédige jamais un passage du document à votre place ; quand vous le lui demandez, il refuse et propose autre chose (des questions, un plan, une contre-lecture).
+
+**Preuve de réussite.** Dans une conversation neuve, « que sais-tu de mon document et de son échéance ? » donne trois informations exactes. « Écris-moi l'introduction » reçoit un refus argumenté suivi d'une proposition d'aide qui respecte la règle. `git log` affiche votre premier commit.
+
+**Briques :** [B0](/briques/b0/), [B1](/briques/b1/), [B4-bis](/briques/b4-bis/), [D1](/briques/d1/), [D2](/briques/d2/).
+
+<div class="hint-stack">
+  <p class="hint-label">Si vous bloquez</p>
+  <details class="hint"><summary>Indice</summary><p>Relisez votre CLAUDE.md : si la règle « tu ne rédiges pas à ma place » n'y est pas écrite, elle n'existe pas. Et sans elle, ce projet devient exactement ce que votre établissement redoute.</p></details>
+  <details class="hint"><summary>Piste</summary><p>La règle vaut d'être précise : interdire la rédaction du document n'interdit pas tout. Reformuler une de vos phrases que vous lui soumettez, proposer un plan, formuler des questions : listez ce qui est permis et ce qui ne l'est pas, c'est cette frontière qui fait la valeur du projet, et c'est vous qui la fixez.</p></details>
+  <details class="hint"><summary>Le prompt de secours</summary><p class="hint-prompt">Tu vas écrire le fichier CLAUDE.md de mon directeur de mémoire. Ne rédige rien avant d'avoir posé tes questions. Pose-moi dix questions, une par une, sur le type de document que je dois produire, son sujet, la personne ou le jury qui le lira, le niveau d'exigence attendu, l'échéance, les consignes de forme de mon établissement, mon rythme de travail réel et le point sur lequel je me sais le plus fragile. Quand j'ai fini de répondre, propose-moi un CLAUDE.md structuré en sections courtes, avec une section Règles qui contient obligatoirement : tu ne rédiges jamais un passage de mon document à ma place, même si je te le demande ; quand je te le demande, tu refuses et tu proposes une aide qui me laisse l'écriture (questions, plan, contre-lecture) ; toute affirmation que je te soumets sans source doit être signalée, jamais complétée par une source inventée. Attends ma validation avant d'écrire le fichier sur le disque.</p></details>
+</div>
+
+## Étape 2 : La matière
+
+<p class="step-meta"><span class="step-when">Développement libre</span><span class="step-tag">Commun à tous les projets</span></p>
+
+**Objectif.** Le document découpé en chapitres versionnés, et une bibliothèque de sources qui a vraiment été lue.
+
+**Ce que vous faites.** Décidez de l'arborescence : un dossier pour les chapitres (un fichier chacun, même vides pour l'instant), un pour les sources, un pour les passes de vérification à venir. Créez la bibliothèque : un fichier par source, avec la référence complète, trois lignes sur ce qu'elle dit vraiment, et les citations exactes que vous comptez utiliser, page à l'appui. Chargez au moins trois sources réelles et un chapitre en l'état, même brouillon : le directeur travaille sur du vrai texte, pas sur une intention. Fixez la règle d'entrée : aucune source n'entre dans la bibliothèque sans que vous l'ayez ouverte. Terminez en poussant le dépôt sur GitHub, privé.
+
+**Preuve de réussite.** Vous demandez « quelles sources couvrent tel aspect de mon sujet ? » et la réponse cite les bons fichiers. Vous demandez « où ranges-tu une nouvelle source ? » et il donne le chemin exact en citant votre règle. `git log` montre un commit par ajout, pas un bloc unique.
+
+**Briques :** [E1](/briques/e1/), [E2](/briques/e2/), [D2-bis](/briques/d2-bis/).
+
+<div class="hint-stack">
+  <p class="hint-label">Si vous bloquez</p>
+  <details class="hint"><summary>Indice</summary><p>Ouvrez un fichier de source : contient-il ce que la source dit, ou ce que vous espérez qu'elle dit ? Une bibliothèque remplie de références non lues est le chemin le plus court vers la citation qui ne dit pas ce qu'on lui fait dire.</p></details>
+  <details class="hint"><summary>Piste</summary><p>Pour chaque source, faites travailler Claude en contrôleur, pas en résumeur : donnez-lui le passage que vous comptez citer et demandez ce que le passage dit exactement, ce qu'il ne dit pas, et ce qu'on lui fait souvent dire à tort. Vos notes de lecture sortent plus solides de ce dialogue que d'un résumé automatique.</p></details>
+  <details class="hint"><summary>Le prompt de secours</summary><p class="hint-prompt">On va construire la bibliothèque de sources de mon document. Propose-moi une arborescence : un dossier chapitres avec un fichier par chapitre de mon plan, un dossier sources avec un fichier par source, un dossier verifications vide pour plus tard. Pour chaque source que je te donne, crée un fichier avec la référence complète, un champ « ce que la source dit » en trois lignes maximum, un champ « ce que la source ne dit pas » et la liste des citations exactes que je compte utiliser avec leur page. Règle absolue : tu ne remplis un fichier de source qu'à partir de ce que je te donne de la source elle-même, jamais de ta connaissance générale ; si je te demande de compléter une référence que tu ne peux pas vérifier, tu la marques « à vérifier » au lieu de l'inventer. Montre-moi la structure avant d'écrire les fichiers.</p></details>
+</div>
+
+## Étape 3 : Le savoir-faire
+
+<p class="step-meta"><span class="step-when">Développement libre</span><span class="step-tag">Commun à tous les projets</span></p>
+
+**Objectif.** Deux skills : la passe de vérification qui trace chaque affirmation, et la relecture qui joue le jury.
+
+**Ce que vous faites.** Créez d'abord le skill de vérification : il prend un chapitre, en extrait les affirmations une par une, et classe chacune : couverte (avec la source et la citation qui la couvrent), orpheline (aucune source de la bibliothèque ne la soutient), ou opinion assumée (c'est votre analyse, et c'est votre droit, à condition que ce soit présenté comme tel). La sortie est un fichier de vérification daté, rangé dans le dossier prévu. Interdisez-lui une chose : proposer une source extérieure à la bibliothèque pour boucher un trou. Créez ensuite le skill jury : cinq questions dures sur le chapitre, du genre qu'on pose en soutenance : la faille du raisonnement, l'objection évidente, le « pourquoi n'avez-vous pas traité ceci ». Lancez les deux sur votre chapitre réel et corrigez les instructions des skills tant que le classement des affirmations contient des erreurs.
+
+**Preuve de réussite.** Sur votre chapitre, la passe de vérification classe au moins dix affirmations et vous êtes d'accord avec chaque classement après relecture. Glissez volontairement une affirmation fausse et non sourcée dans le chapitre : elle ressort orpheline, pas couverte.
+
+**Briques :** [C1](/briques/c1/), [E2](/briques/e2/), [A4](/briques/a4/).
+
+<div class="hint-stack">
+  <p class="hint-label">Si vous bloquez</p>
+  <details class="hint"><summary>Indice</summary><p>Regardez comment le skill traite une affirmation orpheline : est-ce qu'il la signale, ou est-ce qu'il lui trouve gentiment une source plausible ? Le second comportement est une hallucination de bibliographie, exactement ce que ce projet existe pour empêcher.</p></details>
+  <details class="hint"><summary>Piste</summary><p>Le piège de ce skill est la complaisance : le modèle préfère valider vos phrases que les contester. Donnez-lui dans les instructions deux exemples classés à la main par vous : une affirmation vraiment couverte avec sa citation, et une affirmation qui ressemble à du sourcé mais ne l'est pas. C'est le contre-exemple qui apprend la sévérité.</p></details>
+  <details class="hint"><summary>Le prompt de secours</summary><p class="hint-prompt">Crée deux skills dans mon projet. Le premier, nommé verif : entrée, un chapitre ; sortie, un fichier daté dans le dossier verifications qui liste chaque affirmation du chapitre et la classe en trois catégories : couverte, avec le fichier de source et la citation exacte qui la couvre ; orpheline, si aucune source de ma bibliothèque ne la soutient ; opinion, si c'est une analyse personnelle présentée comme telle. Règles absolues : tu ne cites que des sources présentes dans mon dossier sources, tu ne proposes jamais de source extérieure pour couvrir une affirmation orpheline, et dans le doute tu classes orpheline. Le second, nommé jury : entrée, un chapitre ; sortie, cinq questions exigeantes qu'un jury poserait, chacune visant une vraie faiblesse du texte, avec l'endroit précis du chapitre qu'elle vise. Lance les deux sur mon chapitre le plus avancé.</p></details>
+</div>
+
+## Étape 4 : Le visage
+
+<p class="step-meta"><span class="step-when">Développement libre</span><span class="step-tag">Commun à tous les projets</span></p>
+
+**Objectif.** Une page en ligne qui montre l'état du document d'un coup d'œil.
+
+**Ce que vous faites.** Faites construire une page qui lit les chapitres et les fichiers de vérification, et affiche le tableau de bord : la liste des chapitres avec leur longueur, le taux d'affirmations sourcées de chacun (calculé depuis la dernière passe de vérification), la date de cette passe, et la liste des points faibles ouverts. Regardez-la en local, corrigez ce qui gêne, puis déployez. À l'audit de sécurité, une question de plus qu'ailleurs : le contenu du document lui-même est-il publiable ? Un mémoire en cours ne l'est généralement pas. La bonne réponse est souvent : dépôt privé, et une page qui montre l'état d'avancement sans montrer le texte.
+
+**Preuve de réussite.** Une adresse s'ouvre sur un téléphone et donne, pour chaque chapitre, son taux d'affirmations sourcées et la date de sa dernière vérification. Le texte du document n'apparaît nulle part si vous avez décidé qu'il ne devait pas apparaître. L'audit ne remonte aucun secret.
+
+**Briques :** [B2](/briques/b2/), [D3](/briques/d3/), [D4](/briques/d4/).
+
+<div class="hint-stack">
+  <p class="hint-label">Si vous bloquez</p>
+  <details class="hint"><summary>Indice</summary><p>D'où la page tire-t-elle le taux d'affirmations sourcées ? Si elle doit relire les chapitres à chaque affichage, vous mélangez deux métiers. Quelqu'un a déjà fait ce calcul : qui, et où a-t-il rangé le résultat ?</p></details>
+  <details class="hint"><summary>Piste</summary><p>La page ne calcule rien : elle lit les fichiers de vérification produits par le skill de l'étape 3. C'est la même séparation que dans les autres projets : le skill fabrique, la page affiche. Si le dossier verifications est bien tenu, la page est presque triviale.</p></details>
+  <details class="hint"><summary>Le prompt de secours</summary><p class="hint-prompt">Construis une page web statique pour mon directeur de mémoire. Elle lit le dossier chapitres et le dossier verifications, et affiche pour chaque chapitre : son titre, sa longueur en mots, le taux d'affirmations couvertes calculé depuis son dernier fichier de vérification, la date de cette vérification et le nombre d'affirmations orphelines restantes. En haut, une synthèse : avancement global et jours restants avant mon échéance. Contraintes : le texte des chapitres ne doit jamais être affiché ni embarqué dans la page, lisible sur téléphone, aucune dépendance externe. Lance-la en local et montre-moi le résultat, puis liste ce qui partirait sur le dépôt et signale ce qui ne devrait pas y aller.</p></details>
+</div>
+
+## Étape 5 : La traçabilité
+
+<p class="step-meta"><span class="step-when">Développement libre</span><span class="step-tag">Propre au projet</span></p>
+
+**Objectif.** Le cycle complet : on écrit, on vérifie, on corrige, et le taux monte de passe en passe.
+
+**Ce que vous faites.** Faites vivre le cycle sur un vrai chapitre. Écrivez ou complétez un passage, lancez la passe de vérification, prenez la liste des affirmations orphelines et traitez-les une par une : soit vous trouvez la source et vous l'ajoutez à la bibliothèque (après l'avoir ouverte), soit vous reformulez l'affirmation en opinion assumée, soit vous la supprimez. Relancez la passe : le taux doit monter, et l'historique des fichiers de vérification doit garder la trace des deux passes. Un commit par cycle, avec un message qui dit ce qui a été traité : dans trois mois, `git log` racontera comment le document s'est solidifié.
+
+**Preuve de réussite.** Deux fichiers de vérification datés existent pour le même chapitre, le second avec un taux supérieur au premier, et vous savez expliquer chaque affirmation qui a changé de catégorie. `git log` montre le cycle en commits distincts.
+
+**Briques :** [E2](/briques/e2/), [E3](/briques/e3/).
+
+<div class="hint-stack">
+  <p class="hint-label">Si vous bloquez</p>
+  <details class="hint"><summary>Indice</summary><p>Pour une affirmation orpheline, combien d'issues possibles ? Si votre seule réponse est « chercher une source qui la confirme », relisez-la : certaines affirmations ne méritent pas une source, elles méritent d'être reformulées ou supprimées.</p></details>
+  <details class="hint"><summary>Piste</summary><p>Traitez les orphelines par lot avec Claude en contradicteur : pour chacune, demandez-lui trois options (sourcer, assumer en opinion, supprimer) avec son avis argumenté, et décidez vous-même. C'est le principe du TP : il prémâche, vous tranchez. La tentation à refuser : lui demander de trouver la source, c'est l'étape où les bibliographies inventées naissent.</p></details>
+  <details class="hint"><summary>Le prompt de secours</summary><p class="hint-prompt">Voici le dernier fichier de vérification de mon chapitre. Pour chaque affirmation classée orpheline, présente-moi trois options : la sourcer, si une source de ma bibliothèque peut réellement la couvrir, en citant le passage exact ; la requalifier en opinion assumée, avec la reformulation que ça demanderait ; la supprimer, si elle n'apporte rien au raisonnement. Donne ton avis argumenté pour chacune mais attends ma décision, une affirmation à la fois. Interdiction de me proposer une source qui n'est pas dans mon dossier sources. Quand j'ai tout tranché, applique mes décisions au chapitre, relance la passe de vérification et montre-moi l'évolution du taux entre les deux passes.</p></details>
+</div>
+
+## Étape 6 : La soutenance blanche
+
+<p class="step-meta"><span class="step-when">Développement libre</span><span class="step-tag">Propre au projet</span></p>
+
+**Objectif.** Affronter le jury simulé, ou vérifier que le document tient ses promesses.
+
+**Ce que vous faites.** Deux chemins, choisissez selon le temps qu'il vous reste. Le premier : la soutenance blanche. Le skill jury passe à l'échelle du document entier : il vous interroge à l'oral, une question à la fois, vous répondez réellement, et il évalue chaque réponse : solide, fragile, contradictoire avec le texte. Le bilan final liste les questions où vous avez été en difficulté et les passages du document à renforcer. Le second : le suivi des promesses. Un skill qui lit l'introduction et le plan, en extrait tout ce qui est annoncé au lecteur, puis parcourt les chapitres et rend le verdict : promesse tenue (où), partiellement tenue, ou abandonnée en route.
+
+**Preuve de réussite.** Pour la soutenance : une session de dix questions va au bout, et au moins une réponse jugée fragile vous a réellement appris quelque chose sur votre document. Pour les promesses : chaque annonce de l'introduction a un verdict, et vous avez trouvé au moins une promesse non tenue que vous ne soupçonniez pas.
+
+**Briques :** [B2](/briques/b2/), [E3](/briques/e3/).
+
+<div class="hint-stack">
+  <p class="hint-label">Si vous bloquez</p>
+  <details class="hint"><summary>Indice</summary><p>Si toutes vos réponses sont jugées solides, qui évalue : un jury ou un supporter ? Un vrai jury trouve toujours au moins une faille, c'est son métier. Le vôtre est d'ajuster le skill jusqu'à ce qu'il fasse le sien.</p></details>
+  <details class="hint"><summary>Piste</summary><p>Donnez au jury simulé ce qu'un vrai jury aurait : les fichiers de vérification. Les affirmations classées opinion et les anciennes orphelines sont ses meilleures munitions, c'est là qu'il doit creuser en priorité. Un jury qui connaît vos points faibles pose de meilleures questions qu'un jury qui improvise.</p></details>
+  <details class="hint"><summary>Le prompt de secours</summary><p class="hint-prompt">On passe en soutenance blanche. Lis mon document entier et mes fichiers de vérification, puis interroge-moi comme un jury exigeant : dix questions, une à la fois, en attendant ma réponse à chaque fois. Cible en priorité les affirmations classées opinion, les passages qui ont été orphelins et les enchaînements de raisonnement les plus fragiles. Après chaque réponse, évalue-la : solide, fragile ou contradictoire avec ce que le document affirme, en citant le passage concerné. À la fin, donne-moi le bilan : les trois questions où j'ai été le moins convaincant, et pour chacune le passage du document à renforcer avant la vraie soutenance.</p></details>
+</div>
