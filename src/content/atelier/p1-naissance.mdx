@@ -1,0 +1,227 @@
+---
+id: p1
+order: 1
+title: "Le socle commun"
+subtitle: "Deux heures pour tout mettre en place : les outils, le dossier versionné, les comptes, le projet choisi et son identité écrite."
+durationLabel: "Vendredi après-midi"
+budgetMinutes: 120
+organe: "Décollage"
+bricks:
+  - b0
+  - b1
+  - b4-bis
+  - d1
+  - d2
+  - d2-bis
+goal: "Passer d'une machine vide à un projet prêt à être développé : outils qui répondent, dossier suivi par git, comptes en place, sujet choisi et identité écrite."
+outcome: "Un dossier de projet suivi par git et présent sur GitHub, ouvert dans Claude Code, avec un CLAUDE.md rédigé par interview et un premier commit envoyé."
+prideCriterion: "Vous ouvrez une conversation neuve et Claude sait déjà sur quoi vous travaillez, sans que vous le lui rappeliez."
+kit: "Le dépôt modèle à cloner (structure, CLAUDE.md, .gitignore, prompts) et le prompt d'interview qui rédige votre identité de projet."
+---
+
+Cette séance est la même pour tout le monde, quel que soit le projet choisi. Deux heures pour décoller : les outils répondent, le dossier existe, l'historique est ouvert, les comptes sont prêts, le sujet est arrêté et son identité est écrite. Vous ne rédigez rien à la main : vous répondez, vous choisissez, vous corrigez.
+
+Ensuite, tout le week-end est à vous pour développer votre projet.
+
+## Tâche 1 : les outils en place
+
+Vérifiez que votre environnement de travail répond : Claude installé et connecté, VS Code ouvert, le terminal accessible, Claude Code opérationnel. C'est le contenu des briques B0 et B4-bis, appliqué sur votre machine.
+
+Installez aussi l'**extension Claude Code** dans VS Code : cherchez « Claude Code » dans la vue Extensions, installez l'extension publiée par Anthropic, puis connectez-vous avec votre compte Claude. C'est la manière recommandée de travailler dans l'éditeur, et elle vous évitera de faire des allers-retours avec le terminal tout le week-end. Vous y verrez chaque modification proposée en comparaison côte à côte, avec accepter ou refuser, et vous pourrez relire un plan avant qu'il ne s'exécute.
+
+**But :** partir d'un poste qui fonctionne, pour que la suite ne soit jamais un problème d'installation.
+
+<ul class="task-checklist" role="list">
+  <li><label><input type="checkbox" /> Vérifier que Claude est installé et que votre compte est connecté</label></li>
+  <li><label><input type="checkbox" /> Ouvrir VS Code et repérer le terminal intégré</label></li>
+  <li><label><input type="checkbox" /> Installer l'extension Claude Code et s'y connecter</label></li>
+  <li><label><input type="checkbox" /> Poser une première question dans le panneau Claude et obtenir une réponse</label></li>
+</ul>
+
+**Preuve :** vous posez une question à Claude depuis VS Code et vous obtenez une réponse, sans quitter l'éditeur.
+
+<aside class="task-why">
+  <p><strong>Pourquoi ça compte.</strong> Un outil qui hésite vous coûte du temps à chaque heure du week-end. Régler l'installation maintenant, à froid, vaut mieux que la régler samedi après-midi au milieu d'une fonctionnalité.</p>
+</aside>
+
+## Tâche 2 : les comptes prêts
+
+Deux comptes gratuits suffisent pour tout le week-end. **GitHub** conserve votre projet en ligne, **Vercel** le publiera plus tard sur une vraie adresse web.
+
+**But :** avoir tous les accès en place avant d'en avoir besoin.
+
+### Votre compte GitHub
+
+Ouvrez [github.com/signup](https://github.com/signup) pour créer un compte, ou [github.com/login](https://github.com/login) si vous en avez déjà un. Choisissez un nom d'utilisateur que vous assumerez : il est public et durable. Le code de vérification tarde parfois et atterrit dans les indésirables : lancez cette étape en premier et passez à la suite pendant l'attente.
+
+### Prouver que ce compte est le vôtre
+
+Votre machine et votre compte GitHub ne se connaissent pas encore. Tant que ce lien n'existe pas, tout envoi de code sera refusé. Vous n'avez rien à configurer vous-même : Claude s'en charge, vous validez.
+
+Collez ceci dans Claude :
+
+```text
+Configure l'authentification GitHub sur cette machine et guide-moi pas à pas.
+Dis-moi avant chaque étape ce qui va se passer et sur quoi je dois cliquer.
+Je n'ai jamais fait cela.
+```
+
+<details class="hint"><summary>Ce qui va se passer, et quoi faire</summary><p>Une page GitHub s'ouvre dans votre navigateur et vous demande d'autoriser l'accès depuis votre ordinateur. Vous cliquez sur le bouton d'autorisation, vous revenez dans VS Code, et c'est terminé. Si une fenêtre nommée « Git Credential Manager » apparaît sur Windows, c'est le gestionnaire officiel : choisissez la connexion par navigateur. Si rien ne s'ouvre, demandez à Claude de vous donner l'adresse à ouvrir vous-même.</p></details>
+
+### Votre compte Vercel
+
+Ouvrez [vercel.com/signup](https://vercel.com/signup) et choisissez **Continue with GitHub**. Vercel s'appuie sur le compte que vous venez de créer : aucun mot de passe supplémentaire.
+
+<details class="hint"><summary>Guide pas à pas</summary><p>Après avoir cliqué sur Continue with GitHub, une page vous demande d'autoriser Vercel à accéder à vos dépôts. Acceptez : sans cette autorisation, Vercel ne verra pas votre projet le jour où vous voudrez le publier. Si vous avez cliqué trop vite et refusé, déconnectez-vous de Vercel et recommencez.</p></details>
+
+<ul class="task-checklist" role="list">
+  <li><label><input type="checkbox" /> Créer ou retrouver votre compte GitHub, et valider l'email</label></li>
+  <li><label><input type="checkbox" /> Faire configurer l'authentification par Claude et cliquer sur Autoriser</label></li>
+  <li><label><input type="checkbox" /> Créer un compte Vercel avec Continue with GitHub</label></li>
+</ul>
+
+**Preuve :** vous êtes connecté sur github.com, et votre tableau de bord Vercel affiche votre compte GitHub.
+
+<aside class="task-why">
+  <p><strong>Pourquoi ça compte.</strong> Créer un compte et régler une authentification prend dix minutes quand on est calme, et une heure quand on veut publier dans l'urgence. Ces dix minutes-là se prennent maintenant, et la tâche suivante en dépend.</p>
+</aside>
+
+## Tâche 3 : votre dépôt de projet
+
+Deux chemins mènent au même résultat : un dossier de projet sur votre machine, suivi par git, relié à un dépôt GitHub qui vous appartient. Prenez la voie rapide si c'est votre premier projet.
+
+Trois mots à poser avant de commencer, ils reviendront tout le week-end. Un **dépôt** (ou *repository*, souvent abrégé *repo*) est le dossier de votre projet tel que GitHub le conserve en ligne. Un **modèle** (*template*) est un dépôt prêt à être recopié : vous ne travaillez jamais dedans, vous en fabriquez votre propre exemplaire. **Cloner**, c'est télécharger votre dépôt sur votre ordinateur pour pouvoir y travailler.
+
+### Voie rapide : partir du kit fourni
+
+Le kit contient déjà la structure de dossiers, un `CLAUDE.md` à personnaliser, un `.gitignore` qui protège vos secrets et les prompts du week-end. Vous n'écrivez rien : vous recopiez, vous ouvrez, vous adaptez.
+
+<p class="kit-link"><strong>Le dépôt modèle :</strong> <a href="https://github.com/">[À COMPLÉTER : adresse du dépôt modèle]</a></p>
+
+**1. Fabriquez votre exemplaire.** Ouvrez le lien ci-dessus. En haut de la page, un bouton vert **Use this template** propose *Create a new repository*. Cliquez dessus : GitHub crée une copie du modèle sur votre compte. Donnez-lui un nom court, et cochez **Private** si votre matière est personnelle. Cette copie vous appartient, vous pouvez tout y casser.
+
+<details class="hint"><summary>Je ne trouve pas le bouton</summary><p>Le bouton n'apparaît que si vous êtes connecté à GitHub : vérifiez votre photo de profil en haut à droite. Il se trouve en haut à droite de la liste des fichiers, à côté des boutons Watch et Fork. Si vous ne le voyez toujours pas, utilisez le bouton vert <strong>Code</strong> puis <strong>Download ZIP</strong> et prévenez un formateur : vous continuerez par la voie complète.</p></details>
+
+**2. Récupérez l'adresse.** Vous êtes maintenant sur la page de VOTRE dépôt, pas celle du modèle : le nom en haut de page est le vôtre. Copiez l'adresse affichée dans la barre du navigateur.
+
+**3. Faites-le télécharger par Claude.** Collez ceci dans Claude, en remplaçant l'adresse par la vôtre :
+
+```text
+Clone ce dépôt dans mon dossier Documents, puis ouvre le dossier obtenu :
+[collez ici l'adresse de votre dépôt]
+Explique-moi ce que tu fais et ce que contient le dossier une fois terminé.
+```
+
+**4. Ouvrez le dossier dans VS Code** et parcourez-le avant de toucher à quoi que ce soit.
+
+<details class="hint"><summary>Qu'est-ce que contient ce dossier ?</summary><p>Vous y trouverez un <code>README.md</code> qui explique le kit, deux dossiers <code>debutant</code> et <code>avance</code> qui sont les deux variantes du même squelette, et dans chacun : un <code>CLAUDE.md</code> qui portera l'identité de votre projet, un <code>.gitignore</code> qui empêche vos secrets de partir en ligne, un dossier <code>prompts</code> avec l'interview et les prompts de sécurité, et trois dossiers vides <code>matiere</code>, <code>sorties</code> et <code>notes</code>. Si un fichier vous intrigue, demandez : « Explique-moi à quoi sert ce fichier, comme à quelqu'un qui n'a jamais codé. »</p></details>
+
+**5. Choisissez votre variante.** `debutant` si vous voulez partir de fichiers déjà rédigés et les adapter, `avance` si vous préférez écrire le contenu vous-même. Puis demandez : « Remonte le contenu du dossier `debutant` à la racine du projet et supprime les deux dossiers de variantes. »
+
+<ul class="task-checklist" role="list">
+  <li><label><input type="checkbox" /> Créer votre exemplaire avec <strong>Use this template</strong></label></li>
+  <li><label><input type="checkbox" /> Copier l'adresse de votre dépôt</label></li>
+  <li><label><input type="checkbox" /> Faire cloner le dépôt par Claude</label></li>
+  <li><label><input type="checkbox" /> Ouvrir le dossier dans VS Code et parcourir le squelette</label></li>
+  <li><label><input type="checkbox" /> Choisir sa variante et faire ranger le dossier par Claude</label></li>
+</ul>
+
+### Voie complète : tout construire soi-même
+
+À prendre si vous voulez comprendre chaque geste, ou si vous avez déjà l'habitude. Vous obtiendrez la même chose, en le fabriquant.
+
+1. Créez le dossier de votre projet et ouvrez-le dans VS Code.
+2. Demandez à Claude d'y initialiser git.
+3. Faites écrire un `.gitignore` **avant** d'ajouter le moindre fichier : rien de secret ne doit jamais entrer dans l'historique.
+4. Créez un dépôt vide sur GitHub, puis demandez à Claude de relier votre dossier à ce dépôt.
+
+<ul class="task-checklist" role="list">
+  <li><label><input type="checkbox" /> Créer le dossier de projet et lui donner un nom court</label></li>
+  <li><label><input type="checkbox" /> Faire initialiser git par Claude</label></li>
+  <li><label><input type="checkbox" /> Faire écrire un <code>.gitignore</code> avant tout ajout de fichier</label></li>
+  <li><label><input type="checkbox" /> Créer un dépôt vide sur GitHub et l'associer à votre dossier</label></li>
+</ul>
+
+**Preuve, quelle que soit la voie :** le dossier est ouvert dans VS Code, `git status` répond sans erreur, et votre dépôt existe sur votre compte GitHub.
+
+<aside class="task-why">
+  <p><strong>Pourquoi ça compte.</strong> Tout ce que vous construirez ce week-end habitera ce dossier, et l'historique git racontera la construction commit après commit. Partir d'un squelette fourni ne vous fait rien perdre : les gestes que vous économisez ici, vous les verrez de toute façon en D2, et vous les referez sur votre prochain projet.</p>
+</aside>
+
+## Tâche 4 : choisir votre projet
+
+Parcourez le catalogue et arrêtez votre choix. Cinq directions sont proposées, chacune avec sa page dédiée et son cahier des charges :
+
+- [**Assistant à mémoire**](/atelier/projets/assistant/) : vous lui confiez vos notes, vos documents et ce qui vous passe par la tête, il les range et vous les ressort au bon moment. À la fin, vous lui demandez « qu'est-ce que j'avais noté sur ce sujet ? » et il répond en citant vos propres documents, puis vous produit votre point du jour.
+- [**Coach de révisions**](/atelier/projets/coach/) : vous lui donnez vos cours, il en tire des questions, vous interroge, retient vos erreurs et revient dessus. À la fin, vous avez un entraîneur qui connaît vos points faibles et ne vous interroge que sur ce qui est dans vos cours.
+- [**Radar de veille**](/atelier/projets/radar/) : vous lui dites ce que vous suivez, il collecte, écarte le bruit et vous rend un résumé court. À la fin, vous recevez un point quotidien sur vos sujets, avec la raison pour laquelle chaque élément vous concerne.
+- [**Archiviste**](/atelier/projets/archiviste/) : vous lui jetez un dossier en désordre, il trie, renomme, extrait les informations utiles et en fait un tableau. À la fin, un dossier illisible devient consultable, avec un récapitulatif chiffré.
+- [**Portfolio vivant**](/atelier/projets/portfolio/) : votre site personnel, plus un assistant qui répond aux questions sur votre parcours. À la fin, vous avez une adresse à donner, et un visiteur peut demander « qu'a-t-il déjà fait en équipe ? » et obtenir une réponse fondée sur ce que vous avez écrit.
+
+Ouvrez la page du projet qui vous attire : chacune détaille le cahier des charges, les six étapes et les aides. Choisissez celui pour lequel vous avez déjà de la matière sous la main, c'est le critère le plus fiable.
+
+**But :** avoir un sujet précis avant d'écrire l'identité du projet.
+
+<ul class="task-checklist" role="list">
+  <li><label><input type="checkbox" /> Lire les cinq propositions du catalogue</label></li>
+  <li><label><input type="checkbox" /> Ouvrir la page du projet qui vous tente et lire son cahier des charges</label></li>
+  <li><label><input type="checkbox" /> Vérifier que vous avez de la matière disponible pour ce projet</label></li>
+  <li><label><input type="checkbox" /> Annoncer votre choix, l'écrire quelque part</label></li>
+</ul>
+
+**Preuve :** vous pouvez dire en une phrase ce que votre projet fera et pour qui.
+
+<aside class="task-why">
+  <p><strong>Pourquoi ça compte.</strong> Le cahier des charges de votre projet est votre feuille de route pour tout le reste du week-end. Plus votre choix est net maintenant, plus les décisions de demain se tranchent vite.</p>
+</aside>
+
+## Tâche 5 : l'interview inversée
+
+Ouvrez le prompt d'interview fourni dans le kit (`prompts/interview.md`) et collez-le dans Claude Code. Les rôles s'inversent : Claude vous pose des questions (ce que fait le projet, pour qui, ce qu'il ne doit surtout pas faire, le ton attendu, les contraintes), puis rédige lui-même le `CLAUDE.md` à partir de vos réponses. N'écrivez pas ce fichier au clavier. Votre travail : répondre honnêtement, puis relire et faire corriger tout ce qui sonne faux.
+
+Si vous ne retrouvez pas le fichier dans le kit, dépliez le bloc ci-dessous et copiez le prompt directement.
+
+<details class="hint"><summary>Copier le prompt d'interview</summary><p class="hint-prompt">Tu vas écrire le fichier CLAUDE.md de mon projet, celui que tu liras au début de chaque conversation. Ne rédige rien, ne crée aucun fichier et ne propose aucun plan avant d'avoir posé toutes tes questions et reçu toutes mes réponses.<br /><br />Déroulé imposé. Pose-moi les questions UNE PAR UNE. Après chaque question, arrête-toi et attends ma réponse. Ne pose jamais deux questions dans le même message. Ne réponds pas à ma place et ne me proposes pas de réponses toutes faites, sauf si je te dis que je ne comprends pas la question : dans ce cas, reformule-la plus simplement avec un exemple. Si une réponse est trop vague pour être utile, pose une seule question de relance avant de passer à la suivante.<br /><br />Voici les dix questions à poser, dans cet ordre.<br />1. Qui es-tu ? Ton prénom, ta situation actuelle en une phrase, et ce à quoi ressemble une semaine type chez toi.<br />2. Lequel de ces cinq projets as-tu choisi : assistant à mémoire, coach de révisions, radar de veille, archiviste de fichiers, portfolio vivant ? Et pourquoi celui-là ?<br />3. En une phrase, que fera ce projet, concrètement ? Décris le geste que tu feras avec lui le plus souvent.<br />4. Quelle matière as-tu déjà sous la main pour l'alimenter, et où se trouve-t-elle aujourd'hui ?<br />5. Qui va utiliser ou lire le résultat ? Toi seul, un proche, un jury, des inconnus sur le web ? Que cherche cette personne en premier ?<br />6. À quoi ressemble une bonne journée avec ce projet dans six mois, s'il fonctionne comme tu l'espères ?<br />7. Qu'est-ce que ce projet ne doit surtout pas faire ? Liste ce qui te dérangerait, en particulier tout ce qui sort ou publie une information.<br />8. Comment veux-tu que je te réponde : niveau de détail, longueur, tutoiement ou vouvoiement, ton attendu ? Donne-moi deux ou trois formulations que tu ne veux jamais lire.<br />9. Quelles contraintes as-tu : temps disponible, données que tu refuses de publier, matériel, niveau technique, dépôt public ou privé ?<br />10. Qu'est-ce qui te ferait dire, dimanche soir, que ce week-end a servi à quelque chose ?<br /><br />Quand j'ai répondu aux dix questions, montre-moi une proposition de CLAUDE.md dans la conversation, sans l'écrire sur le disque. Structure imposée, six sections courtes, dans cet ordre : Qui je suis, Ce que fait ce projet, Pour qui, Comment je veux que Claude me réponde, Les règles du projet, Où trouver quoi.<br /><br />N'invente rien. Chaque phrase du fichier doit venir d'une de mes réponses. Si une section manque de matière, écris « à compléter » suivi de la question précise que je dois me poser. Écris à la première personne, en mon nom, avec mes mots. Inclus obligatoirement, dans les règles : quand une information n'est pas dans les fichiers de ce projet, tu le dis au lieu de la deviner ; et aucune clé ni donnée sensible ne doit entrer dans un fichier suivi par git. Dans « Où trouver quoi », regarde le dossier avant d'écrire et décris chaque dossier en une ligne. Garde le fichier sous une centaine de lignes. Termine par la liste des points sur lesquels tu as hésité, et attends ma validation avant d'écrire quoi que ce soit sur le disque.</p></details>
+
+**But :** écrire l'identité du projet par le dialogue, et garder la relecture comme votre responsabilité.
+
+<ul class="task-checklist" role="list">
+  <li><label><input type="checkbox" /> Coller le prompt d'interview du kit</label></li>
+  <li><label><input type="checkbox" /> Répondre aux questions sans raccourcir</label></li>
+  <li><label><input type="checkbox" /> Laisser Claude rédiger le <code>CLAUDE.md</code></label></li>
+  <li><label><input type="checkbox" /> Relire ligne à ligne et faire corriger ce qui sonne faux</label></li>
+  <li><label><input type="checkbox" /> Ouvrir une conversation neuve et vérifier que le projet est restitué sans aucun rappel</label></li>
+</ul>
+
+**Preuve :** dans une conversation neuve, Claude décrit correctement votre projet et ses contraintes, en s'appuyant sur le `CLAUDE.md`.
+
+<aside class="task-why">
+  <p><strong>Pourquoi ça compte.</strong> Ce fichier est lu au début de chaque conversation : c'est lui qui évite de tout réexpliquer à chaque fois. Un comportement écrit dans un fichier est un comportement que vous pouvez régler, versionner et corriger, et c'est le principe qu'on garde partout : on prémâche la saisie, on garde la décision.</p>
+</aside>
+
+## Tâche 6 : le premier commit
+
+Faites un commit nommé « socle » et envoyez-le sur votre dépôt GitHub. C'est le premier point de l'historique : tout ce qui suivra pourra s'y comparer.
+
+**But :** clore le décollage par une trace envoyée, vérifiable depuis n'importe quelle machine.
+
+<ul class="task-checklist" role="list">
+  <li><label><input type="checkbox" /> Vérifier avec <code>git status</code> ce qui va entrer dans le commit</label></li>
+  <li><label><input type="checkbox" /> Faire le commit « socle »</label></li>
+  <li><label><input type="checkbox" /> Pousser sur votre dépôt GitHub</label></li>
+  <li><label><input type="checkbox" /> Ouvrir le dépôt dans le navigateur et vérifier que le <code>CLAUDE.md</code> y est</label></li>
+</ul>
+
+**Preuve :** `git log` affiche le commit, et vous le voyez aussi sur GitHub depuis votre navigateur.
+
+<aside class="task-why">
+  <p><strong>Pourquoi ça compte.</strong> Un projet qui existe seulement sur votre disque disparaît avec votre disque. Une fois poussé, il est consultable, partageable et prêt à être déployé quand vous en arriverez là.</p>
+</aside>
+
+## La suite se passe sur la page de votre projet
+
+Le décollage s'arrête ici, et c'est voulu : tout le reste du week-end sert à construire. Samedi et dimanche matin, vous développez votre projet à votre rythme, en suivant le cahier des charges et les étapes de sa page. Chaque étape donne son objectif, sa preuve de réussite, les briques à mobiliser, et trois niveaux d'aide à ouvrir seulement quand vous bloquez : un indice, une piste, puis un prompt de secours.
+
+Vous n'êtes pas obligé de tout faire dans l'ordre affiché, ni de tout faire tout court. Visez d'abord les exigences minimales, elles suffisent à avoir un projet qui tient debout et qui se montre. Les formateurs circulent en continu : appelez-les dès qu'une difficulté dure plus de dix minutes, c'est exactement à ça qu'ils servent.
+
+Rendez-vous dimanche midi pour la restitution.

@@ -1,0 +1,165 @@
+---
+id: archiviste
+order: 4
+title: "L'archiviste"
+tagline: "Vous lui jetez un dossier en vrac, il trie, renomme, extrait les informations et vous rend un rapport."
+deliverable: "Une page en ligne qui montre le dossier avant et après, le tableau des informations extraites et les totaux."
+afterwards: "Vous relancez l'archiviste sur chaque nouveau dossier en vrac : téléchargements, photos de documents, papiers de l'année."
+difficulty: accessible
+teamHint: "Seul ou à deux, avec chacun son dossier de test"
+bricks:
+  - b0
+  - b1
+  - b4-bis
+  - d1
+  - d2
+  - d2-bis
+  - e1
+  - e2
+  - c1
+  - b2
+  - d3
+  - d4
+  - a4
+  - c3
+---
+
+Vous avez un dossier qui contient cent trente fichiers nommés « scan_0042 », « IMG_1183 », « document final v3 dernier ». Vous le donnez à l'archiviste. Quelques minutes plus tard, les fichiers sont rangés par catégorie, renommés avec leur date et leur objet, et un tableau vous dit ce qu'ils contiennent : les montants, les dates, les émetteurs, les totaux par catégorie. Rien n'a été supprimé, tout est traçable, et un rapport vous liste les cas douteux pour que vous tranchiez. C'est la corvée que personne ne fait jamais, faite en une commande.
+
+## Cahier des charges
+
+### Exigences minimales
+
+- Un dossier de projet suivi par git, avec un `CLAUDE.md` qui décrit le type de dossier à traiter et vos règles de classement.
+- Un dossier de test réel d'au moins trente fichiers hétérogènes (documents, images, PDF), copié et non déplacé : l'original reste intact.
+- Une taxonomie écrite : les catégories, leurs critères de reconnaissance, et la catégorie de secours pour les cas non classables.
+- Une convention de renommage écrite, appliquée à tous les fichiers traités.
+- Un skill qui trie, renomme et extrait, en produisant un journal de toutes ses opérations.
+- Un tableau des informations extraites, exploitable, avec au moins un total ou un décompte par catégorie.
+- Une liste des cas douteux soumis à votre décision au lieu d'être tranchés en silence.
+- Une page web déployée qui montre le résultat du tri et le tableau.
+- Un audit de sécurité passé : aucun document personnel publié par inadvertance.
+
+### Pour aller plus loin
+
+- Des graphiques dans l'interface : répartition par catégorie, évolution par mois, totaux.
+- La surveillance d'un dossier : tout nouveau fichier déposé est traité automatiquement.
+- Un export du tableau vers un tableur.
+- La détection des doublons et des quasi-doublons.
+- Un mode simulation qui montre ce qui serait fait avant de le faire.
+
+## Étape 1 : Le socle commun
+
+<p class="step-meta"><span class="step-when">Vendredi après-midi</span><span class="step-tag">Socle commun</span></p>
+
+Vous faites cette étape pendant la séance de socle commun du vendredi après-midi, avec tout le groupe.
+
+**Objectif.** Donner à votre archiviste un lieu, un historique et des règles qui reflètent votre façon de classer.
+
+**Ce que vous faites.** Créez un dossier de projet, ouvrez-le dans Claude Code, faites-y initialiser git. Puis inversez les rôles : demandez à Claude de vous interviewer avant d'écrire quoi que ce soit. Dix questions sur le type de dossier que vous voulez traiter, ce que vous cherchez à retrouver dedans, comment vous classez aujourd'hui, ce qui compte pour vous dans un nom de fichier, ce que vous ne voulez surtout pas voir modifié ou supprimé. Il rédige le `CLAUDE.md`, vous relisez et corrigez. Ajoutez deux règles explicites et non négociables : il ne supprime jamais un fichier, et il ne travaille jamais sur l'original mais sur une copie.
+
+**Preuve de réussite.** Dans une conversation neuve, « que sais-tu de ma façon de classer ? » donne trois règles exactes. Vous demandez « supprime les doublons » et il refuse ou propose une mise à l'écart réversible au lieu d'effacer. `git log` affiche votre premier commit.
+
+**Briques :** [B0](/briques/b0/), [B1](/briques/b1/), [B4-bis](/briques/b4-bis/), [D1](/briques/d1/), [D2](/briques/d2/).
+
+<div class="hint-stack">
+  <p class="hint-label">Si vous bloquez</p>
+  <details class="hint"><summary>Indice</summary><p>Un archiviste qui touche à vos fichiers est un archiviste qui peut les perdre. Qu'est-ce qui, dans votre CLAUDE.md, l'empêche formellement de supprimer ou d'écraser quoi que ce soit ?</p></details>
+  <details class="hint"><summary>Piste</summary><p>Écrivez les interdits avant les capacités. Trois lignes suffisent : ne jamais supprimer, ne jamais travailler sur l'original, toujours journaliser chaque opération. Ces trois lignes vous autoriseront à lancer le skill sans retenir votre souffle.</p></details>
+  <details class="hint"><summary>Le prompt de secours</summary><p class="hint-prompt">Tu vas écrire le fichier CLAUDE.md de mon archiviste de fichiers. Ne rédige rien avant d'avoir posé tes questions. Pose-moi dix questions, une par une, sur le type de dossier que je veux faire traiter, ce que je cherche à retrouver dedans, ma façon actuelle de classer, ce qui compte pour moi dans un nom de fichier et ce que je ne veux jamais voir modifié. Ajoute ensuite dans le fichier une section de règles absolues : ne jamais supprimer un fichier, ne jamais travailler sur l'original mais toujours sur une copie, journaliser chaque opération avec le nom avant et après, et demander confirmation avant toute opération de masse. Attends ma validation avant d'écrire le fichier sur le disque.</p></details>
+</div>
+
+## Étape 2 : La matière
+
+<p class="step-meta"><span class="step-when">Développement libre</span><span class="step-tag">Commun aux cinq projets</span></p>
+
+**Objectif.** Un vrai dossier en vrac, copié en lieu sûr, et une taxonomie pour le ranger.
+
+**Ce que vous faites.** Prenez un dossier réellement en désordre (téléchargements, photos de documents, papiers accumulés) et copiez-en au moins trente fichiers dans un dossier d'entrée du projet. L'original ne bouge pas. Faites ensuite l'inventaire avec Claude : quels types de fichiers, quels formats, quels contenus. De cet inventaire, tirez votre taxonomie : cinq à huit catégories, les critères qui permettent de reconnaître chacune, et une catégorie « à trancher » pour les cas douteux. Écrivez la convention de renommage. Terminez en poussant le dépôt sur GitHub, avec un `.gitignore` qui exclut le dossier de fichiers personnels avant le premier push.
+
+**Preuve de réussite.** Le dossier d'entrée contient au moins trente fichiers réels, l'original est intact, et le fichier de taxonomie décrit chaque catégorie avec ses critères. Le dépôt est sur GitHub sans aucun de vos documents personnels dedans.
+
+**Briques :** [E1](/briques/e1/), [E2](/briques/e2/), [D2-bis](/briques/d2-bis/).
+
+<div class="hint-stack">
+  <p class="hint-label">Si vous bloquez</p>
+  <details class="hint"><summary>Indice</summary><p>Prenez cinq fichiers au hasard dans votre vrac. Sauriez-vous dire dans quelle catégorie chacun va, et pourquoi, en une phrase ? Si deux catégories se disputent le même fichier, votre taxonomie n'est pas encore prête.</p></details>
+  <details class="hint"><summary>Piste</summary><p>Ne devinez pas les catégories : faites d'abord l'inventaire du vrac, puis tirez les catégories de ce que vous voyez. Et gardez une catégorie de secours explicite. Un archiviste sans catégorie de secours force ses cas douteux dans la mauvaise boîte.</p></details>
+  <details class="hint"><summary>Le prompt de secours</summary><p class="hint-prompt">Voici mon dossier d'entrée avec des fichiers en vrac. Commence par l'inventaire, sans rien modifier : liste les fichiers avec leur format, leur taille, leur date, et pour chacun ce que tu arrives à deviner du contenu. Présente-moi ensuite une proposition de taxonomie de cinq à huit catégories, tirée de ce que tu as réellement vu, avec pour chaque catégorie les critères de reconnaissance et deux exemples de fichiers du dossier. Ajoute obligatoirement une catégorie à trancher pour les cas ambigus. Propose enfin une convention de renommage qui inclut la date, la catégorie et l'objet. Ne renomme et ne déplace rien tant que je n'ai pas validé.</p></details>
+</div>
+
+## Étape 3 : Le savoir-faire
+
+<p class="step-meta"><span class="step-when">Développement libre</span><span class="step-tag">Commun aux cinq projets</span></p>
+
+**Objectif.** Un skill qui trie et renomme tout le dossier, en une commande, sans rien perdre.
+
+**Ce que vous faites.** Créez un skill de tri. Il lit chaque fichier du dossier d'entrée, l'identifie, le range dans la catégorie correspondante, le renomme selon votre convention, et écrit une ligne de journal par fichier : nom d'origine, nom final, catégorie, motif de la décision. Les cas douteux vont dans « à trancher » avec la raison. Faites-le tourner d'abord en simulation, vérifiez le journal, corrigez les instructions du skill, puis lancez pour de vrai.
+
+**Preuve de réussite.** Le dossier de sortie contient exactement autant de fichiers que le dossier d'entrée, aucun perdu. Vous prenez dix fichiers au hasard et au moins neuf sont dans la bonne catégorie avec un nom qui vous dit ce qu'ils contiennent. Le journal permet de remonter de n'importe quel fichier final à son nom d'origine.
+
+**Briques :** [C1](/briques/c1/), [E2](/briques/e2/).
+
+<div class="hint-stack">
+  <p class="hint-label">Si vous bloquez</p>
+  <details class="hint"><summary>Indice</summary><p>Comptez les fichiers avant et après. Les deux nombres sont-ils égaux ? Si vous ne savez pas répondre sans les compter à la main, votre journal ne fait pas son travail.</p></details>
+  <details class="hint"><summary>Piste</summary><p>Faites systématiquement un tour en simulation avant le tour réel : le skill annonce ce qu'il ferait, vous lisez le journal, vous corrigez les règles, et seulement ensuite vous lancez. C'est aussi la seule façon de repérer les collisions de noms avant qu'elles n'écrasent un fichier.</p></details>
+  <details class="hint"><summary>Le prompt de secours</summary><p class="hint-prompt">Crée un skill de tri dans mon projet. Entrée : mon dossier de fichiers en vrac. Sortie : une copie triée par catégorie selon ma taxonomie, avec les fichiers renommés selon ma convention. Règles absolues à inscrire dans le skill : ne jamais supprimer ni écraser, copier plutôt que déplacer, écrire une ligne de journal par fichier avec le nom d'origine, le nom final, la catégorie et le motif de la décision, envoyer les cas ambigus dans la catégorie à trancher avec la raison, et refuser de continuer si un nom de destination existe déjà. Ajoute un mode simulation qui produit le journal sans rien écrire d'autre. Lance d'abord la simulation et montre-moi le journal.</p></details>
+</div>
+
+## Étape 4 : Le visage
+
+<p class="step-meta"><span class="step-when">Développement libre</span><span class="step-tag">Commun aux cinq projets</span></p>
+
+**Objectif.** Une page en ligne qui montre le dossier avant, après, et ce qu'il contient.
+
+**Ce que vous faites.** Faites construire une page qui affiche le résultat : le nombre de fichiers traités, la répartition par catégorie, la liste des cas à trancher, et un accès au journal. Regardez-la d'abord en local, corrigez ce qui gêne, puis déployez. Terminez par l'audit de sécurité, particulièrement critique ici : vos fichiers d'entrée sont des documents personnels. Vérifiez ce qui part sur le dépôt public, et publiez au besoin un jeu de démonstration anonymisé plutôt que vos vrais papiers.
+
+**Preuve de réussite.** Une adresse publique montre la répartition par catégorie et la liste des cas à trancher, sans exposer un seul de vos documents personnels. L'audit ne remonte ni secret ni fichier privé.
+
+**Briques :** [B2](/briques/b2/), [D3](/briques/d3/), [D4](/briques/d4/).
+
+<div class="hint-stack">
+  <p class="hint-label">Si vous bloquez</p>
+  <details class="hint"><summary>Indice</summary><p>Ce que vous montrez dimanche, ce sont vos vrais documents. Qu'est-ce qui, dans votre page publiée, prouve que le tri a fonctionné sans montrer le contenu de vos papiers ?</p></details>
+  <details class="hint"><summary>Piste</summary><p>Séparez la démonstration des données. La page peut afficher des noms de fichiers anonymisés, des compteurs et des catégories : c'est suffisant pour prouver que ça marche. Gardez un second jeu de fichiers factices pour la démonstration publique, et votre vrai dossier en local.</p></details>
+  <details class="hint"><summary>Le prompt de secours</summary><p class="hint-prompt">Construis une page web statique pour mon archiviste. Elle lit le journal de tri et affiche : le nombre de fichiers traités, la répartition par catégorie sous forme de liste avec les compteurs, la liste des cas à trancher avec leur motif, et un accès au journal complet. Contrainte de confidentialité prioritaire : la page ne doit afficher aucun contenu de document, seulement des noms, des catégories et des compteurs, et je veux pouvoir basculer sur un jeu de démonstration anonymisé pour la version publiée. Lance-la en local et montre-moi le résultat. Ensuite, liste précisément tout ce qui partirait sur un dépôt public et signale-moi chaque fichier personnel qui risquerait d'être publié.</p></details>
+</div>
+
+## Étape 5 : L'extraction structurée
+
+<p class="step-meta"><span class="step-when">Développement libre</span><span class="step-tag">Propre au projet</span></p>
+
+**Objectif.** Transformer le contenu des fichiers en tableau exploitable, avec des totaux.
+
+**Ce que vous faites.** Décidez ce que vous voulez extraire de chaque catégorie : d'une facture, la date, l'émetteur, le montant, la référence ; d'un justificatif, la date et l'objet ; d'une photo de document, ce qui est lisible. Faites produire un tableau, une ligne par fichier, une colonne par information, avec une cellule vide et signalée quand l'information est absente au lieu d'une valeur inventée. Ajoutez les totaux : montant par catégorie, nombre de fichiers par mois. Puis vérifiez à la main dix lignes contre les fichiers d'origine.
+
+**Preuve de réussite.** Le tableau se lit sans le dossier à côté. Sur dix lignes vérifiées à la main, au moins neuf montants et dates sont exacts. Les informations absentes sont marquées comme absentes, jamais devinées. Les totaux se recalculent quand vous ajoutez un fichier.
+
+**Briques :** [E2](/briques/e2/), [A4](/briques/a4/), [E1](/briques/e1/).
+
+<div class="hint-stack">
+  <p class="hint-label">Si vous bloquez</p>
+  <details class="hint"><summary>Indice</summary><p>Prenez trois lignes de votre tableau et allez vérifier dans le fichier d'origine. Les montants sont-ils exacts au centime ? Une extraction plausible n'est pas une extraction juste, et sur un tableau on ne voit pas la différence.</p></details>
+  <details class="hint"><summary>Piste</summary><p>Définissez le tableau avant l'extraction : les colonnes, leur format exact (une date sous quelle forme, un montant avec quelle devise), et surtout la valeur à écrire quand l'information est introuvable. Sans cette dernière règle, les cases vides se remplissent toutes seules de valeurs vraisemblables.</p></details>
+  <details class="hint"><summary>Le prompt de secours</summary><p class="hint-prompt">Je veux extraire les informations de mes fichiers triés vers un tableau. Propose-moi d'abord la liste des colonnes par catégorie, avec pour chacune le format exact attendu. Règles absolues à inscrire dans le skill d'extraction : si une information n'est pas lisible dans le fichier, écrire la mention non trouvé et jamais une valeur plausible, ne jamais déduire un montant d'un autre, et ajouter une colonne indiquant le niveau de confiance de l'extraction. Produis ensuite le tableau avec une ligne par fichier, puis les totaux par catégorie et par mois. Enfin, sélectionne toi-même les dix lignes où ta confiance est la plus faible et présente-les moi pour vérification manuelle.</p></details>
+</div>
+
+## Étape 6 : Le rapport visuel
+
+<p class="step-meta"><span class="step-when">Développement libre</span><span class="step-tag">Propre au projet</span></p>
+
+**Objectif.** Voir d'un coup d'œil ce que contient le dossier, ou traiter les nouveaux fichiers sans y penser.
+
+**Ce que vous faites.** Deux chemins, choisissez selon le temps qu'il vous reste. Le premier : le rapport visuel, des graphiques dans l'interface (répartition par catégorie, totaux par mois, évolution) avec les chiffres écrits à côté des barres pour qu'on puisse vérifier. Le second : la surveillance, un dossier de dépôt où tout nouveau fichier est trié, renommé et ajouté au tableau automatiquement, par tâche planifiée. Dans les deux cas, testez sur des données réelles avant de montrer.
+
+**Preuve de réussite.** Pour le rapport : quelqu'un qui ne connaît pas votre dossier comprend en dix secondes ce qu'il contient, et chaque graphique porte des chiffres vérifiables dans le tableau. Pour la surveillance : vous déposez trois fichiers, vous ne faites rien, et ils apparaissent triés et présents dans le tableau, avec leur trace dans le journal.
+
+**Briques :** [B2](/briques/b2/), [C3](/briques/c3/).
+
+<div class="hint-stack">
+  <p class="hint-label">Si vous bloquez</p>
+  <details class="hint"><summary>Indice</summary><p>Un graphique sans chiffre est joli et invérifiable. Comment quelqu'un peut-il, en regardant votre barre la plus haute, retrouver la ligne correspondante dans le tableau ?</p></details>
+  <details class="hint"><summary>Piste</summary><p>Commencez par le graphique le plus bête : la répartition par catégorie, en barres horizontales, avec le compteur écrit au bout de chaque barre. Il répond déjà à la première question qu'on se pose devant un dossier trié, et il se lit sans légende.</p></details>
+  <details class="hint"><summary>Le prompt de secours</summary><p class="hint-prompt">Ajoute un rapport visuel à la page de mon archiviste. Trois visualisations, dans cet ordre : la répartition des fichiers par catégorie en barres horizontales, le total des montants par catégorie, et le nombre de fichiers par mois. Contraintes obligatoires : la valeur chiffrée est écrite au bout de chaque barre, les couleurs ne portent aucune information seules puisqu'une étiquette texte accompagne chaque série, les graphiques restent lisibles sur téléphone, et tout est produit à partir de mon tableau d'extraction sans dépendance externe lourde. Montre-moi le résultat en local, puis vérifions ensemble que chaque chiffre affiché correspond bien à une somme du tableau.</p></details>
+</div>

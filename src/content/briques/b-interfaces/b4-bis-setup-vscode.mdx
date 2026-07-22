@@ -24,7 +24,7 @@ expectedOutcome: "Le participant ouvre le dossier atelier dans VS Code, crée bo
 - Prérequis : accès au Web et droit d'installer VS Code, ou version déjà présente.
 - Résultat attendu : le dossier `atelier-ia` est ouvert, `bonjour.txt` existe et le terminal intégré répond.
 
-VS Code est l'éditeur utilisé pendant la formation. L'installation d'une extension d'IA n'est pas nécessaire pour valider cette brique.
+VS Code est l'éditeur utilisé pendant la formation. Les étapes de base se valident sans extension ; l'extension Claude Code s'ajoute ensuite, et c'est elle qui rend le travail confortable.
 
 ## Concept durable
 
@@ -36,6 +36,10 @@ Un **éditeur de code** travaille sur des fichiers et des dossiers. Dans VS Code
 - le **workspace** est le dossier ouvert et peut contenir des réglages propres au projet.
 
 Ouvrir un dossier donne du contexte aux outils. N'accordez la confiance qu'aux dossiers dont vous connaissez l'origine : un projet téléchargé peut contenir des tâches ou réglages exécutables.
+
+Une **extension** ajoute une capacité à l'éditeur : un langage, un formateur, un outil. Elles s'installent depuis la vue Extensions et se désactivent aussi facilement.
+
+L'extension qui change le quotidien ici est **Claude Code**. Elle apporte dans l'éditeur ce que le terminal montre mal : les modifications proposées s'affichent en comparaison côte à côte, avec accepter ou refuser pour chacune ; le plan d'action se relit et s'amende avant exécution ; les fichiers se désignent par mention plutôt que par chemin complet ; et l'historique des conversations reste accessible. C'est la manière recommandée d'utiliser Claude Code dans VS Code. Le terminal garde son intérêt : certaines commandes n'existent que là, et les deux partagent la même conversation.
 
 ## Pratique avec Claude
 
@@ -51,6 +55,9 @@ Mon atelier IA est prêt.
 
 6. Ouvrez **Terminal → Nouveau terminal** et vérifiez que son chemin se termine par `atelier-ia`.
 7. Exécutez `code --version` si la commande `code` est configurée. Sinon, le test du terminal reste valide et la configuration est traitée dans le dépannage.
+8. Ouvrez la vue Extensions, cherchez « Claude Code » et installez l'extension officielle publiée par Anthropic.
+9. Ouvrez le panneau Claude depuis l'éditeur, puis connectez-vous avec votre compte Claude. Aucune clé d'API n'est demandée.
+10. Demandez une modification simple de `bonjour.txt` et observez la comparaison proposée avant d'accepter ou de refuser.
 
 ## Mission commune
 
@@ -93,6 +100,8 @@ Transition : un environnement visible et un terminal fonctionnel permettent d'ab
 - **Le terminal s'ouvre ailleurs :** fermer le terminal, rouvrir le bon dossier puis créer un nouveau terminal.
 - **Workspace Trust apparaît :** n'accorder la confiance qu'au dossier `atelier-ia` créé par vous-même.
 - **`code` est introuvable :** suivre les étapes propres au système ci-dessous ; cela ne bloque pas l'usage de VS Code par les menus.
+- **L'extension reste invisible après installation :** recharger la fenêtre depuis la palette de commandes, puis ouvrir un fichier ; certains points d'entrée n'apparaissent qu'avec un fichier ouvert.
+- **La commande `claude` reste introuvable dans le terminal intégré :** l'extension embarque sa propre copie pour son panneau, mais la commande du terminal s'installe séparément. Les deux peuvent coexister et partagent l'historique des conversations.
 
 ## Ressources
 
@@ -100,6 +109,7 @@ Transition : un environnement visible et un terminal fonctionnel permettent d'ab
 - [Bien démarrer avec VS Code](https://code.visualstudio.com/docs/getstarted/overview)
 - [Utiliser VS Code en ligne de commande](https://code.visualstudio.com/docs/configure/command-line)
 - [Comprendre Workspace Trust](https://code.visualstudio.com/docs/editing/workspaces/workspace-trust)
+- [Utiliser Claude Code dans VS Code (documentation officielle)](https://code.claude.com/docs/en/vs-code)
 
 ## Ouverture
 

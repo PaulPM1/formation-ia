@@ -8,53 +8,99 @@ durationMinutes: 15
 type: concept
 platforms:
   - commun
-prerequisites: []
-status: a-rediger
-owner: a-attribuer
-learningObjective: null
-expectedOutcome: null
+prerequisites:
+  - e1
+status: a-relire
+owner: matthieu
+learningObjective: "Découper un projet en étapes testables à partir d'un MVP et détecter quand une session avec l'IA s'enlise."
+expectedOutcome: "Le participant produit le cadrage de son projet final : idée en une phrase, MVP, trois premières étapes testables et liste « plus tard »."
 ---
 
 ## Cap
 
-{/* Renseigner l’objectif, les prérequis, la durée et le résultat attendu. */}
+**Objectif :** la méthode de travail qui fait la différence entre « j'ai joué avec l'IA » et « j'ai livré un projet ».
+
+- Durée cible : 15 minutes.
+- Prérequis : E1, « Prompt et gestion du contexte » (le réflexe de repartir propre).
+- Résultat attendu : vous repartez avec le plan d'attaque cadré de votre projet personnel.
 
 ## Concept durable
 
-{/* Présenter la notion indépendamment d’un outil ou d’une interface particulière. */}
+Un projet qui aboutit suit un cycle : **cadrer → petite étape → tester → ajuster**, puis recommencer. On ne demande jamais le projet entier ; on demande la prochaine étape vérifiable. Comme en randonnée, on ne vise pas le sommet : on vise le prochain repère visible.
+
+Le point de départ est le **MVP** (produit minimum viable) : la version la plus petite qui rend déjà service, souvent une seule fonctionnalité. Tout le reste va dans une liste « plus tard » : elle n'est pas une poubelle, c'est le carnet de route des itérations suivantes.
+
+Chaque étape doit être **testable** : si vous ne pouvez pas vérifier qu'elle fonctionne, elle est trop grosse. « Ajoute la gestion complète du budget » n'est pas testable ; « affiche mes trois dernières dépenses » l'est.
+
+Travailler avec une IA ajoute une compétence : **détecter l'enlisement**. Trois signaux fiables : elle « corrige » en cassant autre chose ; elle propose la même solution reformulée ; le code enfle sans progrès visible. Trois réflexes en réponse : revenir à la dernière version qui marchait ; repartir d'une conversation propre avec un résumé de l'état (réflexe de E1) ; redécouper le problème en plus petit.
+
+Dernier outil : le **timeboxing** des décisions. Un choix cosmétique (couleur, nom, libellé) se prend en cinq minutes maximum. L'énergie va au cœur du projet, pas aux détails réversibles.
 
 ## Pratique avec Claude
 
-{/* Préparer la démonstration ou la manipulation guidée. */}
+Comparez deux façons de démarrer le même projet :
+
+```text
+Fais-moi une application complète de gestion de budget avec comptes multiples,
+graphiques, catégories automatiques et export.
+```
+
+```text
+Je construis un suivi de dépenses, étape par étape. Première étape uniquement :
+une page qui affiche une liste de trois dépenses saisies en dur. Je testerai,
+puis nous ajouterons la saisie.
+```
+
+La première demande produit un résultat volumineux, difficile à vérifier, qui échoue souvent sans qu'on sache pourquoi. La seconde donne un résultat contrôlable en une minute, sur lequel on empile la suite. Elle annonce aussi la méthode de travail à l'IA : ses réponses se cadreront d'elles-mêmes.
 
 ## Mission commune
 
-{/* Définir la consigne commune et sa progression. */}
+Cadrez le projet que vous présenterez en restitution finale :
+
+1. Votre idée en une phrase.
+2. Le MVP : la version à une seule fonctionnalité qui rend déjà service.
+3. Les trois premières étapes testables, avec pour chacune le critère de vérification.
+4. La liste « plus tard » : tout ce que vous avez volontairement écarté.
+
+Soumettez ensuite ce cadrage à Claude et demandez-lui de le challenger : « Est-ce vraiment un MVP ? Que retirerais-tu encore ? Quelle étape est trop grosse ? »
+
+**Critère de réussite :** chaque étape a un critère de vérification observable, et votre MVP a résisté à la question « que peut-on encore retirer ? ».
 
 ## Livrable
 
-{/* Décrire la preuve concrète produite par le participant. */}
+Le plan d'attaque de votre projet : idée, MVP, trois étapes testables avec critères, liste « plus tard ». Ce document est réutilisé tel quel pour la présentation finale (F2).
 
 ## Notes formateur
 
-{/* Préparer le déroulé, les messages essentiels, les pièges et la transition. */}
+- **0–4 min :** le cycle cadrer → petite étape → tester → ajuster ; l'analogie de la randonnée.
+- **4–7 min :** MVP et étapes testables ; démonstration des deux demandes contrastées.
+- **7–13 min :** mission commune, chacun cadre son propre projet.
+- **13–15 min :** deux ou trois volontaires lisent leur MVP ; la salle vote « vraiment minimal ou pas ? ».
+
+Anecdote à incarner : le participant qui demande l'application complète et se retrouve vingt minutes plus tard avec un projet cassé qu'il ne comprend pas, contre celui qui empile les petites victoires. C'est la brique à rappeler pendant tous les ateliers : quand quelqu'un est bloqué, la bonne question est presque toujours « quelle est la plus petite étape testable ? ». Dire explicitement que cette méthode vaut pour n'importe quel projet, avec ou sans IA : cela élargit la portée de la brique. Transition : ce cadrage est exactement ce qui sera évalué lors de la présentation finale.
 
 ## Défis avancés
 
-{/* Ajouter uniquement les extensions destinées aux participants plus rapides. */}
+- Prenez une étape de votre plan et découpez-la encore en deux : que gagne-t-on, que perd-on ?
+- Rédigez le résumé de relance : le message qui permettrait de reprendre votre projet dans une conversation neuve sans rien perdre.
+- Simulez un enlisement : demandez volontairement une étape trop grosse, identifiez le signal d'alarme, puis appliquez un des trois réflexes.
 
 ## Variantes
 
-{/* Prévoir les variantes utiles selon les cas d’usage. */}
+- **Administratif :** cadrer une réorganisation de dossiers partagés en trois étapes vérifiables plutôt qu'un « grand rangement ».
+- **Pédagogie :** construire un parcours de révision en commençant par un seul chapitre testé, pas le programme entier.
+- **Développement :** définir le premier test automatisé comme critère de vérification de chaque étape.
 
 ## Dépannage
 
-{/* Lister les blocages prévisibles et leur résolution. */}
+- **« Mon MVP a cinq fonctionnalités » :** ce n'est pas un MVP. Demander laquelle rend service seule ; les quatre autres vont dans « plus tard ».
+- **« Je ne sais pas si l'étape marche » :** le critère de vérification manque ; reformuler l'étape jusqu'à ce qu'un test d'une minute existe.
+- **« L'IA tourne en rond depuis dix minutes » :** arrêter d'insister ; revenir à la dernière version qui marchait et repartir d'une conversation propre avec un résumé.
 
 ## Ressources
 
-{/* Ajouter les liens, commandes et références nécessaires. */}
+- [Bonnes pratiques Claude Code (Anthropic)](https://www.anthropic.com/engineering/claude-code-best-practices)
 
 ## Ouverture
 
-{/* Indiquer le prolongement naturel vers une notion plus avancée. */}
+Votre cadrage devient le fil conducteur de la pratique : c'est lui que vous déroulerez pendant les ateliers du bloc F, et c'est sur sa qualité (MVP réaliste, étapes claires) que votre présentation finale s'appuiera.

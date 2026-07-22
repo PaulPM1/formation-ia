@@ -8,53 +8,102 @@ durationMinutes: 20
 type: concept
 platforms:
   - commun
-prerequisites: []
-status: a-rediger
-owner: a-attribuer
-learningObjective: null
-expectedOutcome: null
+prerequisites:
+  - a1
+status: a-relire
+owner: matthieu
+learningObjective: "Structurer une demande avec les quatre leviers d'un bon prompt et gérer la fenêtre de contexte sur la durée d'un projet."
+expectedOutcome: "Le participant transforme un prompt vague en demande exploitable et sait quand repartir d'une conversation propre plutôt que d'empiler les corrections."
 ---
 
 ## Cap
 
-{/* Renseigner l’objectif, les prérequis, la durée et le résultat attendu. */}
+**Objectif :** obtenir des résultats fiables en donnant au modèle ce qu'il ne peut pas deviner, et garder le contrôle du contexte sur la durée.
+
+- Durée cible : 20 minutes.
+- Prérequis : A1, « C'est quoi un LLM » (tokens, fenêtre de contexte).
+- Résultat attendu : vous réécrivez une demande vague en demande exploitable et vous savez quand relancer une conversation propre.
 
 ## Concept durable
 
-{/* Présenter la notion indépendamment d’un outil ou d’une interface particulière. */}
+La qualité d'une réponse dépend d'abord de la qualité de la demande : le modèle ne connaît ni votre situation, ni vos attentes implicites. Briefer une IA revient à briefer un collaborateur brillant mais sans aucune mémoire de vous.
+
+Quatre leviers structurent une bonne demande :
+
+- **Contexte** : de quoi il s'agit, pour qui, dans quel but.
+- **Spécificité** : ce que vous voulez précisément : longueur, langue, niveau de détail.
+- **Rôle et format de sortie** : « agis comme… », « réponds sous forme de tableau ».
+- **Contraintes** : ce qu'il ne faut pas faire.
+
+Deux réflexes complètent ces leviers. D'abord, décomposer une grosse demande en étapes plutôt que tout demander d'un coup. Ensuite, donner des exemples quand le format ou le style compte : aucun exemple (*zero-shot*) suffit pour les tâches simples ; un exemple (*one-shot*) cale le format ; plusieurs exemples cohérents (*few-shot*) fiabilisent un motif récurrent. Quelques exemples diversifiés valent mieux que beaucoup d'exemples redondants.
+
+Enfin, le contexte est une ressource limitée. La fenêtre de contexte se remplit au fil de la conversation : sur un long échange, le modèle perd le fil du début, et chaque correction ratée pollue la suite. Quand une conversation dérape, la reformulation propre bat l'empilement de rustines. Sur un projet qui dure, un fichier de référence (par exemple un `CLAUDE.md` ou un document de specs) conserve le cap d'une conversation à l'autre.
 
 ## Pratique avec Claude
 
-{/* Préparer la démonstration ou la manipulation guidée. */}
+Comparez ces deux demandes pour la même tâche :
+
+```text
+Fais-moi un planning de révisions.
+```
+
+```text
+Je prépare mes partiels dans six semaines, disponible 1 h par soir sauf le
+mercredi. Prépare un planning de révisions sous forme de tableau par semaine,
+en gardant les week-ends légers. Commence par les deux matières où j'ai le
+plus de retard : statistiques et comptabilité.
+```
+
+La première produit un résultat générique. La seconde donne au modèle le contexte, la spécificité, le format et les contraintes : le résultat est directement utilisable. Aucun des deux prompts n'est « magique » : le second fournit simplement ce que le modèle ne pouvait pas deviner.
 
 ## Mission commune
 
-{/* Définir la consigne commune et sa progression. */}
+Prenez une tâche réelle de votre quotidien (message délicat, organisation d'un événement, aide à la décision) et rédigez deux versions de la demande :
+
+1. Une version en une phrase, comme vous l'auriez écrite spontanément.
+2. Une version structurée avec les quatre leviers, identifiés explicitement.
+
+Soumettez les deux à Claude et comparez les réponses. Puis dégradez volontairement un levier (retirez le contexte, ou le format) et observez ce qui change.
+
+**Critère de réussite :** vous savez nommer le levier qui a le plus amélioré votre résultat, et celui qui manquait dans votre version spontanée.
 
 ## Livrable
 
-{/* Décrire la preuve concrète produite par le participant. */}
+Vos deux prompts côte à côte, annotés : pour chaque levier, où il apparaît dans la version structurée et ce qu'il a changé dans la réponse.
 
 ## Notes formateur
 
-{/* Préparer le déroulé, les messages essentiels, les pièges et la transition. */}
+- **0–4 min :** rappel de A1, où « qualité d'entrée = qualité de sortie » devient une méthode. Analogie du collaborateur brillant sans mémoire.
+- **4–8 min :** les quatre leviers, un exemple par levier.
+- **8–12 min :** démonstration mauvais vs bon prompt (planning de révisions), résultats côte à côte. Variante participative : faire réparer le mauvais prompt levier par levier par la salle.
+- **12–18 min :** mission commune en autonomie.
+- **18–20 min :** debrief + le réflexe « repartir propre » quand une conversation s'enlise.
+
+Piège à nommer : quand le résultat déçoit, l'instinct est de répondre « non, pas comme ça » cinq fois de suite. Chaque rustine pollue le contexte ; il faut reformuler la demande complète ou repartir d'une conversation neuve. Ne pas transformer la section en cours magistral : cinq minutes de leviers, puis la démonstration fait le travail. Transition : ces réflexes servent dans tous les ateliers qui suivent, on les rappellera à chaque brique.
 
 ## Défis avancés
 
-{/* Ajouter uniquement les extensions destinées aux participants plus rapides. */}
+- Fiabilisez un style d'écriture par *few-shot* : donnez trois messages que vous avez réellement écrits et demandez le quatrième dans le même ton.
+- Ajoutez une consigne de raisonnement (« réfléchis étape par étape avant de répondre ») sur un problème à plusieurs contraintes et comparez avec la version directe.
+- Rédigez le début d'un fichier de specs pour votre projet final : objectif, public, contraintes, ce qui est hors périmètre.
 
 ## Variantes
 
-{/* Prévoir les variantes utiles selon les cas d’usage. */}
+- **Administratif :** transformer « réponds à cet email » en demande avec ton, longueur et points à couvrir imposés.
+- **Pédagogie :** faire produire un quiz au bon niveau en donnant deux exemples de questions du niveau visé.
+- **Développement :** cadrer une demande de code avec le langage, les contraintes et un exemple d'entrée/sortie attendue.
 
 ## Dépannage
 
-{/* Lister les blocages prévisibles et leur résolution. */}
+- **« La réponse est trop générique » :** il manque presque toujours le contexte ou la spécificité. Faire relire le prompt avec la grille des quatre leviers.
+- **« Il ignore une partie de ma demande » :** demande trop longue et non structurée ; découper en étapes ou lister les exigences explicitement.
+- **« Ça empire à chaque correction » :** la conversation est polluée ; repartir d'une conversation neuve avec un résumé propre de l'état et de l'objectif.
 
 ## Ressources
 
-{/* Ajouter les liens, commandes et références nécessaires. */}
+- [Prompt engineering : vue d'ensemble (Anthropic)](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview)
+- [Utiliser des exemples : multishot prompting (Anthropic)](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/multishot-prompting)
 
 ## Ouverture
 
-{/* Indiquer le prolongement naturel vers une notion plus avancée. */}
+Quand une consigne devient récurrente (même format, même style, à chaque fois), il est temps d'en faire une brique réutilisable : c'est exactement le rôle des Skills vus en C1. Et pour garder le cap sur un projet entier, le cadrage méthodique arrive en E3.

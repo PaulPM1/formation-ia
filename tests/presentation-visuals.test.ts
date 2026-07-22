@@ -5,6 +5,7 @@ import test from 'node:test';
 import { A_DECKS } from '../src/presentation/manifests/a';
 import { B_DECKS } from '../src/presentation/manifests/b';
 import { C_DECKS } from '../src/presentation/manifests/c';
+import { E_DECKS } from '../src/presentation/manifests/e';
 import { SLIDE_VISUAL_KEYS } from '../src/presentation/presentation-model';
 
 const read = (path: string) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
@@ -106,7 +107,7 @@ test('les tokens typographiques des slides gardent un plancher de 0,75 rem', asy
   }
 });
 
-test('la QA durable mesure les textes HTML et SVG à 12 px sur 71 routes et au zoom 200 %', async () => {
+test('la QA durable mesure les textes HTML et SVG à 12 px sur 117 routes et au zoom 200 %', async () => {
   const [qa, packageJson] = await Promise.all([
     read('scripts/qa-font-floor.mjs'),
     read('package.json'),
@@ -116,7 +117,7 @@ test('la QA durable mesure les textes HTML et SVG à 12 px sur 71 routes et au z
   assert.match(qa, /const FONT_FLOOR_PX = 11\.99/);
   assert.match(qa, /querySelectorAll\(['"]svg text['"]\)/);
   assert.match(qa, /deviceScaleFactor:\s*2/);
-  assert.match(qa, /routes\.length[^\n]*71|71[^\n]*routes\.length/);
+  assert.match(qa, /routes\.length[^\n]*117|117[^\n]*routes\.length/);
 });
 
 test('la QA A2 couvre clavier, progression, score, replay, mobile, zoom et repli sans JavaScript', async () => {
@@ -220,10 +221,10 @@ test('enregistre tous les visuels du bloc A', async () => {
   ]);
   for (const name of [
     'TokenPredictor', 'ContextComparison', 'SolutionComparison',
-    'SolutionPrioritizer', 'VerificationAudit',
+    'SolutionPrioritizer', 'ModelCostGuide', 'ContextBudget', 'VerificationAudit',
   ]) assert.match(registry, new RegExp(name));
-  assert.doesNotMatch(registry, /ContextBudget|'context-budget'/);
-  assert.doesNotMatch(model, /'context-budget'/);
+  assert.match(registry, /'context-budget': ContextBudget/);
+  assert.match(model, /'context-budget'/);
   assert.doesNotMatch(registry, /ResponseWorkflowAgent|InterfaceContinuum/);
 });
 
@@ -337,6 +338,11 @@ test('les interactions du bloc A produisent des états pédagogiques déterminis
     index: 3,
     sentence: 'Le chat dort.',
     complete: true,
+  });
+
+  assert.deepEqual(state.calculateContextSelection(5, [true, false, true, false, true]), {
+    included: 3,
+    total: 5,
   });
 
   assert.equal(state.verificationForRisk('Moyen', [
@@ -483,6 +489,12 @@ test('les visuels polymorphes choisissent une scène propre à chaque forme de d
   assert.equal(state.getVerificationVariant(data('a4-biases')), 'biases');
   assert.equal(state.getVerificationVariant(data('a4-risk')), 'risk');
   assert.equal(state.getVerificationVariant(data('a4-method')), 'method');
+
+  const eSlides = E_DECKS.flatMap((deck) => deck.slides);
+  const contextData = (id: string) => eSlides.find((candidate) => candidate.id === id)?.visual.data ?? {};
+  assert.equal(state.getContextBudgetVariant(contextData('e1-contexte')), 'meter');
+  assert.equal(state.getContextBudgetVariant(contextData('e2-roles')), 'comparison');
+  assert.equal(state.getContextBudgetVariant(contextData('e3-mvp')), 'meter');
 });
 
 test('le checkpoint A1 avance sans dépasser la cinquième affirmation', async () => {

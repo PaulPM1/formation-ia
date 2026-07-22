@@ -56,6 +56,20 @@ export const getVerificationVariant = (data: VisualData): VerificationVariant =>
 export const advanceClassificationSequence = (current: number, count: number) =>
   count <= 0 ? 0 : Math.min(Math.max(0, current + 1), count - 1);
 
+export type ContextBudgetVariant = 'layers' | 'meter' | 'comparison' | 'mission';
+
+export const getContextBudgetVariant = (data: VisualData): ContextBudgetVariant => {
+  if (Array.isArray(data.layers)) return 'layers';
+  if (Array.isArray(data.meter)) return 'meter';
+  if (Array.isArray(data.comparisons)) return 'comparison';
+  return 'mission';
+};
+
+export const calculateContextSelection = (total: number, included: boolean[]) => ({
+  included: included.slice(0, total).filter(Boolean).length,
+  total,
+});
+
 export const resolvePanelVisibility = (count: number, active: number, enhanced: boolean) =>
   Array.from({ length: count }, (_, index) => !enhanced || index === active);
 

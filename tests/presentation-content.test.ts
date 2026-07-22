@@ -7,7 +7,8 @@ import { validatePresentation } from '../src/presentation/presentation-validatio
 
 const expectedIds = [
   'a1', 'a2', 'a3', 'a4', 'b0', 'b1', 'b2', 'b3', 'b4', 'b4-bis',
-  'c1', 'c2', 'c3',
+  'c1', 'c2', 'c3', 'd1', 'd2', 'd2-bis', 'd3', 'd4', 'e1', 'e2',
+  'e3',
 ];
 
 const expectedSlides = [
@@ -82,6 +83,52 @@ const expectedSlides = [
   { id: 'c3-guardrails', claim: "Bornée, observable et réversible : sinon l'automatisation amplifie l'erreur.", visualKey: 'trigger-timeline' },
   { id: 'c3-pause', claim: 'Tester, surveiller, mettre en pause et supprimer font partie du système.', visualKey: 'trigger-timeline' },
   { id: 'c3-mission', claim: "Concevez une automatisation que quelqu'un d'autre peut arrêter.", visualKey: 'mission-board' },
+  { id: 'd1-journey', claim: 'Tous les termes du dev racontent une seule histoire : le voyage du code.', visualKey: 'mcp-connection-map' },
+  { id: 'd1-workspace', claim: 'Le tour du poste de travail donne une image à chaque terme.', visualKey: 'workspace-triptych' },
+  { id: 'd1-git-github', claim: 'Git est l’outil, GitHub est la plateforme.', visualKey: 'verification-audit' },
+  { id: 'd1-reflex', claim: 'Le lexique ne se mémorise pas : il se demande.', visualKey: 'prompt-builder' },
+  { id: 'd1-mission', claim: 'Définissez chaque terme avec vos mots, pas ceux de la slide.', visualKey: 'mission-board' },
+  { id: 'd1-resources', claim: 'L’antisèche reste sur la table, les ressources prolongent.', visualKey: 'resource-rail' },
+  { id: 'd2-fear', claim: 'Un commit est un point de sauvegarde de jeu vidéo.', visualKey: 'context-comparison' },
+  { id: 'd2-three-words', claim: 'Commit, push, pull : un aller-retour entre votre machine et GitHub.', visualKey: 'mcp-connection-map' },
+  { id: 'd2-demo', claim: 'Casser puis ressusciter : le filet de sécurité est réel.', visualKey: 'ipmtr-loop' },
+  { id: 'd2-verify', claim: 'Faire confiance, oui ; à l’aveugle, non.', visualKey: 'verification-audit' },
+  { id: 'd2-mission', claim: 'Sauvegardez, cassez, revenez : sur votre propre projet.', visualKey: 'mission-board' },
+  { id: 'd2-rule', claim: 'Petite victoire = checkpoint.', visualKey: 'checkpoint' },
+  { id: 'd2bis-ritual', claim: 'Faire naître un projet suit un rituel en quatre temps, chacun avec son propriétaire.', visualKey: 'setup-diagnostic' },
+  { id: 'd2bis-diagnostic', claim: 'Ne créez que ce qui manque.', visualKey: 'setup-diagnostic' },
+  { id: 'd2bis-authorize', claim: 'L’IA guide l’autorisation ; vous cliquez, vos mots de passe restent à vous.', visualKey: 'setup-diagnostic' },
+  { id: 'd2bis-birth', claim: 'Le prompt rituel fait naître le projet : créé, versionné, en ligne.', visualKey: 'prompt-builder' },
+  { id: 'd2bis-mission', claim: 'Faites naître le projet du fil rouge, preuve à l’appui.', visualKey: 'mission-board' },
+  { id: 'd2bis-proof', claim: 'On n’avance jamais sans preuve visible.', visualKey: 'checkpoint' },
+  { id: 'd3-public', claim: 'Le déploiement fait passer le projet de « chez moi » à une adresse pour tout le monde.', visualKey: 'context-comparison' },
+  { id: 'd3-loop', claim: 'Repo connecté, chaque push, mise à jour automatique : la boucle ne demande plus rien.', visualKey: 'mcp-connection-map' },
+  { id: 'd3-demo', claim: 'Toute la boucle du déploiement continu, vécue en une minute.', visualKey: 'setup-diagnostic' },
+  { id: 'd3-mission', claim: 'Votre projet doit s’ouvrir sur un appareil qui n’est pas le vôtre.', visualKey: 'mission-board' },
+  { id: 'd3-checkpoint', claim: 'Ce qui est déployé est public, code compris.', visualKey: 'checkpoint' },
+  { id: 'd3-resources', claim: 'Les ressources Vercel prolongent la boucle.', visualKey: 'resource-rail' },
+  { id: 'd4-exigence', claim: 'L’IA écrit du code qui marche, pas forcément du code sûr.', visualKey: 'verification-audit' },
+  { id: 'd4-rules', claim: 'Quatre règles d’or couvrent l’essentiel des dégâts évitables.', visualKey: 'verification-audit' },
+  { id: 'd4-prompts', claim: 'Deux prompts prêts à l’emploi : au démarrage, et avant chaque mise en ligne.', visualKey: 'prompt-builder' },
+  { id: 'd4-audit', claim: 'Le rapport qui trouve la clé fait plus d’effet que dix slides.', visualKey: 'verification-audit' },
+  { id: 'd4-mission', claim: 'Auditez votre projet, corrigez le plus grave, prouvez-le.', visualKey: 'mission-board' },
+  { id: 'd4-checkpoint', claim: 'Poser la bonne exigence vaut mieux que connaître chaque technique.', visualKey: 'checkpoint' },
+  { id: 'e1-brief', claim: "Une demande d'une phrase laisse le modèle inventer le brief.", visualKey: 'prompt-builder' },
+  { id: 'e1-leviers', claim: "Contexte, spécificité, rôle et contraintes réduisent l'ambiguïté.", visualKey: 'prompt-builder' },
+  { id: 'e1-demo', claim: 'Le bon prompt fournit ce que le modèle ne pouvait pas deviner.', visualKey: 'context-comparison' },
+  { id: 'e1-contexte', claim: 'La fenêtre de contexte est une ressource qui se remplit et se pollue.', visualKey: 'context-budget' },
+  { id: 'e1-repartir', claim: "La reformulation propre bat l'empilement de rustines.", visualKey: 'prompt-builder' },
+  { id: 'e1-mission', claim: 'Écrivez deux versions, comparez, puis dégradez un levier.', visualKey: 'mission-board' },
+  { id: 'e2-plan', claim: "Un projet se lit comme le plan d'une maison, pas ligne à ligne.", visualKey: 'ipmtr-loop' },
+  { id: 'e2-roles', claim: 'Un fichier, un rôle : la séparation rend la modification possible.', visualKey: 'context-budget' },
+  { id: 'e2-carte', claim: "La carte d'un projet s'interroge sans lire son code.", visualKey: 'prompt-builder' },
+  { id: 'e2-trente', claim: 'Trente secondes pour expliquer votre projet, sinon vous ne le contrôlez plus.', visualKey: 'checkpoint' },
+  { id: 'e2-mission', claim: 'Établissez la carte de votre projet et localisez la prochaine modification.', visualKey: 'mission-board' },
+  { id: 'e3-cycle', claim: 'Cadrer, petite étape, tester, ajuster : on ne demande jamais le projet entier.', visualKey: 'ipmtr-loop' },
+  { id: 'e3-mvp', claim: 'Le MVP est la plus petite version qui rend déjà service.', visualKey: 'context-budget' },
+  { id: 'e3-etapes', claim: 'Si une étape ne peut pas être testée, elle est trop grosse.', visualKey: 'context-comparison' },
+  { id: 'e3-enlisement', claim: "Trois signaux d'enlisement appellent trois parades, pas plus d'insistance.", visualKey: 'checkpoint' },
+  { id: 'e3-mission', claim: 'Cadrez le projet de votre restitution finale.', visualKey: 'mission-board' },
 ];
 
 test('A1 résout la même amorce dans deux univers sémantiques', () => {
@@ -109,11 +156,11 @@ function slideData(slideId: string) {
   return slide.visual.data;
 }
 
-test('couvre toutes les briques A1 à C3 dans l’ordre pédagogique', () => {
+test('couvre toutes les briques A1 à E3 dans l’ordre pédagogique', () => {
   assert.deepEqual(PRESENTATION_DECKS.map((deck) => deck.brickId), expectedIds);
 });
 
-test('contient les 71 étapes de compréhension validées', () => {
+test('contient les 117 étapes de compréhension validées', () => {
   assert.deepEqual(
     PRESENTATION_SLIDES.map((slide) => ({
       id: slide.id,

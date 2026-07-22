@@ -1,0 +1,103 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { formatDifficulty } from '../../../content/projet-model';
+
+export async function getStaticPaths() {
+  const projets = (await getCollection('projets')).toSorted(
+    (left, right) => left.data.order - right.data.order,
+  );
+
+  return projets.map((projet, index) => ({
+    params: { id: projet.data.id },
+    props: {
+      projet,
+      previous: projets[index - 1] ?? null,
+      next: projets[index + 1] ?? null,
+      total: projets.length,
+    },
+  }));
+}
+
+interface Props {
+  projet: CollectionEntry<'projets'>;
+  previous: CollectionEntry<'projets'> | null;
+  next: CollectionEntry<'projets'> | null;
+  total: number;
+}
+
+const { projet, previous, next, total } = Astro.props;
+const { Content } = await render(projet);
+
+const bricks = await getCollection('briques');
+const brickTitles = new Map(bricks.map((brick) => [brick.data.id, brick.data.title]));
+---
+
+<BaseLayout
+  title={`Atelier · ${projet.data.title}`}
+  description={`${projet.data.title} : ${projet.data.tagline}`}
+>
+  <div class="detail-page projet-page" data-projet={projet.data.id}>
+    <a class="back-link" href="/atelier/"><span aria-hidden="true">←</span> Tous les projets</a>
+
+    <header class="detail-header">
+      <div class="detail-title">
+        <p class="eyebrow">
+          Atelier · Projet {projet.data.order} sur {total}
+        </p>
+        <h1><span>0{projet.data.order}</span>{projet.data.title}</h1>
+      </div>
+      <p class="lede">{projet.data.tagline}</p>
+      <p class="meta-line stage-meta">
+        <span class="badge">{formatDifficulty(projet.data.difficulty)}</span>
+        <span>{projet.data.teamHint}</span>
+      </p>
+      <div class="stage-bricks">
+        <p class="eyebrow">Briques mobilisées</p>
+        <ul class="pill-list" role="list">
+          {projet.data.bricks.map((brickId) => (
+            <li>
+              <a class="brick-pill" data-family={brickId.charAt(0)} href={`/briques/${brickId}/`}>
+                <span aria-hidden="true">{brickId.toUpperCase()}</span>
+                {brickTitles.get(brickId) ?? brickId.toUpperCase()}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </header>
+
+    <section class="stage-brief" aria-label="Repères du projet">
+      <div data-highlight>
+        <p class="eyebrow">Ce que vous montrez dimanche</p>
+        <p>{projet.data.deliverable}</p>
+      </div>
+      <div>
+        <p class="eyebrow">À quoi ça sert après</p>
+        <p>{projet.data.afterwards}</p>
+      </div>
+    </section>
+
+    <article class="brick-content atelier-content projet-content">
+      <Content />
+    </article>
+
+    <nav class="stage-pager" aria-label="Navigation entre projets">
+      <div>
+        {previous && (
+          <a class="button button-light" href={`/atelier/projets/${previous.data.id}/`}>
+            <span aria-hidden="true">←</span> {previous.data.title}
+          </a>
+        )}
+      </div>
+      <div>
+        {next && (
+          <a class="button button-light" href={`/atelier/projets/${next.data.id}/`}>
+            {next.data.title} <span aria-hidden="true">→</span>
+          </a>
+        )}
+      </div>
+    </nav>
+  </div>
+</BaseLayout>
