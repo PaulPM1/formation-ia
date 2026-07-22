@@ -138,6 +138,7 @@ export function flattenSlides(decks: PresentationDeck[]): RoutedSlide[] {
     brickId: deck.brickId,
     family: deck.family,
     brickTitle: deck.title,
+    optional: Boolean(deck.optional),
     route: `/presenter/${deck.brickId}/${slide.id}/`,
     absoluteIndex: absoluteIndex++,
     total,
@@ -145,10 +146,14 @@ export function flattenSlides(decks: PresentationDeck[]): RoutedSlide[] {
 }
 
 export function getSlideNeighbors(slides: RoutedSlide[], slideId: string) {
-  const index = slides.findIndex((slide) => slide.id === slideId);
-  if (index < 0) throw new Error(`Slide inconnue : ${slideId}`);
+  const current = slides.find((slide) => slide.id === slideId);
+  if (!current) throw new Error(`Slide inconnue : ${slideId}`);
+  const sequence = current.optional
+    ? slides
+    : slides.filter((slide) => !slide.optional);
+  const index = sequence.findIndex((slide) => slide.id === slideId);
   return {
-    previous: slides[index - 1] ?? null,
-    next: slides[index + 1] ?? null,
+    previous: sequence[index - 1] ?? null,
+    next: sequence[index + 1] ?? null,
   };
 }

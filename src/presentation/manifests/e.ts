@@ -230,7 +230,7 @@ export const E_DECKS = [
           loopBack: 'Ajuster renvoie à cadrer la petite étape suivante.',
         } },
         links: [wikiLink('e3', 'concept-durable', 'Le cycle de cadrage')],
-        speaker: { durationMinutes: 3, notes: 'C’est la méthode qui sépare « j’ai joué avec l’IA » de « j’ai livré un projet ». La boucle outillée de B4 en est la version Claude Code.', transition: 'Le point de départ du cycle est la version la plus petite qui rend service.' },
+        speaker: { durationMinutes: 3, notes: 'C’est la méthode qui sépare « j’ai joué avec l’IA » de « j’ai livré un projet ». La même boucle s’applique dans Claude Code comme dans tout travail par petites étapes vérifiées.', transition: 'Le point de départ du cycle est la version la plus petite qui rend service.' },
         accessibleDescription: 'Le cycle cadrer, petite étape, tester, ajuster est détaillé en quatre stades à côté de la boucle de travail, avec retour au cadrage.',
       }),
       slide({

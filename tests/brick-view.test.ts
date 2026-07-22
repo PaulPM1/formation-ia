@@ -5,6 +5,7 @@ import {
   FAMILY_LABELS,
   getStructureCompletion,
   groupBricksByFamily,
+  PRIORITY_LABELS,
 } from '../src/content/brick-view';
 
 test('regroupe les briques par famille et conserve l’ordre pédagogique', () => {
@@ -41,4 +42,8 @@ test('calcule la complétude de la structure attendue pour un atelier', () => {
     total: 13,
     percentage: 92,
   });
+});
+
+test('nomme explicitement la priorité facultative', () => {
+  assert.equal(PRIORITY_LABELS.facultatif, 'Facultatif');
 });

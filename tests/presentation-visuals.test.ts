@@ -889,6 +889,9 @@ test('le sweep QA B contrôle les descendants calculés et les cinq labels Setup
   assert.match(qa, /overflowX/);
   assert.match(qa, /setup__route-label/);
   assert.match(qa, /Compte.*Surface.*Fonctions.*Test.*Repli/s);
+  assert.match(qa, /b4-context.*b4bis-checkpoint/s);
+  assert.match(qa, /presentation-heading__optional/);
+  assert.match(qa, /Facultatif/);
 });
 
 test('enregistre tous les visuels du bloc C', async () => {

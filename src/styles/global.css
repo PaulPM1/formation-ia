@@ -775,6 +775,21 @@ p {
   transform: translate(-0.1rem, -0.1rem);
 }
 
+.brick-card[data-priority="facultatif"] {
+  border-color: color-mix(in srgb, var(--ink), var(--paper) 38%);
+  background: color-mix(in srgb, var(--surface), #d8d8d3 22%);
+}
+
+.brick-card[data-priority="facultatif"]::before {
+  border-color: color-mix(in srgb, var(--ink), var(--paper) 38%);
+  background: #c9cbc7;
+}
+
+.brick-card[data-priority="facultatif"] .card-kicker span:first-child {
+  border-color: color-mix(in srgb, var(--ink), var(--paper) 38%);
+  background: #dedfdb;
+}
+
 .card-kicker {
   display: flex;
   align-items: center;
@@ -856,6 +871,11 @@ p {
 
 .badge[data-priority="socle"] {
   background: var(--family-accent);
+}
+
+.badge[data-priority="facultatif"] {
+  border-style: dashed;
+  background: #e4e4e0;
 }
 
 .badge[data-priority="a-trancher"] {

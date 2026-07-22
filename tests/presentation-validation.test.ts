@@ -132,3 +132,27 @@ test('aplatit la séquence et calcule ses voisins', () => {
     next: null,
   });
 });
+
+test('le parcours principal contourne un deck facultatif sans casser sa navigation interne', () => {
+  const requiredBefore = deck;
+  const optional = {
+    ...deck,
+    brickId: 'a2',
+    order: 2,
+    optional: true,
+    slides: [{ ...deck.slides[0], id: 'a2-opening' }],
+  } as PresentationDeck;
+  const requiredAfter = {
+    ...deck,
+    brickId: 'a3',
+    order: 3,
+    slides: [{ ...deck.slides[0], id: 'a3-opening' }],
+  };
+  const slides = flattenSlides([requiredBefore, optional, requiredAfter]);
+
+  assert.equal(slides.find((slide) => slide.id === 'a2-opening')?.optional, true);
+  assert.equal(getSlideNeighbors(slides, 'a1-opening').next?.id, 'a3-opening');
+  assert.equal(getSlideNeighbors(slides, 'a3-opening').previous?.id, 'a1-opening');
+  assert.equal(getSlideNeighbors(slides, 'a2-opening').previous?.id, 'a1-opening');
+  assert.equal(getSlideNeighbors(slides, 'a2-opening').next?.id, 'a3-opening');
+});

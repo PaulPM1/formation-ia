@@ -54,7 +54,7 @@ const groups = groupBricksByFamily(bricks);
             const structure = getStructureCompletion(brick.body ?? '', brick.data.type);
             return (
               <li>
-                <article class="brick-card" data-family={brick.data.family}>
+                <article class="brick-card" data-family={brick.data.family} data-priority={brick.data.priority}>
                   <p class="card-kicker">
                     <span>{brick.data.id.toUpperCase()}</span>
                     <span>ordre {brick.data.order}</span>
