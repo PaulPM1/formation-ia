@@ -28,23 +28,25 @@ Vous ouvrez une page, et elle vous dit ce qui vous attend aujourd'hui : les éch
 
 ## Cahier des charges
 
-### Exigences minimales
+Un cahier des charges, c'est la liste de ce que votre projet doit savoir faire pour être réussi. Rien de technique ici : chaque ligne est un résultat visible. Le « comment » vit dans les étapes plus bas, et vous n'êtes jamais seul, l'IA fait le travail, vous décidez.
 
-- Un dossier de projet suivi par git, avec un `CLAUDE.md` qui décrit qui vous êtes, votre quotidien, vos projets en cours et le ton attendu.
-- Une arborescence de mémoire (notes, documents, journal, personnes) et un fichier de règles de routage qui dit où va quoi.
-- Au moins 15 éléments réels rangés dans cette mémoire, pas des exemples inventés.
-- Un skill qui produit le brief du jour en une commande, avec au moins trois sections et une source citée (chemin de fichier) sous chaque affirmation.
-- Une section « ce que je n'ai pas trouvé » dans le brief : l'assistant signale ses trous au lieu de les combler.
-- Une page web déployée, accessible depuis un téléphone, qui affiche le dernier brief.
-- Un audit de sécurité passé : aucun secret ni donnée sensible dans un dépôt public.
+### Le minimum pour un assistant réussi
+
+- **Il vous connaît.** Un fichier d'identité (le `CLAUDE.md`) dit qui vous êtes, à quoi ressemble votre quotidien et vos projets en cours, pour qu'il n'ait jamais à vous le redemander.
+- **Il range vos informations à des endroits prévisibles.** Vous choisissez quelques dossiers (par exemple : notes, rendez-vous, personnes), et vous écrivez une note simple qui dit où va quoi (« un rendez-vous va dans le dossier agenda »). C'est ce qu'on appelle des règles de rangement.
+- **Sa mémoire contient de vraies choses :** au moins quinze de vos notes, documents ou rendez-vous réels, pas des exemples inventés.
+- **Il produit votre point du jour en une phrase.** Ce résumé a au moins trois parties, et chaque ligne indique d'où elle vient (le fichier qui l'a produite), pour que vous puissiez vérifier.
+- **Il avoue ses trous.** Le résumé contient une partie « ce que je n'ai pas trouvé » : un manque signalé vaut mieux qu'une réponse inventée.
+- **Il est consultable en ligne.** Une page ouvrable depuis un téléphone affiche le dernier point du jour.
+- **Il est sûr.** Un contrôle de sécurité confirme qu'aucun mot de passe ni information sensible n'est parti en ligne.
 
 ### Pour aller plus loin
 
-- Un skill de capture qui range automatiquement une phrase brute au bon endroit, au bon format.
-- Un brief produit chaque matin sans intervention, par tâche planifiée.
-- Un MCP agenda pour que le brief cite vos vrais rendez-vous.
-- Un historique des briefs consultable depuis la page.
-- Une recherche dans la mémoire depuis l'interface.
+- **La capture automatique :** vous lui jetez une phrase en vrac (« RDV dentiste jeudi 15 h ») et elle atterrit rangée toute seule, au bon endroit.
+- **Le point du jour tout seul :** il se prépare chaque matin sans que vous le demandiez (une tâche programmée).
+- **Le vrai agenda :** l'assistant lit votre agenda réel pour citer vos rendez-vous du jour (une connexion appelée MCP, vue en C2).
+- **L'historique :** retrouver depuis la page les points des jours précédents.
+- **La recherche :** interroger votre mémoire directement depuis la page.
 
 > **Avant de vous lancer.** Pour transformer ce cahier des charges en plan d'action, utilisez la méthode d'équipe ([E4](/briques/e4/)) : collez son prompt de cadrage et l'IA joue l'analyste, le chef de produit et l'architecte pour vous sortir un plan ordonné à partir des exigences ci-dessus. Vous validez le plan, puis vous déroulez les étapes.
 
