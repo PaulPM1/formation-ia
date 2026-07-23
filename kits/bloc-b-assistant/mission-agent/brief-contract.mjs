@@ -17,6 +17,7 @@ const CANONICAL_SOURCES = new Set(Object.values(EXPECTED_NOTE_SOURCES));
 const SOURCE_TOKEN_PRESENT = /\[sources?\s*:/i;
 const SOURCE_TOKEN = /\[sources?\s*:/gi;
 const SOURCE_BLOCK = /\[sources?:\s*([^\]]*)\]/gi;
+const CLAUSE_SEPARATOR = /[.!?:;,]+/u;
 const DECISION_TOKENS = new Set([
   'choisi',
   'choisie',
@@ -38,6 +39,7 @@ const DECISION_TOKENS = new Set([
   'trancher',
 ]);
 const NEGATION_TOKENS = new Set(['non', 'pas']);
+const NEGATION_LOOKBACK = 4;
 
 const tokenizeNormalizedWords = (value) => (
   value
@@ -48,12 +50,21 @@ const tokenizeNormalizedWords = (value) => (
 );
 
 const hasDecisionTaken = (line) => {
-  const tokens = tokenizeNormalizedWords(line);
-  return tokens.some((token, index) => {
-    const previousToken = tokens[index - 1];
-    if (NEGATION_TOKENS.has(previousToken)) return false;
-    return DECISION_TOKENS.has(token)
-      || (token === 'prise' && previousToken === 'decision');
+  const clauses = line.split(CLAUSE_SEPARATOR);
+  return clauses.some((clause) => {
+    const tokens = tokenizeNormalizedWords(clause);
+    return tokens.some((token, index) => {
+      const previousToken = tokens[index - 1];
+      const isDecision = DECISION_TOKENS.has(token)
+        || (token === 'prise' && previousToken === 'decision');
+      if (!isDecision) return false;
+
+      const lookback = tokens.slice(
+        Math.max(0, index - NEGATION_LOOKBACK),
+        index,
+      );
+      return !lookback.some((candidate) => NEGATION_TOKENS.has(candidate));
+    });
   });
 };
 

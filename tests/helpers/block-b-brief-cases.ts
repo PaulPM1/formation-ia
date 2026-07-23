@@ -148,4 +148,28 @@ export const briefContractCases: BriefContractCase[] = [
     ),
     expected: pass,
   },
+  {
+    name: 'conflit non tranché avec auxiliaire',
+    markdown: canonicalBrief.replace(
+      'Confirmer le 18 ou le 19 septembre.',
+      'Le conflit n’a pas été tranché : le 18 ou le 19 septembre.',
+    ),
+    expected: pass,
+  },
+  {
+    name: 'date non fixée avec auxiliaire et adverbe',
+    markdown: canonicalBrief.replace(
+      'Confirmer le 18 ou le 19 septembre.',
+      'La date n’est pas encore fixée : le 18 ou le 19 septembre.',
+    ),
+    expected: pass,
+  },
+  {
+    name: 'décision distincte après une proposition niée',
+    markdown: canonicalBrief.replace(
+      'Confirmer le 18 ou le 19 septembre.',
+      'Le conflit n’a pas été tranché, mais retenir le 18 ou le 19 septembre.',
+    ),
+    expected: { ...pass, uncertainty: false },
+  },
 ];

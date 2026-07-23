@@ -298,3 +298,47 @@ mobile, le zoom 200 %, le mouvement réduit et le repli sans JavaScript.
 La liste décisionnelle reste volontairement fermée. Une nouvelle flexion ou
 une nouvelle formulation métier devra être ajoutée au corpus mutualisé avant
 d'entrer dans le contrat.
+
+## Dernier cas de négation
+
+### Preuves RED
+
+- Après ajout des trois cas mutualisés,
+  `npx tsx --test tests/block-b-brief-validator.test.ts` échoue avec 19/21
+  tests réussis. `pas été tranché` et `pas encore fixée` retournent tous deux
+  `uncertainty: false` au lieu de `true`.
+- Le même corpus exécuté par
+  `npx tsx --test --test-name-pattern="mission agent autonome|sorties adversariales" tests/block-b-kit.test.ts`
+  échoue avec 1/2 test réussi sur `conflit non tranché avec auxiliaire`.
+- Le cas `pas été tranché, mais retenir` reste déjà invalide avant le
+  correctif. Il protège la portée de la négation.
+
+### Correctif
+
+- Chaque ligne est séparée en propositions sur le point, le point
+  d'interrogation, le point d'exclamation, les deux-points, la virgule et le
+  point-virgule.
+- Pour chaque token décisionnel, la recherche de `non` ou `pas` est bornée aux
+  quatre tokens précédents de la même proposition.
+- Une négation couvre ainsi auxiliaire et adverbe, sans traverser la virgule
+  pour masquer le `retenir` de la proposition suivante.
+
+### Preuves GREEN
+
+- `npx tsx --test tests/block-b-brief-validator.test.ts` : 21/21.
+- `npx tsx --test --test-name-pattern="mission agent autonome|sorties adversariales" tests/block-b-kit.test.ts` :
+  2/2.
+- `npm run kit:block-b` : succès, ZIP régénéré à 10 761 octets.
+- `npm run kit:block-b:check` : kit synchronisé.
+- `npm run typecheck` : 0 erreur, 0 avertissement, 0 indice.
+- `npm test` : 186/186.
+- `git diff --check` sur le correctif de travail : aucune erreur.
+- `git diff --check f747a781588c55c8f0af58a0c42ec3d82bd7bb71..HEAD` :
+  aucune erreur avec le commit inclus.
+
+### Préoccupation résiduelle
+
+La fenêtre de quatre tokens est intentionnellement bornée. Une construction
+où la négation et le verbe décisionnel sont séparés par plus de quatre tokens,
+ou deux propositions sans ponctuation séparatrice, devra être ajoutée au
+corpus avant d'élargir la règle.
