@@ -18,43 +18,7 @@ export const D_DECKS = [
   {
     brickId: 'd1', family: 'd', order: 14, title: 'Lexique dev', slides: [
       slide({
-        id: 'd1-journey', role: 'opening',
-        claim: 'Tous les termes du dev racontent une seule histoire : le voyage du code.',
-        support: 'Écrire, sauvegarder, mettre en ligne, protéger : quatre étapes de votre machine jusqu’aux utilisateurs.',
-        visual: { key: 'mcp-connection-map', data: {
-          interaction: 'Suivre le voyage du code.',
-          nodes: [
-            { name: 'Écrire', sends: 'IDE et terminal' },
-            { name: 'Sauvegarder', sends: 'Repo, Git et GitHub' },
-            { name: 'Mettre en ligne', sends: 'Serveur, déploiement, Vercel' },
-            { name: 'Protéger', sends: 'Clé API et variable d’environnement' },
-          ],
-          returnPath: ['Sauvegarder : brique D2', 'Mettre en ligne : brique D3', 'Protéger : brique D4'],
-        } },
-        links: [wikiLink('d1', 'concept-durable', 'Le voyage du code')],
-        speaker: { durationMinutes: 2, notes: 'Annoncer le contrat : dix minutes de vocabulaire pour ne plus jamais être perdu ensuite. Relier chaque étape à un élément visible du poste de travail.', transition: 'Chaque terme mérite une image : allons la chercher sur le poste de travail.' },
-        accessibleDescription: 'Quatre nœuds enchaînent écrire, sauvegarder, mettre en ligne et protéger, avec les termes associés à chaque étape et le plan des briques suivantes.',
-      }),
-      slide({
-        id: 'd1-workspace', role: 'demonstration',
-        claim: 'Le tour du poste de travail donne une image à chaque terme.',
-        support: 'L’IDE est la fenêtre entière, le terminal le panneau du bas, le repo l’arborescence à gauche.',
-        visual: { key: 'workspace-triptych', data: {
-          interaction: 'Mettre en évidence chaque zone.',
-          sharedContext: 'Un seul projet, trois vues',
-          panes: [
-            { name: 'IDE', role: 'La fenêtre entière : l’atelier où l’on écrit et organise le code' },
-            { name: 'Terminal', role: 'Le panneau du bas : parler à l’ordinateur en lignes de commande' },
-            { name: 'Repo', role: 'L’arborescence à gauche : le dossier du projet et son historique' },
-          ],
-          destination: 'Le même repo s’ouvre ensuite sur github.com, puis une app déployée sur une vraie URL',
-        } },
-        links: [wikiLink('d1', 'pratique-avec-claude', 'Tour du poste de travail')],
-        speaker: { durationMinutes: 2, notes: 'Tout pointer à l’écran : VS Code ouvert, puis le même repo sur github.com et une app déployée. Préciser que Claude Code vit dans le terminal mais s’utilise aussi depuis l’application Claude.', transition: 'Deux de ces termes se ressemblent trop pour rester côte à côte sans vérification.' },
-        accessibleDescription: 'Trois panneaux montrent l’explorateur, l’éditeur et le terminal du même projet, avec le rôle de chaque zone à l’écran.',
-      }),
-      slide({
-        id: 'd1-reflex', role: 'explanation',
+        id: 'd1-reflex', role: 'opening',
         claim: 'Le lexique ne se mémorise pas : il se demande.',
         support: 'Quand un terme bloque, une analogie demandée à Claude vaut mieux qu’une définition apprise.',
         visual: { key: 'prompt-builder', data: {

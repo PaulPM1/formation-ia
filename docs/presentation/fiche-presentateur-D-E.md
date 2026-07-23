@@ -14,23 +14,17 @@ Règle d'or : une slide, une idée, une phrase, un exemple. Puis vous passez.
 
 ## Bloc D : l'écosystème du dev
 
-### D1 : Lexique dev (3 slides, brique d1)
+### D1 : Lexique dev (1 slide, brique d1)
 
-**1. Le voyage du code.** L'idée : tout le vocabulaire technique raconte UNE
-histoire, le code qui voyage de votre machine jusqu'aux utilisateurs, en quatre
-étapes : écrire, sauvegarder, mettre en ligne, protéger. Ce que vous dites : « on
-ne va pas apprendre trente mots, juste suivre un voyage ». Ne dites PAS chaque
-définition dans le détail : c'est la carte, pas le manuel.
+Le vocabulaire dev ne se présente pas d'entrée : il s'apprend en contexte quand
+on le rencontre (le terminal au setup, le repo en D2, Vercel en D3, les clés en
+D4). Une seule slide suffit, celle qui porte le message durable.
 
-**2. Le tour du poste de travail.** L'idée : mettre une image sur trois mots.
-L'IDE = la fenêtre entière (VS Code), le terminal = le panneau du bas, le repo =
-l'arborescence à gauche. Ce que vous faites : pointez à l'écran, VS Code ouvert.
-Ne dites PAS Git vs GitHub ici (c'est D2), ni SDK, framework, etc.
-
-**3. Le réflexe.** L'idée : on ne mémorise pas le jargon, on le demande à
-Claude. Montrez le prompt « explique-moi ce qu'est un repo comme si je n'avais
-jamais codé, avec une analogie de cuisine ». Message : personne ne retient
-quinze définitions, mais tout le monde sait quoi demander.
+**Le réflexe.** L'idée : on ne mémorise pas le jargon, on le demande à Claude.
+Montrez le prompt « explique-moi ce qu'est un repo comme si je n'avais jamais
+codé, avec une analogie de cuisine ». Message : personne ne retient quinze
+définitions, mais tout le monde sait quoi demander. Si un terme surgit (SDK,
+framework), répondez en une phrase et renvoyez à ce réflexe.
 
 ### D2 : GitHub et versionnement (3 slides, brique d2)
 
@@ -164,8 +158,9 @@ officiel.
 Ces slides existaient avant, elles sont retirées de la présentation mais leur
 contenu reste dans les briques si quelqu'un veut le détail.
 
-- **D1** : Git vs GitHub (trop fin, c'est D2) ; la mission « définissez avec vos
-  mots » ; les ressources.
+- **D1** : le voyage du code (l'ordre du bloc D le raconte déjà) ; le tour du
+  poste de travail (déjà vu au setup VS Code) ; Git vs GitHub (c'est D2) ; la
+  mission ; les ressources. Il ne reste que le réflexe.
 - **D2** : commit/push/pull en détail ; la mission ; « petite victoire =
   checkpoint ».
 - **D2-bis** : diagnostic initial ; l'écran d'autorisation détaillé ; la mission

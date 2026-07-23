@@ -71,8 +71,6 @@ const expectedSlides = [
   { id: 'c3-guardrails', claim: "Bornée, observable et réversible : sinon l'automatisation amplifie l'erreur.", visualKey: 'trigger-timeline' },
   { id: 'c3-pause', claim: 'Tester, surveiller, mettre en pause et supprimer font partie du système.', visualKey: 'trigger-timeline' },
   { id: 'c3-mission', claim: "Concevez une automatisation que quelqu'un d'autre peut arrêter.", visualKey: 'mission-board' },
-  { id: 'd1-journey', claim: 'Tous les termes du dev racontent une seule histoire : le voyage du code.', visualKey: 'mcp-connection-map' },
-  { id: 'd1-workspace', claim: 'Le tour du poste de travail donne une image à chaque terme.', visualKey: 'workspace-triptych' },
   { id: 'd1-reflex', claim: 'Le lexique ne se mémorise pas : il se demande.', visualKey: 'prompt-builder' },
   { id: 'd2-fear', claim: 'Un commit est un point de sauvegarde de jeu vidéo.', visualKey: 'context-comparison' },
   { id: 'd2-demo', claim: 'Casser puis ressusciter : le filet de sécurité est réel.', visualKey: 'ipmtr-loop' },
@@ -128,7 +126,7 @@ test('couvre toutes les briques A1 à E4 dans l’ordre pédagogique', () => {
   assert.deepEqual(PRESENTATION_DECKS.map((deck) => deck.brickId), expectedIds);
 });
 
-test('contient les 85 étapes de compréhension validées', () => {
+test('contient les 83 étapes de compréhension validées', () => {
   assert.deepEqual(
     PRESENTATION_SLIDES.map((slide) => ({
       id: slide.id,

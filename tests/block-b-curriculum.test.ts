@@ -33,10 +33,10 @@ const durationByDeck = {
 const blockB = PRESENTATION_DECKS.filter((deck) => deck.family === 'b');
 const blockBSlides = blockB.flatMap((deck) => deck.slides);
 
-test('verrouille les 21 routes B et les 85 slides de la présentation', () => {
+test('verrouille les 21 routes B et les 83 slides de la présentation', () => {
   assert.deepEqual(blockBSlides.map((slide) => slide.id), expectedRoutes);
   assert.equal(blockBSlides.length, 21);
-  assert.equal(PRESENTATION_SLIDES.length, 85);
+  assert.equal(PRESENTATION_SLIDES.length, 83);
   assert.ok(removedRoutes.every((id) => !PRESENTATION_SLIDES.some((slide) => slide.id === id)));
 });
 

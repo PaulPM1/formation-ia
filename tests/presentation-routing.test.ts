@@ -58,7 +58,7 @@ test('le shell expose un état plein écran initial et une zone d’annonce', as
   assert.match(source, /data-presenter-announcer/);
 });
 
-test('la QA navigateur durable couvre navigation native, 404, plein écran et les 85 mobiles', async () => {
+test('la QA navigateur durable couvre navigation native, 404, plein écran et les 83 mobiles', async () => {
   const source = await readFile(
     new URL('../scripts/qa-presenter.mjs', import.meta.url),
     'utf8',
@@ -79,5 +79,5 @@ test('la QA navigateur durable couvre navigation native, 404, plein écran et le
   assert.match(source, /track-label/);
   assert.match(source, /Rattrapage/);
   assert.match(source, /removedBlockBRoutes/);
-  assert.match(source, /slideRoutes\.length[^\n]*85|85[^\n]*slideRoutes\.length/);
+  assert.match(source, /slideRoutes\.length[^\n]*83|83[^\n]*slideRoutes\.length/);
 });
