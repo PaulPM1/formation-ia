@@ -18,6 +18,18 @@ const HISTORICAL_SOURCE_ALIASES = {
   'inbox/02-reunion.md': 'reunion.md',
   'inbox/03-messages.md': 'messages.md',
 } as const;
+const CANONICAL_SOURCES: ReadonlySet<string> = new Set(
+  Object.values(EXPECTED_NOTE_SOURCES),
+);
+
+const normalizeSource = (source: string): string | null => {
+  if (source in HISTORICAL_SOURCE_ALIASES) {
+    return HISTORICAL_SOURCE_ALIASES[
+      source as keyof typeof HISTORICAL_SOURCE_ALIASES
+    ];
+  }
+  return CANONICAL_SOURCES.has(source) ? source : null;
+};
 
 const parseSections = (markdown: string) => {
   const sections = new Map<string, string[]>();
@@ -48,13 +60,14 @@ export function validateBlockBBrief(markdown: string): BriefCheck[] {
   ) as Record<string, number>;
   const associated = actionLines.length > 0 && actionLines.every((line) => {
     const noteIds = [...line.matchAll(/\bN\d{2}\b/g)].map(([noteId]) => noteId);
-    const citedSources = [...line.matchAll(/\[sources?:\s*([^\]]+)\]/gi)]
-      .flatMap(([, sourceBlock]) => sourceBlock.match(/[a-z0-9._/-]+\.md/gi) ?? [])
-      .map((source) => (
-        source in HISTORICAL_SOURCE_ALIASES
-          ? HISTORICAL_SOURCE_ALIASES[source as keyof typeof HISTORICAL_SOURCE_ALIASES]
-          : source
-      ));
+    const sourceBlocks = [...line.matchAll(/\[sources?:\s*([^\]]*)\]/gi)]
+      .map(([, sourceBlock]) => sourceBlock);
+    const sourceEntries = sourceBlocks.flatMap((sourceBlock) => (
+      sourceBlock.split(';').map((source) => source.trim())
+    ));
+    const citedSources = sourceEntries.map(normalizeSource);
+    const sourceBlocksValid = sourceBlocks.length > 0
+      && citedSources.every((source) => source !== null);
     const expectedSources: string[] = [...new Set(noteIds.flatMap((noteId) => (
       noteId in EXPECTED_NOTE_SOURCES
         ? [EXPECTED_NOTE_SOURCES[noteId as keyof typeof EXPECTED_NOTE_SOURCES]]
@@ -63,8 +76,11 @@ export function validateBlockBBrief(markdown: string): BriefCheck[] {
     for (const noteId of noteIds) if (noteId in counts) counts[noteId] += 1;
     return noteIds.length > 0
       && noteIds.every((noteId) => noteId in EXPECTED_NOTE_SOURCES)
+      && sourceBlocksValid
       && citedSources.length === expectedSources.length
-      && citedSources.every((source) => expectedSources.includes(source));
+      && citedSources.every((source) => (
+        source !== null && expectedSources.includes(source)
+      ));
   });
   const sources = associated && Object.values(counts).every((count) => count === 1);
   const uncertainty = (sections.get('À confirmer') ?? [])

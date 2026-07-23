@@ -47,6 +47,16 @@ test('borne la compatibilité aux chemins historiques précis', () => {
   assert.equal(checks.find((check) => check.id === 'sources')?.ok, false);
 });
 
+test('rejette un suffixe historique', () => {
+  const checks = validateBlockBBrief(
+    historicalBrief.replace(
+      'inbox/01-demandes.md',
+      'inbox/01-demandes.md.bak',
+    ),
+  );
+  assert.equal(checks.find((check) => check.id === 'sources')?.ok, false);
+});
+
 test('rejette un conflit dispersé sur plusieurs lignes', () => {
   const checks = validateBlockBBrief(
     validBrief.replace(
@@ -66,6 +76,16 @@ test('rejette une source supplémentaire incorrecte', () => {
     validBrief.replace(
       '[source: demandes.md]',
       '[source: demandes.md] [source: inconnue.md]',
+    ),
+  );
+  assert.equal(checks.find((check) => check.id === 'sources')?.ok, false);
+});
+
+test('rejette un bloc source invalide', () => {
+  const checks = validateBlockBBrief(
+    validBrief.replace(
+      '[source: demandes.md]',
+      '[source: demandes.md] [source: inconnue]',
     ),
   );
   assert.equal(checks.find((check) => check.id === 'sources')?.ok, false);
