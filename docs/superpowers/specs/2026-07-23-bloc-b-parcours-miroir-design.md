@@ -1,6 +1,6 @@
 # Bloc B : parcours miroir Claude et OpenAI
 
-Date : 23 juillet 2026  
+Date : 23 juillet 2026
 Statut : design validé
 
 ## 1. Problème

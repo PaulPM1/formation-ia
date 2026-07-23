@@ -108,4 +108,44 @@ export const briefContractCases: BriefContractCase[] = [
     ),
     expected: { ...pass, uncertainty: false },
   },
+  {
+    name: 'conflit annoncé comme tranché',
+    markdown: canonicalBrief.replace(
+      'Confirmer le 18 ou le 19 septembre.',
+      'Le conflit est tranché : le 18 ou le 19 septembre.',
+    ),
+    expected: { ...pass, uncertainty: false },
+  },
+  {
+    name: 'date annoncée comme décidée',
+    markdown: canonicalBrief.replace(
+      'Confirmer le 18 ou le 19 septembre.',
+      'La date est décidée : le 18 ou le 19 septembre.',
+    ),
+    expected: { ...pass, uncertainty: false },
+  },
+  {
+    name: 'date annoncée comme fixée',
+    markdown: canonicalBrief.replace(
+      'Confirmer le 18 ou le 19 septembre.',
+      'La date est fixée : le 18 ou le 19 septembre.',
+    ),
+    expected: { ...pass, uncertainty: false },
+  },
+  {
+    name: 'date écartée malgré les deux options conservées',
+    markdown: canonicalBrief.replace(
+      'Confirmer le 18 ou le 19 septembre.',
+      'Le 19 est écarté : retenir le 18 ou le 19 septembre.',
+    ),
+    expected: { ...pass, uncertainty: false },
+  },
+  {
+    name: 'conflit explicitement non tranché',
+    markdown: canonicalBrief.replace(
+      'Confirmer le 18 ou le 19 septembre.',
+      'Le conflit reste non tranché : confirmer le 18 ou le 19 septembre.',
+    ),
+    expected: pass,
+  },
 ];

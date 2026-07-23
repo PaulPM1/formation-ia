@@ -17,7 +17,45 @@ const CANONICAL_SOURCES = new Set(Object.values(EXPECTED_NOTE_SOURCES));
 const SOURCE_TOKEN_PRESENT = /\[sources?\s*:/i;
 const SOURCE_TOKEN = /\[sources?\s*:/gi;
 const SOURCE_BLOCK = /\[sources?:\s*([^\]]*)\]/gi;
-const DECISION_WORD = /\b(?:décision prise|décidé|décider|retenir|retenu|choisir|choisi|trancher|tranché|fixer|fixé|écarter|écarté)\b/i;
+const DECISION_TOKENS = new Set([
+  'choisi',
+  'choisie',
+  'choisir',
+  'decide',
+  'decidee',
+  'decider',
+  'ecarte',
+  'ecartee',
+  'ecarter',
+  'fixe',
+  'fixee',
+  'fixer',
+  'retenir',
+  'retenu',
+  'retenue',
+  'tranche',
+  'tranchee',
+  'trancher',
+]);
+const NEGATION_TOKENS = new Set(['non', 'pas']);
+
+const tokenizeNormalizedWords = (value) => (
+  value
+    .normalize('NFD')
+    .replace(/\p{M}+/gu, '')
+    .toLocaleLowerCase('fr')
+    .match(/\p{L}+/gu) ?? []
+);
+
+const hasDecisionTaken = (line) => {
+  const tokens = tokenizeNormalizedWords(line);
+  return tokens.some((token, index) => {
+    const previousToken = tokens[index - 1];
+    if (NEGATION_TOKENS.has(previousToken)) return false;
+    return DECISION_TOKENS.has(token)
+      || (token === 'prise' && previousToken === 'decision');
+  });
+};
 
 const parseSections = (markdown) => {
   const sections = new Map();
@@ -115,7 +153,7 @@ export const validateBriefContract = (markdown) => {
         || /\b19\b.{0,120}\bou\b.{0,120}\b18\b/i.test(line)
       )
       && /septembre/i.test(line)
-      && !DECISION_WORD.test(line)
+      && !hasDecisionTaken(line)
     ));
 
   return { structure, sources, uncertainty };

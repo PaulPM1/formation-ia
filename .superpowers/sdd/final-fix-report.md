@@ -251,3 +251,50 @@ mobile, le zoom 200 %, le mouvement réduit et le repli sans JavaScript.
   nouvelle formulation adversariale devra être ajoutée au corpus mutualisé.
 - Les liens Claude Code et Codex sont officiels et vérifiés au moment de cette
   correction, mais restent des dépendances externes susceptibles d'évoluer.
+
+## Re-revue finale : tokenisation Unicode
+
+### Preuves RED
+
+- Après ajout des cinq cas mutualisés demandés,
+  `npx tsx --test tests/block-b-brief-validator.test.ts` échoue avec 17/18
+  tests réussis : `conflit annoncé comme tranché` retourne encore
+  `uncertainty: true`.
+- Le même corpus exécuté par
+  `npx tsx --test --test-name-pattern="mission agent autonome|sorties adversariales" tests/block-b-kit.test.ts`
+  échoue avec 1/2 test réussi sur le même cas et le même booléen.
+- Avant le commit documentaire,
+  `git diff --check f747a781588c55c8f0af58a0c42ec3d82bd7bb71..HEAD`
+  reproduit l'espace final à la ligne 3 de
+  `2026-07-23-bloc-b-parcours-miroir-design.md`.
+
+### Correctif
+
+- La détection par `\b` a été remplacée par une tokenisation Unicode :
+  normalisation NFD, retrait des marques diacritiques, extraction par
+  `\p{L}` et comparaison à une liste fermée de tokens normalisés.
+- Les décisions précédées de `non` ou `pas` ne sont pas considérées comme
+  prises. `conflit non tranché` conserve donc les deux dates à confirmer.
+- Le corpus partagé couvre maintenant les formulations `tranché`, `décidée`,
+  `fixée`, `écarté` et le contre-exemple négatif `non tranché`.
+- Les deux espaces finaux après la date de la spécification ont été retirés.
+
+### Preuves GREEN
+
+- `npx tsx --test tests/block-b-brief-validator.test.ts` : 18/18.
+- `npx tsx --test --test-name-pattern="mission agent autonome|sorties adversariales" tests/block-b-kit.test.ts` :
+  2/2.
+- `npm run kit:block-b` : succès, ZIP régénéré à 10 638 octets.
+- `npm run kit:block-b:check` : kit synchronisé.
+- `npm run typecheck` : 0 erreur, 0 avertissement, 0 indice.
+- `npm test` : 183/183.
+- `git diff --check` sur le correctif de travail : aucune erreur.
+- Après commit,
+  `git diff --check f747a781588c55c8f0af58a0c42ec3d82bd7bb71..HEAD` :
+  aucune erreur.
+
+### Préoccupation résiduelle
+
+La liste décisionnelle reste volontairement fermée. Une nouvelle flexion ou
+une nouvelle formulation métier devra être ajoutée au corpus mutualisé avant
+d'entrer dans le contrat.
