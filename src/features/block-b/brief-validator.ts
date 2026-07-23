@@ -13,6 +13,11 @@ const EXPECTED_NOTE_SOURCES = {
   N05: 'messages.md',
   N06: 'messages.md',
 } as const;
+const HISTORICAL_SOURCE_ALIASES = {
+  'inbox/01-demandes.md': 'demandes.md',
+  'inbox/02-reunion.md': 'reunion.md',
+  'inbox/03-messages.md': 'messages.md',
+} as const;
 
 const parseSections = (markdown: string) => {
   const sections = new Map<string, string[]>();
@@ -43,8 +48,13 @@ export function validateBlockBBrief(markdown: string): BriefCheck[] {
   ) as Record<string, number>;
   const associated = actionLines.length > 0 && actionLines.every((line) => {
     const noteIds = [...line.matchAll(/\bN\d{2}\b/g)].map(([noteId]) => noteId);
-    const sourceBlock = line.match(/\[sources?:\s*([^\]]+)\]/i)?.[1] ?? '';
-    const citedSources = sourceBlock.match(/[a-z0-9._-]+\.md/gi) ?? [];
+    const citedSources = [...line.matchAll(/\[sources?:\s*([^\]]+)\]/gi)]
+      .flatMap(([, sourceBlock]) => sourceBlock.match(/[a-z0-9._/-]+\.md/gi) ?? [])
+      .map((source) => (
+        source in HISTORICAL_SOURCE_ALIASES
+          ? HISTORICAL_SOURCE_ALIASES[source as keyof typeof HISTORICAL_SOURCE_ALIASES]
+          : source
+      ));
     const expectedSources: string[] = [...new Set(noteIds.flatMap((noteId) => (
       noteId in EXPECTED_NOTE_SOURCES
         ? [EXPECTED_NOTE_SOURCES[noteId as keyof typeof EXPECTED_NOTE_SOURCES]]
@@ -57,14 +67,18 @@ export function validateBlockBBrief(markdown: string): BriefCheck[] {
       && citedSources.every((source) => expectedSources.includes(source));
   });
   const sources = associated && Object.values(counts).every((count) => count === 1);
-  const uncertaintyText = (sections.get('À confirmer') ?? []).join('\n');
-  const uncertainty = /\bN03\b/.test(uncertaintyText)
-    && /\bN05\b/.test(uncertaintyText)
-    && (
-      /\b18\b[^\n]{0,120}\bou\b[^\n]{0,120}\b19\b/i.test(uncertaintyText)
-      || /\b19\b[^\n]{0,120}\bou\b[^\n]{0,120}\b18\b/i.test(uncertaintyText)
-    )
-    && /septembre/i.test(uncertaintyText);
+  const uncertainty = (sections.get('À confirmer') ?? [])
+    .map((line) => line.trim())
+    .filter((line) => line.startsWith('- '))
+    .some((line) => (
+      /\bN03\b/.test(line)
+      && /\bN05\b/.test(line)
+      && (
+        /\b18\b.{0,120}\bou\b.{0,120}\b19\b/i.test(line)
+        || /\b19\b.{0,120}\bou\b.{0,120}\b18\b/i.test(line)
+      )
+      && /septembre/i.test(line)
+    ));
 
   return [
     { id: 'structure', label: 'Les trois sections sont présentes dans le bon ordre.', ok: structure },

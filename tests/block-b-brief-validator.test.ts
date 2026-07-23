@@ -15,12 +15,60 @@ const validBrief = `# Brief du jour
 - [N04] Archiver après validation. [source: reunion.md]
 `;
 
+const historicalBrief = validBrief
+  .replaceAll('demandes.md', 'inbox/01-demandes.md')
+  .replaceAll('reunion.md', 'inbox/02-reunion.md')
+  .replaceAll('messages.md', 'inbox/03-messages.md');
+
 test('accepte un brief structuré, sourcé et incertain', () => {
   const checks = validateBlockBBrief(validBrief);
   assert.deepEqual(checks.map((check) => check.id), [
     'structure', 'sources', 'uncertainty',
   ]);
   assert.ok(checks.every((check) => check.ok));
+});
+
+test('accepte les trois chemins historiques précis', async () => {
+  const trainerBrief = await readFile(
+    new URL(
+      '../kits/bloc-b-assistant-formateur/corriges/brief-cowork.md',
+      import.meta.url,
+    ),
+    'utf8',
+  );
+  const checks = validateBlockBBrief(trainerBrief);
+  assert.ok(checks.every((check) => check.ok));
+});
+
+test('borne la compatibilité aux chemins historiques précis', () => {
+  const checks = validateBlockBBrief(
+    historicalBrief.replace('inbox/01-demandes.md', 'archive/01-demandes.md'),
+  );
+  assert.equal(checks.find((check) => check.id === 'sources')?.ok, false);
+});
+
+test('rejette un conflit dispersé sur plusieurs lignes', () => {
+  const checks = validateBlockBBrief(
+    validBrief.replace(
+      '- [N03, N05] Confirmer le 18 ou le 19 septembre. [sources: reunion.md ; messages.md]',
+      [
+        '- [N03] Confirmer le 18 ou le 19. [source: reunion.md]',
+        '- [N05] Attendre septembre. [source: messages.md]',
+      ].join('\n'),
+    ),
+  );
+  assert.equal(checks.find((check) => check.id === 'sources')?.ok, true);
+  assert.equal(checks.find((check) => check.id === 'uncertainty')?.ok, false);
+});
+
+test('rejette une source supplémentaire incorrecte', () => {
+  const checks = validateBlockBBrief(
+    validBrief.replace(
+      '[source: demandes.md]',
+      '[source: demandes.md] [source: inconnue.md]',
+    ),
+  );
+  assert.equal(checks.find((check) => check.id === 'sources')?.ok, false);
 });
 
 test('nomme séparément chaque échec', () => {
