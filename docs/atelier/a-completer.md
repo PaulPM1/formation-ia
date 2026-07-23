@@ -5,10 +5,10 @@ pendant le build du prototype.
 
 ## Liens à renseigner
 
-- **Adresse du dépôt modèle** dans `src/content/atelier/p1-naissance.mdx`,
-  tâche 3, bloc `kit-link` : remplacer `[À COMPLÉTER : adresse du dépôt
-  modèle]` et le `href` par l'adresse réelle une fois le dépôt publié et
-  coché « Template repository » dans ses réglages.
+- **Adresse du dépôt modèle** : renseignée, `github.com/Matthieu114/vibe-coding-template`.
+  Vérifier qu'il est bien coché « Template repository » dans ses réglages, et
+  qu'il contient le kit minimal à jour (README, .gitignore, CLAUDE.md
+  squelette, prompts), pas l'ancienne structure à variantes.
 
 ## Captures d'écran à prendre
 
