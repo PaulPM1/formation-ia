@@ -117,8 +117,8 @@ try {
   await navigateAndWaitForFonts(controllerPage, `${baseURL}/presenter/`);
   const optionalLabels = controllerPage.locator('.presentation-family-list [data-track="optional"] .track-label');
   const recoveryLabels = controllerPage.locator('.presentation-family-list [data-track="recovery"] .track-label');
-  if (await optionalLabels.count() !== 1 || (await optionalLabels.first().textContent())?.trim() !== 'Facultatif') {
-    failures.push('sommaire présentateur : badge Facultatif unique attendu');
+  if (await optionalLabels.count() !== 0) {
+    failures.push('sommaire présentateur : aucun badge optional attendu');
   }
   if (await recoveryLabels.count() !== 1 || (await recoveryLabels.first().textContent())?.trim() !== 'Rattrapage') {
     failures.push('sommaire présentateur : badge Rattrapage unique attendu');
@@ -126,27 +126,32 @@ try {
 
   await navigateAndWaitForFonts(controllerPage, `${baseURL}/presenter/b3/b3-check/`);
   const requiredNext = controllerPage.locator('[data-next]');
-  if (await requiredNext.getAttribute('href') !== '/presenter/c1/c1-repeat/') {
-    failures.push('parcours principal : B3 ne pointe pas directement vers C1');
+  if (await requiredNext.getAttribute('href') !== '/presenter/b4/b4-context/') {
+    failures.push('parcours principal : B3 ne pointe pas vers B4');
   }
   await Promise.all([
-    controllerPage.waitForURL('**/presenter/c1/c1-repeat/', { waitUntil: 'domcontentloaded' }),
+    controllerPage.waitForURL('**/presenter/b4/b4-context/', { waitUntil: 'domcontentloaded' }),
     requiredNext.click({ noWaitAfter: true }),
   ]);
   const requiredPrevious = controllerPage.locator('[data-previous]');
   if (await requiredPrevious.getAttribute('href') !== '/presenter/b3/b3-check/') {
-    failures.push('parcours principal : C1 ne revient pas directement vers B3');
+    failures.push('parcours principal : B4 ne revient pas vers B3');
   }
-
-  await navigateAndWaitForFonts(controllerPage, `${baseURL}/presenter/b4/b4-context/`);
-  const optionalHeading = controllerPage.locator('.presentation-heading__track');
-  if (!await optionalHeading.isVisible() || (await optionalHeading.textContent())?.trim() !== 'Facultatif') {
-    failures.push('branche facultative : repère de slide absent sur B4');
+  const coreHeading = controllerPage.locator('.presentation-heading__track');
+  if (await coreHeading.isVisible().catch(() => false)) {
+    failures.push('parcours principal : B4 affiche un repère de piste');
   }
 
   await navigateAndWaitForFonts(controllerPage, `${baseURL}/presenter/b4/b4-test/`);
   if (await controllerPage.locator('[data-next]').getAttribute('href') !== '/presenter/c1/c1-repeat/') {
-    failures.push('branche facultative : B4 ne rejoint pas C1');
+    failures.push('parcours principal : B4 ne rejoint pas C1');
+  }
+  await Promise.all([
+    controllerPage.waitForURL('**/presenter/c1/c1-repeat/', { waitUntil: 'domcontentloaded' }),
+    controllerPage.locator('[data-next]').click({ noWaitAfter: true }),
+  ]);
+  if (await controllerPage.locator('[data-previous]').getAttribute('href') !== '/presenter/b4/b4-test/') {
+    failures.push('parcours principal : C1 ne revient pas vers B4 test');
   }
 
   await navigateAndWaitForFonts(controllerPage, `${baseURL}/presenter/b4-bis/b4bis-install/`);
@@ -252,5 +257,5 @@ if (failures.length) {
   console.error(failures.join('\n'));
   process.exitCode = 1;
 } else {
-  console.log('QA présentateur : 110/110 routes mobiles, trois pistes, 12 anciennes routes en 404 sans redirection, contrôleur natif, plein écran, zoom, mouvement réduit et impression validés ; 111 pages générées.');
+  console.log('QA présentateur : 110/110 routes mobiles, parcours principal et rattrapage, 12 anciennes routes en 404 sans redirection, contrôleur natif, plein écran, zoom, mouvement réduit et impression validés ; 111 pages générées.');
 }

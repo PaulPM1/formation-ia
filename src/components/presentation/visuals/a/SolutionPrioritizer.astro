@@ -214,7 +214,7 @@ const optionName = (id: string) => options
   [data-solution-prioritizer] { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: .55rem; min-block-size: 100%; margin: 0; }
   .prioritizer__progress { display: grid; grid-template-columns: repeat(4, 1fr); gap: .35rem; }
   .prioritizer__progress > span { display: grid; grid-template-columns: auto 1fr; gap: .35rem; align-items: center; min-inline-size: 0; padding: .32rem .45rem; border: 1px solid var(--presentation-line); font-family: var(--font-mono); font-size: .78rem; }
-  .prioritizer__progress small { overflow: hidden; font-family: var(--font-body); font-size: .75rem; text-overflow: ellipsis; white-space: nowrap; }
+  .prioritizer__progress small { min-inline-size: 0; overflow-wrap: anywhere; font-family: var(--font-body); font-size: .75rem; line-height: 1.1; }
   .prioritizer__progress [data-state='current'] { border-color: var(--presentation-ink); border-block-end: .25rem solid var(--family-accent); font-weight: 800; }
   .prioritizer__progress [data-state='done']::after { content: '✓'; font-weight: 900; }
 
@@ -263,10 +263,12 @@ const optionName = (id: string) => options
   .prioritizer__summary { display: grid; place-content: center; justify-items: start; gap: .55rem; min-block-size: 100%; padding: 1rem; border: 1px solid var(--presentation-line); border-inline-start: .45rem solid var(--family-accent); }
   .prioritizer__status { margin: 0; min-block-size: 1.1rem; font-size: .78rem; color: var(--presentation-muted); }
 
+  [data-solution-prioritizer]:not([data-enhanced='true']) { display: block; min-block-size: 0; }
   [data-solution-prioritizer]:not([data-enhanced='true']) .prioritizer__progress,
   [data-solution-prioritizer]:not([data-enhanced='true']) .prioritizer__actions,
   [data-solution-prioritizer]:not([data-enhanced='true']) .prioritizer__summary { display: none; }
-  [data-solution-prioritizer]:not([data-enhanced='true']) .prioritizer__scenario { margin-block-end: .75rem; }
+  [data-solution-prioritizer]:not([data-enhanced='true']) .prioritizer__scenarios { display: grid; gap: .75rem; }
+  [data-solution-prioritizer]:not([data-enhanced='true']) .prioritizer__scenario { align-content: start; min-block-size: 0; margin-block-end: 0; }
   [data-solution-prioritizer]:not([data-enhanced='true']) .prioritizer__scenario input { display: none; }
 
   @media (max-width: 760px) {

@@ -113,7 +113,7 @@ const reported = Array.isArray(data.reported) ? data.reported.map(String) : [];
   .pacte__map-rule { min-inline-size: 0; max-inline-size: 100%; margin: 0; padding-inline-start: .55rem; border-inline-start: .3rem solid #72af80; overflow-wrap: anywhere; font: 700 var(--b-font-body)/1.16 var(--font-display); }
   .pacte__workspace-lane { display: grid; grid-template-columns: auto 1fr; gap: .2rem .5rem; padding: .5rem; border: 1px solid var(--presentation-line); }
   .pacte__workspace-lane span { color: var(--presentation-muted); font: var(--b-font-meta) var(--font-mono); text-transform: uppercase; }
-  .pacte__workspace-lane strong { font-size: var(--b-font-body); }
+  .pacte__workspace-lane strong { min-inline-size: 0; overflow-wrap: anywhere; font-size: var(--b-font-body); }
   .pacte__responsibilities { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; margin-block-start: .55rem; }
   .pacte__responsibilities article { padding-block-start: .45rem; border-block-start: .3rem solid var(--family-accent); }
   .pacte__responsibilities article:last-child { border-color: #72af80; }

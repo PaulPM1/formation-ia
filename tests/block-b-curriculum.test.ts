@@ -40,7 +40,7 @@ test('verrouille les 21 routes B et les 110 slides de la présentation', () => {
   assert.ok(removedRoutes.every((id) => !PRESENTATION_SLIDES.some((slide) => slide.id === id)));
 });
 
-test('verrouille 55 minutes de socle, 20 facultatives et 10 de rattrapage', () => {
+test('verrouille 75 minutes de socle, aucune minute facultative et 10 de rattrapage', () => {
   for (const deck of blockB) {
     const duration = deck.slides.reduce(
       (sum, slide) => sum + slide.speaker.durationMinutes,
@@ -49,39 +49,34 @@ test('verrouille 55 minutes de socle, 20 facultatives et 10 de rattrapage', () =
     assert.equal(duration, durationByDeck[deck.brickId as keyof typeof durationByDeck]);
   }
 
-  assert.equal(
-    PRESENTATION_SLIDES
-      .filter((slide) => slide.family === 'b' && slide.track === 'core')
-      .reduce((sum, slide) => sum + slide.speaker.durationMinutes, 0),
-    55,
-  );
-  assert.equal(
-    PRESENTATION_SLIDES
-      .filter((slide) => slide.track === 'optional')
-      .reduce((sum, slide) => sum + slide.speaker.durationMinutes, 0),
-    20,
-  );
-  assert.equal(
-    PRESENTATION_SLIDES
-      .filter((slide) => slide.track === 'recovery')
-      .reduce((sum, slide) => sum + slide.speaker.durationMinutes, 0),
-    10,
-  );
+  const coreBlockBMinutes = PRESENTATION_SLIDES
+    .filter((slide) => slide.family === 'b' && slide.track === 'core')
+    .reduce((sum, slide) => sum + slide.speaker.durationMinutes, 0);
+  const optionalBlockBMinutes = PRESENTATION_SLIDES
+    .filter((slide) => slide.family === 'b' && slide.track === 'optional')
+    .reduce((sum, slide) => sum + slide.speaker.durationMinutes, 0);
+  const recoveryBlockBMinutes = PRESENTATION_SLIDES
+    .filter((slide) => slide.family === 'b' && slide.track === 'recovery')
+    .reduce((sum, slide) => sum + slide.speaker.durationMinutes, 0);
+
+  assert.equal(coreBlockBMinutes, 75);
+  assert.equal(optionalBlockBMinutes, 0);
+  assert.equal(recoveryBlockBMinutes, 10);
 });
 
-test('sépare les pistes principale, facultative et de rattrapage', () => {
+test('sépare le parcours principal et le rattrapage', () => {
   assert.deepEqual(
     blockB.map((deck) => [deck.brickId, deck.track ?? 'core']),
     [
       ['b0', 'core'], ['b1', 'core'], ['b2', 'core'], ['b3', 'core'],
-      ['b4', 'optional'], ['b4-bis', 'recovery'],
+      ['b4', 'core'], ['b4-bis', 'recovery'],
     ],
   );
 
-  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b3-check').next?.id, 'c1-repeat');
-  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'c1-repeat').previous?.id, 'b3-check');
+  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b3-check').next?.id, 'b4-context');
   assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b4-context').previous?.id, 'b3-check');
   assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b4-test').next?.id, 'c1-repeat');
+  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'c1-repeat').previous?.id, 'b4-test');
   assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b4bis-install').previous, null);
   assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b4bis-checkpoint').next, null);
 });
@@ -94,41 +89,64 @@ test('partage le même cas concret et ses garanties entre les quatre outils', ()
   };
 
   const chat = byId('b1-mission');
-  assert.equal(chat.promptPath, 'prompts/01-chat.md');
+  assert.equal(chat.instructionAnchor, 'pratique-guidee');
+  assert.deepEqual(chat.surfaces, ['Claude Chat', 'ChatGPT Chat']);
   assert.deepEqual(chat.sections, ['Actions du jour', 'À confirmer', 'Plus tard']);
   assert.equal(chat.sourceRule, 'Une source par action');
   assert.match(String(chat.uncertaintyRule), /[ÀA] confirmer/);
 
   const artifact = byId('b2-mission');
-  assert.equal(artifact.promptPath, 'prompts/02-artifact.md');
+  assert.equal(artifact.instructionAnchor, 'pratique-guidee');
+  assert.deepEqual(artifact.surfaces, ['Claude Artifacts', 'ChatGPT Canvas']);
   assert.deepEqual(artifact.categories, ['Aujourd’hui', 'Plus tard', 'Archiver']);
   assert.deepEqual(artifact.requiredControls, ['Compteurs', 'Remise à zéro']);
   assert.equal(artifact.state, 'Six notes chargées dans Aujourd’hui');
 
   const cowork = byId('b3-mission');
-  assert.equal(cowork.promptPath, 'prompts/03-cowork.md');
-  assert.equal(cowork.readScope, 'inbox/');
-  assert.equal(cowork.writeScope, 'sortie/');
+  assert.equal(cowork.instructionAnchor, 'pratique-guidee');
+  assert.deepEqual(cowork.surfaces, ['Claude Cowork', 'ChatGPT Work']);
+  assert.equal(cowork.readScope, 'mission-agent/sources/');
+  assert.equal(cowork.writeScope, 'mission-agent/sortie/');
   assert.equal(cowork.planApproval, true);
   assert.equal(cowork.keepOriginals, true);
   assert.match(String(cowork.conflictRule), /[ÀA] confirmer/);
 
   const code = byId('b4-mission');
-  assert.equal(code.promptPath, 'prompts/04-claude-code.md');
+  assert.equal(code.instructionAnchor, 'pratique-guidee');
+  assert.deepEqual(code.surfaces, ['Claude Code', 'Codex']);
   assert.equal(code.onlyChange, 'Ajouter la source sous chaque carte');
   assert.equal(code.preserveSort, true);
   assert.equal(code.testCommand, 'node --test');
-  assert.equal(code.reviewSurface, 'Diff VS Code');
+  assert.equal(code.reviewSurface, 'Diff du projet');
+
+  assert.doesNotMatch(JSON.stringify([chat, artifact, cowork, code]), /promptPath/);
 });
 
-test('les notes formateur donnent une coupure, un prompt et un repli aux missions', () => {
+test('les notes formateur donnent une coupure, la pratique guidée et un repli aux missions', () => {
   for (const slideId of ['b1-mission', 'b2-mission', 'b3-mission', 'b4-mission']) {
     const slide = blockBSlides.find((candidate) => candidate.id === slideId);
     assert.ok(slide, slideId);
     assert.match(slide.speaker.notes, /Couper à/);
-    assert.match(slide.speaker.notes, /prompts\/0[1-4]-/);
+    assert.match(slide.speaker.notes, /Pratique guidée/);
     assert.match(slide.speaker.notes, /Repli/);
   }
+});
+
+test('les slides B pointent vers la pratique guidée et les ressources OpenAI autorisées', () => {
+  const wikiLinks = blockBSlides.flatMap((item) => item.links)
+    .filter((link) => link.kind === 'wiki');
+  assert.ok(wikiLinks.length > 0);
+  assert.ok(wikiLinks.every((link) => link.href.endsWith('#pratique-guidee')));
+
+  const officialHrefs = new Set(blockBSlides.flatMap((item) => item.links)
+    .filter((link) => link.kind === 'official')
+    .map((link) => link.href));
+  for (const href of [
+    'https://openai.com/chatgpt/overview/',
+    'https://help.openai.com/en/articles/9930697-what-is-the-canvas-feature-in-chatgpt-and-how-do-i-use-it',
+    'https://help.openai.com/en/articles/20001275/',
+    'https://openai.com/codex/get-started/',
+  ]) assert.ok(officialHrefs.has(href), href);
 });
 
 test('les six fiches B reprennent l’inventaire, les durées, les coupures et les replis', async () => {
@@ -147,6 +165,13 @@ test('les six fiches B reprennent l’inventaire, les durées, les coupures et l
   const recovery = documents.find((document) => document.data.id === 'b4-bis');
   assert.equal(recovery?.data.priority, 'rattrapage');
   assert.match(recovery?.body ?? '', /piste s’arrête au checkpoint/);
+
+  for (const brickId of ['b1', 'b2', 'b3', 'b4', 'b4-bis']) {
+    const body = documents.find((document) => document.data.id === brickId)?.body ?? '';
+    assert.doesNotMatch(body, /^## Pratique avec Claude$/m, brickId);
+    assert.doesNotMatch(body, /conserve temporairement l’ancre/, brickId);
+    assert.equal(body.match(/^## Pratique guidée$/gm)?.length, 1, brickId);
+  }
 });
 
 test('B0 à B4 suivent le parcours miroir', async () => {

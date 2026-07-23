@@ -168,9 +168,10 @@ const questions = Array.isArray(data.questions) ? data.questions as Question[] :
   .comparison__levels { display: grid; gap: .45rem; margin: 0; padding: 0; list-style: none; }
   .comparison__levels li {
     display: grid;
-    grid-template-columns: 2.5rem minmax(10rem, .75fr) minmax(14rem, 1.1fr) minmax(17rem, 1fr);
+    grid-template-columns: 2.5rem minmax(0, .75fr) minmax(0, 1.1fr) minmax(0, 1fr);
     gap: .75rem;
     align-items: center;
+    min-inline-size: 0;
     padding: .55rem .7rem;
     border: 1px solid var(--presentation-line);
     border-inline-start: .34rem solid var(--family-accent);
@@ -178,6 +179,9 @@ const questions = Array.isArray(data.questions) ? data.questions as Question[] :
   }
   .comparison__index { font-family: var(--font-mono); font-size: .82rem; color: var(--presentation-muted); }
   .comparison__need { display: grid; gap: .1rem; }
+  .comparison__need,
+  .comparison__workflow,
+  .comparison__ecosystems { min-inline-size: 0; overflow-wrap: anywhere; }
   .comparison__need small,
   .comparison__ecosystems small { font-family: var(--font-mono); font-size: .75rem; color: var(--presentation-muted); text-transform: uppercase; }
   .comparison__need strong { font-family: var(--font-display); font-size: clamp(1.05rem, 1rem + .35vw, 1.35rem); }
