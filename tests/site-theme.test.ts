@@ -91,3 +91,18 @@ test('la 404 distingue les URL du présentateur après chargement sans mentir sa
   );
   assert.doesNotMatch(notFound.slice(notFound.lastIndexOf('</BaseLayout>') + '</BaseLayout>'.length), /<script>/);
 });
+
+test('le Bloc B monte un sélecteur progressif sans supprimer le contenu MDX', async () => {
+  const [detail, switcher] = await Promise.all([
+    read('src/pages/briques/[id].astro'),
+    read('src/components/block-b/EcosystemSwitch.astro'),
+  ]);
+
+  assert.match(detail, /MIRRORED_BLOCK_B_IDS/);
+  assert.match(detail, /<EcosystemSwitch/);
+  assert.match(switcher, /type="radio"/);
+  assert.match(switcher, /aria-live="polite"/);
+  assert.match(switcher, /localStorage\.setItem/);
+  assert.match(switcher, /data-block-b-panel/);
+  assert.doesNotMatch(switcher, /onclick=/);
+});
