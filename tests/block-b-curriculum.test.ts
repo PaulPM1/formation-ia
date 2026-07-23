@@ -131,24 +131,15 @@ test('les notes formateur donnent une coupure, un prompt et un repli aux mission
   }
 });
 
-test('les six fiches B reprennent les durées, chemins et preuves des slides', async () => {
+test('les six fiches B reprennent l’inventaire, les durées, les coupures et les replis', async () => {
   const contentDirectory = fileURLToPath(new URL('../src/content/briques', import.meta.url));
   const documents = (await loadBrickDocuments(contentDirectory))
     .filter((document) => document.data.family === 'b');
-  const promptByBrick = {
-    b0: 'kits/bloc-b-assistant/README.md',
-    b1: 'prompts/01-chat.md',
-    b2: 'prompts/02-artifact.md',
-    b3: 'prompts/03-cowork.md',
-    b4: 'prompts/04-claude-code.md',
-    'b4-bis': 'node --test',
-  };
 
   assert.equal(documents.length, 6);
   for (const document of documents) {
     const id = document.data.id as keyof typeof durationByDeck;
     assert.equal(document.data.durationMinutes, durationByDeck[id], id);
-    assert.match(document.body, new RegExp(promptByBrick[id].replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
     assert.match(document.body, /Couper/);
     assert.match(document.body, /Repli/);
   }
@@ -156,7 +147,34 @@ test('les six fiches B reprennent les durées, chemins et preuves des slides', a
   const recovery = documents.find((document) => document.data.id === 'b4-bis');
   assert.equal(recovery?.data.priority, 'rattrapage');
   assert.match(recovery?.body ?? '', /piste s’arrête au checkpoint/);
+});
 
-  const artifact = documents.find((document) => document.data.id === 'b2');
-  assert.match(artifact?.body ?? '', /six cartes sont dans `Aujourd’hui`/);
+test('B0 à B2 suivent le parcours miroir', async () => {
+  const contentDirectory = fileURLToPath(new URL('../src/content/briques', import.meta.url));
+  const documents = (await loadBrickDocuments(contentDirectory))
+    .filter((document) => document.data.family === 'b');
+
+  for (const brickId of ['b0', 'b1', 'b2']) {
+    const document = documents.find((candidate) => candidate.data.id === brickId);
+    assert.ok(document, brickId);
+    assert.match(document.body, /data-block-b-panel="claude"/);
+    assert.match(document.body, /data-block-b-panel="openai"/);
+  }
+
+  for (const brickId of ['b1', 'b2']) {
+    const body = documents.find((candidate) => candidate.data.id === brickId)?.body ?? '';
+    for (const heading of [
+      'Situation',
+      'Pourquoi cette surface',
+      'Fichiers à fournir',
+      'Prompt à envoyer',
+      'Manipulation à effectuer',
+      'Tester mon résultat',
+      'Corriger un échec',
+    ]) assert.match(body, new RegExp(`### ${heading}`), `${brickId} ${heading}`);
+  }
+
+  assert.equal(documents.find((item) => item.data.id === 'b0')?.data.title, 'Choisir sa voie');
+  assert.equal(documents.find((item) => item.data.id === 'b1')?.data.title, 'Chat');
+  assert.equal(documents.find((item) => item.data.id === 'b2')?.data.title, 'Objet interactif');
 });
