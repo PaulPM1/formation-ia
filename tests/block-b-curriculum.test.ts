@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict';
+import { readFile, readdir } from 'node:fs/promises';
+import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
@@ -32,6 +34,17 @@ const durationByDeck = {
 
 const blockB = PRESENTATION_DECKS.filter((deck) => deck.family === 'b');
 const blockBSlides = blockB.flatMap((deck) => deck.slides);
+const projectDirectory = fileURLToPath(new URL('..', import.meta.url));
+
+const readTextTree = async (directory: string): Promise<string[]> => {
+  const entries = await readdir(directory, { withFileTypes: true });
+  return (await Promise.all(entries.map(async (entry) => {
+    const entryPath = path.join(directory, entry.name);
+    return entry.isDirectory()
+      ? readTextTree(entryPath)
+      : [await readFile(entryPath, 'utf8')];
+  }))).flat();
+};
 
 test('verrouille les 21 routes B et les 110 slides de la présentation', () => {
   assert.deepEqual(blockBSlides.map((slide) => slide.id), expectedRoutes);
@@ -147,6 +160,69 @@ test('les slides B pointent vers la pratique guidée et les ressources OpenAI au
     'https://help.openai.com/en/articles/20001275/',
     'https://openai.com/codex/get-started/',
   ]) assert.ok(officialHrefs.has(href), href);
+});
+
+test('les titres des decks B suivent les fiches et les ressources actives excluent les anciens marqueurs', async () => {
+  const contentDirectory = fileURLToPath(new URL('../src/content/briques', import.meta.url));
+  const documents = (await loadBrickDocuments(contentDirectory))
+    .filter((document) => document.data.family === 'b');
+  const titleByBrick = new Map(
+    documents.map((document) => [document.data.id, document.data.title]),
+  );
+
+  for (const deck of blockB) {
+    assert.equal(deck.title, titleByBrick.get(deck.brickId), deck.brickId);
+  }
+
+  const [manifest, ...trainerResources] = await Promise.all([
+    readFile(path.join(projectDirectory, 'src/presentation/manifests/b.ts'), 'utf8'),
+    ...await readTextTree(path.join(projectDirectory, 'kits/bloc-b-assistant-formateur')),
+  ]);
+  const activeResources = [manifest, ...trainerResources].join('\n');
+  for (const marker of [
+    'Préflight',
+    'Rattrapage VS Code',
+    'code .',
+    'six lignes',
+    'quatre tests',
+  ]) {
+    assert.doesNotMatch(activeResources, new RegExp(marker.replace('.', '\\.'), 'i'), marker);
+  }
+});
+
+test('B1 contrôle la fiche réelle et B2 part toujours d’un brief sourcé', () => {
+  const b1Loop = blockBSlides.find((slide) => slide.id === 'b1-loop');
+  const b2Object = blockBSlides.find((slide) => slide.id === 'b2-object');
+  assert.ok(b1Loop);
+  assert.ok(b2Object);
+
+  assert.match(String(b1Loop.visual.data.exampleGap), /N06.*source/i);
+  assert.match(String(b1Loop.visual.data.correction), /N06.*messages\.md/i);
+  for (const evidence of [
+    String(b1Loop.visual.data.proof),
+    b1Loop.speaker.notes,
+    b1Loop.accessibleDescription,
+  ]) {
+    assert.match(evidence, /N01.*N06/i);
+    assert.match(evidence, /trois sections/i);
+    assert.match(evidence, /demandes\.md.*reunion\.md.*messages\.md/i);
+    assert.match(evidence, /conflit non tranché/i);
+  }
+  assert.equal(
+    (b2Object.visual.data.before as { output?: string }).output,
+    'Brief sourcé',
+  );
+});
+
+test('B4 et B4-bis restent génériques et lient les agents de code officiels', () => {
+  const codeSlides = blockBSlides.filter((slide) => slide.id.startsWith('b4'));
+  const officialHrefs = new Set(codeSlides.flatMap((slide) => slide.links)
+    .filter((link) => link.kind === 'official')
+    .map((link) => link.href));
+
+  assert.ok(officialHrefs.has('https://code.claude.com/docs/en/overview'));
+  assert.ok(officialHrefs.has('https://openai.com/codex/get-started/'));
+  assert.ok(!officialHrefs.has('https://code.claude.com/docs/en/vs-code'));
 });
 
 test('les six fiches B reprennent l’inventaire, les durées, les coupures et les replis', async () => {

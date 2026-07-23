@@ -30,10 +30,10 @@ const links = {
     'Choisir entre Chat, Work et Codex',
     'https://help.openai.com/en/articles/20001275/',
   ),
-  vscode: externalLink(
+  claudeCode: externalLink(
     'official',
-    'Claude Code dans VS Code',
-    'https://code.claude.com/docs/en/vs-code',
+    'Découvrir Claude Code',
+    'https://code.claude.com/docs/en/overview',
   ),
   codex: externalLink(
     'official',
@@ -50,7 +50,7 @@ const links = {
 
 export const B_DECKS: PresentationDeck[] = [
   {
-    brickId: 'b0', family: 'b', order: 5, title: 'Préflight', slides: [
+    brickId: 'b0', family: 'b', order: 5, title: 'Choisir sa voie', slides: [
       slide({
         id: 'b0-layers', role: 'opening',
         claim: 'Une voie, quatre niveaux d’action à tester.',
@@ -171,17 +171,17 @@ export const B_DECKS: PresentationDeck[] = [
         visual: { key: 'prompt-builder', data: {
           interaction: 'Comparer avant et après correction.',
           loop: ['Prompt', 'Réponse', 'Audit', 'Correction', 'Preuve'],
-          exampleGap: 'Le brief dépasse six lignes ou une action perd sa source.',
-          correction: 'Réduis à exactement six lignes en conservant les trois sections, chaque source et « À confirmer ».',
-          proof: '6 lignes ; 3 sections ; chaque action sourcée ; conflit non tranché',
+          exampleGap: 'L’action N06 ne cite aucune source.',
+          correction: 'Pour N06, ajoute [source: messages.md] sans modifier le reste du brief.',
+          proof: 'N01 à N06 une fois ; trois sections ; sources exactes demandes.md, reunion.md, messages.md ; conflit non tranché',
         } },
         links: [wikiLink('b1', 'pratique-guidee', 'Critères de réussite Chat')],
         speaker: {
           durationMinutes: 2,
-          notes: 'Couper B1 à 12:00. Faire compter les lignes puis pointer une source et le conflit. Repli : utiliser la correction standard du kit formateur.',
+          notes: 'Couper B1 à 12:00. Contrôler N01 à N06 une fois, les trois sections, les sources exactes demandes.md, reunion.md, messages.md et le conflit non tranché. Repli : utiliser la correction standard du kit formateur.',
           transition: 'Le brief devient maintenant un objet manipulable.',
         },
-        accessibleDescription: 'Une boucle relie prompt, réponse, audit, correction et preuve finale : six lignes, trois sections, sources et conflit conservés.',
+        accessibleDescription: 'Une boucle vérifie N01 à N06 une fois, les trois sections, les sources exactes demandes.md, reunion.md, messages.md et le conflit non tranché, puis corrige uniquement la source absente de N06.',
       }),
     ],
   },
@@ -193,7 +193,7 @@ export const B_DECKS: PresentationDeck[] = [
         support: 'Le même contenu gagne des états, des compteurs et une remise à zéro.',
         visual: { key: 'artifact-test-loop', data: {
           interaction: 'Observer la transformation.',
-          before: { location: 'Conversation', output: 'Brief en six lignes' },
+          before: { location: 'Conversation', output: 'Brief sourcé' },
           after: { location: 'Artifact ou Canvas', output: 'Boîte de tri interactive' },
           affordances: ['Déplacer une note', 'Compter chaque état', 'Réinitialiser', 'Retester'],
         } },
@@ -269,7 +269,7 @@ export const B_DECKS: PresentationDeck[] = [
           notes: 'Couper B2 à 18:00. Faire rejouer les cinq tests, pas seulement celui corrigé. Repli : montrer les deux états avant et après du kit formateur.',
           transition: 'Le même dossier passe maintenant à un outil capable d’agir sur les fichiers.',
         },
-        accessibleDescription: 'Deux itérations montrent quatre tests passants, un archivage sans confirmation, une correction ciblée puis cinq tests passants.',
+        accessibleDescription: 'Deux itérations montrent présence, tri, total et remise à zéro réussis, un archivage sans confirmation, puis les cinq tests réussis après correction ciblée.',
       }),
     ],
   },
@@ -391,7 +391,7 @@ export const B_DECKS: PresentationDeck[] = [
             { surface: 'Agent de code', reveals: 'Le diff à accepter ou refuser' },
           ],
         } },
-        links: [links.vscode, links.codex, links.kit, wikiLink('b4', 'pratique-guidee', 'Contexte du projet')],
+        links: [links.claudeCode, links.codex, links.kit, wikiLink('b4', 'pratique-guidee', 'Contexte du projet')],
         speaker: {
           durationMinutes: 2,
           notes: 'Ouvrir mini-application/README.md puis montrer la page avant toute demande. Le tri doit déjà fonctionner.',
@@ -414,7 +414,7 @@ export const B_DECKS: PresentationDeck[] = [
           ],
           loopBack: 'Un tri cassé, un test rouge ou un diff trop large renvoie à Inspecter.',
         } },
-        links: [links.vscode, links.codex, wikiLink('b4', 'pratique-guidee', 'Appliquer I.P.M.T.R.')],
+        links: [links.claudeCode, links.codex, wikiLink('b4', 'pratique-guidee', 'Appliquer I.P.M.T.R.')],
         speaker: {
           durationMinutes: 4,
           notes: 'Faire franchir les trois portes dans l’ordre. Le plan et le diff sont des moments de décision humaine.',
@@ -442,7 +442,7 @@ export const B_DECKS: PresentationDeck[] = [
             { action: 'Refuser', when: 'Si le périmètre sort de mini-application/' },
           ],
         } },
-        links: [links.kit, links.vscode, links.codex, wikiLink('b4', 'pratique-guidee', 'Consigne de l’agent de code')],
+        links: [links.kit, links.claudeCode, links.codex, wikiLink('b4', 'pratique-guidee', 'Consigne de l’agent de code')],
         speaker: {
           durationMinutes: 10,
           notes: 'Couper à 16:00 dans B4. Ouvrir la rubrique Pratique guidée. Repli : appliquer le patch formateur préparé, puis garder le test et la revue du diff en direct.',
@@ -501,7 +501,7 @@ export const B_DECKS: PresentationDeck[] = [
           ],
           successCriterion: '4 décisions sur 4 justifiées par la sortie, le contexte, l’action et la preuve.',
         } },
-        links: [links.vscode, links.codex, wikiLink('b4', 'pratique-guidee', 'Checkpoint de transfert')],
+        links: [links.claudeCode, links.codex, wikiLink('b4', 'pratique-guidee', 'Checkpoint de transfert')],
         speaker: {
           durationMinutes: 4,
           notes: 'Couper B4 à 20:00. Faire traiter les quatre situations dans l’ordre et exiger une justification par sortie, contexte, action et preuve. Repli : afficher les quatre corrections sans interaction.',
@@ -512,7 +512,7 @@ export const B_DECKS: PresentationDeck[] = [
     ],
   },
   {
-    brickId: 'b4-bis', family: 'b', order: 10, title: 'Rattrapage VS Code', track: 'recovery', slides: [
+    brickId: 'b4-bis', family: 'b', order: 10, title: 'Rattrapage projet local', track: 'recovery', slides: [
       slide({
         id: 'b4bis-install', role: 'opening',
         claim: 'Le rattrapage ne corrige que le maillon local qui manque.',
@@ -527,7 +527,7 @@ export const B_DECKS: PresentationDeck[] = [
             { name: 'Agent', role: 'Claude Code ou Codex ouvre ce dossier' },
           ],
         } },
-        links: [links.kit, links.vscode, links.codex, wikiLink('b4-bis', 'pratique-guidee', 'Diagnostic de rattrapage')],
+        links: [links.kit, links.claudeCode, links.codex, wikiLink('b4-bis', 'pratique-guidee', 'Diagnostic de rattrapage')],
         speaker: {
           durationMinutes: 3,
           notes: 'Couper à 03:00. Diagnostiquer dossier, terminal ou agent. Repli : placer le participant en observation de B4 ; ne lancer aucune installation longue.',
@@ -544,18 +544,18 @@ export const B_DECKS: PresentationDeck[] = [
           folder: 'kits/bloc-b-assistant/mini-application',
           contents: ['README.md', 'brief.mjs', 'app.mjs', 'brief.test.mjs'],
           command: {
-            mac: 'cd kits/bloc-b-assistant/mini-application && code .',
-            windows: 'cd kits\\bloc-b-assistant\\mini-application; code .',
+            mac: 'cd kits/bloc-b-assistant/mini-application && node --test',
+            windows: 'Set-Location kits\\bloc-b-assistant\\mini-application; node --test',
           },
-          trustRule: 'N’accepter Workspace Trust que pour ce kit fictif et connu.',
+          trustRule: 'Autoriser uniquement mini-application/ dans l’agent choisi et refuser tout accès hors de ce dossier fictif.',
         } },
-        links: [links.vscode, links.codex, wikiLink('b4-bis', 'pratique-guidee', 'Ouvrir le workspace')],
+        links: [links.claudeCode, links.codex, wikiLink('b4-bis', 'pratique-guidee', 'Ouvrir le workspace')],
         speaker: {
           durationMinutes: 4,
           notes: 'Couper à 07:00. Faire pointer l’Explorateur, l’onglet et le terminal sur mini-application/. Repli : utiliser Fichier > Ouvrir le dossier et le terminal intégré.',
           transition: 'Un test partagé et l’ouverture de l’agent de code valident le poste.',
         },
-        accessibleDescription: 'Un triptyque relie le dossier code dans l’Explorateur, un fichier du kit dans l’Éditeur et la même localisation dans le Terminal.',
+        accessibleDescription: 'Un triptyque relie le dossier mini-application dans l’Explorateur, un fichier du kit dans l’Éditeur et la même localisation dans le Terminal.',
       }),
       slide({
         id: 'b4bis-checkpoint', role: 'checkpoint',
@@ -571,7 +571,7 @@ export const B_DECKS: PresentationDeck[] = [
           ],
           mismatchAction: 'Rouvrir le terminal depuis mini-application, puis relancer node --test.',
         } },
-        links: [links.vscode, links.codex, links.kit, wikiLink('b4-bis', 'pratique-guidee', 'Checkpoint de rattrapage')],
+        links: [links.claudeCode, links.codex, links.kit, wikiLink('b4-bis', 'pratique-guidee', 'Checkpoint de rattrapage')],
         speaker: {
           durationMinutes: 3,
           notes: 'Couper B4-bis à 10:00. Exiger node --test puis l’ouverture du dossier dans l’agent choisi. Repli : observer B4 sur le poste voisin ; terminer l’installation hors chrono.',

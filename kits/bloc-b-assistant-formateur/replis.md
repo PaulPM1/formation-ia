@@ -2,11 +2,11 @@
 
 ## B1
 
-Afficher `corriges/brief-chat-6-lignes.md`. Faire pointer les six sources et la section `À confirmer`, puis reprendre à B2.
+Afficher `corriges/brief-chat.md`. Faire pointer les six sources et la section `À confirmer`, puis reprendre à B2.
 
 ## B2
 
-Afficher un Artifact ou un Canvas déjà généré selon `corriges/objet-correction.md`. Le groupe exécute les quatre tests et formule la correction, même si aucune génération n’a lieu en direct.
+Afficher un Artifact ou un Canvas déjà généré selon `corriges/objet-correction.md`. Le groupe exécute les cinq tests : six cartes visibles, déplacement vers `Plus tard`, archivage, total toujours égal à six, puis remise à zéro avec six cartes dans `Aujourd’hui`. Il formule ensuite la correction, même si aucune génération n’a lieu en direct.
 
 ## B3
 

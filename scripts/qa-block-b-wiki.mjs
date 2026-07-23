@@ -7,6 +7,7 @@ import { navigateAndWaitForFonts } from './qa-page-ready.mjs';
 const projectDirectory = fileURLToPath(new URL('..', import.meta.url));
 const baseURL = process.env.QA_BASE_URL ?? 'http://127.0.0.1:4376';
 const mobileRoutes = ['/briques/b0/', '/briques/b1/', '/briques/b2/', '/briques/b3/', '/briques/b4/'];
+const noScriptRoutes = ['/briques/b0/', '/briques/b1/', '/briques/b2/', '/briques/b3/', '/briques/b4/'];
 const validBrief = `# Brief du jour
 ## Actions du jour
 - [N01] Envoyer l’agenda. [source: demandes.md]
@@ -114,11 +115,52 @@ const assertBothPanelsVisible = async (page) => {
   for (const ecosystem of ['claude', 'openai']) {
     const panels = page.locator(`[data-block-b-panel="${ecosystem}"]`);
     const count = await panels.count();
-    if (count === 0) throw new Error(`no-js B1 : aucun panneau ${ecosystem}`);
+    if (count === 0) throw new Error(`no-js ${page.url()} : aucun panneau ${ecosystem}`);
     for (let index = 0; index < count; index += 1) {
       if (!await panels.nth(index).isVisible()) {
-        throw new Error(`no-js B1 : panneau ${ecosystem} ${index + 1} masqué`);
+        throw new Error(`no-js ${page.url()} : panneau ${ecosystem} ${index + 1} masqué`);
       }
+    }
+  }
+};
+
+const assertAllBrandOccurrencesVisible = async (page, route) => {
+  for (const brand of ['Claude', 'OpenAI']) {
+    const result = await page.evaluate((expectedBrand) => {
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      let occurrences = 0;
+      const hidden = [];
+      let node = walker.nextNode();
+      while (node) {
+        const text = node.textContent ?? '';
+        const count = text.split(expectedBrand).length - 1;
+        if (count > 0) {
+          const parent = node.parentElement;
+          if (parent?.closest('script, style, template')) {
+            node = walker.nextNode();
+            continue;
+          }
+          occurrences += count;
+          const style = parent ? getComputedStyle(parent) : null;
+          const visible = Boolean(
+            parent
+            && style
+            && style.display !== 'none'
+            && style.visibility !== 'hidden'
+            && style.visibility !== 'collapse'
+            && parent.getClientRects().length > 0,
+          );
+          if (!visible) hidden.push(text.trim().slice(0, 100));
+        }
+        node = walker.nextNode();
+      }
+      return { occurrences, hidden };
+    }, brand);
+    if (result.occurrences === 0) {
+      throw new Error(`no-js ${route} : aucune occurrence ${brand}`);
+    }
+    if (result.hidden.length > 0) {
+      throw new Error(`no-js ${route} : ${result.hidden.length} occurrence(s) ${brand} masquée(s)`);
     }
   }
 };
@@ -258,8 +300,11 @@ try {
   });
   const noScriptPage = await noScriptContext.newPage();
   listenForPageErrors(noScriptPage);
-  await openRoute(noScriptPage, '/briques/b1/');
-  await assertBothPanelsVisible(noScriptPage);
+  for (const route of noScriptRoutes) {
+    await openRoute(noScriptPage, route);
+    await assertBothPanelsVisible(noScriptPage);
+    await assertAllBrandOccurrencesVisible(noScriptPage, route);
+  }
   await noScriptContext.close();
 
   const mobileContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
@@ -290,5 +335,5 @@ if (failures.length) {
   console.error(failures.join('\n'));
   process.exitCode = 1;
 } else {
-  console.log('QA wiki Bloc B : voie OpenAI puis Claude persistées de B0 à B2, 4/4 contrôles conformes et échec sans À confirmer sur B3 avec 0 requête, deux voies no-JS sur B1 et B0 à B4 sans débordement à 390×844.');
+  console.log('QA wiki Bloc B : voie OpenAI puis Claude persistées de B0 à B2, 4/4 contrôles conformes et échec sans À confirmer sur B3 avec 0 requête, toutes les occurrences Claude et OpenAI visibles sans JS de B0 à B4, et B0 à B4 sans débordement à 390×844.');
 }

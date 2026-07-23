@@ -13,6 +13,7 @@ import {
   participantKitDirectory,
 } from '../scripts/block-b-kit.mjs';
 import { verifyMissionAgent } from '../kits/bloc-b-assistant/mission-agent/verify-brief.mjs';
+import { briefContractCases } from './helpers/block-b-brief-cases';
 
 const projectDirectory = fileURLToPath(new URL('..', import.meta.url));
 
@@ -35,6 +36,15 @@ test('le kit partage trois notes et une mission agent autonome sans prompts', as
 
   assert.deepEqual(agentSources, notes);
   assert.match(await readKit('LIRE-EN-PREMIER.md'), /Kit d’entraînement du Bloc B/);
+  const contract = await readKit('mission-agent/brief-contract.mjs');
+  const verifier = await readKit('mission-agent/verify-brief.mjs');
+  const browserValidator = await readFile(
+    path.join(projectDirectory, 'src/features/block-b/brief-validator.ts'),
+    'utf8',
+  );
+  assert.doesNotMatch(contract, /node:/);
+  assert.match(verifier, /from '.\/brief-contract\.mjs'/);
+  assert.match(browserValidator, /brief-contract\.mjs/);
   await assert.rejects(readKit('prompts/01-chat.md'));
 
   const noteIds = notes.flatMap((content) => [...content.matchAll(/\[N\d{2}\]/g)].map(([id]) => id));
@@ -67,6 +77,32 @@ test('le vérificateur de mission agent accepte le cas conforme et refuse les so
   });
   assert.equal(valid.ok, true);
   assert.deepEqual(valid.checks.map((check) => check.ok), [true, true, true, true]);
+
+  for (const briefCase of briefContractCases) {
+    await writeFile(
+      path.join(temp, 'mission-agent/sortie/brief-du-jour.md'),
+      briefCase.markdown,
+    );
+    const result = await verifyMissionAgent({
+      rootDirectory: path.join(temp, 'mission-agent'),
+      log: false,
+    });
+    assert.equal(
+      result.checks.find((check) => check.id === 'output')?.ok,
+      briefCase.expected.structure,
+      `${briefCase.name} : structure`,
+    );
+    assert.equal(
+      result.checks.find((check) => check.id === 'sources')?.ok,
+      briefCase.expected.sources,
+      `${briefCase.name} : sources`,
+    );
+    assert.equal(
+      result.checks.find((check) => check.id === 'uncertainty')?.ok,
+      briefCase.expected.uncertainty,
+      `${briefCase.name} : uncertainty`,
+    );
+  }
 
   const instructorBrief = await readFile(
     path.join(projectDirectory, 'kits/bloc-b-assistant-formateur/corriges/brief-agent.md'),
@@ -175,21 +211,31 @@ test('les corrigés formateur conservent les garanties des quatre outils', async
     'kits/bloc-b-assistant-formateur/corriges',
   );
   const [chat, artifact, cowork, code] = await Promise.all([
-    'brief-chat-6-lignes.md', 'objet-correction.md',
+    'brief-chat.md', 'objet-correction.md',
     'brief-agent.md', 'agent-code.patch',
   ].map((file) => readFile(path.join(correctionDirectory, file), 'utf8')));
 
   const chatLines = chat.split('\n').filter((line) => line.startsWith('- '));
-  assert.equal(chatLines.length, 6);
+  const chatNoteIds = chatLines.flatMap((line) => (
+    [...line.matchAll(/\bN\d{2}\b/g)].map(([noteId]) => noteId)
+  ));
+  assert.deepEqual(chatNoteIds.toSorted(), ['N01', 'N02', 'N03', 'N04', 'N05', 'N06']);
   assert.ok(chatLines.every((line) =>
-    /\[source: (?:demandes|reunion|messages)\.md\]/.test(line)));
+    /\[sources?: (?:demandes|reunion|messages)\.md/.test(line)));
   assert.doesNotMatch(chat, /inbox\//);
   assert.match(chat, /## À confirmer/);
   assert.match(chat, /18 ou le 19 septembre/);
 
   assert.match(artifact, /confirmation/i);
-  assert.match(artifact, /quatre tests/i);
+  assert.match(artifact, /cinq tests/i);
   assert.match(artifact, /six cartes commencent dans `Aujourd’hui`/i);
+  for (const gesture of [
+    /six cartes visibles/i,
+    /déplacement vers `Plus tard`/i,
+    /archivage/i,
+    /total toujours égal à six/i,
+    /remise à zéro avec six cartes dans `Aujourd’hui`/i,
+  ]) assert.match(artifact, gesture);
   assert.match(cowork, /## À confirmer/);
   assert.match(cowork, /demandes\.md/);
   assert.match(cowork, /reunion\.md/);
@@ -201,6 +247,23 @@ test('les corrigés formateur conservent les garanties des quatre outils', async
   assert.match(code, /Ne modifier ni sortNotes/i);
 });
 
+test('le repli B2 fait rejouer explicitement les cinq tests de la fiche', async () => {
+  const fallback = await readFile(
+    path.join(projectDirectory, 'kits/bloc-b-assistant-formateur/replis.md'),
+    'utf8',
+  );
+  const b2Fallback = fallback.match(/## B2\s+([\s\S]*?)(?=\n## B3)/)?.[1] ?? '';
+
+  assert.match(b2Fallback, /cinq tests/i);
+  for (const gesture of [
+    /six cartes visibles/i,
+    /déplacement vers `Plus tard`/i,
+    /archivage/i,
+    /total toujours égal à six/i,
+    /remise à zéro avec six cartes dans `Aujourd’hui`/i,
+  ]) assert.match(b2Fallback, gesture);
+});
+
 test('le ZIP public est déterministe, synchronisé et sans corrigé formateur', async () => {
   const first = await buildKitArchive();
   const second = await buildKitArchive();
@@ -209,6 +272,7 @@ test('le ZIP public est déterministe, synchronisé et sans corrigé formateur',
   const entries = Object.keys(unzipSync(first)).toSorted();
   assert.ok(entries.every((entry) => entry.startsWith('bloc-b-assistant/')));
   assert.ok(entries.some((entry) => entry.endsWith('/notes/demandes.md')));
+  assert.ok(entries.some((entry) => entry.endsWith('/mission-agent/brief-contract.mjs')));
   assert.ok(entries.some((entry) => entry.endsWith('/mission-agent/verify-brief.mjs')));
   assert.ok(entries.some((entry) => entry.endsWith('/mini-application/brief.test.mjs')));
   assert.ok(entries.every((entry) => !entry.includes('/prompts/')));

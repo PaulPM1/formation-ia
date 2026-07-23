@@ -4,7 +4,7 @@ Ce dossier reste hors du ZIP public. Il contient les sorties et replis à utilis
 
 | Étape | Coupure | Repli |
 |---|---:|---|
-| B1 Chat | 08:00 dans B1 | `corriges/brief-chat-6-lignes.md` |
+| B1 Chat | 08:00 dans B1 | `corriges/brief-chat.md` |
 | B2 Artifact / Canvas | 15 min de mission | `corriges/objet-correction.md` |
 | B3 Cowork / Work | 15 min de mission | `corriges/brief-agent.md` puis vérificateur |
 | B4 Claude Code / Codex | 16 min de mission | `corriges/agent-code.patch` puis test et diff |

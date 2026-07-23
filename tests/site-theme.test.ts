@@ -122,4 +122,8 @@ test('la QA wiki B couvre persistance, repli sans JavaScript et vérificateur lo
   assert.match(qa, /brief-du-jour\.md/);
   assert.match(qa, /data-block-b-panel/);
   assert.match(qa, /width:\s*390/);
+  assert.match(qa, /const noScriptRoutes = \['\/briques\/b0\/'.*'\/briques\/b4\/'\]/);
+  assert.match(qa, /assertAllBrandOccurrencesVisible/);
+  assert.match(qa, /for \(const route of noScriptRoutes\)/);
+  assert.match(qa, /for \(const brand of \['Claude', 'OpenAI'\]\)/);
 });

@@ -2,33 +2,10 @@ import { createHash } from 'node:crypto';
 import { readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { validateBriefContract } from './brief-contract.mjs';
 
 const defaultRoot = path.dirname(fileURLToPath(import.meta.url));
-const requiredSectionNames = ['Actions du jour', 'À confirmer', 'Plus tard'];
-const expectedNoteSources = {
-  N01: 'demandes.md',
-  N02: 'demandes.md',
-  N03: 'reunion.md',
-  N04: 'reunion.md',
-  N05: 'messages.md',
-  N06: 'messages.md',
-};
 const allowedOutputNames = new Set(['README.md', 'brief-du-jour.md', '.DS_Store']);
-
-const parseSections = (markdown) => {
-  const sections = new Map();
-  let currentSection = null;
-  for (const line of markdown.split(/\r?\n/)) {
-    const heading = line.match(/^##\s+(.+?)\s*$/);
-    if (heading) {
-      currentSection = heading[1].trim();
-      if (!sections.has(currentSection)) sections.set(currentSection, []);
-    } else if (currentSection) {
-      sections.get(currentSection).push(line);
-    }
-  }
-  return sections;
-};
 
 const sha256 = async (filePath) => createHash('sha256')
   .update(await readFile(filePath))
@@ -54,32 +31,7 @@ export async function verifyMissionAgent({ rootDirectory = defaultRoot, log = tr
     })),
   );
 
-  const requiredSources = [...new Set(Object.values(expectedNoteSources))];
-  const sections = parseSections(output);
-  const authoredSectionNames = [...output.matchAll(/^##\s+(.+?)\s*$/gm)]
-    .map(([, name]) => name.trim());
-  const exactSections = authoredSectionNames.length === requiredSectionNames.length
-    && authoredSectionNames.every((name, index) => name === requiredSectionNames[index]);
-  const actionLines = requiredSectionNames.flatMap((sectionName) => (
-    sections.get(sectionName) ?? []
-  )).map((line) => line.trim()).filter((line) => line.startsWith('- '));
-  const noteCounts = Object.fromEntries(Object.keys(expectedNoteSources).map((noteId) => [noteId, 0]));
-  const actionSourcesAreAssociated = actionLines.length > 0 && actionLines.every((line) => {
-    const noteIds = [...line.matchAll(/\bN\d{2}\b/g)].map(([noteId]) => noteId);
-    for (const noteId of noteIds) {
-      if (noteId in noteCounts) noteCounts[noteId] += 1;
-    }
-    return noteIds.length > 0 && noteIds.every((noteId) => (
-      noteId in expectedNoteSources && line.includes(expectedNoteSources[noteId])
-    ));
-  });
-  const sixNotesCoveredOnce = Object.values(noteCounts).every((count) => count === 1);
-  const uncertainty = (sections.get('À confirmer') ?? []).join('\n');
-  const uncertaintyKeepsBothNotes = /\bN03\b/.test(uncertainty) && /\bN05\b/.test(uncertainty);
-  const uncertaintyKeepsAlternativeDates = (
-    /\b18\b[^\n]{0,120}\bou\b[^\n]{0,120}\b19\b/i.test(uncertainty)
-    || /\b19\b[^\n]{0,120}\bou\b[^\n]{0,120}\b18\b/i.test(uncertainty)
-  ) && /septembre/i.test(uncertainty);
+  const briefContract = validateBriefContract(output);
   let outputDirectoryReadable = true;
   let unexpectedOutputs = [];
   try {
@@ -96,7 +48,7 @@ export async function verifyMissionAgent({ rootDirectory = defaultRoot, log = tr
       label: 'la sortie contient uniquement un brief avec les trois sections attendues',
       ok: outputExists
         && output.trim().length > 0
-        && exactSections
+        && briefContract.structure
         && outputDirectoryReadable
         && unexpectedOutputs.length === 0,
     },
@@ -104,16 +56,13 @@ export async function verifyMissionAgent({ rootDirectory = defaultRoot, log = tr
       id: 'sources',
       label: 'les six notes citent leur fichier source sur la même action',
       ok: outputExists
-        && requiredSources.every((source) => output.includes(source))
-        && actionSourcesAreAssociated
-        && sixNotesCoveredOnce,
+        && briefContract.sources,
     },
     {
       id: 'uncertainty',
       label: 'le conflit reste sous « À confirmer »',
       ok: outputExists
-        && uncertaintyKeepsBothNotes
-        && uncertaintyKeepsAlternativeDates,
+        && briefContract.uncertainty,
     },
     {
       id: 'fingerprints',
