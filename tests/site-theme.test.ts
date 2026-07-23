@@ -108,3 +108,18 @@ test('le Bloc B monte un sélecteur progressif sans supprimer le contenu MDX', a
   assert.match(switcher, /data-block-b-panel/);
   assert.doesNotMatch(switcher, /onclick=/);
 });
+
+test('la QA wiki B couvre persistance, repli sans JavaScript et vérificateur local', async () => {
+  const [qa, packageJson] = await Promise.all([
+    read('scripts/qa-block-b-wiki.mjs').catch(() => ''),
+    read('package.json'),
+  ]);
+
+  assert.match(packageJson, /"qa:block-b-wiki":\s*"node scripts\/qa-block-b-wiki\.mjs"/);
+  assert.match(qa, /bloc-b-ecosystem/);
+  assert.match(qa, /javaScriptEnabled:\s*false/);
+  assert.match(qa, /setInputFiles/);
+  assert.match(qa, /brief-du-jour\.md/);
+  assert.match(qa, /data-block-b-panel/);
+  assert.match(qa, /width:\s*390/);
+});
