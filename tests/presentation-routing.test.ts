@@ -25,12 +25,12 @@ test('la fusion A2 rejoint directement A3 et ne conserve aucune route A5', () =>
   assert.ok(PRESENTATION_SLIDES.every((slide) => !slide.id.startsWith(obsoletePrefix)));
 });
 
-test('les trois pistes relient le socle, le facultatif et le rattrapage comme prévu', () => {
-  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b3-check').next?.id, 'c1-repeat');
-  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'c1-repeat').previous?.id, 'b3-check');
+test('relie le socle et le rattrapage', () => {
+  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b3-check').next?.id, 'b4-context');
   assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b4-context').previous?.id, 'b3-check');
   assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b4-context').next?.id, 'b4-ipmtr');
   assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b4-test').next?.id, 'c1-repeat');
+  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'c1-repeat').previous?.id, 'b4-test');
   assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b4bis-install').previous, null);
   assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b4bis-checkpoint').next, null);
 });

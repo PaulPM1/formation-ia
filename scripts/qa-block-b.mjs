@@ -10,7 +10,12 @@ const routes = [
   '/presenter/b4/b4-context/', '/presenter/b4/b4-ipmtr/', '/presenter/b4/b4-mission/', '/presenter/b4/b4-test/',
   '/presenter/b4-bis/b4bis-install/', '/presenter/b4-bis/b4bis-workspace/', '/presenter/b4-bis/b4bis-checkpoint/',
 ];
-const setupLabels = ['Chat', 'Artifact', 'Cowork', 'Kit', 'Départ'];
+const levelLabels = ['Réponse', 'Objet', 'Livrable', 'Projet'];
+const genericNoScriptProofs = new Map([
+  ['/presenter/b0/b0-layers/', '.presentation-visual .comparison__levels'],
+  ['/presenter/b0/b0-test/', '.presentation-visual.mission-board'],
+  ['/presenter/b4/b4-test/', '.presentation-visual .prioritizer__correction'],
+]);
 const baseURL = process.env.QA_BASE_URL ?? 'http://127.0.0.1:4377';
 let preview;
 
@@ -48,9 +53,7 @@ const inspect = async (viewport, mode, zoom = 1) => {
       continue;
     }
     await page.evaluate((value) => { document.documentElement.style.zoom = String(value); }, zoom);
-    const expectedTrack = route.startsWith('/presenter/b4-bis/')
-      ? 'Rattrapage'
-      : route.startsWith('/presenter/b4/') ? 'Facultatif' : null;
+    const expectedTrack = route.startsWith('/presenter/b4-bis/') ? 'Rattrapage' : null;
     const trackMarker = page.locator('.presentation-heading__track');
     const trackMarkerVisible = await trackMarker.isVisible().catch(() => false);
     if (expectedTrack && (!trackMarkerVisible || (await trackMarker.textContent())?.trim() !== expectedTrack)) {
@@ -59,7 +62,7 @@ const inspect = async (viewport, mode, zoom = 1) => {
     if (!expectedTrack && trackMarkerVisible) {
       failures.push(`${mode} ${route} repère de piste inattendu`);
     }
-    const result = await page.locator('.presentation-visual').evaluate((visual, { mode, setupLabels }) => {
+    const result = await page.locator('.presentation-visual').evaluate((visual, { mode, levelLabels }) => {
       const tolerance = 1;
       const isHidden = (element) => {
         const style = getComputedStyle(element);
@@ -118,15 +121,15 @@ const inspect = async (viewport, mode, zoom = 1) => {
         }
       }
 
-      const labels = [...visual.querySelectorAll('.setup__route-label')];
+      const labels = [...visual.querySelectorAll('.comparison__need strong')];
       if (labels.length) {
         const visibleLabels = labels.filter((element) => !isHidden(element)).map((element) => element.textContent.trim());
-        if (visibleLabels.length !== 5 || setupLabels.some((name) => !visibleLabels.includes(name))) {
-          issues.push(`Setup labels visibles=${JSON.stringify(visibleLabels)}`);
+        if (visibleLabels.length !== 4 || levelLabels.some((name) => !visibleLabels.includes(name))) {
+          issues.push(`Niveaux visibles=${JSON.stringify(visibleLabels)}`);
         }
       }
       return issues;
-    }, { mode, setupLabels });
+    }, { mode, levelLabels });
     failures.push(...result.map((issue) => `${mode} ${route} ${issue}`));
   }
   await context.close();
@@ -140,7 +143,37 @@ try {
   const noScriptPage = await noScript.newPage();
   for (const route of routes) {
     await navigateAndWaitForFonts(noScriptPage, `${baseURL}${route}`);
-    if (!await noScriptPage.locator('.presentation-visual [data-enhanced="false"]').isVisible().catch(() => false)) {
+    const proofSelector = genericNoScriptProofs.get(route);
+    if (proofSelector) {
+      const proofs = noScriptPage.locator(proofSelector);
+      const expectedCount = route === '/presenter/b4/b4-test/' ? 4 : 1;
+      if (await proofs.count() !== expectedCount) {
+        failures.push(`no-js ${route} preuves ${await proofs.count()}/${expectedCount}`);
+        continue;
+      }
+      for (let index = 0; index < expectedCount; index += 1) {
+        if (!await proofs.nth(index).isVisible().catch(() => false)) {
+          failures.push(`no-js ${route} preuve ${index + 1} absente`);
+        }
+      }
+      if (route === '/presenter/b4/b4-test/') {
+        const fallbackLayout = await noScriptPage.locator('.presentation-visual').evaluate((visual) => {
+          const scenarios = [...visual.querySelectorAll('[data-prioritizer-scenario]')];
+          const lastScenario = scenarios.at(-1);
+          const visualRect = visual.getBoundingClientRect();
+          const lastRect = lastScenario?.getBoundingClientRect();
+          return {
+            scenarioCount: scenarios.length,
+            clipped: visual.scrollHeight > visual.clientHeight + 1
+              || !lastRect
+              || lastRect.bottom > visualRect.bottom + 1,
+          };
+        });
+        if (fallbackLayout.scenarioCount !== 4 || fallbackLayout.clipped) {
+          failures.push(`no-js ${route} Dernière situation hors du cadre`);
+        }
+      }
+    } else if (!await noScriptPage.locator('.presentation-visual [data-enhanced="false"]').isVisible().catch(() => false)) {
       failures.push(`no-js ${route} état final absent`);
     }
   }

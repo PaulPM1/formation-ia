@@ -42,9 +42,16 @@ async function getWikiTargets(
 
     try {
       const rendered = await markdown.render(document.body);
+      const explicitAnchors = Array.from(
+        document.body.matchAll(/<(?:a|span|h[1-6])\b[^>]*\bid=["']([^"']+)["'][^>]*>/gi),
+        (match) => match[1],
+      );
       targets.set(brickId, {
         filePath: document.filePath,
-        anchors: new Set(rendered.metadata.headings.map((heading) => heading.slug)),
+        anchors: new Set([
+          ...rendered.metadata.headings.map((heading) => heading.slug),
+          ...explicitAnchors,
+        ]),
       });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);

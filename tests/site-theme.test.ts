@@ -91,3 +91,39 @@ test('la 404 distingue les URL du présentateur après chargement sans mentir sa
   );
   assert.doesNotMatch(notFound.slice(notFound.lastIndexOf('</BaseLayout>') + '</BaseLayout>'.length), /<script>/);
 });
+
+test('le Bloc B monte un sélecteur progressif sans supprimer le contenu MDX', async () => {
+  const [detail, switcher] = await Promise.all([
+    read('src/pages/briques/[id].astro'),
+    read('src/components/block-b/EcosystemSwitch.astro'),
+  ]);
+
+  assert.match(detail, /MIRRORED_BLOCK_B_IDS/);
+  assert.match(detail, /<EcosystemSwitch/);
+  assert.match(detail, /brick\.data\.id === 'b3'/);
+  assert.match(detail, /<BriefValidator/);
+  assert.match(switcher, /type="radio"/);
+  assert.match(switcher, /aria-live="polite"/);
+  assert.match(switcher, /localStorage\.setItem/);
+  assert.match(switcher, /data-block-b-panel/);
+  assert.doesNotMatch(switcher, /onclick=/);
+});
+
+test('la QA wiki B couvre persistance, repli sans JavaScript et vérificateur local', async () => {
+  const [qa, packageJson] = await Promise.all([
+    read('scripts/qa-block-b-wiki.mjs').catch(() => ''),
+    read('package.json'),
+  ]);
+
+  assert.match(packageJson, /"qa:block-b-wiki":\s*"node scripts\/qa-block-b-wiki\.mjs"/);
+  assert.match(qa, /bloc-b-ecosystem/);
+  assert.match(qa, /javaScriptEnabled:\s*false/);
+  assert.match(qa, /setInputFiles/);
+  assert.match(qa, /brief-du-jour\.md/);
+  assert.match(qa, /data-block-b-panel/);
+  assert.match(qa, /width:\s*390/);
+  assert.match(qa, /const noScriptRoutes = \['\/briques\/b0\/'.*'\/briques\/b4\/'\]/);
+  assert.match(qa, /assertAllBrandOccurrencesVisible/);
+  assert.match(qa, /for \(const route of noScriptRoutes\)/);
+  assert.match(qa, /for \(const brand of \['Claude', 'OpenAI'\]\)/);
+});

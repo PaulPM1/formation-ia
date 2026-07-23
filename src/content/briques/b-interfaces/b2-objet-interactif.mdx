@@ -1,0 +1,167 @@
+---
+id: b2
+title: "Objet interactif"
+family: b
+order: 7
+priority: socle
+durationMinutes: 18
+type: demonstration
+platforms:
+  - commun
+prerequisites:
+  - b1
+status: a-relire
+owner: a-attribuer
+learningObjective: "Transformer les six notes en objet manipulable avec Artifacts ou Canvas, exécuter cinq tests et corriger sans régression."
+expectedOutcome: "Le participant obtient six cartes, trois états, trois compteurs, un archivage et une remise à zéro qui passent cinq tests."
+---
+
+## Cap
+
+**Objectif :** construire, manipuler et corriger une boîte de tri en 18 minutes.
+
+- 2 minutes : comprendre la situation et choisir une surface d’objet.
+- 3 minutes : fournir les fichiers et fixer le périmètre minimal.
+- 10 minutes : construire puis exécuter cinq tests.
+- 3 minutes : ajouter la confirmation d’archivage et rejouer les cinq tests.
+
+## Concept durable
+
+Un objet interactif devient utile lorsque son état peut changer sous l’action de l’utilisateur et que ces changements sont vérifiables. Ici, déplacer une carte doit mettre à jour les compteurs sans changer le total de six.
+
+Le périmètre minimal reste volontairement borné : trois états, trois compteurs, un archivage et une remise à zéro. Aucun compte, notification ou stockage distant n’est nécessaire.
+
+<a id="pratique-guidee"></a>
+
+## Pratique guidée
+
+### Situation
+
+Les six notes doivent devenir des cartes que vous pouvez déplacer entre trois états. Une réponse textuelle ne suffit plus, car vous devez agir sur le résultat et observer ses changements.
+
+### Pourquoi cette surface
+
+Artifacts ou Canvas fournit un objet manipulable dans lequel vous pouvez exécuter les gestes vous-même. La preuve vient des états observés, pas d’un résumé produit par l’IA.
+
+### Fichiers à fournir
+
+Utilisez les mêmes fichiers fictifs que dans B1 :
+
+- `notes/demandes.md` ;
+- `notes/reunion.md` ;
+- `notes/messages.md`.
+
+<section className="block-b-path" data-block-b-panel="claude">
+  <h3>Voie Claude : créer un Artifact</h3>
+  <p>Joignez les trois fichiers de <code>notes/</code> puis demandez explicitement un Artifact interactif.</p>
+</section>
+
+<section className="block-b-path" data-block-b-panel="openai">
+  <h3>Voie OpenAI : ouvrir Canvas</h3>
+  <p>Joignez les trois fichiers de <code>notes/</code> puis demandez explicitement d’utiliser Canvas.</p>
+</section>
+
+### Prompt à envoyer
+
+```text
+Crée un objet interactif nommé « Boîte de tri du jour » à partir des six notes.
+
+Affiche six cartes et exactement trois états : Aujourd’hui, Plus tard,
+Archiver. Place les six cartes dans Aujourd’hui au départ. Permets de déplacer
+chaque carte, affiche un compteur par état et conserve toujours un total de six.
+Ajoute un bouton « Remise à zéro » qui restaure l’état initial.
+
+N’ajoute ni compte, ni notification, ni stockage distant.
+```
+
+### Manipulation à effectuer
+
+Ouvrez l’objet généré et agissez directement sur les cartes et le bouton. Observez les trois compteurs après chaque déplacement ; ne remplacez aucun clic par une demande de confirmation à l’IA.
+
+### Tester mon résultat
+
+Exécutez exactement ces cinq gestes dans l’ordre :
+
+1. voir six cartes ;
+2. déplacer une carte vers `Plus tard` ;
+3. archiver une carte ;
+4. vérifier que le total reste six ;
+5. remettre à zéro et retrouver six cartes dans `Aujourd’hui`.
+
+Le test passe uniquement si les cinq gestes produisent le résultat attendu.
+
+### Corriger un échec
+
+Si l’archivage est immédiat, envoyez cette correction ciblée :
+
+```text
+Ajoute uniquement une confirmation avant l’archivage d’une carte. Ne modifie ni
+les déplacements, ni les compteurs, ni la remise à zéro.
+```
+
+Repartez ensuite de l’état initial et rejouez les cinq tests. La correction passe seulement si la confirmation apparaît et si aucun autre comportement ne régresse.
+
+## Mission commune
+
+Construisez la boîte de tri, exécutez les cinq tests, ajoutez uniquement la confirmation d’archivage, puis rejouez les cinq tests depuis zéro.
+
+## Critères de réussite
+
+- Les six cartes sont visibles.
+- Les trois états portent les libellés exacts.
+- Chaque état affiche un compteur et le total reste égal à six.
+- `Remise à zéro` replace les six cartes dans `Aujourd’hui`.
+- Une confirmation précède l’archivage.
+- Les cinq tests passent encore après correction.
+
+## Livrable
+
+L’objet interactif conservé et le résultat des deux passes de cinq tests, avant et après la correction d’archivage.
+
+## Notes formateur
+
+- De 00:00 à 02:00 : montrer le passage du brief à l’objet.
+- De 02:00 à 05:00 : retirer les fonctions hors MVP.
+- De 05:00 à 15:00 : faire générer l’objet et exécuter les cinq tests.
+- Couper la génération à 15:00 dans B2, même si le rendu n’est pas parfait.
+- De 15:00 à 18:00 : appliquer la correction et rejouer les cinq tests.
+- Repli : ouvrir l’objet interactif préparé et consacrer le temps aux cinq gestes et à la correction ciblée.
+
+## Défis avancés
+
+- Tester une remise à zéro après plusieurs archives confirmées.
+- Vérifier le parcours au clavier et la présence d’un texte d’état, sans dépendre uniquement de la couleur.
+
+## Variantes
+
+- **Génération lente :** tester l’objet préparé par le formateur.
+- **Code désactivé :** utiliser une simulation préparée et rédiger les cas de test.
+- **Petit écran :** vérifier que les trois états restent atteignables sans perte de carte.
+
+## Dépannage
+
+- **Un compteur diverge :** décrire le déplacement, l’état attendu et l’état observé.
+- **La remise à zéro perd une note :** revenir à la dernière version fonctionnelle et demander une correction unique.
+- **L’archive reste immédiate :** reprendre mot pour mot la correction ciblée.
+- **Un autre comportement régresse :** revenir à la version précédente et ne demander que la confirmation.
+
+## Ressources
+
+- Les trois fichiers de `kits/bloc-b-assistant/notes/`.
+- Le test binaire de la rubrique `Tester mon résultat`.
+
+## Ouverture
+
+L’objet agit dans sa propre surface. B3 confie ensuite une tâche multiétape à un agent qui produit un livrable.
+
+## Scénario de démonstration
+
+La boîte de tri passe les cinq tests mais archive immédiatement une carte. La correction ajoute une confirmation, puis la seconde passe prouve que les cinq comportements n’ont pas régressé.
+
+## Déroulé de démonstration
+
+1. Montrer les six cartes et les trois compteurs.
+2. Exécuter les cinq tests à voix haute.
+3. Nommer l’écart d’archivage sans proposer de code.
+4. Coller la correction ciblée.
+5. Rejouer les cinq tests depuis l’état initial.

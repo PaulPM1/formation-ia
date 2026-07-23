@@ -10,6 +10,7 @@
     "kit:block-b": "node scripts/block-b-kit.mjs",
     "kit:block-b:check": "node scripts/block-b-kit.mjs --check",
     "qa:block-b": "node scripts/qa-block-b.mjs",
+    "qa:block-b-wiki": "node scripts/qa-block-b-wiki.mjs",
     "qa:block-c": "node scripts/qa-block-c.mjs",
     "qa:a1-checkpoint": "node scripts/qa-a1-checkpoint.mjs",
     "qa:a1-training": "node scripts/qa-a1-training.mjs",

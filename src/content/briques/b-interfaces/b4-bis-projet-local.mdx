@@ -1,0 +1,141 @@
+---
+id: b4-bis
+title: "Rattrapage projet local"
+family: b
+order: 10
+priority: rattrapage
+durationMinutes: 10
+type: setup
+platforms:
+  - commun
+prerequisites:
+  - b0
+status: a-relire
+owner: a-attribuer
+learningObjective: "Réaligner en dix minutes le dossier local, le terminal Node et l’agent de code sur un poste presque prêt."
+expectedOutcome: "Le dossier mini-application est ouvert, node --test y passe et Claude Code ou Codex peut ouvrir ce même dossier."
+---
+
+## Cap
+
+**Objectif de rattrapage :** corriger uniquement le maillon technique manquant sur un poste presque prêt.
+
+- 3 minutes : diagnostiquer le dossier, Node ou l’accès à l’agent.
+- 4 minutes : ouvrir le même projet local dans les outils.
+- 3 minutes : exécuter le test et confirmer l’accès de l’agent.
+
+Une installation complète de Node, Claude ou ChatGPT ne tient pas dans cette piste. Elle se termine avant la séance ou hors chrono.
+
+## Concept durable
+
+Un projet local est prêt lorsque trois preuves concordent :
+
+1. le dossier `mini-application/` est ouvert ;
+2. `node --test` passe dans ce dossier ;
+3. Claude Code ou Codex peut ouvrir ce même dossier.
+
+L’éditeur utilisé pour dépanner peut varier. VS Code reste une option pratique, mais il n’est pas un prérequis pour réaliser B4.
+
+<a id="pratique-guidee"></a>
+
+## Pratique guidée
+
+Ouvrez le dossier `kits/bloc-b-assistant/mini-application/`, pas seulement son fichier `index.html`. Dans un terminal placé dans ce dossier, exécutez :
+
+```sh
+node --test
+```
+
+Choisissez ensuite le panneau correspondant à votre voie. Aucune modification de la mini-application n’est demandée ici.
+
+<section className="block-b-path" data-block-b-panel="claude">
+  <h3>Voie Claude : vérifier Claude Code</h3>
+  <p>Dans l’application Claude, ouvrez Claude Code puis sélectionnez le même dossier <code>mini-application/</code>. Demandez uniquement la liste des fichiers, sans autoriser de modification.</p>
+</section>
+
+<section className="block-b-path" data-block-b-panel="openai">
+  <h3>Voie OpenAI : vérifier Codex</h3>
+  <p>Dans l’application ChatGPT, ouvrez Codex puis sélectionnez le même dossier <code>mini-application/</code>. Demandez uniquement la liste des fichiers, sans autoriser de modification.</p>
+</section>
+
+## Mission commune
+
+1. Identifiez le seul maillon en échec : dossier local, terminal Node ou accès de l’agent.
+2. Ouvrez `mini-application/` comme dossier.
+3. Ouvrez `brief.test.mjs` pour confirmer que vous êtes dans le bon projet.
+4. Créez un nouveau terminal dans ce dossier.
+5. Vérifiez le chemin courant.
+6. Exécutez `node --test`.
+7. Ouvrez le même dossier dans Claude Code ou Codex.
+
+## Critères de réussite
+
+- Le projet ouvert est bien `mini-application/`.
+- Le terminal courant pointe vers ce dossier.
+- `node --test` passe.
+- L’agent choisi voit les fichiers de ce même dossier.
+- Aucun fichier du projet n’a été modifié pendant le diagnostic.
+
+## Livrable
+
+Trois preuves concordantes :
+
+1. le dossier `mini-application/` est ouvert ;
+2. `node --test` passe dans ce dossier ;
+3. Claude Code ou Codex peut ouvrir ce même dossier.
+
+## Notes formateur
+
+- De 00:00 à 03:00 : diagnostiquer le premier maillon manquant.
+- De 03:00 à 07:00 : ouvrir `mini-application/` et réaligner le terminal.
+- De 07:00 à 10:00 : exécuter `node --test` et ouvrir le dossier dans l’agent choisi.
+- Couper B4-bis à 10:00 sans prolongation.
+- Repli : placer le participant en observation sur un poste prêt ; terminer toute installation après le bloc.
+
+## Défis avancés
+
+- Vérifier le chemin courant avec la commande adaptée au système.
+- Expliquer la différence entre un fichier ouvert et un dossier de projet ouvert.
+
+## Variantes
+
+- **macOS ou Git Bash :** vérifier le chemin avec `pwd`.
+- **Windows PowerShell :** vérifier le chemin avec `Get-Location`.
+- **VS Code déjà installé :** utiliser Fichier &gt; Ouvrir le dossier et le terminal intégré comme variante de dépannage.
+
+## Dépannage
+
+- **Le test ne trouve aucun fichier :** rouvrir `mini-application/` comme dossier et créer un nouveau terminal à cet emplacement.
+- **Node est introuvable :** sortir du chrono et utiliser le poste observateur.
+- **L’agent ne voit pas le dossier :** le sélectionner à nouveau depuis Claude Code ou Codex.
+- **Une demande de confiance apparaît :** n’accorder la confiance qu’au kit fictif fourni et connu.
+
+## Ressources
+
+- Le dossier `kits/bloc-b-assistant/mini-application/`.
+- Son fichier `README.md`.
+
+## Ouverture
+
+Cette piste s’arrête au checkpoint. Revenez au sommaire ; elle ne mène automatiquement ni à B4 ni à C1.
+
+## Diagnostic initial
+
+Testez dans cet ordre : `mini-application/` ouvert comme dossier, `node --test` disponible dans ce dossier, puis accès au même dossier depuis Claude Code ou Codex. Ne corrigez que le premier échec.
+
+## Test final
+
+Le setup passe lorsque `mini-application/` est ouvert, que `node --test` y réussit et que Claude Code ou Codex peut ouvrir ce même dossier.
+
+## Dépannage Mac
+
+- Utiliser `pwd` pour contrôler le dossier courant.
+- Utiliser VS Code seulement si l’ouverture depuis l’application choisie échoue.
+- Si Node manque, ne pas installer pendant les dix minutes.
+
+## Dépannage Windows
+
+- Utiliser `Get-Location` dans PowerShell.
+- Vérifier que le chemin se termine par `kits\bloc-b-assistant\mini-application`.
+- Utiliser VS Code seulement comme variante de dépannage.
+- Si Node manque, basculer sur le poste observateur et terminer hors chrono.
