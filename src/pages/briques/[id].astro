@@ -1,6 +1,7 @@
 ---
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 
+import BriefValidator from '../../components/block-b/BriefValidator.astro';
 import EcosystemSwitch from '../../components/block-b/EcosystemSwitch.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import {
@@ -91,6 +92,7 @@ const isMirroredBlockB = MIRRORED_BLOCK_B_IDS.has(brick.data.id);
 
     <article class="brick-content">
       <Content />
+      {brick.data.id === 'b3' && <BriefValidator />}
     </article>
   </div>
 </BaseLayout>

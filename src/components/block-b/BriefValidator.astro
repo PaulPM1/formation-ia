@@ -1,0 +1,197 @@
+<section class="brief-validator" aria-labelledby="brief-validator-title">
+  <h2 id="brief-validator-title">Vérificateur local du brief</h2>
+  <p id="brief-validator-privacy">
+    Le fichier est lu uniquement dans ce navigateur et n’est jamais envoyé.
+  </p>
+  <form data-block-b-brief-validator>
+    <label for="block-b-brief-file">Fichier brief-du-jour.md</label>
+    <input
+      id="block-b-brief-file"
+      name="brief"
+      type="file"
+      accept=".md,text/markdown,text/plain"
+      required
+      aria-describedby="brief-validator-privacy"
+    />
+    <label class="originals-confirmation" for="block-b-brief-originals">
+      <input
+        id="block-b-brief-originals"
+        type="checkbox"
+        name="originals"
+        required
+      />
+      <span>J’ai vérifié que les trois fichiers sources sont inchangés.</span>
+    </label>
+    <button type="submit">Tester mon résultat</button>
+  </form>
+  <ul data-block-b-brief-results aria-live="polite" aria-atomic="true">
+    <li data-check="structure" data-state="pending">Structure : à vérifier</li>
+    <li data-check="sources" data-state="pending">Sources : à vérifier</li>
+    <li data-check="uncertainty" data-state="pending">Incertitude : à vérifier</li>
+    <li data-check="originals" data-state="pending">Originaux : à confirmer</li>
+  </ul>
+</section>
+
+<script>
+  import {
+    validateBlockBBrief,
+    type BriefCheck,
+  } from '../../features/block-b/brief-validator';
+
+  const setResult = (
+    results: HTMLElement,
+    check: BriefCheck | { id: 'originals'; label: string; ok: boolean },
+  ) => {
+    const item = results.querySelector<HTMLElement>(`[data-check="${check.id}"]`);
+    if (!item) return;
+    item.dataset.state = check.ok ? 'pass' : 'fail';
+    item.textContent = `${check.ok ? 'Réussi' : 'Échec'} : ${check.label}`;
+  };
+
+  document.querySelectorAll<HTMLFormElement>('[data-block-b-brief-validator]').forEach((form) => {
+    const results = form.parentElement?.querySelector<HTMLElement>('[data-block-b-brief-results]');
+    const fileInput = form.elements.namedItem('brief');
+    const originalsInput = form.elements.namedItem('originals');
+    if (
+      !results
+      || !(fileInput instanceof HTMLInputElement)
+      || !(originalsInput instanceof HTMLInputElement)
+    ) return;
+
+    const setOriginalsResult = () => {
+      setResult(results, {
+        id: 'originals',
+        label: originalsInput.checked
+          ? 'les trois fichiers sources sont confirmés inchangés.'
+          : 'les trois fichiers sources ne sont pas confirmés comme inchangés.',
+        ok: originalsInput.checked,
+      });
+    };
+
+    originalsInput.addEventListener('change', setOriginalsResult);
+    originalsInput.addEventListener('invalid', setOriginalsResult);
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const file = fileInput.files?.[0];
+      if (!file) return;
+
+      const markdown = await file.text();
+      validateBlockBBrief(markdown).forEach((check) => {
+        setResult(results, check);
+      });
+      setOriginalsResult();
+    });
+  });
+</script>
+
+<style>
+  .brief-validator {
+    margin-block-start: 3.5rem;
+    padding: clamp(1rem, 3vw, 1.5rem);
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    box-shadow: var(--shadow-block);
+  }
+
+  .brief-validator h2 {
+    margin-block-start: 0;
+  }
+
+  .brief-validator form {
+    display: grid;
+    gap: 0.75rem;
+    margin-block-start: 1.25rem;
+  }
+
+  .brief-validator label {
+    font-weight: var(--weight-semibold);
+  }
+
+  .brief-validator input[type="file"] {
+    inline-size: 100%;
+    padding: 0.65rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-sm);
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .originals-confirmation {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    margin-block: 0.5rem;
+  }
+
+  .originals-confirmation input {
+    flex: 0 0 auto;
+    inline-size: 1.15rem;
+    block-size: 1.15rem;
+    margin-block-start: 0.2rem;
+    accent-color: var(--ink);
+  }
+
+  .brief-validator button {
+    justify-self: start;
+    min-block-size: 2.75rem;
+    padding: 0.65rem 1rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-sm);
+    background: var(--family-accent);
+    color: var(--ink);
+    font: inherit;
+    font-weight: var(--weight-semibold);
+    cursor: pointer;
+  }
+
+  .brief-validator :where(input, button):focus-visible {
+    outline: 0.22rem solid var(--brick-coral);
+    outline-offset: 0.18rem;
+  }
+
+  [data-block-b-brief-results] {
+    display: grid;
+    gap: 0.65rem;
+    margin-block: 1.25rem 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  [data-block-b-brief-results] li {
+    display: flex;
+    gap: 0.65rem;
+    margin: 0;
+    padding: 0.7rem 0.8rem;
+    border: 2px solid var(--hairline);
+    border-radius: var(--radius-sm);
+    background: var(--paper);
+  }
+
+  [data-block-b-brief-results] li::before {
+    flex: 0 0 auto;
+    inline-size: 1.25rem;
+    content: "·";
+    font-weight: var(--weight-heading);
+    text-align: center;
+  }
+
+  [data-block-b-brief-results] [data-state="pass"] {
+    border-color: #2f6f44;
+    color: #1f5a34;
+  }
+
+  [data-block-b-brief-results] [data-state="pass"]::before {
+    content: "✓";
+  }
+
+  [data-block-b-brief-results] [data-state="fail"] {
+    border-color: #a93636;
+    color: #8a2323;
+  }
+
+  [data-block-b-brief-results] [data-state="fail"]::before {
+    content: "×";
+  }
+</style>

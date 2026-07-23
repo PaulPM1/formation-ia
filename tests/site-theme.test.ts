@@ -100,6 +100,8 @@ test('le Bloc B monte un sélecteur progressif sans supprimer le contenu MDX', a
 
   assert.match(detail, /MIRRORED_BLOCK_B_IDS/);
   assert.match(detail, /<EcosystemSwitch/);
+  assert.match(detail, /brick\.data\.id === 'b3'/);
+  assert.match(detail, /<BriefValidator/);
   assert.match(switcher, /type="radio"/);
   assert.match(switcher, /aria-live="polite"/);
   assert.match(switcher, /localStorage\.setItem/);
