@@ -65,6 +65,26 @@ test('accepte une brique vide tant qu’elle reste à rédiger', () => {
   assert.deepEqual(validateBrickDocuments([makeBrick()]), []);
 });
 
+test('accepte Pratique guidée comme rubrique commune', () => {
+  const guidedBody = conceptBody.replace(
+    '## Pratique avec Claude',
+    '## Pratique guidée',
+  );
+
+  assert.deepEqual(validateBrickDocuments([makeBrick({}, guidedBody)]), []);
+});
+
+test('rejette une brique sans aucune rubrique de pratique', () => {
+  const withoutPractice = conceptBody.replace(
+    '## Pratique avec Claude',
+    '## Démonstration libre',
+  );
+
+  const issues = validateBrickDocuments([makeBrick({}, withoutPractice)]);
+
+  assert.ok(issues.some((issue) => issue.message.includes('Pratique guidée')));
+});
+
 test('rejette une rubrique obligatoire absente', () => {
   const bodyWithoutCap = conceptBody.replace('## Cap', '## Introduction');
 

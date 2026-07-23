@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict';
+import { readFile, readdir } from 'node:fs/promises';
+import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
@@ -32,6 +34,17 @@ const durationByDeck = {
 
 const blockB = PRESENTATION_DECKS.filter((deck) => deck.family === 'b');
 const blockBSlides = blockB.flatMap((deck) => deck.slides);
+const projectDirectory = fileURLToPath(new URL('..', import.meta.url));
+
+const readTextTree = async (directory: string): Promise<string[]> => {
+  const entries = await readdir(directory, { withFileTypes: true });
+  return (await Promise.all(entries.map(async (entry) => {
+    const entryPath = path.join(directory, entry.name);
+    return entry.isDirectory()
+      ? readTextTree(entryPath)
+      : [await readFile(entryPath, 'utf8')];
+  }))).flat();
+};
 
 test('verrouille les 21 routes B et les 110 slides de la présentation', () => {
   assert.deepEqual(blockBSlides.map((slide) => slide.id), expectedRoutes);
@@ -40,7 +53,7 @@ test('verrouille les 21 routes B et les 110 slides de la présentation', () => {
   assert.ok(removedRoutes.every((id) => !PRESENTATION_SLIDES.some((slide) => slide.id === id)));
 });
 
-test('verrouille 55 minutes de socle, 20 facultatives et 10 de rattrapage', () => {
+test('verrouille 75 minutes de socle, aucune minute facultative et 10 de rattrapage', () => {
   for (const deck of blockB) {
     const duration = deck.slides.reduce(
       (sum, slide) => sum + slide.speaker.durationMinutes,
@@ -49,39 +62,34 @@ test('verrouille 55 minutes de socle, 20 facultatives et 10 de rattrapage', () =
     assert.equal(duration, durationByDeck[deck.brickId as keyof typeof durationByDeck]);
   }
 
-  assert.equal(
-    PRESENTATION_SLIDES
-      .filter((slide) => slide.family === 'b' && slide.track === 'core')
-      .reduce((sum, slide) => sum + slide.speaker.durationMinutes, 0),
-    55,
-  );
-  assert.equal(
-    PRESENTATION_SLIDES
-      .filter((slide) => slide.track === 'optional')
-      .reduce((sum, slide) => sum + slide.speaker.durationMinutes, 0),
-    20,
-  );
-  assert.equal(
-    PRESENTATION_SLIDES
-      .filter((slide) => slide.track === 'recovery')
-      .reduce((sum, slide) => sum + slide.speaker.durationMinutes, 0),
-    10,
-  );
+  const coreBlockBMinutes = PRESENTATION_SLIDES
+    .filter((slide) => slide.family === 'b' && slide.track === 'core')
+    .reduce((sum, slide) => sum + slide.speaker.durationMinutes, 0);
+  const optionalBlockBMinutes = PRESENTATION_SLIDES
+    .filter((slide) => slide.family === 'b' && slide.track === 'optional')
+    .reduce((sum, slide) => sum + slide.speaker.durationMinutes, 0);
+  const recoveryBlockBMinutes = PRESENTATION_SLIDES
+    .filter((slide) => slide.family === 'b' && slide.track === 'recovery')
+    .reduce((sum, slide) => sum + slide.speaker.durationMinutes, 0);
+
+  assert.equal(coreBlockBMinutes, 75);
+  assert.equal(optionalBlockBMinutes, 0);
+  assert.equal(recoveryBlockBMinutes, 10);
 });
 
-test('sépare les pistes principale, facultative et de rattrapage', () => {
+test('sépare le parcours principal et le rattrapage', () => {
   assert.deepEqual(
     blockB.map((deck) => [deck.brickId, deck.track ?? 'core']),
     [
       ['b0', 'core'], ['b1', 'core'], ['b2', 'core'], ['b3', 'core'],
-      ['b4', 'optional'], ['b4-bis', 'recovery'],
+      ['b4', 'core'], ['b4-bis', 'recovery'],
     ],
   );
 
-  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b3-check').next?.id, 'c1-repeat');
-  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'c1-repeat').previous?.id, 'b3-check');
+  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b3-check').next?.id, 'b4-context');
   assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b4-context').previous?.id, 'b3-check');
   assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b4-test').next?.id, 'c1-repeat');
+  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'c1-repeat').previous?.id, 'b4-test');
   assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b4bis-install').previous, null);
   assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b4bis-checkpoint').next, null);
 });
@@ -94,61 +102,138 @@ test('partage le même cas concret et ses garanties entre les quatre outils', ()
   };
 
   const chat = byId('b1-mission');
-  assert.equal(chat.promptPath, 'prompts/01-chat.md');
+  assert.equal(chat.instructionAnchor, 'pratique-guidee');
+  assert.deepEqual(chat.surfaces, ['Claude Chat', 'ChatGPT Chat']);
   assert.deepEqual(chat.sections, ['Actions du jour', 'À confirmer', 'Plus tard']);
   assert.equal(chat.sourceRule, 'Une source par action');
   assert.match(String(chat.uncertaintyRule), /[ÀA] confirmer/);
 
   const artifact = byId('b2-mission');
-  assert.equal(artifact.promptPath, 'prompts/02-artifact.md');
+  assert.equal(artifact.instructionAnchor, 'pratique-guidee');
+  assert.deepEqual(artifact.surfaces, ['Claude Artifacts', 'ChatGPT Canvas']);
   assert.deepEqual(artifact.categories, ['Aujourd’hui', 'Plus tard', 'Archiver']);
   assert.deepEqual(artifact.requiredControls, ['Compteurs', 'Remise à zéro']);
   assert.equal(artifact.state, 'Six notes chargées dans Aujourd’hui');
 
   const cowork = byId('b3-mission');
-  assert.equal(cowork.promptPath, 'prompts/03-cowork.md');
-  assert.equal(cowork.readScope, 'inbox/');
-  assert.equal(cowork.writeScope, 'sortie/');
+  assert.equal(cowork.instructionAnchor, 'pratique-guidee');
+  assert.deepEqual(cowork.surfaces, ['Claude Cowork', 'ChatGPT Work']);
+  assert.equal(cowork.readScope, 'mission-agent/sources/');
+  assert.equal(cowork.writeScope, 'mission-agent/sortie/');
   assert.equal(cowork.planApproval, true);
   assert.equal(cowork.keepOriginals, true);
   assert.match(String(cowork.conflictRule), /[ÀA] confirmer/);
 
   const code = byId('b4-mission');
-  assert.equal(code.promptPath, 'prompts/04-claude-code.md');
+  assert.equal(code.instructionAnchor, 'pratique-guidee');
+  assert.deepEqual(code.surfaces, ['Claude Code', 'Codex']);
   assert.equal(code.onlyChange, 'Ajouter la source sous chaque carte');
   assert.equal(code.preserveSort, true);
   assert.equal(code.testCommand, 'node --test');
-  assert.equal(code.reviewSurface, 'Diff VS Code');
+  assert.equal(code.reviewSurface, 'Diff du projet');
+
+  assert.doesNotMatch(JSON.stringify([chat, artifact, cowork, code]), /promptPath/);
 });
 
-test('les notes formateur donnent une coupure, un prompt et un repli aux missions', () => {
+test('les notes formateur donnent une coupure, la pratique guidée et un repli aux missions', () => {
   for (const slideId of ['b1-mission', 'b2-mission', 'b3-mission', 'b4-mission']) {
     const slide = blockBSlides.find((candidate) => candidate.id === slideId);
     assert.ok(slide, slideId);
     assert.match(slide.speaker.notes, /Couper à/);
-    assert.match(slide.speaker.notes, /prompts\/0[1-4]-/);
+    assert.match(slide.speaker.notes, /Pratique guidée/);
     assert.match(slide.speaker.notes, /Repli/);
   }
 });
 
-test('les six fiches B reprennent les durées, chemins et preuves des slides', async () => {
+test('les slides B pointent vers la pratique guidée et les ressources OpenAI autorisées', () => {
+  const wikiLinks = blockBSlides.flatMap((item) => item.links)
+    .filter((link) => link.kind === 'wiki');
+  assert.ok(wikiLinks.length > 0);
+  assert.ok(wikiLinks.every((link) => link.href.endsWith('#pratique-guidee')));
+
+  const officialHrefs = new Set(blockBSlides.flatMap((item) => item.links)
+    .filter((link) => link.kind === 'official')
+    .map((link) => link.href));
+  for (const href of [
+    'https://openai.com/chatgpt/overview/',
+    'https://help.openai.com/en/articles/9930697-what-is-the-canvas-feature-in-chatgpt-and-how-do-i-use-it',
+    'https://help.openai.com/en/articles/20001275/',
+    'https://openai.com/codex/get-started/',
+  ]) assert.ok(officialHrefs.has(href), href);
+});
+
+test('les titres des decks B suivent les fiches et les ressources actives excluent les anciens marqueurs', async () => {
   const contentDirectory = fileURLToPath(new URL('../src/content/briques', import.meta.url));
   const documents = (await loadBrickDocuments(contentDirectory))
     .filter((document) => document.data.family === 'b');
-  const promptByBrick = {
-    b0: 'kits/bloc-b-assistant/README.md',
-    b1: 'prompts/01-chat.md',
-    b2: 'prompts/02-artifact.md',
-    b3: 'prompts/03-cowork.md',
-    b4: 'prompts/04-claude-code.md',
-    'b4-bis': 'node --test',
-  };
+  const titleByBrick = new Map(
+    documents.map((document) => [document.data.id, document.data.title]),
+  );
+
+  for (const deck of blockB) {
+    assert.equal(deck.title, titleByBrick.get(deck.brickId), deck.brickId);
+  }
+
+  const [manifest, ...trainerResources] = await Promise.all([
+    readFile(path.join(projectDirectory, 'src/presentation/manifests/b.ts'), 'utf8'),
+    ...await readTextTree(path.join(projectDirectory, 'kits/bloc-b-assistant-formateur')),
+  ]);
+  const activeResources = [manifest, ...trainerResources].join('\n');
+  for (const marker of [
+    'Préflight',
+    'Rattrapage VS Code',
+    'code .',
+    'six lignes',
+    'quatre tests',
+  ]) {
+    assert.doesNotMatch(activeResources, new RegExp(marker.replace('.', '\\.'), 'i'), marker);
+  }
+});
+
+test('B1 contrôle la fiche réelle et B2 part toujours d’un brief sourcé', () => {
+  const b1Loop = blockBSlides.find((slide) => slide.id === 'b1-loop');
+  const b2Object = blockBSlides.find((slide) => slide.id === 'b2-object');
+  assert.ok(b1Loop);
+  assert.ok(b2Object);
+
+  assert.match(String(b1Loop.visual.data.exampleGap), /N06.*source/i);
+  assert.match(String(b1Loop.visual.data.correction), /N06.*messages\.md/i);
+  for (const evidence of [
+    String(b1Loop.visual.data.proof),
+    b1Loop.speaker.notes,
+    b1Loop.accessibleDescription,
+  ]) {
+    assert.match(evidence, /N01.*N06/i);
+    assert.match(evidence, /trois sections/i);
+    assert.match(evidence, /demandes\.md.*reunion\.md.*messages\.md/i);
+    assert.match(evidence, /conflit non tranché/i);
+  }
+  assert.equal(
+    (b2Object.visual.data.before as { output?: string }).output,
+    'Brief sourcé',
+  );
+});
+
+test('B4 et B4-bis restent génériques et lient les agents de code officiels', () => {
+  const codeSlides = blockBSlides.filter((slide) => slide.id.startsWith('b4'));
+  const officialHrefs = new Set(codeSlides.flatMap((slide) => slide.links)
+    .filter((link) => link.kind === 'official')
+    .map((link) => link.href));
+
+  assert.ok(officialHrefs.has('https://code.claude.com/docs/en/overview'));
+  assert.ok(officialHrefs.has('https://openai.com/codex/get-started/'));
+  assert.ok(!officialHrefs.has('https://code.claude.com/docs/en/vs-code'));
+});
+
+test('les six fiches B reprennent l’inventaire, les durées, les coupures et les replis', async () => {
+  const contentDirectory = fileURLToPath(new URL('../src/content/briques', import.meta.url));
+  const documents = (await loadBrickDocuments(contentDirectory))
+    .filter((document) => document.data.family === 'b');
 
   assert.equal(documents.length, 6);
   for (const document of documents) {
     const id = document.data.id as keyof typeof durationByDeck;
     assert.equal(document.data.durationMinutes, durationByDeck[id], id);
-    assert.match(document.body, new RegExp(promptByBrick[id].replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
     assert.match(document.body, /Couper/);
     assert.match(document.body, /Repli/);
   }
@@ -157,6 +242,55 @@ test('les six fiches B reprennent les durées, chemins et preuves des slides', a
   assert.equal(recovery?.data.priority, 'rattrapage');
   assert.match(recovery?.body ?? '', /piste s’arrête au checkpoint/);
 
-  const artifact = documents.find((document) => document.data.id === 'b2');
-  assert.match(artifact?.body ?? '', /six cartes sont dans `Aujourd’hui`/);
+  for (const brickId of ['b1', 'b2', 'b3', 'b4', 'b4-bis']) {
+    const body = documents.find((document) => document.data.id === brickId)?.body ?? '';
+    assert.doesNotMatch(body, /^## Pratique avec Claude$/m, brickId);
+    assert.doesNotMatch(body, /conserve temporairement l’ancre/, brickId);
+    assert.equal(body.match(/^## Pratique guidée$/gm)?.length, 1, brickId);
+  }
+});
+
+test('B0 à B4 suivent le parcours miroir', async () => {
+  const contentDirectory = fileURLToPath(new URL('../src/content/briques', import.meta.url));
+  const documents = (await loadBrickDocuments(contentDirectory))
+    .filter((document) => document.data.family === 'b');
+
+  for (const brickId of ['b0', 'b1', 'b2', 'b3', 'b4']) {
+    const document = documents.find((candidate) => candidate.data.id === brickId);
+    assert.ok(document, brickId);
+    assert.match(document.body, /data-block-b-panel="claude"/);
+    assert.match(document.body, /data-block-b-panel="openai"/);
+  }
+
+  for (const brickId of ['b1', 'b2', 'b3', 'b4']) {
+    const body = documents.find((candidate) => candidate.data.id === brickId)?.body ?? '';
+    for (const heading of [
+      'Situation',
+      'Pourquoi cette surface',
+      'Fichiers à fournir',
+      'Prompt à envoyer',
+      'Manipulation à effectuer',
+      'Tester mon résultat',
+      'Corriger un échec',
+    ]) assert.match(body, new RegExp(`### ${heading}`), `${brickId} ${heading}`);
+  }
+
+  assert.equal(documents.find((item) => item.data.id === 'b0')?.data.title, 'Choisir sa voie');
+  assert.equal(documents.find((item) => item.data.id === 'b1')?.data.title, 'Chat');
+  assert.equal(documents.find((item) => item.data.id === 'b2')?.data.title, 'Objet interactif');
+
+  const b3 = documents.find((item) => item.data.id === 'b3');
+  assert.equal(b3?.data.title, 'Travail multiétape');
+  assert.match(b3?.body ?? '', /Claude Cowork/);
+  assert.match(b3?.body ?? '', /ChatGPT Work/);
+  assert.match(b3?.body ?? '', /mission-agent\/sources/);
+  assert.match(b3?.body ?? '', /brief-du-jour\.md/);
+
+  const b4 = documents.find((item) => item.data.id === 'b4');
+  assert.equal(b4?.data.title, 'Agent de code');
+  assert.equal(b4?.data.priority, 'socle');
+  assert.match(b4?.body ?? '', /Claude Code/);
+  assert.match(b4?.body ?? '', /Codex/);
+  assert.match(b4?.body ?? '', /mini-application/);
+  assert.match(b4?.body ?? '', /## Checkpoint final/);
 });

@@ -24,7 +24,7 @@ test('calcule la complétude de la structure attendue pour un atelier', () => {
   const headings = [
     'Cap',
     'Concept durable',
-    'Pratique avec Claude',
+    'Pratique guidée',
     'Mission commune',
     'Livrable',
     'Notes formateur',

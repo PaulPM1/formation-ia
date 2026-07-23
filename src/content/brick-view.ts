@@ -1,7 +1,8 @@
 import {
   BRICK_FAMILIES,
-  COMMON_HEADINGS,
+  COMMON_HEADING_REQUIREMENTS,
   TYPE_HEADINGS,
+  headingRequirementIsMet,
   type BrickFrontmatter,
 } from './brick-model';
 
@@ -64,14 +65,17 @@ export function getStructureCompletion(
   const presentHeadings = new Set(
     Array.from(body.matchAll(/^##\s+(.+?)\s*$/gm), (match) => match[1]),
   );
-  const requiredHeadings = [...COMMON_HEADINGS, ...TYPE_HEADINGS[type]];
-  const complete = requiredHeadings.filter((heading) =>
-    presentHeadings.has(heading),
+  const requiredHeadingGroups = [
+    ...COMMON_HEADING_REQUIREMENTS,
+    ...TYPE_HEADINGS[type].map((heading) => [heading] as const),
+  ];
+  const complete = requiredHeadingGroups.filter((alternatives) =>
+    headingRequirementIsMet(presentHeadings, alternatives),
   ).length;
 
   return {
     complete,
-    total: requiredHeadings.length,
-    percentage: Math.round((complete / requiredHeadings.length) * 100),
+    total: requiredHeadingGroups.length,
+    percentage: Math.round((complete / requiredHeadingGroups.length) * 100),
   };
 }

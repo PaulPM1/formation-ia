@@ -1,5 +1,4 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
@@ -76,22 +75,14 @@ test('les briques rédigées sont complètes et prêtes à relire', async () => 
   }
 });
 
-test('aucune brique du socle ni le socle atelier ne dépend de B4 ou B4-bis', async () => {
+test('aucune brique du socle ne dépend du rattrapage B4-bis', async () => {
   const documents = await loadBrickDocuments(contentDirectory);
-  const optionalIds = new Set(['b4', 'b4-bis']);
-  const requiredWithOptionalPrerequisite = documents
+  const requiredWithRecoveryPrerequisite = documents
     .filter((document) => document.data.priority === 'socle')
-    .filter((document) => document.data.prerequisites.some((id) => optionalIds.has(id)))
+    .filter((document) => document.data.prerequisites.includes('b4-bis'))
     .map((document) => document.data.id);
 
-  assert.deepEqual(requiredWithOptionalPrerequisite, []);
-
-  const p1 = await readFile(
-    new URL('../src/content/atelier/p1-naissance.mdx', import.meta.url),
-    'utf8',
-  );
-  const p1Frontmatter = p1.split('---')[1] ?? '';
-  assert.doesNotMatch(p1Frontmatter, /^\s+- b4-bis\s*$/m);
+  assert.deepEqual(requiredWithRecoveryPrerequisite, []);
 });
 
 test('la mission A2 propose quatre paires dans l’ordre Code, Chat, Work, Object', async () => {

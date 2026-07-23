@@ -1,6 +1,8 @@
 ---
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 
+import BriefValidator from '../../components/block-b/BriefValidator.astro';
+import EcosystemSwitch from '../../components/block-b/EcosystemSwitch.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import {
   FAMILY_LABELS,
@@ -26,13 +28,19 @@ interface Props {
 const { brick } = Astro.props;
 const { Content } = await render(brick);
 const structure = getStructureCompletion(brick.body ?? '', brick.data.type);
+const MIRRORED_BLOCK_B_IDS = new Set(['b0', 'b1', 'b2', 'b3', 'b4']);
+const isMirroredBlockB = MIRRORED_BLOCK_B_IDS.has(brick.data.id);
 ---
 
 <BaseLayout
   title={`${brick.data.id.toUpperCase()} · ${brick.data.title}`}
   description={`${brick.data.title}, une brique du bloc ${FAMILY_LABELS[brick.data.family]} de la formation IA.`}
 >
-  <div class="detail-page" data-family={brick.data.family}>
+  <div
+    class="detail-page"
+    data-family={brick.data.family}
+    data-block-b-experience={isMirroredBlockB ? '' : undefined}
+  >
     <a class="back-link" href="/briques/"><span aria-hidden="true">←</span> Toutes les briques</a>
 
     <header class="detail-header">
@@ -80,8 +88,11 @@ const structure = getStructureCompletion(brick.body ?? '', brick.data.type);
       </div>
     </dl>
 
+    {isMirroredBlockB && <EcosystemSwitch brickId={brick.data.id} />}
+
     <article class="brick-content">
       <Content />
+      {brick.data.id === 'b3' && <BriefValidator />}
     </article>
   </div>
 </BaseLayout>

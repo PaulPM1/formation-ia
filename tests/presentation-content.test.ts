@@ -31,27 +31,27 @@ const expectedSlides = [
   { id: 'a4-risk', claim: "L'effort de vérification doit suivre le niveau de risque.", visualKey: 'verification-audit' },
   { id: 'a4-method', claim: "Stop — Source — Test — Décision rend l'incertitude visible.", visualKey: 'verification-audit' },
   { id: 'a4-mission', claim: 'Auditez une réponse avant de décider.', visualKey: 'mission-board' },
-  { id: 'b0-layers', claim: 'Une même inbox traverse quatre outils, avec une preuve différente à chaque étape.', visualKey: 'setup-diagnostic' },
-  { id: 'b0-test', claim: 'Le chrono démarre seulement lorsque Chat, Artifact, Cowork et le kit répondent.', visualKey: 'setup-diagnostic' },
-  { id: 'b1-vague', claim: '« Organise mes notes » oblige Claude à inventer le résultat.', visualKey: 'prompt-builder' },
-  { id: 'b1-four-blocks', claim: 'Objectif, contexte, contraintes et forme rendent le brief testable.', visualKey: 'prompt-builder' },
-  { id: 'b1-mission', claim: 'Transformez six notes en brief sourcé sans résoudre le conflit.', visualKey: 'prompt-builder' },
-  { id: 'b1-loop', claim: 'Une correction ciblée réduit la sortie à six lignes sans perdre les garanties.', visualKey: 'prompt-builder' },
-  { id: 'b2-object', claim: 'L’Artifact transforme le brief en objet que l’on peut réellement tester.', visualKey: 'artifact-test-loop' },
+  { id: 'b0-layers', claim: 'Une voie, quatre niveaux d’action à tester.', visualKey: 'solution-comparison' },
+  { id: 'b0-test', claim: 'Le kit est un banc d’essai, pas votre projet personnel.', visualKey: 'mission-board' },
+  { id: 'b1-vague', claim: 'Chat suffit lorsque la sortie est une réponse à relire.', visualKey: 'prompt-builder' },
+  { id: 'b1-four-blocks', claim: 'Objectif, contexte, contraintes et forme rendent cette réponse testable.', visualKey: 'prompt-builder' },
+  { id: 'b1-mission', claim: 'Transformez six notes en brief sourcé dans Claude Chat ou ChatGPT.', visualKey: 'prompt-builder' },
+  { id: 'b1-loop', claim: 'Un test binaire nomme l’écart avant la correction.', visualKey: 'prompt-builder' },
+  { id: 'b2-object', claim: 'Artifacts et Canvas transforment la réponse en objet manipulable.', visualKey: 'artifact-test-loop' },
   { id: 'b2-mvp', claim: 'Une boîte de tri à trois états suffit pour tester l’idée.', visualKey: 'artifact-test-loop' },
-  { id: 'b2-mission', claim: 'Construisez puis testez le tri sur les six notes.', visualKey: 'artifact-test-loop' },
-  { id: 'b2-correction', claim: 'La confirmation d’archivage se corrige sans casser le tri.', visualKey: 'artifact-test-loop' },
-  { id: 'b3-delegation', claim: 'Cowork agit sur les fichiers ; vous gardez le périmètre et la décision.', visualKey: 'pacte-workspace' },
+  { id: 'b2-mission', claim: 'Construisez puis exécutez cinq tests sur les six notes.', visualKey: 'artifact-test-loop' },
+  { id: 'b2-correction', claim: 'Une correction ciblée ne vaut que si les cinq tests repassent.', visualKey: 'artifact-test-loop' },
+  { id: 'b3-delegation', claim: 'Cowork et Work prennent plusieurs étapes en charge ; vous gardez le périmètre.', visualKey: 'pacte-workspace' },
   { id: 'b3-pacte', claim: 'P.A.C.T.E. transforme une délégation en contrat observable.', visualKey: 'pacte-workspace' },
-  { id: 'b3-mission', claim: 'Faites produire un brief du jour sans toucher à l’inbox.', visualKey: 'pacte-workspace' },
-  { id: 'b3-check', claim: 'Le résultat n’est fini que si la sortie est traçable et les originaux intacts.', visualKey: 'pacte-workspace' },
-  { id: 'b4-context', claim: 'Claude Code relie la demande aux fichiers, commandes et diff du projet.', visualKey: 'ipmtr-loop' },
+  { id: 'b3-mission', claim: 'Faites produire un brief fini dans Cowork ou Work.', visualKey: 'pacte-workspace' },
+  { id: 'b3-check', claim: 'Le livrable n’est fini que si sources et incertitude passent le test.', visualKey: 'pacte-workspace' },
+  { id: 'b4-context', claim: 'Claude Code et Codex travaillent dans le contexte réel d’un projet.', visualKey: 'ipmtr-loop' },
   { id: 'b4-ipmtr', claim: 'Inspecter, planifier, modifier, tester et relire borne le changement.', visualKey: 'ipmtr-loop' },
   { id: 'b4-mission', claim: 'Ajoutez les sources aux cartes sans modifier le tri.', visualKey: 'ipmtr-loop' },
-  { id: 'b4-test', claim: 'La page, le test et le diff prouvent le changement.', visualKey: 'ipmtr-loop' },
-  { id: 'b4bis-install', claim: 'Le rattrapage ne corrige que le maillon qui manque.', visualKey: 'workspace-triptych' },
+  { id: 'b4-test', claim: 'Après quatre essais, choisissez la plus petite surface suffisante.', visualKey: 'solution-prioritizer' },
+  { id: 'b4bis-install', claim: 'Le rattrapage ne corrige que le maillon local qui manque.', visualKey: 'workspace-triptych' },
   { id: 'b4bis-workspace', claim: 'Explorateur, fichier et terminal doivent pointer vers le même kit.', visualKey: 'workspace-triptych' },
-  { id: 'b4bis-checkpoint', claim: 'Le poste est prêt lorsque le test passe dans le bon dossier et Claude Code s’ouvre.', visualKey: 'workspace-triptych' },
+  { id: 'b4bis-checkpoint', claim: 'Le poste est prêt lorsque le test passe et l’agent de code ouvre le bon dossier.', visualKey: 'workspace-triptych' },
   { id: 'c1-repeat', claim: 'Une méthode répétée trois fois mérite peut-être un Skill.', visualKey: 'skill-anatomy' },
   { id: 'c1-neighbors', claim: 'Skill, contexte, outil et hook ne répondent pas au même besoin.', visualKey: 'skill-anatomy' },
   { id: 'c1-anatomy', claim: 'Description, procédure et sortie rendent le Skill découvrable et testable.', visualKey: 'skill-anatomy' },
@@ -230,9 +230,21 @@ test('le checkpoint A1 contient les cinq affirmations nuancées validées', () =
 
 test('conserve les contenus canoniques revus de B0, A4 et P.A.C.T.E.', () => {
   const b0Test = slideData('b0-test');
-  assert.match(String(b0Test.prompt), /Atelier prêt/);
-  assert.match(String(b0Test.prompt), /date du jour/);
-  assert.match(String(b0Test.expected), /4 contrôles sur 4/);
+  assert.deepEqual(b0Test.mission, [
+    'Choisir Claude ou OpenAI.',
+    'Télécharger le Kit d’entraînement du Bloc B.',
+    'Ouvrir les trois fichiers de notes/.',
+    'Nommer les quatre sorties à produire.',
+  ]);
+  assert.equal(
+    b0Test.successCriterion,
+    'Une voie choisie, trois notes ouvertes et aucune confusion avec le projet personnel.',
+  );
+  assert.deepEqual(b0Test.evidence, [
+    'Choix visible',
+    'Trois fichiers lisibles',
+    'Quatre niveaux reformulés',
+  ]);
 
   const pacte = slideData('b3-pacte').pacte as Array<{ letter: string; name: string; prompt: string }>;
   assert.deepEqual(pacte[3], {

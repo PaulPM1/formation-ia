@@ -61,7 +61,7 @@ export async function checkKitArchive(archivePath = publicArchivePath) {
   if (!entries.length || entries.some((entry) => !entry.startsWith('bloc-b-assistant/'))) {
     return { ok: false, message: 'Structure du ZIP Bloc B invalide.' };
   }
-  return { ok: true, message: 'Kit Bloc B synchronisé.' };
+  return { ok: true, message: 'Kit d’entraînement du Bloc B synchronisé.' };
 }
 
 const invokedPath = process.argv[1] ? pathToFileURL(path.resolve(process.argv[1])).href : '';
@@ -75,6 +75,6 @@ if (invokedPath === import.meta.url) {
     if (!result.ok) process.exitCode = 1;
   } else {
     const archive = await writeKitArchive();
-    console.log(`Kit Bloc B généré : ${path.relative(projectDirectory, publicArchivePath)} (${archive.byteLength} octets).`);
+    console.log(`Kit d’entraînement du Bloc B généré : ${path.relative(projectDirectory, publicArchivePath)} (${archive.byteLength} octets).`);
   }
 }

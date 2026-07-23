@@ -761,6 +761,7 @@ a {
 .presentation-stage[data-family="b"] .mission-board__outcome dt {
   margin-block-end: 0.18rem;
   font-size: var(--b-font-meta);
+  line-height: 1.25;
 }
 
 .presentation-stage[data-family="b"] .mission-board__outcome ul {

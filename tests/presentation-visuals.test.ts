@@ -5,6 +5,7 @@ import test from 'node:test';
 import { A_DECKS } from '../src/presentation/manifests/a';
 import { B_DECKS } from '../src/presentation/manifests/b';
 import { C_DECKS } from '../src/presentation/manifests/c';
+import { D_DECKS } from '../src/presentation/manifests/d';
 import { E_DECKS } from '../src/presentation/manifests/e';
 import { SLIDE_VISUAL_KEYS } from '../src/presentation/presentation-model';
 
@@ -616,18 +617,6 @@ test('les 21 routes du bloc B choisissent leur variante réelle', async () => {
   const state = await import('../src/components/presentation/visuals/b/visual-state').catch(() => null);
   assert.ok(state, "les helpers d’état du bloc B doivent exister");
 
-  const specialized = B_DECKS.flatMap((deck) => deck.slides);
-  assert.equal(specialized.length, 21);
-
-  const expected = new Map<string, string>([
-    ['b0-layers', 'layers'], ['b0-test', 'test'],
-    ['b1-vague', 'comparison'], ['b1-four-blocks', 'blocks'], ['b1-mission', 'builder'], ['b1-loop', 'loop'],
-    ['b2-object', 'transfer'], ['b2-mvp', 'mvp'], ['b2-mission', 'tests'], ['b2-correction', 'correction'],
-    ['b3-delegation', 'delegation'], ['b3-pacte', 'pacte'], ['b3-mission', 'timeline'], ['b3-check', 'check'],
-    ['b4-context', 'context'], ['b4-ipmtr', 'process'], ['b4-mission', 'permission'], ['b4-test', 'proof'],
-    ['b4bis-install', 'panes'], ['b4bis-workspace', 'workspace'], ['b4bis-checkpoint', 'path'],
-  ]);
-
   const resolverByKey = {
     'setup-diagnostic': state.getSetupVariant,
     'prompt-builder': state.getPromptVariant,
@@ -637,9 +626,55 @@ test('les 21 routes du bloc B choisissent leur variante réelle', async () => {
     'workspace-triptych': state.getWorkspaceVariant,
   } as const;
 
+  const specialized = B_DECKS.flatMap((deck) => deck.slides)
+    .filter((slide) => slide.visual.key in resolverByKey);
+  assert.equal(specialized.length, 18);
+
+  const expected = new Map<string, string>([
+    ['b1-vague', 'comparison'], ['b1-four-blocks', 'blocks'],
+    ['b1-mission', 'builder'], ['b1-loop', 'loop'],
+    ['b2-object', 'transfer'], ['b2-mvp', 'mvp'],
+    ['b2-mission', 'tests'], ['b2-correction', 'correction'],
+    ['b3-delegation', 'delegation'], ['b3-pacte', 'pacte'],
+    ['b3-mission', 'timeline'], ['b3-check', 'check'],
+    ['b4-context', 'context'], ['b4-ipmtr', 'process'],
+    ['b4-mission', 'permission'],
+    ['b4bis-install', 'panes'], ['b4bis-workspace', 'workspace'],
+    ['b4bis-checkpoint', 'path'],
+  ]);
+
   for (const slide of specialized) {
     const resolver = resolverByKey[slide.visual.key as keyof typeof resolverByKey];
     assert.equal(resolver?.(slide.visual.data), expected.get(slide.id), slide.id);
+  }
+
+  assert.equal(B_DECKS.flatMap((deck) => deck.slides)
+    .find((slide) => slide.id === 'b4-test')?.visual.key, 'solution-prioritizer');
+});
+
+test('le checkpoint de transfert B4 verrouille quatre scénarios complets', () => {
+  const checkpoint = B_DECKS.flatMap((deck) => deck.slides)
+    .find((slide) => slide.id === 'b4-test');
+  assert.ok(checkpoint);
+  assert.equal(checkpoint.visual.key, 'solution-prioritizer');
+
+  const scenarios = checkpoint.visual.data.scenarios;
+  assert.ok(Array.isArray(scenarios));
+  assert.deepEqual(
+    scenarios.map((scenario) => scenario.title),
+    ['Répondre à un email', 'Créer un calculateur', 'Analyser douze entretiens', 'Corriger un tri existant'],
+  );
+  assert.deepEqual(
+    scenarios.map((scenario) => scenario.answer),
+    ['chat', 'object', 'work', 'code'],
+  );
+  for (const [index, scenario] of scenarios.entries()) {
+    assert.ok(Array.isArray(scenario.signals), `signaux du scénario ${index + 1}`);
+    assert.equal(scenario.signals.length, 4, `signaux du scénario ${index + 1}`);
+    for (const field of ['situation', 'reason', 'tempting', 'temptingReason']) {
+      assert.equal(typeof scenario[field], 'string', `${field} du scénario ${index + 1}`);
+      assert.notEqual(scenario[field].trim(), '', `${field} du scénario ${index + 1}`);
+    }
   }
 });
 
@@ -736,15 +771,40 @@ test('le comparatif de prompt conserve toujours le vrai état après du manifest
   assert.doesNotMatch(target, /Sélectionnez/);
 });
 
-test('le triptyque B4-bis conserve le même dossier dans ses trois vues', async () => {
+test('le triptyque choisit un libellé path-like pour D1 et B4-bis', async () => {
   const state = await import('../src/components/presentation/visuals/b/visual-state').catch(() => null);
   assert.ok(state, "les helpers d’état du bloc B doivent exister");
-  const slides = B_DECKS.flatMap((deck) => deck.slides);
-  const data = (id: string) => slides.find((slide) => slide.id === id)?.visual.data ?? {};
+  const folderLabelFor = Reflect.get(state, 'workspaceFolderLabel') as
+    | ((data: Record<string, unknown>) => string)
+    | undefined;
+  assert.equal(typeof folderLabelFor, 'function', 'workspaceFolderLabel doit être exporté');
+  assert.ok(folderLabelFor);
 
-  assert.equal(state.workspaceSharedPath(data('b4bis-install')), 'kits/bloc-b-assistant/code/');
-  assert.equal(state.workspaceSharedPath(data('b4bis-workspace')), 'kits/bloc-b-assistant/code');
-  assert.equal(state.workspaceSharedPath(data('b4bis-checkpoint')), 'kits/bloc-b-assistant/code');
+  const blockBSlides = B_DECKS.flatMap((deck) => deck.slides);
+  const bData = (id: string) => blockBSlides.find((slide) => slide.id === id)?.visual.data ?? {};
+  const d1Data = D_DECKS.flatMap((deck) => deck.slides)
+    .find((slide) => slide.id === 'd1-workspace')?.visual.data ?? {};
+
+  assert.equal(folderLabelFor(d1Data), 'projet');
+  assert.notEqual(folderLabelFor(d1Data), 'Un seul projet, trois vues');
+  for (const id of ['b4bis-install', 'b4bis-workspace', 'b4bis-checkpoint']) {
+    assert.equal(folderLabelFor(bData(id)), 'mini-application', id);
+  }
+  assert.equal(
+    folderLabelFor({ folderLabel: 'prioritaire', folder: 'kits/autre', explorerPath: 'kits/dernier' }),
+    'prioritaire',
+  );
+  assert.equal(folderLabelFor({ folder: 'C:\\kits\\bloc-b\\mini-application\\' }), 'mini-application');
+  assert.equal(folderLabelFor({ explorerPath: 'kits/bloc-b/mini-application/' }), 'mini-application');
+
+  assert.equal(state.workspaceSharedPath(bData('b4bis-install')), 'kits/bloc-b-assistant/mini-application/');
+  assert.equal(state.workspaceSharedPath(bData('b4bis-workspace')), 'kits/bloc-b-assistant/mini-application');
+  assert.equal(state.workspaceSharedPath(bData('b4bis-checkpoint')), 'kits/bloc-b-assistant/mini-application');
+
+  const triptych = await read('src/components/presentation/visuals/b/WorkspaceTriptych.astro');
+  assert.match(triptych, /workspaceFolderLabel/);
+  assert.match(triptych, /const folderLabel = workspaceFolderLabel\(data\)/);
+  assert.doesNotMatch(triptych, /normalizedSharedPath/);
 });
 
 test('Artifact route chaque claim vers un visuel central distinct et synchronisable', async () => {
@@ -880,19 +940,70 @@ test('Prompt, Setup et Triptyque restent intrinsèquement fluides', async () => 
   assert.match(triptych, /\.triptych__shared, \.triptych__destination\s*{[^}]*var\(--font-display\)/s);
 });
 
-test('le sweep QA B contrôle les 21 routes, trois vues et les cinq labels du préflight', async () => {
+test('les contenus longs du nouveau parcours B se contractent à 200 %', async () => {
+  const [comparison, prioritizer, pacte, presentation] = await Promise.all([
+    read('src/components/presentation/visuals/a/SolutionComparison.astro'),
+    read('src/components/presentation/visuals/a/SolutionPrioritizer.astro'),
+    read('src/components/presentation/visuals/b/PacteWorkspace.astro'),
+    read('src/styles/presentation.css'),
+  ]);
+
+  assert.match(
+    comparison,
+    /\.comparison__levels li\s*{[^}]*grid-template-columns:\s*2\.5rem minmax\(0,\s*\.75fr\) minmax\(0,\s*1\.1fr\) minmax\(0,\s*1fr\)/s,
+  );
+  assert.match(
+    comparison,
+    /\.comparison__need,\s*\.comparison__workflow,\s*\.comparison__ecosystems\s*{[^}]*min-inline-size:\s*0[^}]*overflow-wrap:\s*anywhere/s,
+  );
+  assert.match(
+    prioritizer,
+    /\.prioritizer__progress small\s*{[^}]*min-inline-size:\s*0[^}]*overflow-wrap:\s*anywhere/s,
+  );
+  assert.doesNotMatch(
+    prioritizer,
+    /\.prioritizer__progress small\s*{[^}]*(?:text-overflow:\s*ellipsis|white-space:\s*nowrap)/s,
+  );
+  assert.match(
+    prioritizer,
+    /\[data-solution-prioritizer\]:not\(\[data-enhanced='true'\]\)\s*{[^}]*display:\s*block[^}]*min-block-size:\s*0/s,
+  );
+  assert.match(
+    prioritizer,
+    /\[data-solution-prioritizer\]:not\(\[data-enhanced='true'\]\) \.prioritizer__scenario\s*{[^}]*align-content:\s*start[^}]*min-block-size:\s*0/s,
+  );
+  assert.match(
+    pacte,
+    /\.pacte__workspace-lane strong\s*{[^}]*min-inline-size:\s*0[^}]*overflow-wrap:\s*anywhere/s,
+  );
+  assert.match(
+    presentation,
+    /\.presentation-stage\[data-family="b"\] \.mission-board__outcome dt\s*{[^}]*line-height:\s*1\.25/s,
+  );
+});
+
+test('le sweep QA B contrôle les 21 routes, trois vues et les quatre niveaux', async () => {
   const qa = await read('scripts/qa-block-b.mjs').catch(() => '');
   assert.match(qa, /getComputedStyle/);
   assert.match(qa, /getBoundingClientRect/);
   assert.match(qa, /scrollWidth/);
   assert.match(qa, /fontSize/);
   assert.match(qa, /overflowX/);
-  assert.match(qa, /setup__route-label/);
-  assert.match(qa, /Chat.*Artifact.*Cowork.*Kit.*Départ/s);
+  assert.match(qa, /comparison__need strong/);
+  assert.match(qa, /Réponse.*Objet.*Livrable.*Projet/s);
   assert.match(qa, /b4-context.*b4bis-checkpoint/s);
+  assert.match(qa, /b4-test/);
   assert.match(qa, /presentation-heading__track/);
-  assert.match(qa, /Facultatif/);
+  assert.doesNotMatch(qa, /Facultatif/);
   assert.match(qa, /Rattrapage/);
+  assert.match(qa, /comparison__levels/);
+  assert.match(qa, /mission-board/);
+  assert.match(qa, /\.presentation-visual\.mission-board/);
+  assert.doesNotMatch(qa, /locator\(`\.presentation-visual \$\{proofSelector\}`\)/);
+  assert.match(qa, /data-prioritizer-scenario/);
+  assert.match(qa, /Dernière situation.*cadre/s);
+  assert.match(qa, /prioritizer__correction/);
+  assert.match(qa, /data-enhanced="false"/);
   assert.match(qa, /zoom-200/);
   assert.match(qa, /navigateAndWaitForFonts/);
 });
