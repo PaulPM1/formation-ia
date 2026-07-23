@@ -69,7 +69,7 @@ test('le vérificateur de mission agent accepte le cas conforme et refuse les so
   assert.deepEqual(valid.checks.map((check) => check.ok), [true, true, true, true]);
 
   const instructorBrief = await readFile(
-    path.join(projectDirectory, 'kits/bloc-b-assistant-formateur/corriges/brief-cowork.md'),
+    path.join(projectDirectory, 'kits/bloc-b-assistant-formateur/corriges/brief-agent.md'),
     'utf8',
   );
   await writeFile(path.join(temp, 'mission-agent/sortie/brief-du-jour.md'), instructorBrief);
@@ -175,13 +175,15 @@ test('les corrigés formateur conservent les garanties des quatre outils', async
     'kits/bloc-b-assistant-formateur/corriges',
   );
   const [chat, artifact, cowork, code] = await Promise.all([
-    'brief-chat-6-lignes.md', 'artifact-correction.md',
-    'brief-cowork.md', 'claude-code.patch',
+    'brief-chat-6-lignes.md', 'objet-correction.md',
+    'brief-agent.md', 'agent-code.patch',
   ].map((file) => readFile(path.join(correctionDirectory, file), 'utf8')));
 
   const chatLines = chat.split('\n').filter((line) => line.startsWith('- '));
   assert.equal(chatLines.length, 6);
-  assert.ok(chatLines.every((line) => /\[source: inbox\//.test(line)));
+  assert.ok(chatLines.every((line) =>
+    /\[source: (?:demandes|reunion|messages)\.md\]/.test(line)));
+  assert.doesNotMatch(chat, /inbox\//);
   assert.match(chat, /## À confirmer/);
   assert.match(chat, /18 ou le 19 septembre/);
 

@@ -1,4 +1,4 @@
-# Correction Artifact
+# Correction Artifact / Canvas
 
 État initial : les six cartes commencent dans `Aujourd’hui`, les compteurs totalisent six et `Remise à zéro` restaure cette distribution.
 

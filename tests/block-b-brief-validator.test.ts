@@ -31,7 +31,7 @@ test('accepte un brief structuré, sourcé et incertain', () => {
 test('accepte les trois chemins historiques précis', async () => {
   const trainerBrief = await readFile(
     new URL(
-      '../kits/bloc-b-assistant-formateur/corriges/brief-cowork.md',
+      '../kits/bloc-b-assistant-formateur/corriges/brief-agent.md',
       import.meta.url,
     ),
     'utf8',

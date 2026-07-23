@@ -149,19 +149,19 @@ test('les six fiches B reprennent l’inventaire, les durées, les coupures et l
   assert.match(recovery?.body ?? '', /piste s’arrête au checkpoint/);
 });
 
-test('B0 à B2 suivent le parcours miroir', async () => {
+test('B0 à B4 suivent le parcours miroir', async () => {
   const contentDirectory = fileURLToPath(new URL('../src/content/briques', import.meta.url));
   const documents = (await loadBrickDocuments(contentDirectory))
     .filter((document) => document.data.family === 'b');
 
-  for (const brickId of ['b0', 'b1', 'b2']) {
+  for (const brickId of ['b0', 'b1', 'b2', 'b3', 'b4']) {
     const document = documents.find((candidate) => candidate.data.id === brickId);
     assert.ok(document, brickId);
     assert.match(document.body, /data-block-b-panel="claude"/);
     assert.match(document.body, /data-block-b-panel="openai"/);
   }
 
-  for (const brickId of ['b1', 'b2']) {
+  for (const brickId of ['b1', 'b2', 'b3', 'b4']) {
     const body = documents.find((candidate) => candidate.data.id === brickId)?.body ?? '';
     for (const heading of [
       'Situation',
@@ -177,4 +177,19 @@ test('B0 à B2 suivent le parcours miroir', async () => {
   assert.equal(documents.find((item) => item.data.id === 'b0')?.data.title, 'Choisir sa voie');
   assert.equal(documents.find((item) => item.data.id === 'b1')?.data.title, 'Chat');
   assert.equal(documents.find((item) => item.data.id === 'b2')?.data.title, 'Objet interactif');
+
+  const b3 = documents.find((item) => item.data.id === 'b3');
+  assert.equal(b3?.data.title, 'Travail multiétape');
+  assert.match(b3?.body ?? '', /Claude Cowork/);
+  assert.match(b3?.body ?? '', /ChatGPT Work/);
+  assert.match(b3?.body ?? '', /mission-agent\/sources/);
+  assert.match(b3?.body ?? '', /brief-du-jour\.md/);
+
+  const b4 = documents.find((item) => item.data.id === 'b4');
+  assert.equal(b4?.data.title, 'Agent de code');
+  assert.equal(b4?.data.priority, 'socle');
+  assert.match(b4?.body ?? '', /Claude Code/);
+  assert.match(b4?.body ?? '', /Codex/);
+  assert.match(b4?.body ?? '', /mini-application/);
+  assert.match(b4?.body ?? '', /## Checkpoint final/);
 });

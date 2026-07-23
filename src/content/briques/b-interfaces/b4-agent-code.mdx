@@ -1,0 +1,193 @@
+---
+id: b4
+title: "Agent de code"
+family: b
+order: 9
+priority: socle
+durationMinutes: 20
+type: demonstration
+platforms:
+  - commun
+prerequisites:
+  - b3
+status: a-relire
+owner: a-attribuer
+learningObjective: "Faire ajouter uniquement la source sous chaque carte avec Claude Code ou Codex, puis vérifier le test et les modifications."
+expectedOutcome: "La mini-application affiche les sources, conserve le tri, complète le test source volontairement ignoré et présente des modifications limitées."
+---
+
+## Cap
+
+**Objectif :** réaliser en 20 minutes une modification de code limitée, testée et relue dans la voie choisie.
+
+- 2 minutes : comprendre le projet déjà fonctionnel.
+- 4 minutes : inspecter et borner la modification.
+- 10 minutes : approuver le plan, modifier et tester.
+- 4 minutes : vérifier la page, les fichiers et le diff.
+
+## Concept durable
+
+Un agent de code travaille dans le contexte réel d’un projet. Son avantage n’est pas d’écrire davantage, mais de relier inspection, plan, modification, test et relecture sans sortir du dossier autorisé.
+
+La mini-application fonctionne déjà et trie six cartes. La propriété `source` existe dans les données, mais elle n’est pas rendue. La mission porte sur ce seul écart et sur le test associé.
+
+## Pratique avec Claude
+
+Cette rubrique conserve temporairement l’ancre utilisée par les slides. La consigne principale se trouve sous `Pratique guidée` et vaut pour Claude Code comme pour Codex.
+
+## Pratique guidée
+
+### Situation
+
+Le dossier `mini-application/` contient une page fonctionnelle, son serveur et ses tests. Le tri passe déjà. Un test source volontairement ignoré indique le comportement à ajouter : afficher le nom du fichier source sous chaque carte.
+
+### Pourquoi cette surface
+
+Claude Code ou Codex peut inspecter plusieurs fichiers d’un même projet, proposer un plan, appliquer une modification limitée, lancer les tests et présenter les changements à relire. Cette surface convient à un projet local, contrairement à un chat ou à un objet interactif isolé.
+
+### Fichiers à fournir
+
+Aucune pièce jointe n’est nécessaire. Les deux agents ouvrent le même dossier local.
+
+<section className="block-b-path" data-block-b-panel="claude">
+  <h3>Voie Claude : ouvrir Claude Code</h3>
+  <p>Dans l’application Claude, ouvrez Claude Code puis le dossier <code>mini-application/</code>.</p>
+</section>
+
+<section className="block-b-path" data-block-b-panel="openai">
+  <h3>Voie OpenAI : ouvrir Codex</h3>
+  <p>Dans l’application ChatGPT, ouvrez Codex puis le dossier <code>mini-application/</code>.</p>
+</section>
+
+Avant d’envoyer le prompt, lancez `node --test` dans ce dossier. Le test de tri doit passer et le test de source doit être signalé comme volontairement ignoré.
+
+### Prompt à envoyer
+
+```text
+Inspecte ce mini-projet sans le modifier, puis présente un plan de trois étapes
+maximum.
+
+Objectif unique : afficher la propriété source sous chaque carte.
+
+Préserve le tri existant. Ne change ni le contenu des notes, ni le style
+général, ni le serveur. Remplace le test source volontairement ignoré par une assertion qui prouve que
+les trois noms de fichiers sont rendus. Exécute node --test après la
+modification. Arrête-toi si une modification hors de ce périmètre semble
+nécessaire.
+
+Attends mon approbation avant de modifier. À la fin, présente les fichiers
+modifiés, le résultat du test et les changements à relire.
+```
+
+### Manipulation à effectuer
+
+1. Envoyez le prompt et attendez le plan sans autoriser de modification.
+2. Vérifiez que le plan porte uniquement sur le rendu de la source et son test.
+3. Approuvez explicitement le plan conforme.
+4. Laissez l’agent modifier puis exécuter `node --test`.
+5. Ouvrez la mini-application et cherchez la source sous chaque carte.
+6. Ouvrez les fichiers modifiés et relisez le diff ligne par ligne.
+
+### Tester mon résultat
+
+Le test B4 passe uniquement si les cinq critères suivants sont vrais :
+
+1. le plan a été présenté avant toute écriture ;
+2. seuls le rendu de la source et son test ont changé ;
+3. les trois noms `demandes.md`, `reunion.md` et `messages.md` sont visibles ;
+4. `node --test` passe ;
+5. les fichiers modifiés et le diff ont été relus.
+
+### Corriger un échec
+
+Nommez un seul critère en échec et demandez une correction limitée à ce critère. Si l’agent propose une refonte, une dépendance, une modification du tri, du contenu des notes, du style général ou du serveur, refusez le plan et rappelez l’objectif unique. Après correction, relancez les cinq critères depuis le début.
+
+## Mission commune
+
+Dans Claude Code ou Codex, faites afficher uniquement la source sous chaque carte, remplacez le test source ignoré par une assertion réelle, exécutez `node --test` et relisez les changements.
+
+## Critères de réussite
+
+- Chaque carte affiche son fichier source.
+- Le tri initial reste `N01, N06, N03, N05, N02, N04`.
+- Le test source ignoré devient une assertion sur les trois noms de fichiers.
+- `node --test` passe sans test ignoré.
+- Les changements restent limités au rendu de la source et à son test.
+
+## Checkpoint final
+
+Pour chaque situation, la réponse indique la surface à choisir et justifie la sortie, le contexte, l’action et la preuve.
+
+1. **Répondre en cinq lignes à un email déjà fourni : Chat.**
+   - **Sortie :** une réponse textuelle de cinq lignes dans le fil.
+   - **Contexte :** l’email est déjà présent dans la conversation.
+   - **Action :** rédiger puis ajuster le texte sans créer de fichier.
+   - **Preuve :** compter les cinq lignes et vérifier qu’elles répondent à l’email fourni.
+2. **Créer un calculateur manipulable sans projet : Artifact ou Canvas.**
+   - **Sortie :** un calculateur interactif utilisable dans sa propre surface.
+   - **Contexte :** les règles de calcul sont fournies dans la conversation, sans dossier de projet.
+   - **Action :** modifier les entrées et observer les résultats.
+   - **Preuve :** tester plusieurs valeurs connues et comparer les résultats attendus.
+3. **Analyser douze entretiens et livrer un rapport : Cowork ou Work.**
+   - **Sortie :** un rapport unique téléchargeable et sourcé.
+   - **Contexte :** les douze entretiens sont disponibles dans un dossier ou comme pièces jointes.
+   - **Action :** faire approuver un plan, analyser l’ensemble puis produire le rapport.
+   - **Preuve :** contrôler la couverture des douze entretiens, les sources et les incertitudes.
+4. **Corriger le tri d’un projet et lancer ses tests : Claude Code ou Codex.**
+   - **Sortie :** une modification limitée du projet.
+   - **Contexte :** le code, les consignes et les tests se trouvent dans le dossier local.
+   - **Action :** inspecter, planifier, corriger le tri puis lancer la suite de tests.
+   - **Preuve :** vérifier les tests passants et relire les fichiers modifiés ainsi que le diff.
+
+## Livrable
+
+Le plan approuvé, la sortie de `node --test`, la mini-application montrant les sources et le diff relu.
+
+## Notes formateur
+
+- De 00:00 à 02:00 : ouvrir `mini-application/` dans Claude Code ou Codex et lancer le test initial.
+- De 02:00 à 06:00 : faire inspecter le projet et borner le plan.
+- De 06:00 à 16:00 : approuver, modifier et exécuter `node --test`.
+- Couper la génération à 16:00 dans B4.
+- De 16:00 à 20:00 : vérifier la page, les trois sources, les fichiers modifiés et le diff.
+- Repli : utiliser `kits/bloc-b-assistant-formateur/corriges/agent-code.patch`, puis conserver le test et la relecture en direct.
+
+## Défis avancés
+
+- Expliquer pourquoi le tri reste inchangé après l’ajout de la source.
+- Vérifier les trois noms de fichiers sans figer tout le HTML produit.
+
+## Variantes
+
+- **Agent indisponible :** appliquer le patch formateur sur une copie et faire auditer chaque changement.
+- **Sans serveur :** tester le HTML généré avec `renderBrief(notes)` et conserver `node --test` comme preuve.
+- **Temps court :** le formateur applique la modification ; les participants approuvent ou refusent chaque étape.
+
+## Dépannage
+
+- **Le test initial échoue :** arrêter la mission et traiter le problème d’environnement hors de cette séquence.
+- **Le plan dépasse deux fichiers :** demander une réduction au rendu de la source et à son test.
+- **Le tri change :** restaurer le comportement initial avant de reprendre.
+- **Le diff est trop large :** refuser les changements et reformuler l’objectif unique.
+
+## Ressources
+
+- Le dossier `kits/bloc-b-assistant/mini-application/`.
+- Son fichier `README.md` pour les commandes de test et de serveur.
+
+## Ouverture
+
+Vous avez maintenant pratiqué quatre niveaux : réponse, objet interactif, travail multiétape et agent de code. Le checkpoint permet de choisir la bonne surface à partir de la sortie, du contexte, de l’action et de la preuve.
+
+## Scénario de démonstration
+
+La mini-application trie déjà les six cartes. Claude Code ou Codex inspecte le dossier, présente un plan court, ajoute la source au rendu, complète le test et présente les modifications.
+
+## Déroulé de démonstration
+
+1. Lancer le test initial et montrer le test source ignoré.
+2. Ouvrir la page sans sources visibles.
+3. Envoyer le prompt commun dans la voie choisie.
+4. Relire et approuver le plan limité.
+5. Observer la modification et le résultat de `node --test`.
+6. Contrôler la page, les fichiers modifiés et le diff.
