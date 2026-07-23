@@ -1,7 +1,7 @@
 ---
 import type { RoutedSlide } from '../../../../presentation/presentation-model';
 import SceneFrame from '../../scenes/SceneFrame.astro';
-import { getWorkspaceVariant, workspaceSharedPath } from './visual-state';
+import { getWorkspaceVariant, workspaceFolderLabel, workspaceSharedPath } from './visual-state';
 
 interface Props { slide: RoutedSlide; }
 interface Pane { name: string; role?: string; evidence?: string; }
@@ -11,8 +11,7 @@ const { slide } = Astro.props;
 const data = slide.visual.data;
 const variant = getWorkspaceVariant(data);
 const sharedPath = workspaceSharedPath(data);
-const normalizedSharedPath = sharedPath.replaceAll('\\', '/').replace(/\/$/, '');
-const folderLabel = normalizedSharedPath.split('/').filter(Boolean).at(-1) ?? normalizedSharedPath;
+const folderLabel = workspaceFolderLabel(data);
 const fileLabel = 'brief.test.mjs';
 const destination = typeof data.destination === 'string' ? data.destination : '';
 const panes = (Array.isArray(data.panes) ? data.panes : []) as Pane[];

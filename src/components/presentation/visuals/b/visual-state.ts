@@ -105,3 +105,13 @@ export const workspaceSharedPath = (data: VisualData) => {
   if (typeof data.folder === 'string') return data.folder;
   return 'atelier-ia/bonjour.txt';
 };
+
+export const workspaceFolderLabel = (data: VisualData) => {
+  for (const field of ['folderLabel', 'folder', 'explorerPath'] as const) {
+    if (typeof data[field] !== 'string') continue;
+    const normalized = data[field].trim().replaceAll('\\', '/').replace(/\/+$/, '');
+    const label = normalized.split('/').filter(Boolean).at(-1);
+    if (label) return label;
+  }
+  return 'projet';
+};

@@ -5,6 +5,7 @@ import test from 'node:test';
 import { A_DECKS } from '../src/presentation/manifests/a';
 import { B_DECKS } from '../src/presentation/manifests/b';
 import { C_DECKS } from '../src/presentation/manifests/c';
+import { D_DECKS } from '../src/presentation/manifests/d';
 import { E_DECKS } from '../src/presentation/manifests/e';
 import { SLIDE_VISUAL_KEYS } from '../src/presentation/presentation-model';
 
@@ -651,6 +652,32 @@ test('les 21 routes du bloc B choisissent leur variante réelle', async () => {
     .find((slide) => slide.id === 'b4-test')?.visual.key, 'solution-prioritizer');
 });
 
+test('le checkpoint de transfert B4 verrouille quatre scénarios complets', () => {
+  const checkpoint = B_DECKS.flatMap((deck) => deck.slides)
+    .find((slide) => slide.id === 'b4-test');
+  assert.ok(checkpoint);
+  assert.equal(checkpoint.visual.key, 'solution-prioritizer');
+
+  const scenarios = checkpoint.visual.data.scenarios;
+  assert.ok(Array.isArray(scenarios));
+  assert.deepEqual(
+    scenarios.map((scenario) => scenario.title),
+    ['Répondre à un email', 'Créer un calculateur', 'Analyser douze entretiens', 'Corriger un tri existant'],
+  );
+  assert.deepEqual(
+    scenarios.map((scenario) => scenario.answer),
+    ['chat', 'object', 'work', 'code'],
+  );
+  for (const [index, scenario] of scenarios.entries()) {
+    assert.ok(Array.isArray(scenario.signals), `signaux du scénario ${index + 1}`);
+    assert.equal(scenario.signals.length, 4, `signaux du scénario ${index + 1}`);
+    for (const field of ['situation', 'reason', 'tempting', 'temptingReason']) {
+      assert.equal(typeof scenario[field], 'string', `${field} du scénario ${index + 1}`);
+      assert.notEqual(scenario[field].trim(), '', `${field} du scénario ${index + 1}`);
+    }
+  }
+});
+
 test('les états interactifs du bloc B restent déterministes et bloquent les portes', async () => {
   const state = await import('../src/components/presentation/visuals/b/visual-state').catch(() => null);
   assert.ok(state, "les helpers d’état du bloc B doivent exister");
@@ -744,21 +771,40 @@ test('le comparatif de prompt conserve toujours le vrai état après du manifest
   assert.doesNotMatch(target, /Sélectionnez/);
 });
 
-test('le triptyque B4-bis conserve le même dossier dans ses trois vues', async () => {
+test('le triptyque choisit un libellé path-like pour D1 et B4-bis', async () => {
   const state = await import('../src/components/presentation/visuals/b/visual-state').catch(() => null);
   assert.ok(state, "les helpers d’état du bloc B doivent exister");
-  const slides = B_DECKS.flatMap((deck) => deck.slides);
-  const data = (id: string) => slides.find((slide) => slide.id === id)?.visual.data ?? {};
+  const folderLabelFor = Reflect.get(state, 'workspaceFolderLabel') as
+    | ((data: Record<string, unknown>) => string)
+    | undefined;
+  assert.equal(typeof folderLabelFor, 'function', 'workspaceFolderLabel doit être exporté');
+  assert.ok(folderLabelFor);
 
-  assert.equal(state.workspaceSharedPath(data('b4bis-install')), 'kits/bloc-b-assistant/mini-application/');
-  assert.equal(state.workspaceSharedPath(data('b4bis-workspace')), 'kits/bloc-b-assistant/mini-application');
-  assert.equal(state.workspaceSharedPath(data('b4bis-checkpoint')), 'kits/bloc-b-assistant/mini-application');
+  const blockBSlides = B_DECKS.flatMap((deck) => deck.slides);
+  const bData = (id: string) => blockBSlides.find((slide) => slide.id === id)?.visual.data ?? {};
+  const d1Data = D_DECKS.flatMap((deck) => deck.slides)
+    .find((slide) => slide.id === 'd1-workspace')?.visual.data ?? {};
+
+  assert.equal(folderLabelFor(d1Data), 'projet');
+  assert.notEqual(folderLabelFor(d1Data), 'Un seul projet, trois vues');
+  for (const id of ['b4bis-install', 'b4bis-workspace', 'b4bis-checkpoint']) {
+    assert.equal(folderLabelFor(bData(id)), 'mini-application', id);
+  }
+  assert.equal(
+    folderLabelFor({ folderLabel: 'prioritaire', folder: 'kits/autre', explorerPath: 'kits/dernier' }),
+    'prioritaire',
+  );
+  assert.equal(folderLabelFor({ folder: 'C:\\kits\\bloc-b\\mini-application\\' }), 'mini-application');
+  assert.equal(folderLabelFor({ explorerPath: 'kits/bloc-b/mini-application/' }), 'mini-application');
+
+  assert.equal(state.workspaceSharedPath(bData('b4bis-install')), 'kits/bloc-b-assistant/mini-application/');
+  assert.equal(state.workspaceSharedPath(bData('b4bis-workspace')), 'kits/bloc-b-assistant/mini-application');
+  assert.equal(state.workspaceSharedPath(bData('b4bis-checkpoint')), 'kits/bloc-b-assistant/mini-application');
 
   const triptych = await read('src/components/presentation/visuals/b/WorkspaceTriptych.astro');
-  assert.doesNotMatch(triptych, /const folderLabel = 'bloc-b-assistant\/code'/);
-  assert.match(triptych, /sharedPath.*folderLabel|folderLabel.*sharedPath/s);
-  assert.match(triptych, /normalizedSharedPath\.split\('\/'\)\.filter\(Boolean\)\.at\(-1\)/);
-  assert.doesNotMatch(triptych, /slice\(-2\)\.join\('\/'\)/);
+  assert.match(triptych, /workspaceFolderLabel/);
+  assert.match(triptych, /const folderLabel = workspaceFolderLabel\(data\)/);
+  assert.doesNotMatch(triptych, /normalizedSharedPath/);
 });
 
 test('Artifact route chaque claim vers un visuel central distinct et synchronisable', async () => {

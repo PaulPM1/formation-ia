@@ -519,6 +519,7 @@ export const B_DECKS: PresentationDeck[] = [
         support: 'Une installation complète n’entre jamais dans ces dix minutes.',
         visual: { key: 'workspace-triptych', data: {
           interaction: 'Identifier le maillon manquant.',
+          folderLabel: 'mini-application',
           sharedContext: 'kits/bloc-b-assistant/mini-application/',
           panes: [
             { name: 'Dossier', role: 'Le kit est décompressé et ouvert' },
