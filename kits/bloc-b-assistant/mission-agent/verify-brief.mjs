@@ -6,12 +6,12 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 const defaultRoot = path.dirname(fileURLToPath(import.meta.url));
 const requiredSectionNames = ['Actions du jour', 'À confirmer', 'Plus tard'];
 const expectedNoteSources = {
-  N01: 'inbox/01-demandes.md',
-  N02: 'inbox/01-demandes.md',
-  N03: 'inbox/02-reunion.md',
-  N04: 'inbox/02-reunion.md',
-  N05: 'inbox/03-messages.md',
-  N06: 'inbox/03-messages.md',
+  N01: 'demandes.md',
+  N02: 'demandes.md',
+  N03: 'reunion.md',
+  N04: 'reunion.md',
+  N05: 'messages.md',
+  N06: 'messages.md',
 };
 const allowedOutputNames = new Set(['README.md', 'brief-du-jour.md', '.DS_Store']);
 
@@ -34,7 +34,7 @@ const sha256 = async (filePath) => createHash('sha256')
   .update(await readFile(filePath))
   .digest('hex');
 
-export async function verifyCowork({ rootDirectory = defaultRoot, log = true } = {}) {
+export async function verifyMissionAgent({ rootDirectory = defaultRoot, log = true } = {}) {
   const outputPath = path.join(rootDirectory, 'sortie/brief-du-jour.md');
   let output = '';
   let outputExists = true;
@@ -44,7 +44,7 @@ export async function verifyCowork({ rootDirectory = defaultRoot, log = true } =
     outputExists = false;
   }
 
-  const fingerprintPath = path.join(rootDirectory, 'inbox-sha256.json');
+  const fingerprintPath = path.join(rootDirectory, 'sources-sha256.json');
   const expectedFingerprints = JSON.parse(await readFile(fingerprintPath, 'utf8'));
   const fingerprintResults = await Promise.all(
     Object.entries(expectedFingerprints).map(async ([relativePath, expected]) => ({
@@ -54,7 +54,7 @@ export async function verifyCowork({ rootDirectory = defaultRoot, log = true } =
     })),
   );
 
-  const requiredSources = Object.keys(expectedFingerprints);
+  const requiredSources = [...new Set(Object.values(expectedNoteSources))];
   const sections = parseSections(output);
   const authoredSectionNames = [...output.matchAll(/^##\s+(.+?)\s*$/gm)]
     .map(([, name]) => name.trim());
@@ -117,7 +117,7 @@ export async function verifyCowork({ rootDirectory = defaultRoot, log = true } =
     },
     {
       id: 'fingerprints',
-      label: 'les empreintes SHA-256 de inbox/ sont intactes',
+      label: 'les empreintes SHA-256 de sources/ sont intactes',
       ok: fingerprintResults.every(({ actual, expected }) => actual === expected),
     },
   ];
@@ -137,6 +137,6 @@ export async function verifyCowork({ rootDirectory = defaultRoot, log = true } =
 
 const invokedPath = process.argv[1] ? pathToFileURL(path.resolve(process.argv[1])).href : '';
 if (invokedPath === import.meta.url) {
-  const result = await verifyCowork();
+  const result = await verifyMissionAgent();
   if (!result.ok) process.exitCode = 1;
 }
