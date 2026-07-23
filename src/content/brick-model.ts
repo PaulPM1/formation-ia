@@ -13,19 +13,24 @@ export const BRICK_PLATFORMS = ['commun', 'mac', 'windows', 'navigateur'] as con
 export const BRICK_STATUSES = ['a-rediger', 'en-cours', 'a-relire', 'validee'] as const;
 export const BRICK_OWNERS = ['paul', 'matthieu', 'a-attribuer'] as const;
 
-export const COMMON_HEADINGS = [
-  'Cap',
-  'Concept durable',
-  'Pratique avec Claude',
-  'Mission commune',
-  'Livrable',
-  'Notes formateur',
-  'Défis avancés',
-  'Variantes',
-  'Dépannage',
-  'Ressources',
-  'Ouverture',
+export const COMMON_HEADING_REQUIREMENTS = [
+  ['Cap'],
+  ['Concept durable'],
+  ['Pratique guidée', 'Pratique avec Claude'],
+  ['Mission commune'],
+  ['Livrable'],
+  ['Notes formateur'],
+  ['Défis avancés'],
+  ['Variantes'],
+  ['Dépannage'],
+  ['Ressources'],
+  ['Ouverture'],
 ] as const;
+
+export const headingRequirementIsMet = (
+  headings: Set<string>,
+  alternatives: readonly string[],
+) => alternatives.some((heading) => headings.has(heading));
 
 export const TYPE_HEADINGS = {
   concept: [],
@@ -90,16 +95,16 @@ export function validateBrickDocuments(
 
     validDocuments.push({ ...document, data: parsed.data });
     const headings = findLevelTwoHeadings(document.body);
-    const requiredHeadings = [
-      ...COMMON_HEADINGS,
-      ...TYPE_HEADINGS[parsed.data.type],
+    const requiredHeadingGroups = [
+      ...COMMON_HEADING_REQUIREMENTS,
+      ...TYPE_HEADINGS[parsed.data.type].map((heading) => [heading] as const),
     ];
 
-    for (const heading of requiredHeadings) {
-      if (!headings.has(heading)) {
+    for (const alternatives of requiredHeadingGroups) {
+      if (!headingRequirementIsMet(headings, alternatives)) {
         issues.push({
           filePath: document.filePath,
-          message: `Rubrique obligatoire manquante : ${heading}`,
+          message: `Rubrique obligatoire manquante : ${alternatives[0]}`,
         });
       }
     }
