@@ -1065,7 +1065,8 @@
 }
 
 /* ==========================================================================
-   7. Bouton de copie (n'apparaît qu'avec JavaScript, via son attribut hidden)
+   7. Bouton de copie (révélé par le script de la coquille, donc invisible
+      sans JavaScript : rien à cliquer qui ne marcherait pas)
    ========================================================================== */
 
 .bouton-copier {
@@ -1088,6 +1089,11 @@
 .bouton-copier[hidden] {
   /* Sans JavaScript le bouton reste caché : rien à cliquer qui ne marche pas. */
   display: none;
+}
+
+.fichier .bouton-copier {
+  /* Posé sous le contenu, dans la marge du cadre de fichier. */
+  margin: 0 0.85rem 0.85rem;
 }
 
 .bouton-copier:hover {

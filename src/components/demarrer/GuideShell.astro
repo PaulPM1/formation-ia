@@ -72,3 +72,34 @@ const changements = changementsDeLieu(guide);
   ouvrirCible();
   window.addEventListener('hashchange', ouvrirCible);
 </script>
+
+<script>
+  // Un seul endroit pour toute la page : chaque bloc à coller et chaque bloc
+  // de fichier voit son bouton révélé et branché ici. Le bouton sort du
+  // serveur avec l'attribut « hidden », donc sans JavaScript il n'apparaît
+  // jamais : un bouton de copie inopérant serait pire qu'absent, et le texte
+  // reste sélectionnable à la main.
+  document.querySelectorAll<HTMLElement>('[data-copiable]').forEach((bloc) => {
+    const bouton = bloc.parentElement?.querySelector<HTMLButtonElement>('[data-copier]');
+    if (!bouton) return;
+
+    const annoncer = (message: string) => {
+      bouton.textContent = message;
+      window.setTimeout(() => { bouton.textContent = 'Copier'; }, 2000);
+    };
+
+    bouton.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(bloc.textContent ?? '');
+        annoncer('Copié');
+      } catch {
+        // Le navigateur peut refuser l'écriture dans le presse-papiers :
+        // on le dit plutôt que de laisser croire que la copie a eu lieu.
+        annoncer('Copiez à la main');
+      }
+    });
+
+    bouton.hidden = false;
+    bloc.parentElement?.setAttribute('data-enhanced', 'true');
+  });
+</script>
