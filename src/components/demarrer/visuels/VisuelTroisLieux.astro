@@ -1,0 +1,33 @@
+---
+import type { Visuel } from '../../../parcours/parcours-model';
+
+interface Props { visuel: Extract<Visuel, { key: 'trois-lieux' }>; }
+const { visuel } = Astro.props;
+
+const LIEUX = [
+  { id: 'dossier', nom: 'Votre dossier', detail: 'Sur votre ordinateur' },
+  { id: 'github', nom: 'GitHub', detail: 'La copie en ligne' },
+  { id: 'site', nom: 'Votre site', detail: 'Ce que le monde ouvre' },
+] as const;
+
+const DESCRIPTION: Record<string, string> = {
+  projet: 'Votre dossier envoie une copie vers GitHub.',
+  ligne: 'Chaque envoi vers GitHub met votre site à jour, tout seul.',
+  cle: 'Votre clé va sur votre ordinateur et chez Vercel, jamais sur GitHub.',
+};
+---
+
+<figure class="visuel visuel-trois-lieux" data-accent={visuel.accent} data-enhanced="false">
+  <ol class="trois-lieux-rangee" role="list">
+    {LIEUX.map((lieu) => (
+      <li data-lieu={lieu.id}>
+        <strong>{lieu.nom}</strong>
+        <span>{lieu.detail}</span>
+      </li>
+    ))}
+  </ol>
+  {visuel.accent === 'cle' && (
+    <p class="trois-lieux-interdit">La clé ne franchit jamais la flèche vers GitHub.</p>
+  )}
+  <figcaption>{DESCRIPTION[visuel.accent]}</figcaption>
+</figure>
