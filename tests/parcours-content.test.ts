@@ -12,13 +12,13 @@ test('les manifestes livrés passent le validateur', () => {
 
 test('les compteurs figés du contenu', () => {
   assert.equal(GUIDES.length, 1);
-  assert.equal(GUIDES.reduce((total, guide) => total + guide.etapes.length, 0), 1);
+  assert.equal(GUIDES.reduce((total, guide) => total + guide.etapes.length, 0), 8);
   assert.equal(
     GUIDES.reduce(
       (total, guide) => total + guide.etapes.reduce((sous, etape) => sous + etape.pannes.length, 0),
       0,
     ),
-    0,
+    7,
   );
 });
 
