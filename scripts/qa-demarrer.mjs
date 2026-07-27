@@ -64,8 +64,16 @@ for (const chemin of ['/demarrer/', '/demarrer/naissance-projet/', '/demarrer/mi
   if (texte.trim().length < 400) {
     echecs.push(`${chemin} : contenu trop court sans JavaScript (${texte.trim().length} caractères).`);
   }
+  // Le balayage de vocabulaire ignore les <pre> : ils portent du contenu
+  // technique authentique (bloc à coller, contenu de fichier), déjà régi au
+  // niveau du manifeste. Le contrôle de longueur, lui, garde le texte entier.
+  const texteBalaye = await page.locator('main').evaluate((main) => {
+    const copie = main.cloneNode(true);
+    copie.querySelectorAll('pre').forEach((bloc) => bloc.remove());
+    return copie.innerText;
+  });
   for (const { mot, motif } of motifsInterdits) {
-    if (motif.test(texte)) echecs.push(`${chemin} : vocabulaire interdit « ${mot} » rendu à l’écran.`);
+    if (motif.test(texteBalaye)) echecs.push(`${chemin} : vocabulaire interdit « ${mot} » rendu à l’écran.`);
   }
 }
 
