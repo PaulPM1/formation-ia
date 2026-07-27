@@ -1,0 +1,27 @@
+---
+import type { Visuel } from '../../../parcours/parcours-model';
+
+interface Props { visuel: Extract<Visuel, { key: 'arborescence' }>; }
+const { visuel } = Astro.props;
+const ignores = new Set(visuel.ignores ?? []);
+---
+
+<figure class="visuel visuel-arborescence" data-enhanced="false">
+  <div class="arborescence-colonne">
+    <figcaption>Avant</figcaption>
+    <ul role="list">
+      {visuel.avant.map((ligne) => <li>{ligne}</li>)}
+    </ul>
+  </div>
+  <div class="arborescence-colonne">
+    <figcaption>Après</figcaption>
+    <ul role="list">
+      {visuel.apres.map((ligne) => (
+        <li class={ignores.has(ligne.trim()) ? 'est-ignore' : undefined}>
+          {ligne}
+          {ignores.has(ligne.trim()) && <span class="mention"> (ignoré, ne part jamais en ligne)</span>}
+        </li>
+      ))}
+    </ul>
+  </div>
+</figure>

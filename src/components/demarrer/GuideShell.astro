@@ -1,0 +1,38 @@
+---
+import type { Guide } from '../../parcours/parcours-model';
+import Etape from './Etape.astro';
+
+interface Props { guide: Guide; }
+const { guide } = Astro.props;
+
+const LIEU_CIBLE: Record<string, string> = {
+  machine: 'votre ordinateur',
+  vscode: 'VS Code',
+  navigateur: 'votre navigateur',
+};
+
+// Le marqueur ne s'affiche que sur une vraie rupture d'application : c'est la
+// couture sur laquelle les participants se perdaient.
+const changements = guide.etapes.map((etape, index) => {
+  if (index === 0) return null;
+  const precedent = guide.etapes[index - 1];
+  return etape.lieu === precedent.lieu ? null : LIEU_CIBLE[etape.lieu];
+});
+---
+
+<article class="guide" data-guide={guide.id}>
+  <header class="guide-entete">
+    <h1>{guide.titre}</h1>
+    <p class="guide-promesse">{guide.promesse}</p>
+    {guide.pourQui && <p class="guide-pour-qui">{guide.pourQui}</p>}
+  </header>
+
+  {guide.etapes.map((etape, index) => (
+    <Etape
+      etape={etape}
+      index={index}
+      total={guide.etapes.length}
+      changementDeLieu={changements[index]}
+    />
+  ))}
+</article>
