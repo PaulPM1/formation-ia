@@ -238,6 +238,18 @@
   white-space: nowrap;
 }
 
+/* --- Retour vers la règle ------------------------------------------------ */
+
+.demarrer-retour {
+  /* La frontière tenue avec D4 : ici le geste, là-bas la règle. */
+  max-inline-size: 52ch;
+  margin-block-start: clamp(2.5rem, 6vw, 4rem);
+  padding-block-start: 1rem;
+  border-block-start: 2px solid var(--ink);
+  color: var(--muted);
+  font-size: var(--text-small);
+}
+
 /* ==========================================================================
    2. Coquille d'un guide
    ========================================================================== */
