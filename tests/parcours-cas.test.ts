@@ -52,15 +52,29 @@ test('chaque entrée pointe vers une ancre complète', () => {
   assert.equal(cas[0].guideTitre, 'Créer un projet');
 });
 
-test('toutes les ancres de la grille livrée existent dans les manifestes', () => {
-  const ancres = new Set(
-    GUIDES.flatMap((g) =>
-      g.etapes.flatMap((etape) =>
-        etape.pannes.map((panne) => `/demarrer/${g.id}/#panne-${panne.id}`),
-      ),
-    ),
+/**
+ * La liste est écrite à la main, volontairement : c'est le seul moyen qu'une
+ * panne qui perdrait son drapeau `frequente`, ou un symptôme reformulé sans
+ * qu'on s'en aperçoive, fasse échouer la vérification. Toute évolution
+ * assumée de la grille se répercute ici, en connaissance de cause.
+ */
+const SYMPTOMES_FREQUENTS = [
+  'Je vois un seul fichier, pas le nom de mon dossier',
+  'Je ne trouve pas Claude Code dans la liste',
+  'Claude parle d’un dossier que je ne reconnais pas',
+  'GitHub ne m’affiche aucun bloc d’instructions',
+  'Ma page GitHub reste vide après rafraîchissement',
+  'Vercel n’affiche aucun de mes projets',
+  'Vercel affiche que le déploiement a échoué',
+  'J’ai fait la modification mais mon site reste identique',
+  'J’ai fermé la fenêtre sans copier ma clé',
+  'Je vois un fichier .env sur GitHub',
+  'J’ai ajouté la variable mais mon site ne marche toujours pas',
+];
+
+test('la grille livrée est exactement la liste attendue, dans l’ordre', () => {
+  assert.deepEqual(
+    collecterCas(GUIDES).map((cas) => cas.symptome),
+    SYMPTOMES_FREQUENTS,
   );
-  for (const cas of collecterCas(GUIDES)) {
-    assert.ok(ancres.has(cas.href), `ancre orpheline : ${cas.href}`);
-  }
 });
