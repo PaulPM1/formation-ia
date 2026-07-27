@@ -32,6 +32,8 @@ Quatre règles couvrent l'essentiel des dégâts évitables.
 
 **1. Les secrets restent hors du code.** Une clé API est un mot de passe. Elle vit dans un fichier `.env`, jamais dans le code, et ce fichier ne part jamais en ligne : il est listé dans le `.gitignore`, la liste de ce que Git doit ignorer. Une clé qui a fui ne se « supprime » pas : l'historique Git garde tout (D2). Elle se révoque et se remplace.
 
+La règle est ici, le geste est là : [Démarrer, donner une clé à votre projet](/demarrer/cle-api/).
+
 **2. Le front-end est public, le back-end est le garde.** Tout ce que contient le front est lisible par n'importe qui : le code, mais aussi les requêtes visibles dans le navigateur. Les vérifications qui comptent (droits d'accès, validation) se font côté serveur ; celles du front ne sont que du confort. Aucune donnée sensible dans les URL ni dans les réponses envoyées au navigateur.
 
 **3. Ne jamais faire confiance à ce qui entre.** Toute entrée utilisateur (formulaire, champ de recherche, URL) doit être validée côté serveur : type, taille, contenu. Un champ libre est une porte ; sans validation, elle est grande ouverte.
