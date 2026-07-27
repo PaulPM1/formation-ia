@@ -1,9 +1,11 @@
 ---
 import type { Visuel } from '../../../parcours/parcours-model';
 import VisuelArborescence from './VisuelArborescence.astro';
+import VisuelClaude from './VisuelClaude.astro';
 
 interface Props { visuel: Visuel; }
 const { visuel } = Astro.props;
 ---
 
 {visuel.key === 'arborescence' && <VisuelArborescence visuel={visuel} />}
+{visuel.key === 'claude' && <VisuelClaude visuel={visuel} />}
