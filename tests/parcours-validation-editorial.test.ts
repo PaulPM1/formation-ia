@@ -156,30 +156,33 @@ test('une capture vérifiée il y a plus de six mois est signalée en avertissem
   assert.match(avertissements[0], /vérifiée le/);
 });
 
-test('une date de vérification mal formée est refusée', () => {
-  const issues = validateGuides(
-    [
-      guide({
-        etapes: [
-          etape({
-            lieu: 'navigateur',
+test('une date de vérification mal formée est refusée, et une seule fois', () => {
+  const malFormee = [
+    guide({
+      etapes: [
+        etape({
+          lieu: 'navigateur',
+          service: 'GitHub',
+          visuel: {
+            key: 'capture',
+            fichier: 'demarrer/x.png',
+            alt: 'Une capture.',
             service: 'GitHub',
-            visuel: {
-              key: 'capture',
-              fichier: 'demarrer/x.png',
-              alt: 'Une capture.',
-              service: 'GitHub',
-              verifieLe: '27/07/2026',
-              reperes: [],
-            },
-          }),
-        ],
-      }),
-    ],
-    '2026-07-27',
-  );
+            verifieLe: '27/07/2026',
+            reperes: [],
+          },
+        }),
+      ],
+    }),
+  ];
+
+  const issues = validateGuides(malFormee, '2026-07-27');
   assert.equal(issues.length, 1);
   assert.match(issues[0], /AAAA-MM-JJ/);
+
+  // Le format fautif est déjà une erreur : le compter en plus comme une
+  // capture à recontrôler ferait dire deux choses différentes du même défaut.
+  assert.deepEqual(validateCaptures(malFormee, '2026-07-27'), []);
 });
 
 test('une clé API dans un bloc destiné à Claude est refusée', () => {

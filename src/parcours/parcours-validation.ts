@@ -104,7 +104,7 @@ export function collecterTextesLisibles(guide: Guide): { chemin: string; texte: 
 const joursEcoules = (depuis: string, jusqu: string): number =>
   Math.round((Date.parse(jusqu) - Date.parse(depuis)) / 86_400_000);
 
-function validateEditorial(guide: Guide, aujourdHui: string, issues: string[]): void {
+function validateEditorial(guide: Guide, issues: string[]): void {
   for (const { chemin, texte } of collecterTextesLisibles(guide)) {
     if (texte.includes(TIRET_CADRATIN)) {
       issues.push(`${chemin} : tiret cadratin interdit.`);
@@ -166,6 +166,12 @@ export function validateCaptures(
   return avertissements;
 }
 
+/**
+ * Les erreurs de contenu, celles qui font échouer le contrôle. La date du
+ * jour reste acceptée en second argument pour que la signature reste celle de
+ * `validateCaptures`, à qui les appelants passent la même valeur : aucune
+ * règle d'erreur ne dépend du calendrier, seuls les avertissements le font.
+ */
 export function validateGuides(
   guides: Guide[],
   aujourdHui: string = new Date().toISOString().slice(0, 10),
@@ -220,7 +226,7 @@ export function validateGuides(
       }
     }
 
-    validateEditorial(guide, aujourdHui, issues);
+    validateEditorial(guide, issues);
   }
 
   return issues;
