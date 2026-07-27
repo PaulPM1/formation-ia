@@ -1961,6 +1961,13 @@ const cas = collecterCas(GUIDES);
   title="Démarrer"
   description="Les gestes en images pour créer votre projet, le mettre en ligne et lui donner une clé."
 >
+  <section class="demarrer-hero">
+    <h1>Démarrer</h1>
+    <p class="demarrer-lede">
+      Les gestes en images, écran par écran. Trouvez votre cas, cliquez, regardez.
+    </p>
+  </section>
+
   <CarteOutils outils={OUTILS} />
 
   <section class="guides-grille" aria-labelledby="titre-guides">
@@ -3067,6 +3074,7 @@ introduire. Aucune couleur littérale nouvelle, aucune police nouvelle.
 
 | Classe | Attendu |
 |---|---|
+| `.demarrer-hero`, `.demarrer-lede` | Titre de la surface et sa phrase d'accroche, en tête de l'accueil |
 | `.carte-outils`, `.outils-rangee` | Rangée de six vignettes, logos en `currentColor` monochrome, repli en grille sur écran étroit |
 | `.guides-grille` | Trois grandes cartes cliquables, cible tactile généreuse |
 | `.cas-grille` | Liste dense de symptômes, lisible en balayage rapide |
