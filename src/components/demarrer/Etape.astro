@@ -1,19 +1,13 @@
 ---
 import type { Etape } from '../../parcours/parcours-model';
+import { libelleLieu } from '../../features/demarrer/reperage';
 import Panne from './Panne.astro';
 import Visuel from './visuels/Visuel.astro';
 
 interface Props { etape: Etape; index: number; total: number; changementDeLieu: string | null; }
 const { etape, index, total, changementDeLieu } = Astro.props;
 
-const LIEU_LABEL: Record<string, string> = {
-  machine: 'Votre ordinateur',
-  vscode: 'VS Code',
-  navigateur: 'Votre navigateur',
-};
-const lieuLabel = etape.service
-  ? `${LIEU_LABEL[etape.lieu]} · ${etape.service}`
-  : LIEU_LABEL[etape.lieu];
+const lieuLabel = libelleLieu(etape);
 ---
 
 {changementDeLieu && (

@@ -1,23 +1,14 @@
 ---
 import type { Guide } from '../../parcours/parcours-model';
+import { changementsDeLieu, libelleLieu } from '../../features/demarrer/reperage';
 import Etape from './Etape.astro';
 
 interface Props { guide: Guide; }
 const { guide } = Astro.props;
 
-const LIEU_CIBLE: Record<string, string> = {
-  machine: 'votre ordinateur',
-  vscode: 'VS Code',
-  navigateur: 'votre navigateur',
-};
-
 // Le marqueur ne s'affiche que sur une vraie rupture d'application : c'est la
 // couture sur laquelle les participants se perdaient.
-const changements = guide.etapes.map((etape, index) => {
-  if (index === 0) return null;
-  const precedent = guide.etapes[index - 1];
-  return etape.lieu === precedent.lieu ? null : LIEU_CIBLE[etape.lieu];
-});
+const changements = changementsDeLieu(guide);
 ---
 
 <article class="guide" data-guide={guide.id}>
@@ -26,6 +17,34 @@ const changements = guide.etapes.map((etape, index) => {
     <p class="guide-promesse">{guide.promesse}</p>
     {guide.pourQui && <p class="guide-pour-qui">{guide.pourQui}</p>}
   </header>
+
+  <div class="guide-bandeau" data-guide-bandeau aria-live="polite">
+    <span data-bandeau-rang>1 / {guide.etapes.length}</span>
+    <span data-bandeau-lieu>{libelleLieu(guide.etapes[0])}</span>
+  </div>
+
+  <script>
+    import { libelleLieu } from '../../features/demarrer/reperage';
+
+    const bandeau = document.querySelector<HTMLElement>('[data-guide-bandeau]');
+    const sections = Array.from(document.querySelectorAll<HTMLElement>('.etape'));
+    if (bandeau && sections.length > 0) {
+      const rang = bandeau.querySelector<HTMLElement>('[data-bandeau-rang]');
+      const lieu = bandeau.querySelector<HTMLElement>('[data-bandeau-lieu]');
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const visible = entries.filter((entry) => entry.isIntersecting).at(0);
+          if (!visible || !rang || !lieu) return;
+          const index = sections.indexOf(visible.target as HTMLElement);
+          rang.textContent = `${index + 1} / ${sections.length}`;
+          lieu.textContent = visible.target.querySelector('.etape-lieu')?.textContent ?? '';
+        },
+        { rootMargin: '-45% 0px -45% 0px' },
+      );
+      sections.forEach((section) => observer.observe(section));
+      bandeau.dataset.enhanced = 'true';
+    }
+  </script>
 
   {guide.etapes.map((etape, index) => (
     <Etape
