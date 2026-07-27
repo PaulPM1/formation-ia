@@ -6,36 +6,11 @@ const { visuel } = Astro.props;
 ---
 
 <figure class="visuel visuel-claude" data-enhanced="false">
-  <figcaption>Dans la conversation Claude</figcaption>
-
-  <div class="claude-bulle claude-bulle-vous">
-    <span class="claude-role">Vous collez</span>
-    <pre data-copiable>{visuel.colle}</pre>
-    <button type="button" class="bouton-copier" data-copier hidden>Copier</button>
-  </div>
+  <figcaption>Ce que Claude répond</figcaption>
 
   <div class="claude-bulle claude-bulle-claude">
-    <span class="claude-role">Claude répond</span>
     <ul role="list">
       {visuel.reponse.map((ligne) => <li>{ligne}</li>)}
     </ul>
   </div>
 </figure>
-
-<script>
-  // Progressive enhancement : sans JavaScript, le bloc reste lisible et
-  // sélectionnable à la main, et le bouton n'apparaît jamais.
-  document.querySelectorAll<HTMLElement>('.visuel-claude').forEach((figure) => {
-    const bouton = figure.querySelector<HTMLButtonElement>('[data-copier]');
-    const source = figure.querySelector<HTMLElement>('[data-copiable]');
-    if (!bouton || !source) return;
-
-    bouton.hidden = false;
-    figure.dataset.enhanced = 'true';
-    bouton.addEventListener('click', async () => {
-      await navigator.clipboard.writeText(source.textContent ?? '');
-      bouton.textContent = 'Copié';
-      window.setTimeout(() => { bouton.textContent = 'Copier'; }, 2000);
-    });
-  });
-</script>

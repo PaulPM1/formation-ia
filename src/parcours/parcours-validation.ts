@@ -184,6 +184,12 @@ export function validateGuides(
         issues.push(`${prefixe} : visuel inconnu « ${etape.visuel?.key} ».`);
       }
 
+      // La figure « claude » ne montre que la réponse : sans le bloc à coller,
+      // elle annoncerait la réponse à une question que personne ne lit.
+      if (etape.visuel?.key === 'claude' && vide(etape.aClaude)) {
+        issues.push(`${prefixe} : visuel claude sans bloc aClaude.`);
+      }
+
       for (const panne of etape.pannes) {
         if (panneIds.has(panne.id)) {
           issues.push(`${prefixe} : identifiant de panne « ${panne.id} » en double.`);

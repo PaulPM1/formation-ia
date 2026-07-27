@@ -25,6 +25,13 @@ const lieuLabel = libelleLieu(etape);
 
   {etape.danger && <p class="etape-danger" role="alert">{etape.danger}</p>}
 
+  {etape.aClaude && (
+    <div class="etape-a-claude">
+      <p class="a-claude-intro">Le message à envoyer à Claude, tel quel :</p>
+      <pre data-copiable>{etape.aClaude}</pre>
+    </div>
+  )}
+
   <Visuel visuel={etape.visuel} />
 
   <ol class="etape-gestes">

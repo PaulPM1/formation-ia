@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
 import type { Etape, Guide, Outil } from '../src/parcours/parcours-model';
@@ -149,6 +150,24 @@ test('une clé API dans un bloc destiné à Claude est refusée', () => {
   );
   assert.equal(issues.length, 1);
   assert.match(issues[0], /clé/);
+});
+
+test('le bloc à coller contrôlé est bien celui qui est rendu', () => {
+  // Sans cette garde, le garde-fou anti-fuite ci-dessus certifierait un champ
+  // mort : c'est exactement ce qui est arrivé quand le texte collé vivait en
+  // double dans le visuel.
+  const etapeSource = readFileSync(
+    new URL('../src/components/demarrer/Etape.astro', import.meta.url),
+    'utf8',
+  );
+  assert.match(etapeSource, /<pre data-copiable>\{etape\.aClaude\}<\/pre>/);
+
+  const visuelSource = readFileSync(
+    new URL('../src/components/demarrer/visuels/VisuelClaude.astro', import.meta.url),
+    'utf8',
+  );
+  assert.ok(!visuelSource.includes('data-copiable'));
+  assert.ok(!visuelSource.includes('visuel.colle'));
 });
 
 test('le role d’un outil est plafonné à 100 caractères', () => {

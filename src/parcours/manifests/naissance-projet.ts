@@ -105,7 +105,6 @@ export const NAISSANCE_PROJET: Guide = {
       },
       visuel: {
         key: 'claude',
-        colle: 'Dans quel dossier es-tu en train de travailler ? Donne-moi son nom et liste ce qu’il contient.',
         reponse: [
           'Je travaille dans mon-projet.',
           'Le dossier est vide pour le moment.',
@@ -219,7 +218,6 @@ export const NAISSANCE_PROJET: Guide = {
       },
       visuel: {
         key: 'claude',
-        colle: 'Voici les instructions que GitHub vient de me donner pour relier ce projet. Exécute-les dans ce dossier, puis dis-moi quand c’est en ligne.',
         reponse: [
           'J’ai relié votre dossier au dépôt.',
           'La première sauvegarde est envoyée.',

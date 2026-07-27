@@ -84,6 +84,30 @@ test('une panne incomplète est refusée', () => {
   assert.ok(issues.some((issue) => /reparation/.test(issue)));
 });
 
+test('un visuel claude sans bloc à coller est refusé', () => {
+  const issues = validateGuides([
+    guide({
+      etapes: [etape({ visuel: { key: 'claude', reponse: ['C’est fait.'] } })],
+    }),
+  ]);
+  assert.equal(issues.length, 1);
+  assert.match(issues[0], /visuel claude sans bloc aClaude/);
+});
+
+test('un visuel claude accompagné de son bloc à coller passe', () => {
+  const issues = validateGuides([
+    guide({
+      etapes: [
+        etape({
+          aClaude: 'Dans quel dossier travailles-tu ?',
+          visuel: { key: 'claude', reponse: ['Je travaille dans mon-projet.'] },
+        }),
+      ],
+    }),
+  ]);
+  assert.deepEqual(issues, []);
+});
+
 test('une clé de visuel inconnue est refusée', () => {
   const issues = validateGuides([
     guide({ etapes: [etape({ visuel: { key: 'video' } as never })] }),

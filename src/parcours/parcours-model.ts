@@ -58,7 +58,12 @@ export type Repere = {
 };
 
 export type Visuel =
-  | { key: 'claude'; colle: string; reponse: string[] }
+  /**
+   * Le texte collé n'est pas répété ici : il vit dans `Etape.aClaude`, seul
+   * champ rendu à l'écran et seul champ contrôlé par le validateur. La figure
+   * ne montre que la réponse attendue.
+   */
+  | { key: 'claude'; reponse: string[] }
   | { key: 'arborescence'; avant: string[]; apres: string[]; ignores?: string[] }
   | { key: 'trois-lieux'; accent: 'projet' | 'ligne' | 'cle' }
   | {
