@@ -96,8 +96,8 @@ export const CLE_API: Guide = {
       },
       visuel: {
         key: 'arborescence',
-        avant: ['mon-projet/', '  .env'],
-        apres: ['mon-projet/', '  .env'],
+        avant: ['mon-projet/', '  .env', '    ANTHROPIC_API_KEY='],
+        apres: ['mon-projet/', '  .env', '    ANTHROPIC_API_KEY=sk-ant-votre-cle'],
         ignores: ['.env'],
       },
       pannes: [],

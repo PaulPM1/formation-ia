@@ -20,7 +20,7 @@ export const MISE_EN_LIGNE: Guide = {
         visible: 'Votre pseudo GitHub s’affiche dans Vercel.',
         sinon: 'Déconnectez-vous de Vercel et recommencez en acceptant l’accès aux dépôts.',
       },
-      visuel: { key: 'trois-lieux', accent: 'ligne' },
+      visuel: { key: 'trois-lieux', accent: 'projet' },
       pannes: [
         {
           id: 'vercel-ne-voit-pas-mes-depots',

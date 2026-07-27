@@ -6,7 +6,17 @@ const { visuel } = Astro.props;
 ---
 
 <figure class="visuel visuel-capture" data-enhanced="false">
-  <img src={`/${visuel.fichier}`} alt={visuel.alt} loading="lazy" decoding="async" />
+  <!-- Dimensions déclarées : sans elles, un chargement différé fait sauter la
+       mise en page à chaque capture rencontrée pendant le défilement. Toutes
+       les captures de la surface sont cadrées en 1200 par 675. -->
+  <img
+    src={`/${visuel.fichier}`}
+    alt={visuel.alt}
+    width="1200"
+    height="675"
+    loading="lazy"
+    decoding="async"
+  />
   {visuel.reperes.length > 0 && (
     <ol class="capture-reperes">
       {visuel.reperes.map((repere) => (
