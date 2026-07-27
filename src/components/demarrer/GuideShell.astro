@@ -16,6 +16,15 @@ const changements = changementsDeLieu(guide);
     <h1>{guide.titre}</h1>
     <p class="guide-promesse">{guide.promesse}</p>
     {guide.pourQui && <p class="guide-pour-qui">{guide.pourQui}</p>}
+
+    {guide.prerequis.length > 0 && (
+      <div class="guide-prerequis">
+        <p class="prerequis-titre">Avant de commencer</p>
+        <ul role="list">
+          {guide.prerequis.map((prerequis) => <li>{prerequis}</li>)}
+        </ul>
+      </div>
+    )}
   </header>
 
   <div class="guide-bandeau" data-guide-bandeau aria-live="polite">

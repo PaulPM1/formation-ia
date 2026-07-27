@@ -283,6 +283,41 @@
   text-transform: uppercase;
 }
 
+/* --- Ce que le guide suppose déjà en place ------------------------------- */
+
+.guide-prerequis {
+  /* Sobre par construction : c'est une mise en garde d'entrée, pas une
+     section. Un filet en marge suffit à la détacher de la promesse. */
+  max-inline-size: 52ch;
+  margin-block-start: 1.25rem;
+  padding-inline-start: 0.9rem;
+  border-inline-start: 2px solid var(--hairline);
+}
+
+.prerequis-titre {
+  margin: 0;
+  color: var(--muted);
+  font-weight: var(--weight-semibold);
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.guide-prerequis ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem 1.25rem;
+  margin-block: 0.25rem 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-small);
+}
+
+.guide-prerequis li::before {
+  content: "\2713\00A0";
+  color: var(--muted);
+}
+
 /* --- Bandeau de progression, collant ------------------------------------ */
 
 .guide-bandeau {
