@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import type { Etape, Guide, Outil } from '../src/parcours/parcours-model';
-import { validateGuides, validateOutils } from '../src/parcours/parcours-validation';
+import { validateCaptures, validateGuides, validateOutils } from '../src/parcours/parcours-validation';
 
 const etape = (patch: Partial<Etape> = {}): Etape => ({
   id: 'creer-le-dossier',
@@ -87,7 +87,7 @@ test('une capture sans alt est refusée', () => {
   assert.match(issues[0], /alt/);
 });
 
-test('une capture vérifiée il y a plus de six mois est signalée', () => {
+test('une capture vérifiée il y a plus de six mois est signalée en avertissement, pas en erreur', () => {
   const capture = (verifieLe: string) =>
     guide({
       etapes: [
@@ -107,9 +107,13 @@ test('une capture vérifiée il y a plus de six mois est signalée', () => {
     });
 
   assert.deepEqual(validateGuides([capture('2026-03-01')], '2026-07-27'), []);
-  const perimee = validateGuides([capture('2025-11-01')], '2026-07-27');
-  assert.equal(perimee.length, 1);
-  assert.match(perimee[0], /vérifiée le/);
+  assert.deepEqual(validateCaptures([capture('2026-03-01')], '2026-07-27'), []);
+
+  const perimee = capture('2025-11-01');
+  assert.deepEqual(validateGuides([perimee], '2026-07-27'), []);
+  const avertissements = validateCaptures([perimee], '2026-07-27');
+  assert.equal(avertissements.length, 1);
+  assert.match(avertissements[0], /vérifiée le/);
 });
 
 test('une date de vérification mal formée est refusée', () => {

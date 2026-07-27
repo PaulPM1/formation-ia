@@ -113,13 +113,37 @@ function validateEditorial(guide: Guide, aujourdHui: string, issues: string[]): 
       }
       if (!DATE_PATTERN.test(etape.visuel.verifieLe)) {
         issues.push(`${prefixe} : verifieLe « ${etape.visuel.verifieLe} » doit être au format AAAA-MM-JJ.`);
-      } else if (joursEcoules(etape.visuel.verifieLe, aujourdHui) > CAPTURE_PEREMPTION_JOURS) {
-        issues.push(
-          `${prefixe} : capture vérifiée le ${etape.visuel.verifieLe}, à recontrôler.`,
+      }
+    }
+  }
+}
+
+/**
+ * Avertissements de péremption de capture, séparés des erreurs de
+ * `validateGuides` : une capture vérifiée il y a plus de six mois n'est pas
+ * un contenu invalide, seulement une preuve à recontrôler. Une date mal
+ * formée est déjà signalée comme erreur par `validateGuides` et n'est donc
+ * pas comptée ici une seconde fois.
+ */
+export function validateCaptures(
+  guides: Guide[],
+  aujourdHui: string = new Date().toISOString().slice(0, 10),
+): string[] {
+  const avertissements: string[] = [];
+
+  for (const guide of guides) {
+    for (const etape of guide.etapes) {
+      if (etape.visuel.key !== 'capture') continue;
+      if (!DATE_PATTERN.test(etape.visuel.verifieLe)) continue;
+      if (joursEcoules(etape.visuel.verifieLe, aujourdHui) > CAPTURE_PEREMPTION_JOURS) {
+        avertissements.push(
+          `${guide.id}/${etape.id} : capture vérifiée le ${etape.visuel.verifieLe}, à recontrôler.`,
         );
       }
     }
   }
+
+  return avertissements;
 }
 
 export function validateGuides(
