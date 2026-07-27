@@ -56,7 +56,7 @@ export const CLE_API: Guide = {
       pourquoi: 'Le coffre se prépare avant d’y mettre la clé. Dans l’autre ordre, la clé pourrait partir en ligne entre-temps.',
       gestes: [
         { action: 'Ouvrez Claude dans VS Code.' },
-        { action: 'Copiez le message ci-dessous et envoyez-le, sans y mettre votre clé.' },
+        { action: 'Copiez le message encadré plus haut et envoyez-le, sans y mettre votre clé.' },
       ],
       aClaude:
         'Crée un fichier .env à la racine de ce projet, avec une ligne ANTHROPIC_API_KEY= et rien après le signe égal. Ajoute .env au fichier .gitignore pour qu’il ne parte jamais sur GitHub. Puis explique-moi en une phrase simple ce que tu viens de faire.',

@@ -139,7 +139,7 @@ export const MISE_EN_LIGNE: Guide = {
       lieu: 'vscode',
       pourquoi: 'C’est le moment le plus important : votre dossier, GitHub et votre site ne font plus qu’une seule mécanique.',
       gestes: [
-        { action: 'Dans Claude, demandez un petit changement visible avec le message ci-dessous.' },
+        { action: 'Dans Claude, demandez un petit changement visible avec le message encadré plus haut.' },
         { action: 'Attendez une minute, puis rouvrez votre site et rafraîchissez.' },
       ],
       aClaude: 'Change le titre de la page d’accueil, puis envoie la modification sur GitHub.',

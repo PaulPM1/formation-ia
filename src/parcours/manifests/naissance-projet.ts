@@ -96,7 +96,7 @@ export const NAISSANCE_PROJET: Guide = {
       pourquoi: 'Une minute de vérification ici évite une heure de confusion plus tard : Claude travaille parfois dans un autre dossier.',
       gestes: [
         { action: 'Ouvrez Claude dans VS Code.' },
-        { action: 'Copiez le message ci-dessous et envoyez-le.' },
+        { action: 'Copiez le message encadré plus haut et envoyez-le.' },
       ],
       aClaude: 'Dans quel dossier es-tu en train de travailler ? Donne-moi son nom et liste ce qu’il contient.',
       preuve: {
@@ -208,7 +208,7 @@ export const NAISSANCE_PROJET: Guide = {
       pourquoi: 'C’est le cœur de la méthode : GitHub écrit les instructions, Claude les exécute, vous vérifiez le résultat.',
       gestes: [
         { action: 'Revenez dans Claude, dans VS Code.' },
-        { action: 'Écrivez la phrase ci-dessous, puis collez le bloc copié juste en dessous.' },
+        { action: 'Écrivez la phrase encadrée plus haut, puis collez le bloc copié juste en dessous.' },
         { action: 'Envoyez, et autorisez Claude s’il vous demande la permission d’agir.' },
       ],
       aClaude: 'Voici les instructions que GitHub vient de me donner pour relier ce projet. Exécute-les dans ce dossier, puis dis-moi quand c’est en ligne.',
