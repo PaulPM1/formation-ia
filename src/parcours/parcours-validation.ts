@@ -37,9 +37,9 @@ export function validateGuides(guides: Guide[]): string[] {
       const prefixe = `${guide.id}/${etape.id}`;
 
       if (!KEBAB_PATTERN.test(etape.id)) {
-        issues.push(`${prefixe} : identifiant d\'étape hors kebab-case.`);
+        issues.push(`${prefixe} : identifiant d'étape hors kebab-case.`);
       } else if (etapeIds.has(etape.id)) {
-        issues.push(`${prefixe} : identifiant d\'étape en double.`);
+        issues.push(`${prefixe} : identifiant d'étape en double.`);
       } else {
         etapeIds.add(etape.id);
       }

@@ -24,11 +24,11 @@ const guide = (patch: Partial<Guide> = {}): Guide => ({
   ...patch,
 });
 
-test('un guide correct ne remonte aucun problème', () => {
+test("un guide correct ne remonte aucun problème", () => {
   assert.deepEqual(validateGuides([guide()]), []);
 });
 
-test('une preuve vide est refusée', () => {
+test("une preuve vide est refusée", () => {
   const issues = validateGuides([
     guide({ etapes: [etape({ preuve: { visible: '', sinon: 'Reprenez.' } })] }),
   ]);
@@ -36,7 +36,7 @@ test('une preuve vide est refusée', () => {
   assert.match(issues[0], /preuve\.visible/);
 });
 
-test('une issue de secours vide est refusée', () => {
+test("une issue de secours vide est refusée", () => {
   const issues = validateGuides([
     guide({ etapes: [etape({ preuve: { visible: 'Le dossier existe.', sinon: '  ' } })] }),
   ]);
@@ -44,16 +44,16 @@ test('une issue de secours vide est refusée', () => {
   assert.match(issues[0], /preuve\.sinon/);
 });
 
-test('un identifiant d\'étape hors kebab est refusé', () => {
+test("un identifiant d'étape hors kebab est refusé", () => {
   const issues = validateGuides([guide({ etapes: [etape({ id: 'Creer_Le_Dossier' })] })]);
   assert.equal(issues.length, 1);
   assert.match(issues[0], /kebab/);
 });
 
-test('deux étapes du même guide ne peuvent pas partager un identifiant', () => {
+test("deux étapes du même guide ne peuvent pas partager un identifiant", () => {
   const issues = validateGuides([guide({ etapes: [etape(), etape()] })]);
   assert.equal(issues.length, 1);
-  assert.match(issues[0], /identifiant d\'étape en double/);
+  assert.match(issues[0], /identifiant d'étape en double/);
 });
 
 test("deux guides différents peuvent réutiliser le même identifiant d'étape", () => {
@@ -61,13 +61,13 @@ test("deux guides différents peuvent réutiliser le même identifiant d'étape"
   assert.deepEqual(validateGuides([guide(), autre]), []);
 });
 
-test('une étape dans le navigateur doit nommer son service', () => {
+test("une étape dans le navigateur doit nommer son service", () => {
   const issues = validateGuides([guide({ etapes: [etape({ lieu: 'navigateur' })] })]);
   assert.equal(issues.length, 1);
   assert.match(issues[0], /service/);
 });
 
-test('une panne incomplète est refusée', () => {
+test("une panne incomplète est refusée", () => {
   const issues = validateGuides([
     guide({
       etapes: [
@@ -84,7 +84,7 @@ test('une panne incomplète est refusée', () => {
   assert.ok(issues.some((issue) => /reparation/.test(issue)));
 });
 
-test('une clé de visuel inconnue est refusée', () => {
+test("une clé de visuel inconnue est refusée", () => {
   const issues = validateGuides([
     guide({ etapes: [etape({ visuel: { key: 'video' } as never })] }),
   ]);
