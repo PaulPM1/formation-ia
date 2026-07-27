@@ -1598,8 +1598,11 @@ Ajouter à la fin de `src/components/demarrer/GuideShell.astro` :
   // Une panne partagée par lien doit être ouverte à l'arrivée, sinon le
   // destinataire atterrit sur un titre replié et croit s'être trompé de lien.
   const ouvrirCible = () => {
+    // querySelector('') leve une SyntaxError : sortir avant si l'URL n'a pas
+    // d'ancre, sinon l'exception empeche l'ecoute de hashchange plus bas.
+    if (!window.location.hash) return;
     const cible = document.querySelector<HTMLDetailsElement>(
-      window.location.hash ? `details${window.location.hash}` : '',
+      `details${window.location.hash}`,
     );
     if (!cible) return;
     cible.open = true;
@@ -1747,8 +1750,6 @@ Ajouter le bandeau collant dans `GuideShell.astro`, juste après `<header class=
 </div>
 
 <script>
-  import { libelleLieu } from '../../features/demarrer/reperage';
-
   const bandeau = document.querySelector<HTMLElement>('[data-guide-bandeau]');
   const sections = Array.from(document.querySelectorAll<HTMLElement>('.etape'));
   if (bandeau && sections.length > 0) {
