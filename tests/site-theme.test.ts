@@ -45,7 +45,7 @@ test('expose le mode présentation dans la navigation et le workflow de contribu
   assert.match(packageJson, /presentation:check/);
   assert.match(packageJson, /"typecheck":\s*"astro check"/);
   assert.match(packageJson, /"qa:presenter":\s*"node scripts\/qa-presenter\.mjs"/);
-  assert.match(packageJson, /"build":\s*"npm run content:check && npm run presentation:check && npm run typecheck && astro build"/);
+  assert.match(packageJson, /"build":\s*"npm run content:check && npm run presentation:check && npm run parcours:check && npm run typecheck && astro build"/);
   assert.match(readme, /slide-visual-director/);
   assert.match(readme, /npm run typecheck/);
   assert.match(readme, /nombre de slides/i);
