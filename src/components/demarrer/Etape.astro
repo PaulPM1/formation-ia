@@ -36,6 +36,18 @@ const lieuLabel = libelleLieu(etape);
     ))}
   </ol>
 
+  {etape.fichiers && (
+    <div class="etape-fichiers">
+      {etape.fichiers.map((fichier) => (
+        <figure class="fichier">
+          <figcaption>{fichier.chemin}</figcaption>
+          <pre data-copiable>{fichier.contenu}</pre>
+          {fichier.commentaire && <p class="fichier-commentaire">{fichier.commentaire}</p>}
+        </figure>
+      ))}
+    </div>
+  )}
+
   <p class="etape-preuve"><strong>Vous devez voir ça :</strong> {etape.preuve.visible}</p>
   <details class="etape-sinon">
     <summary>Ça n’apparaît pas ?</summary>

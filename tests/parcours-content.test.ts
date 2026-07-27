@@ -11,14 +11,14 @@ test('les manifestes livrés passent le validateur', () => {
 });
 
 test('les compteurs figés du contenu', () => {
-  assert.equal(GUIDES.length, 2);
-  assert.equal(GUIDES.reduce((total, guide) => total + guide.etapes.length, 0), 14);
+  assert.equal(GUIDES.length, 3);
+  assert.equal(GUIDES.reduce((total, guide) => total + guide.etapes.length, 0), 20);
   assert.equal(
     GUIDES.reduce(
       (total, guide) => total + guide.etapes.reduce((sous, etape) => sous + etape.pannes.length, 0),
       0,
     ),
-    10,
+    13,
   );
 });
 
