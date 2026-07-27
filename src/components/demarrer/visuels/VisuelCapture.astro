@@ -1,0 +1,20 @@
+---
+import type { Visuel } from '../../../parcours/parcours-model';
+
+interface Props { visuel: Extract<Visuel, { key: 'capture' }>; }
+const { visuel } = Astro.props;
+---
+
+<figure class="visuel visuel-capture" data-enhanced="false">
+  <img src={`/${visuel.fichier}`} alt={visuel.alt} loading="lazy" decoding="async" />
+  {visuel.reperes.length > 0 && (
+    <ol class="capture-reperes">
+      {visuel.reperes.map((repere) => (
+        <li data-position={repere.position}>{repere.label}</li>
+      ))}
+    </ol>
+  )}
+  <figcaption class="capture-source">
+    {visuel.service}, écran vérifié le {visuel.verifieLe}. Si votre écran diffère, cherchez le même libellé.
+  </figcaption>
+</figure>
