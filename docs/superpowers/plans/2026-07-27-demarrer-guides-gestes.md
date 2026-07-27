@@ -3036,3 +3036,96 @@ git commit -m "content: raccords des briques vers la surface demarrer"
 **Cohérence des types.** `Guide`, `Etape`, `Panne`, `Visuel`, `Outil`, `Cas` portent les mêmes noms de propriétés de la Task 1 à la Task 16. `validateGuides` prend `(guides, aujourdHui?)` partout après la Task 3. `cheminGuide` est utilisée par les Tasks 5, 11 et 12. `libelleLieu` et `changementsDeLieu` sont introduites en Task 10 et remplacent les calculs locaux de la Task 5, avec la suppression explicite du code dupliqué.
 
 **Compteurs figés, progression :** Task 4 (1 / 1 / 0), Task 12 (1 / 8 / 7), Task 13 (2 / 14 / 10), Task 14 (3 / 20 / 13).
+
+---
+
+### Task 17: Mise en forme de la surface
+
+**Ajoutée en cours d'exécution.** L'auto-revue du plan n'avait pas vu que
+`src/styles/global.css` (2101 lignes) ne contient aucune règle pour les classes
+de la surface `/demarrer`. Sans cette tâche, les trois guides sortent en HTML
+non stylé, ce qui contredit l'exigence centrale du spec : une surface où l'on
+comprend en regardant.
+
+**Files:**
+- Create: `src/styles/demarrer.css`
+- Modify: `src/layouts/BaseLayout.astro` (importer la feuille)
+
+**Interfaces:**
+- Consumes: les classes émises par les composants des tâches 5 à 14.
+- Produces: rien de programmatique.
+
+**Système de design existant, à réutiliser sans l'étendre.** Lire d'abord le
+`:root` de `src/styles/global.css`. Jetons disponibles : `--paper`, `--surface`,
+`--ink`, `--muted`, `--line`, `--hairline`, les six `--brick-*`,
+`--font-display`, `--font-body`, `--font-mono`, l'échelle `--text-*` et les
+`--weight-*`. Le site est en clair uniquement, sans thème sombre : ne pas en
+introduire. Aucune couleur littérale nouvelle, aucune police nouvelle.
+
+**Classes à couvrir, avec le comportement attendu :**
+
+| Classe | Attendu |
+|---|---|
+| `.carte-outils`, `.outils-rangee` | Rangée de six vignettes, logos en `currentColor` monochrome, repli en grille sur écran étroit |
+| `.guides-grille` | Trois grandes cartes cliquables, cible tactile généreuse |
+| `.cas-grille` | Liste dense de symptômes, lisible en balayage rapide |
+| `.guide-bandeau` | `position: sticky` en haut, compact, contraste suffisant sur le fond |
+| `.guide-pour-qui` | Encadré de filtre, visuellement distinct de la promesse |
+| `.changement-de-lieu` | Marqueur fort entre deux étapes : c'est le dispositif central de la surface, il doit être impossible à manquer |
+| `.etape` | Bloc généreusement espacé, un écran par geste |
+| `.etape-rang`, `.etape-lieu` | Étiquettes discrètes, `--text-label` |
+| `.etape-danger` | Bandeau d'alerte, `--brick-coral` |
+| `.etape-preuve` | Mise en avant positive, `--brick-green` |
+| `.etape-sinon`, `.etape-pourquoi` | `<details>` sobres, repliés sans attirer l'oeil |
+| `.etape-gestes` | Liste numérotée, un geste par ligne, texte confortable |
+| `.etape-fichiers`, `.fichier` | Bloc de code en `--font-mono`, débordement horizontal contenu |
+| `.panne` | `<details>` d'alerte modérée, `--brick-orange` |
+| `.visuel` | Cadre commun aux quatre visuels |
+| `.visuel-arborescence` | Deux colonnes avant et après, `.est-ignore` en grisé barré |
+| `.visuel-claude` | Deux bulles distinctes, celle de l'utilisateur et celle de Claude |
+| `.visuel-capture` | Image `max-width: 100%`, légende et repères numérotés dessous |
+| `.visuel-trois-lieux` | Trois blocs reliés par des flèches ; sur `[data-accent="cle"]`, la liaison vers GitHub est visiblement barrée |
+| `.bouton-copier` | Bouton discret, état `Copié` lisible |
+
+**Exigences non négociables :**
+
+1. Tout doit rester lisible sans JavaScript. Aucune règle ne masque du contenu
+   en attendant que `data-enhanced` passe à `true`.
+2. Aucun débordement horizontal du corps de page. Les blocs larges (code,
+   arborescences, captures) défilent dans leur propre conteneur.
+3. Contraste du texte au minimum 4.5 pour 1 sur son fond.
+4. Le focus clavier reste visible sur les liens, les `<summary>` et les boutons.
+
+- [ ] **Step 1: Lire le système de design**
+
+Lire le `:root` de `src/styles/global.css` et relever les jetons. Repérer aussi
+comment le fichier gère les écrans étroits, pour suivre la même convention.
+
+- [ ] **Step 2: Écrire la feuille**
+
+Créer `src/styles/demarrer.css` couvrant toutes les classes du tableau.
+
+- [ ] **Step 3: Importer la feuille**
+
+Dans `src/layouts/BaseLayout.astro`, à côté de l'import existant :
+
+```astro
+import '../styles/demarrer.css';
+```
+
+- [ ] **Step 4: Vérifier**
+
+Run: `npm run build && npm run qa:demarrer && npm test`
+Expected: build sans erreur, QA sans JavaScript toujours au vert, suite complète au vert.
+
+Vérifier ensuite dans un navigateur, via `npm run dev`, les quatre pages
+`/demarrer/`, `/demarrer/naissance-projet/`, `/demarrer/mise-en-ligne/` et
+`/demarrer/cle-api/` : aucun débordement horizontal, bandeau collant
+fonctionnel, marqueur de changement de lieu bien visible.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add src/styles/demarrer.css src/layouts/BaseLayout.astro
+git commit -m "feat: mise en forme de la surface demarrer"
+```
