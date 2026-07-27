@@ -1,7 +1,8 @@
 import type { Guide } from '../parcours-model';
 import { NAISSANCE_PROJET } from './naissance-projet';
+import { MISE_EN_LIGNE } from './mise-en-ligne';
 
-export const GUIDES: Guide[] = [NAISSANCE_PROJET];
+export const GUIDES: Guide[] = [NAISSANCE_PROJET, MISE_EN_LIGNE];
 
 export function getGuide(id: string): Guide | undefined {
   return GUIDES.find((guide) => guide.id === id);
