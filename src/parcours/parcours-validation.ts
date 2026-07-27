@@ -28,7 +28,7 @@ export function validateGuides(guides: Guide[]): string[] {
       issues.push(`Guide « ${guide.id} » : identifiant hors kebab-case.`);
     }
 
-    // Les ancres vivent dans l'URL d'un guide : l'unicité se joue par guide,
+    // Les ancres vivent dans l’URL d’un guide : l’unicité se joue par guide,
     // pas globalement. Deux guides peuvent donc avoir une étape homonyme.
     const etapeIds = new Set<string>();
     const panneIds = new Set<string>();
@@ -37,9 +37,9 @@ export function validateGuides(guides: Guide[]): string[] {
       const prefixe = `${guide.id}/${etape.id}`;
 
       if (!KEBAB_PATTERN.test(etape.id)) {
-        issues.push(`${prefixe} : identifiant d'étape hors kebab-case.`);
+        issues.push(`${prefixe} : identifiant d’étape hors kebab-case.`);
       } else if (etapeIds.has(etape.id)) {
-        issues.push(`${prefixe} : identifiant d'étape en double.`);
+        issues.push(`${prefixe} : identifiant d’étape en double.`);
       } else {
         etapeIds.add(etape.id);
       }
