@@ -36,6 +36,27 @@ const attendu = async (condition, message) => {
   if (!(await condition)) echecs.push(message);
 };
 
+// Duplique VOCABULAIRE_INTERDIT de src/parcours/parcours-model.ts : ce script
+// tourne sous node nu et ne peut pas importer un module TypeScript. Toute
+// evolution de la liste source doit etre repercutee ici.
+const VOCABULAIRE_INTERDIT = [
+  'terminal', 'ligne de commande', 'shell', 'cli', 'git status', 'git log', 'npm run',
+];
+// Frontieres de mot Unicode, sinon « clic » et « client » declencheraient « cli ».
+const motifsInterdits = VOCABULAIRE_INTERDIT.map((mot) => ({
+  mot,
+  motif: new RegExp(`(^|[^\\p{L}\\p{N}])${mot.replace(/ /g, '\\s+')}($|[^\\p{L}\\p{N}])`, 'iu'),
+}));
+
+// Une image ou une feuille de style absente rendrait la page inutilisable sans
+// que le texte en souffre : on surveille donc aussi les reponses du serveur.
+const requetesEnEchec = [];
+page.on('response', (reponse) => {
+  if (reponse.url().startsWith(base) && reponse.status() >= 400) {
+    requetesEnEchec.push(`${reponse.status()} sur ${reponse.url().slice(base.length)}`);
+  }
+});
+
 for (const chemin of ['/demarrer/', '/demarrer/naissance-projet/', '/demarrer/mise-en-ligne/', '/demarrer/cle-api/']) {
   await page.goto(`${base}${chemin}`);
   await attendu(page.locator('h1').isVisible(), `${chemin} : aucun titre principal visible sans JavaScript.`);
@@ -43,9 +64,13 @@ for (const chemin of ['/demarrer/', '/demarrer/naissance-projet/', '/demarrer/mi
   if (texte.trim().length < 400) {
     echecs.push(`${chemin} : contenu trop court sans JavaScript (${texte.trim().length} caractères).`);
   }
-  for (const mot of ['terminal', 'ligne de commande']) {
-    if (texte.toLowerCase().includes(mot)) echecs.push(`${chemin} : vocabulaire interdit « ${mot} » rendu à l’écran.`);
+  for (const { mot, motif } of motifsInterdits) {
+    if (motif.test(texte)) echecs.push(`${chemin} : vocabulaire interdit « ${mot} » rendu à l’écran.`);
   }
+}
+
+for (const echec of requetesEnEchec) {
+  echecs.push(`Ressource introuvable : ${echec}`);
 }
 
 await page.goto(`${base}/demarrer/naissance-projet/`);
