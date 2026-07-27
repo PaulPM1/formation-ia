@@ -1,5 +1,6 @@
 ---
 import type { Etape } from '../../parcours/parcours-model';
+import Panne from './Panne.astro';
 import Visuel from './visuels/Visuel.astro';
 
 interface Props { etape: Etape; index: number; total: number; changementDeLieu: string | null; }
@@ -52,5 +53,12 @@ const lieuLabel = etape.service
       <summary>À quoi ça sert</summary>
       <p>{etape.pourquoi}</p>
     </details>
+  )}
+
+  {etape.pannes.length > 0 && (
+    <div class="etape-pannes">
+      <h3>Ça coince ?</h3>
+      {etape.pannes.map((panne) => <Panne panne={panne} />)}
+    </div>
   )}
 </section>

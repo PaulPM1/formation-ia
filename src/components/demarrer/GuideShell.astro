@@ -36,3 +36,19 @@ const changements = guide.etapes.map((etape, index) => {
     />
   ))}
 </article>
+
+<script>
+  // Une panne partagée par lien doit être ouverte à l'arrivée, sinon le
+  // destinataire atterrit sur un titre replié et croit s'être trompé de lien.
+  const ouvrirCible = () => {
+    const cible = document.querySelector<HTMLDetailsElement>(
+      window.location.hash ? `details${window.location.hash}` : '',
+    );
+    if (!cible) return;
+    cible.open = true;
+    cible.scrollIntoView({ block: 'start' });
+  };
+
+  ouvrirCible();
+  window.addEventListener('hashchange', ouvrirCible);
+</script>
