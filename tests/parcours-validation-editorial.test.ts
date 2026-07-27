@@ -48,6 +48,45 @@ test('les mots interdits sont comparés sur des frontières de mot', () => {
   assert.deepEqual(issues, []);
 });
 
+test('un tiret cadratin dans une ligne d’arborescence est refusé', () => {
+  const issues = validateGuides(
+    [
+      guide({
+        etapes: [
+          etape({
+            visuel: { key: 'arborescence', avant: [], apres: ['mon-projet/ — le dossier'] },
+          }),
+        ],
+      }),
+    ],
+    '2026-07-27',
+  );
+  assert.equal(issues.length, 1);
+  assert.match(issues[0], /visuel\.apres\[0\] : tiret cadratin/);
+});
+
+test('la réponse de Claude et le commentaire d’un fichier sont balayés', () => {
+  const issues = validateGuides(
+    [
+      guide({
+        etapes: [
+          etape({
+            aClaude: 'Crée le fichier.',
+            visuel: { key: 'claude', reponse: ['Ouvrez le terminal pour voir.'] },
+            fichiers: [
+              { chemin: '.env', contenu: 'CLE=', commentaire: 'Repris du git log.' },
+            ],
+          }),
+        ],
+      }),
+    ],
+    '2026-07-27',
+  );
+  assert.equal(issues.length, 2);
+  assert.ok(issues.some((issue) => /visuel\.reponse\[0\] : vocabulaire interdit « terminal »/.test(issue)));
+  assert.ok(issues.some((issue) => /commentaire : vocabulaire interdit « git log »/.test(issue)));
+});
+
 test('le contenu d’un fichier échappe au vocabulaire interdit', () => {
   const issues = validateGuides(
     [guide({ etapes: [etape({ fichiers: [{ chemin: '.gitignore', contenu: '.env\nnpm run build' }] })] })],

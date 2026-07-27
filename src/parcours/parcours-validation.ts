@@ -38,7 +38,9 @@ const motifsInterdits = VOCABULAIRE_INTERDIT.map((mot) => ({
 }));
 
 /**
- * Les textes que le participant lit vraiment. Volontairement hors périmètre :
+ * Les textes que le participant lit vraiment, y compris ceux des figures :
+ * la réponse de Claude, les lignes d'une arborescence et le commentaire sous
+ * un fichier sont tous affichés. Volontairement hors périmètre :
  * `fichiers[].contenu` (du contenu technique authentique, qu'on montre tel
  * quel) et les chemins de fichiers.
  */
@@ -65,6 +67,24 @@ export function collecterTextesLisibles(guide: Guide): { chemin: string; texte: 
       textes.push({ chemin: `${base}.visuel.alt`, texte: etape.visuel.alt });
       for (const repere of etape.visuel.reperes) {
         textes.push({ chemin: `${base}.visuel.repere`, texte: repere.label });
+      }
+    }
+    if (etape.visuel.key === 'claude') {
+      for (const [index, ligne] of etape.visuel.reponse.entries()) {
+        textes.push({ chemin: `${base}.visuel.reponse[${index}]`, texte: ligne });
+      }
+    }
+    if (etape.visuel.key === 'arborescence') {
+      for (const [index, ligne] of etape.visuel.avant.entries()) {
+        textes.push({ chemin: `${base}.visuel.avant[${index}]`, texte: ligne });
+      }
+      for (const [index, ligne] of etape.visuel.apres.entries()) {
+        textes.push({ chemin: `${base}.visuel.apres[${index}]`, texte: ligne });
+      }
+    }
+    for (const [index, fichier] of (etape.fichiers ?? []).entries()) {
+      if (fichier.commentaire) {
+        textes.push({ chemin: `${base}.fichiers[${index}].commentaire`, texte: fichier.commentaire });
       }
     }
     for (const panne of etape.pannes) {
