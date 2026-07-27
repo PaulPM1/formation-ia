@@ -1,8 +1,21 @@
 ---
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import type { Outil } from '../../parcours/parcours-model';
 
 interface Props { outils: Outil[]; }
 const { outils } = Astro.props;
+
+// Les logos sont insérés en ligne plutôt que par une balise img : c'est la
+// seule façon pour que leur fill="currentColor" prenne la couleur d'encre du
+// site. Lecture au moment de la construction, jamais à l'exécution.
+const dossierPublic = new URL('../../../public/', import.meta.url);
+const logos = new Map(
+  outils.map((outil) => [
+    outil.logo,
+    readFileSync(fileURLToPath(new URL(outil.logo, dossierPublic)), 'utf8'),
+  ]),
+);
 ---
 
 <section class="carte-outils" aria-labelledby="titre-outils">
@@ -10,7 +23,7 @@ const { outils } = Astro.props;
   <ul class="outils-rangee" role="list">
     {outils.map((outil) => (
       <li>
-        <img src={`/${outil.logo}`} alt="" aria-hidden="true" width="32" height="32" />
+        <span class="outil-logo" aria-hidden="true" set:html={logos.get(outil.logo)} />
         <strong>{outil.nom}</strong>
         <span>{outil.role}</span>
       </li>

@@ -88,12 +88,20 @@
   border-block-start: 2px solid var(--ink);
 }
 
-.outils-rangee img {
-  /* Les fichiers portent fill="currentColor" : rendus via <img>, ils
-     retombent sur le noir initial, donc une silhouette monochrome. */
+/* Sélecteur porté à deux classes : le logo est un <span>, et la règle de la
+   ligne de rôle ci-dessous (.outils-rangee span) le coifferait sinon. */
+.outils-rangee .outil-logo {
+  display: block;
+  margin-block-end: 0.35rem;
+  /* Les SVG sont insérés en ligne et portent fill="currentColor" : la
+     silhouette prend donc la couleur d'encre du site, pas un noir pur. */
+  color: var(--ink);
+  line-height: 0;
+}
+
+.outil-logo svg {
   inline-size: 1.75rem;
   block-size: 1.75rem;
-  margin-block-end: 0.35rem;
 }
 
 .outils-rangee strong {
@@ -877,7 +885,11 @@
 
 .visuel-capture img {
   display: block;
-  inline-size: 100%;
+  /* Plafond, jamais largeur imposée : une capture plus étroite que son cadre
+     doit rester à sa taille native plutôt que d'être agrandie et floue. */
+  max-inline-size: 100%;
+  /* La grille parente ne doit pas non plus étirer l'image à la colonne. */
+  justify-self: start;
   border: 2px solid var(--ink);
   border-radius: var(--radius-sm);
   background: var(--paper);
