@@ -1,0 +1,19 @@
+---
+import type { Outil } from '../../parcours/parcours-model';
+
+interface Props { outils: Outil[]; }
+const { outils } = Astro.props;
+---
+
+<section class="carte-outils" aria-labelledby="titre-outils">
+  <h2 id="titre-outils">Vos outils</h2>
+  <ul class="outils-rangee" role="list">
+    {outils.map((outil) => (
+      <li>
+        <img src={`/${outil.logo}`} alt="" aria-hidden="true" width="32" height="32" />
+        <strong>{outil.nom}</strong>
+        <span>{outil.role}</span>
+      </li>
+    ))}
+  </ul>
+</section>

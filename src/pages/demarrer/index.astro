@@ -1,0 +1,44 @@
+---
+import CarteOutils from '../../components/demarrer/CarteOutils.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { collecterCas } from '../../features/demarrer/cas';
+import { GUIDES, cheminGuide } from '../../parcours/manifests';
+import { OUTILS } from '../../parcours/outils';
+
+const cas = collecterCas(GUIDES);
+---
+
+<BaseLayout
+  title="Démarrer"
+  description="Les gestes en images pour créer votre projet, le mettre en ligne et lui donner une clé."
+>
+  <CarteOutils outils={OUTILS} />
+
+  <section class="guides-grille" aria-labelledby="titre-guides">
+    <h2 id="titre-guides">Je veux…</h2>
+    <ul role="list">
+      {GUIDES.map((guide) => (
+        <li>
+          <a href={cheminGuide(guide.id)}>
+            <strong>{guide.titre}</strong>
+            <span>{guide.promesse}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  {cas.length > 0 && (
+    <section class="cas-grille" aria-labelledby="titre-cas">
+      <h2 id="titre-cas">Ça coince ?</h2>
+      <ul role="list">
+        {cas.map((entree) => (
+          <li>
+            <a href={entree.href}>{entree.symptome}</a>
+            <span class="cas-guide">{entree.guideTitre}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+</BaseLayout>
