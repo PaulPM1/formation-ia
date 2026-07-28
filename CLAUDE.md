@@ -16,11 +16,12 @@ ses propres projets, et un assistant personnel construit pendant l'atelier.
   `npm run presentation:check`.
 - `/atelier` : le TP fil rouge « Construis ton assistant personnel », 5
   plateaux chronologiques (`src/content/atelier/`).
-- `/demarrer` : la carte des outils et trois guides de gestes concrets, pilotés
-  par les manifestes TypeScript (`src/parcours/manifests/`), validés par
-  `npm run parcours:check`. Public non technique : aucun terminal, aucune
-  commande à taper, Claude fait la plomberie. Registre non scolaire : pas de
-  durée, pas d'objectif, pas de mission.
+- `/faq` : « Questions fréquentes », la carte des outils et trois guides de
+  gestes concrets, pilotés par les manifestes TypeScript
+  (`src/parcours/manifests/`), validés par `npm run parcours:check`. Public
+  non technique : aucun terminal, aucune commande à taper, Claude fait la
+  plomberie. Registre non scolaire : pas de durée, pas d'objectif, pas de
+  mission.
 
 ## État d'avancement
 
@@ -59,7 +60,7 @@ socle : P1+P2. Principe du TP : on prémâche la saisie, on garde la décision.
    `tests/brick-inventory.test.ts` (et le compteur de gabarits restants baisse).
 3. Toute slide ajoutée fait évoluer les compteurs figés (tests
    `presentation-*` et scripts `qa-*`).
-4. Toute étape ou panne ajoutée à un guide `/demarrer` fait évoluer les
+4. Toute étape ou panne ajoutée à un guide `/faq` fait évoluer les
    compteurs figés de `tests/parcours-content.test.ts`.
 5. Avant de fusionner : `npm test`, `npm run content:check`,
    `npm run parcours:check`, `npm run presentation:check`, `npm run build`.

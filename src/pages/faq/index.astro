@@ -1,7 +1,7 @@
 ---
-import CarteOutils from '../../components/demarrer/CarteOutils.astro';
+import CarteOutils from '../../components/faq/CarteOutils.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { collecterCas } from '../../features/demarrer/cas';
+import { collecterCas } from '../../features/faq/cas';
 import { GUIDES, cheminGuide } from '../../parcours/manifests';
 import { OUTILS } from '../../parcours/outils';
 
@@ -9,12 +9,12 @@ const cas = collecterCas(GUIDES);
 ---
 
 <BaseLayout
-  title="Démarrer"
+  title="Questions fréquentes"
   description="Les gestes en images pour créer votre projet, le mettre en ligne et lui donner une clé."
 >
-  <section class="demarrer-hero">
-    <h1>Démarrer</h1>
-    <p class="demarrer-lede">
+  <section class="faq-hero">
+    <h1>Questions fréquentes</h1>
+    <p class="faq-lede">
       Les gestes en images, écran par écran. Trouvez votre cas, cliquez, regardez.
     </p>
   </section>
@@ -49,7 +49,7 @@ const cas = collecterCas(GUIDES);
     </section>
   )}
 
-  <p class="demarrer-retour">
+  <p class="faq-retour">
     Le geste est ici, la règle est là : <a href="/briques/d4/">Sécurité et
     bonnes pratiques</a>, avec les questions à poser à Claude pour vérifier un
     projet.

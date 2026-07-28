@@ -4,7 +4,7 @@ import test from 'node:test';
 import { GUIDES, cheminGuide } from '../src/parcours/manifests';
 
 test('chaque guide a une route stable', () => {
-  assert.equal(cheminGuide('naissance-projet'), '/demarrer/naissance-projet/');
+  assert.equal(cheminGuide('naissance-projet'), '/faq/naissance-projet/');
 });
 
 test('les identifiants de guide sont uniques', () => {

@@ -51,7 +51,7 @@ export const MISE_EN_LIGNE: Guide = {
       },
       visuel: {
         key: 'capture',
-        fichier: 'demarrer/mise-en-ligne/import-depot.png',
+        fichier: 'faq/mise-en-ligne/import-github-repo-on-vercel.png',
         alt: 'La liste des projets GitHub dans Vercel, avec le bouton d’import.',
         service: 'Vercel',
         verifieLe: '2026-01-01',
@@ -76,7 +76,7 @@ export const MISE_EN_LIGNE: Guide = {
       },
       visuel: {
         key: 'capture',
-        fichier: 'demarrer/mise-en-ligne/bouton-deployer.png',
+        fichier: 'faq/mise-en-ligne/deploy-button-vercel.png',
         alt: 'L’écran de configuration de Vercel, avec le bouton de déploiement.',
         service: 'Vercel',
         verifieLe: '2026-01-01',
@@ -108,7 +108,7 @@ export const MISE_EN_LIGNE: Guide = {
       },
       visuel: {
         key: 'capture',
-        fichier: 'demarrer/mise-en-ligne/lien-du-site.png',
+        fichier: 'faq/mise-en-ligne/domain-vercel.png',
         alt: 'Le tableau de bord d’un projet Vercel, avec l’adresse du site en évidence.',
         service: 'Vercel',
         verifieLe: '2026-01-01',

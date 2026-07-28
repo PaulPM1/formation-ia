@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import '../styles/demarrer.css';
+import '../styles/faq.css';
 
 interface Props {
   title: string;
@@ -17,7 +17,7 @@ const isHome = Astro.url.pathname === '/';
 const isBricks = Astro.url.pathname.startsWith('/briques');
 const isAtelier = Astro.url.pathname.startsWith('/atelier');
 const isPresentation = Astro.url.pathname.startsWith('/presenter');
-const isDemarrer = Astro.url.pathname.startsWith('/demarrer');
+const isFaq = Astro.url.pathname.startsWith('/faq');
 ---
 
 <!doctype html>
@@ -52,7 +52,7 @@ const isDemarrer = Astro.url.pathname.startsWith('/demarrer');
         </a>
         <ul class="nav-links" role="list">
           <li><a href="/" aria-current={isHome ? 'page' : undefined}>Accueil</a></li>
-          <li><a href="/demarrer/" aria-current={isDemarrer ? 'page' : undefined}>Démarrer</a></li>
+          <li><a href="/faq/" aria-current={isFaq ? 'page' : undefined}>Questions fréquentes</a></li>
           <li><a href="/briques/" aria-current={isBricks ? 'page' : undefined}>Les 23 briques</a></li>
           <li><a href="/atelier/" aria-current={isAtelier ? 'page' : undefined}>Atelier</a></li>
           <li><a href="/presenter/" aria-current={isPresentation ? 'page' : undefined}>Présentation</a></li>

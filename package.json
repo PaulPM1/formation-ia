@@ -19,7 +19,7 @@
     "qa:a4-mission": "node scripts/qa-a4-mission.mjs",
     "qa:font-floor": "node scripts/qa-font-floor.mjs",
     "qa:presenter": "node scripts/qa-presenter.mjs",
-    "qa:demarrer": "node scripts/qa-demarrer.mjs",
+    "qa:faq": "node scripts/qa-faq.mjs",
     "content:check": "tsx scripts/check-content.ts",
     "presentation:check": "tsx scripts/check-presentation.ts",
     "parcours:check": "tsx scripts/check-parcours.ts",

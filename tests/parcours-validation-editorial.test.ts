@@ -111,7 +111,7 @@ test('une capture sans alt est refusée', () => {
             service: 'GitHub',
             visuel: {
               key: 'capture',
-              fichier: 'demarrer/naissance-projet/depot-vide.png',
+              fichier: 'faq/naissance-projet/depot-vide.png',
               alt: '',
               service: 'GitHub',
               verifieLe: '2026-07-27',
@@ -136,7 +136,7 @@ test('une capture vérifiée il y a plus de six mois est signalée en avertissem
           service: 'GitHub',
           visuel: {
             key: 'capture',
-            fichier: 'demarrer/naissance-projet/depot-vide.png',
+            fichier: 'faq/naissance-projet/depot-vide.png',
             alt: 'La page d’un dépôt vide sur GitHub.',
             service: 'GitHub',
             verifieLe,
@@ -165,7 +165,7 @@ test('une date de vérification mal formée est refusée, et une seule fois', ()
           service: 'GitHub',
           visuel: {
             key: 'capture',
-            fichier: 'demarrer/x.png',
+            fichier: 'faq/x.png',
             alt: 'Une capture.',
             service: 'GitHub',
             verifieLe: '27/07/2026',
@@ -199,13 +199,13 @@ test('le bloc à coller contrôlé est bien celui qui est rendu', () => {
   // mort : c'est exactement ce qui est arrivé quand le texte collé vivait en
   // double dans le visuel.
   const etapeSource = readFileSync(
-    new URL('../src/components/demarrer/Etape.astro', import.meta.url),
+    new URL('../src/components/faq/Etape.astro', import.meta.url),
     'utf8',
   );
   assert.match(etapeSource, /<pre data-copiable>\{etape\.aClaude\}<\/pre>/);
 
   const visuelSource = readFileSync(
-    new URL('../src/components/demarrer/visuels/VisuelClaude.astro', import.meta.url),
+    new URL('../src/components/faq/visuels/VisuelClaude.astro', import.meta.url),
     'utf8',
   );
   assert.ok(!visuelSource.includes('data-copiable'));
@@ -214,7 +214,7 @@ test('le bloc à coller contrôlé est bien celui qui est rendu', () => {
 
 test('le role d’un outil est plafonné à 100 caractères', () => {
   const outils: Outil[] = [
-    { nom: 'VS Code', logo: 'demarrer/outils/vscode.svg', role: 'a'.repeat(101) },
+    { nom: 'VS Code', logo: 'faq/outils/vscode.svg', role: 'a'.repeat(101) },
   ];
   const issues = validateOutils(outils);
   assert.equal(issues.length, 1);
@@ -223,7 +223,7 @@ test('le role d’un outil est plafonné à 100 caractères', () => {
 
 test('une carte d’outils correcte ne remonte rien', () => {
   const outils: Outil[] = [
-    { nom: 'VS Code', logo: 'demarrer/outils/vscode.svg', role: 'L’atelier : c’est là que votre projet vit.' },
+    { nom: 'VS Code', logo: 'faq/outils/vscode.svg', role: 'L’atelier : c’est là que votre projet vit.' },
   ];
   assert.deepEqual(validateOutils(outils), []);
 });

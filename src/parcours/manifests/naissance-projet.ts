@@ -66,7 +66,7 @@ export const NAISSANCE_PROJET: Guide = {
       },
       visuel: {
         key: 'capture',
-        fichier: 'demarrer/naissance-projet/extension-claude.png',
+        fichier: 'faq/naissance-projet/enable-claude-in-workspace.png',
         alt: 'Le panneau des extensions de VS Code, avec Claude Code sélectionné et le bouton d’activation.',
         service: 'VS Code',
         verifieLe: '2026-01-01',
@@ -143,7 +143,7 @@ export const NAISSANCE_PROJET: Guide = {
       },
       visuel: {
         key: 'capture',
-        fichier: 'demarrer/naissance-projet/depot-vide.png',
+        fichier: 'faq/naissance-projet/create-new-repo.png',
         alt: 'Le formulaire de création GitHub, les trois cases d’initialisation laissées décochées.',
         service: 'GitHub',
         verifieLe: '2026-01-01',
@@ -190,7 +190,7 @@ export const NAISSANCE_PROJET: Guide = {
       },
       visuel: {
         key: 'capture',
-        fichier: 'demarrer/naissance-projet/bloc-commandes.png',
+        fichier: 'faq/naissance-projet/github-commands-init-repo.png',
         alt: 'La page d’un dépôt GitHub vide, avec le bloc d’instructions et son bouton de copie.',
         service: 'GitHub',
         verifieLe: '2026-01-01',

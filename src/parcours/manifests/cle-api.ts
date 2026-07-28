@@ -26,7 +26,7 @@ export const CLE_API: Guide = {
       },
       visuel: {
         key: 'capture',
-        fichier: 'demarrer/cle-api/console-anthropic.png',
+        fichier: 'faq/cle-api/create-key-claude-console.png',
         alt: 'L’écran de création d’une clé dans la console Anthropic, la valeur étant masquée.',
         service: 'console Anthropic',
         verifieLe: '2026-01-01',
@@ -151,7 +151,7 @@ export const CLE_API: Guide = {
       },
       visuel: {
         key: 'capture',
-        fichier: 'demarrer/cle-api/variables-vercel.png',
+        fichier: 'faq/cle-api/add-env-variable-values-vercel.png',
         alt: 'L’écran des variables d’environnement d’un projet Vercel.',
         service: 'Vercel',
         verifieLe: '2026-01-01',
@@ -179,7 +179,7 @@ export const CLE_API: Guide = {
       },
       visuel: {
         key: 'capture',
-        fichier: 'demarrer/cle-api/redeployer.png',
+        fichier: 'faq/cle-api/vercel-settings-button.png',
         alt: 'Le menu d’un déploiement Vercel, avec l’option de le refaire.',
         service: 'Vercel',
         verifieLe: '2026-01-01',

@@ -57,7 +57,7 @@ page.on('response', (reponse) => {
   }
 });
 
-for (const chemin of ['/demarrer/', '/demarrer/naissance-projet/', '/demarrer/mise-en-ligne/', '/demarrer/cle-api/']) {
+for (const chemin of ['/faq/', '/faq/naissance-projet/', '/faq/mise-en-ligne/', '/faq/cle-api/']) {
   await page.goto(`${base}${chemin}`);
   await attendu(page.locator('h1').isVisible(), `${chemin} : aucun titre principal visible sans JavaScript.`);
   const texte = await page.locator('main').innerText();
@@ -81,7 +81,7 @@ for (const echec of requetesEnEchec) {
   echecs.push(`Ressource introuvable : ${echec}`);
 }
 
-await page.goto(`${base}/demarrer/naissance-projet/`);
+await page.goto(`${base}/faq/naissance-projet/`);
 const gestes = await page.locator('.etape-gestes li').count();
 await attendu(Promise.resolve(gestes >= 16), `Les gestes ne sont pas rendus sans JavaScript (${gestes} trouvés).`);
 const pannes = await page.locator('details.panne').count();
@@ -94,4 +94,4 @@ if (echecs.length > 0) {
   for (const echec of echecs) console.error(echec);
   process.exit(1);
 }
-console.log('QA demarrer : les quatre pages sont lisibles sans JavaScript.');
+console.log('QA faq : les quatre pages sont lisibles sans JavaScript.');

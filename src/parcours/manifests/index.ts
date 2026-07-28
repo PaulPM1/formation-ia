@@ -10,5 +10,5 @@ export function getGuide(id: string): Guide | undefined {
 }
 
 export function cheminGuide(id: string): string {
-  return `/demarrer/${id}/`;
+  return `/faq/${id}/`;
 }

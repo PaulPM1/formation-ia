@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { collecterCas } from '../src/features/demarrer/cas';
+import { collecterCas } from '../src/features/faq/cas';
 import { GUIDES } from '../src/parcours/manifests';
 import type { Guide } from '../src/parcours/parcours-model';
 
@@ -48,7 +48,7 @@ test('seules les pannes fréquentes remontent dans la grille', () => {
 
 test('chaque entrée pointe vers une ancre complète', () => {
   const cas = collecterCas([guide]);
-  assert.equal(cas[0].href, '/demarrer/naissance-projet/#panne-fichier-au-lieu-du-dossier');
+  assert.equal(cas[0].href, '/faq/naissance-projet/#panne-fichier-au-lieu-du-dossier');
   assert.equal(cas[0].guideTitre, 'Créer un projet');
 });
 

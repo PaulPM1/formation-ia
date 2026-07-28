@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { changementsDeLieu, libelleLieu } from '../src/features/demarrer/reperage';
+import { changementsDeLieu, libelleLieu } from '../src/features/faq/reperage';
 import type { Etape, Guide } from '../src/parcours/parcours-model';
 
 const etape = (id: string, lieu: Etape['lieu'], service?: string): Etape => ({
