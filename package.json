@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "npm run content:check && npm run presentation:check && npm run typecheck && astro build",
+    "build": "npm run content:check && npm run presentation:check && npm run parcours:check && npm run typecheck && astro build",
     "preview": "astro preview",
     "kit:block-b": "node scripts/block-b-kit.mjs",
     "kit:block-b:check": "node scripts/block-b-kit.mjs --check",
@@ -19,8 +19,10 @@
     "qa:a4-mission": "node scripts/qa-a4-mission.mjs",
     "qa:font-floor": "node scripts/qa-font-floor.mjs",
     "qa:presenter": "node scripts/qa-presenter.mjs",
+    "qa:faq": "node scripts/qa-faq.mjs",
     "content:check": "tsx scripts/check-content.ts",
     "presentation:check": "tsx scripts/check-presentation.ts",
+    "parcours:check": "tsx scripts/check-parcours.ts",
     "typecheck": "astro check",
     "test": "tsx --test tests/**/*.test.ts"
   },

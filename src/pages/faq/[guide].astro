@@ -1,0 +1,15 @@
+---
+import GuideShell from '../../components/faq/GuideShell.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { GUIDES } from '../../parcours/manifests';
+
+export function getStaticPaths() {
+  return GUIDES.map((guide) => ({ params: { guide: guide.id }, props: { guide } }));
+}
+
+const { guide } = Astro.props;
+---
+
+<BaseLayout title={guide.titre} description={guide.promesse}>
+  <GuideShell guide={guide} />
+</BaseLayout>

@@ -1,0 +1,79 @@
+---
+import type { Etape } from '../../parcours/parcours-model';
+import { libelleLieu } from '../../features/faq/reperage';
+import Panne from './Panne.astro';
+import Visuel from './visuels/Visuel.astro';
+
+interface Props { etape: Etape; index: number; total: number; changementDeLieu: string | null; }
+const { etape, index, total, changementDeLieu } = Astro.props;
+
+const lieuLabel = libelleLieu(etape);
+---
+
+{changementDeLieu && (
+  <p class="changement-de-lieu" role="note">
+    Vous changez d’application : passez dans {changementDeLieu}.
+  </p>
+)}
+
+<section class="etape" id={`etape-${etape.id}`} aria-labelledby={`titre-${etape.id}`}>
+  <header class="etape-entete">
+    <span class="etape-rang">{index + 1} / {total}</span>
+    <span class="etape-lieu">{lieuLabel}</span>
+    <h2 id={`titre-${etape.id}`}>{etape.titre}</h2>
+  </header>
+
+  {etape.danger && <p class="etape-danger" role="alert">{etape.danger}</p>}
+
+  {etape.aClaude && (
+    <div class="etape-a-claude" data-enhanced="false">
+      <p class="a-claude-intro">Le message à envoyer à Claude, tel quel :</p>
+      <pre data-copiable>{etape.aClaude}</pre>
+      <button type="button" class="bouton-copier" data-copier hidden>Copier</button>
+    </div>
+  )}
+
+  <Visuel visuel={etape.visuel} />
+
+  <ol class="etape-gestes">
+    {etape.gestes.map((geste) => (
+      <li>
+        {geste.action}
+        {geste.ancre && <span class="geste-ancre"> ({geste.ancre})</span>}
+      </li>
+    ))}
+  </ol>
+
+  {etape.fichiers && (
+    <div class="etape-fichiers">
+      {etape.fichiers.map((fichier) => (
+        <figure class="fichier" data-enhanced="false">
+          <figcaption>{fichier.chemin}</figcaption>
+          <pre data-copiable>{fichier.contenu}</pre>
+          <button type="button" class="bouton-copier" data-copier hidden>Copier</button>
+          {fichier.commentaire && <p class="fichier-commentaire">{fichier.commentaire}</p>}
+        </figure>
+      ))}
+    </div>
+  )}
+
+  <p class="etape-preuve"><strong>Vous devez voir ça :</strong> {etape.preuve.visible}</p>
+  <details class="etape-sinon">
+    <summary>Ça n’apparaît pas ?</summary>
+    <p>{etape.preuve.sinon}</p>
+  </details>
+
+  {etape.pourquoi && (
+    <details class="etape-pourquoi">
+      <summary>À quoi ça sert</summary>
+      <p>{etape.pourquoi}</p>
+    </details>
+  )}
+
+  {etape.pannes.length > 0 && (
+    <div class="etape-pannes">
+      <h3>Ça coince ?</h3>
+      {etape.pannes.map((panne) => <Panne panne={panne} />)}
+    </div>
+  )}
+</section>

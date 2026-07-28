@@ -1,0 +1,16 @@
+---
+import type { Visuel } from '../../../parcours/parcours-model';
+
+interface Props { visuel: Extract<Visuel, { key: 'claude' }>; }
+const { visuel } = Astro.props;
+---
+
+<figure class="visuel visuel-claude" data-enhanced="false">
+  <figcaption>Ce que Claude répond</figcaption>
+
+  <div class="claude-bulle claude-bulle-claude">
+    <ul role="list">
+      {visuel.reponse.map((ligne) => <li>{ligne}</li>)}
+    </ul>
+  </div>
+</figure>

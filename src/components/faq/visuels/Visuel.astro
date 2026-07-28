@@ -1,0 +1,15 @@
+---
+import type { Visuel } from '../../../parcours/parcours-model';
+import VisuelArborescence from './VisuelArborescence.astro';
+import VisuelCapture from './VisuelCapture.astro';
+import VisuelClaude from './VisuelClaude.astro';
+import VisuelTroisLieux from './VisuelTroisLieux.astro';
+
+interface Props { visuel: Visuel; }
+const { visuel } = Astro.props;
+---
+
+{visuel.key === 'arborescence' && <VisuelArborescence visuel={visuel} />}
+{visuel.key === 'capture' && <VisuelCapture visuel={visuel} />}
+{visuel.key === 'claude' && <VisuelClaude visuel={visuel} />}
+{visuel.key === 'trois-lieux' && <VisuelTroisLieux visuel={visuel} />}

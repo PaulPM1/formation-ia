@@ -1,0 +1,114 @@
+---
+import type { Guide } from '../../parcours/parcours-model';
+import { changementsDeLieu, libelleLieu } from '../../features/faq/reperage';
+import Etape from './Etape.astro';
+
+interface Props { guide: Guide; }
+const { guide } = Astro.props;
+
+// Le marqueur ne s'affiche que sur une vraie rupture d'application : c'est la
+// couture sur laquelle les participants se perdaient.
+const changements = changementsDeLieu(guide);
+---
+
+<article class="guide" data-guide={guide.id}>
+  <header class="guide-entete">
+    <h1>{guide.titre}</h1>
+    <p class="guide-promesse">{guide.promesse}</p>
+    {guide.pourQui && <p class="guide-pour-qui">{guide.pourQui}</p>}
+
+    {guide.prerequis.length > 0 && (
+      <div class="guide-prerequis">
+        <p class="prerequis-titre">Avant de commencer</p>
+        <ul role="list">
+          {guide.prerequis.map((prerequis) => <li>{prerequis}</li>)}
+        </ul>
+      </div>
+    )}
+  </header>
+
+  <div class="guide-bandeau" data-guide-bandeau aria-live="polite">
+    <span data-bandeau-rang>1 / {guide.etapes.length}</span>
+    <span data-bandeau-lieu>{libelleLieu(guide.etapes[0])}</span>
+  </div>
+
+  <script>
+    const bandeau = document.querySelector<HTMLElement>('[data-guide-bandeau]');
+    const sections = Array.from(document.querySelectorAll<HTMLElement>('.etape'));
+    if (bandeau && sections.length > 0) {
+      const rang = bandeau.querySelector<HTMLElement>('[data-bandeau-rang]');
+      const lieu = bandeau.querySelector<HTMLElement>('[data-bandeau-lieu]');
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const visible = entries.filter((entry) => entry.isIntersecting).at(0);
+          if (!visible || !rang || !lieu) return;
+          const index = sections.indexOf(visible.target as HTMLElement);
+          rang.textContent = `${index + 1} / ${sections.length}`;
+          lieu.textContent = visible.target.querySelector('.etape-lieu')?.textContent ?? '';
+        },
+        { rootMargin: '-45% 0px -45% 0px' },
+      );
+      sections.forEach((section) => observer.observe(section));
+      bandeau.dataset.enhanced = 'true';
+    }
+  </script>
+
+  {guide.etapes.map((etape, index) => (
+    <Etape
+      etape={etape}
+      index={index}
+      total={guide.etapes.length}
+      changementDeLieu={changements[index]}
+    />
+  ))}
+</article>
+
+<script>
+  // Une panne partagée par lien doit être ouverte à l'arrivée, sinon le
+  // destinataire atterrit sur un titre replié et croit s'être trompé de lien.
+  const ouvrirCible = () => {
+    // querySelector('') leve une SyntaxError : sortir avant si l'URL n'a pas
+    // d'ancre, sinon l'exception empeche l'ecoute de hashchange plus bas.
+    if (!window.location.hash) return;
+    const cible = document.querySelector<HTMLDetailsElement>(
+      `details${window.location.hash}`,
+    );
+    if (!cible) return;
+    cible.open = true;
+    cible.scrollIntoView({ block: 'start' });
+  };
+
+  ouvrirCible();
+  window.addEventListener('hashchange', ouvrirCible);
+</script>
+
+<script>
+  // Un seul endroit pour toute la page : chaque bloc à coller et chaque bloc
+  // de fichier voit son bouton révélé et branché ici. Le bouton sort du
+  // serveur avec l'attribut « hidden », donc sans JavaScript il n'apparaît
+  // jamais : un bouton de copie inopérant serait pire qu'absent, et le texte
+  // reste sélectionnable à la main.
+  document.querySelectorAll<HTMLElement>('[data-copiable]').forEach((bloc) => {
+    const bouton = bloc.parentElement?.querySelector<HTMLButtonElement>('[data-copier]');
+    if (!bouton) return;
+
+    const annoncer = (message: string) => {
+      bouton.textContent = message;
+      window.setTimeout(() => { bouton.textContent = 'Copier'; }, 2000);
+    };
+
+    bouton.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(bloc.textContent ?? '');
+        annoncer('Copié');
+      } catch {
+        // Le navigateur peut refuser l'écriture dans le presse-papiers :
+        // on le dit plutôt que de laisser croire que la copie a eu lieu.
+        annoncer('Copiez à la main');
+      }
+    });
+
+    bouton.hidden = false;
+    bloc.parentElement?.setAttribute('data-enhanced', 'true');
+  });
+</script>

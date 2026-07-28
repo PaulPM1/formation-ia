@@ -1,0 +1,20 @@
+---
+import type { Panne } from '../../parcours/parcours-model';
+
+interface Props { panne: Panne; }
+const { panne } = Astro.props;
+---
+
+<details class="panne" id={`panne-${panne.id}`}>
+  <summary>{panne.symptome}</summary>
+  <p class="panne-cause">{panne.cause}</p>
+  <ol class="panne-reparation">
+    {panne.reparation.map((geste) => (
+      <li>
+        {geste.action}
+        {geste.ancre && <span class="geste-ancre"> ({geste.ancre})</span>}
+      </li>
+    ))}
+  </ol>
+  <p class="panne-preuve"><strong>C’est réparé quand :</strong> {panne.preuve}</p>
+</details>

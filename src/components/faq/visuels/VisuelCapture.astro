@@ -1,0 +1,42 @@
+---
+import { join } from 'node:path';
+import type { Visuel } from '../../../parcours/parcours-model';
+import { dimensionsPng } from '../../../features/faq/dimensions-png';
+
+interface Props { visuel: Extract<Visuel, { key: 'capture' }>; }
+const { visuel } = Astro.props;
+
+// Dimensions déclarées : sans elles, un chargement différé fait sauter la
+// mise en page à chaque capture rencontrée pendant le défilement. Les
+// captures de la surface ont des cadrages très différents les uns des
+// autres : on lit donc les vraies dimensions dans le fichier, au moment de
+// la construction, plutôt que d'imposer une valeur en dur.
+//
+// Résolu depuis process.cwd() plutôt que depuis import.meta.url : la
+// construction regroupe ce composant dans un chunk dont l'emplacement final
+// ne préserve pas la profondeur du fichier source, ce qui fausserait un
+// calcul relatif à `../../../../public/`. Astro exécute toujours la
+// construction et le serveur de développement depuis la racine du dépôt.
+const { largeur, hauteur } = dimensionsPng(join(process.cwd(), 'public', visuel.fichier));
+---
+
+<figure class="visuel visuel-capture" data-enhanced="false">
+  <img
+    src={`/${visuel.fichier}`}
+    alt={visuel.alt}
+    width={largeur}
+    height={hauteur}
+    loading="lazy"
+    decoding="async"
+  />
+  {visuel.reperes.length > 0 && (
+    <ol class="capture-reperes">
+      {visuel.reperes.map((repere) => (
+        <li data-position={repere.position}>{repere.label}</li>
+      ))}
+    </ol>
+  )}
+  <figcaption class="capture-source">
+    {visuel.service}, écran vérifié le {visuel.verifieLe}. Si votre écran diffère, cherchez le même libellé.
+  </figcaption>
+</figure>
