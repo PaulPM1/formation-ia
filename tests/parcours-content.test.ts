@@ -18,7 +18,7 @@ test('les compteurs figés du contenu', () => {
       (total, guide) => total + guide.etapes.reduce((sous, etape) => sous + etape.pannes.length, 0),
       0,
     ),
-    13,
+    12,
   );
 });
 

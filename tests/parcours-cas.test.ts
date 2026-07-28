@@ -61,7 +61,6 @@ test('chaque entrée pointe vers une ancre complète', () => {
 const SYMPTOMES_FREQUENTS = [
   'Je vois un seul fichier, pas mon dossier',
   'Je ne trouve pas Claude Code',
-  'Claude parle d’un dossier que je ne reconnais pas',
   'GitHub ne m’affiche aucun bloc d’instructions',
   'Ma page GitHub reste vide',
   'Vercel n’affiche aucun de mes projets',
