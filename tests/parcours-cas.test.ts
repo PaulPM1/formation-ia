@@ -69,7 +69,7 @@ const SYMPTOMES_FREQUENTS = [
   'Mon site reste identique',
   'J’ai fermé la fenêtre sans copier ma clé',
   'Je vois un fichier .env sur GitHub',
-  'J’ai ajouté la variable mais mon site ne marche toujours pas',
+  'J’ai ajouté la variable mais mon site ne marche pas',
 ];
 
 test('la grille livrée est exactement la liste attendue, dans l’ordre', () => {
