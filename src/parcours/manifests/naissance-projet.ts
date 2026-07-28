@@ -140,7 +140,7 @@ export const NAISSANCE_PROJET: Guide = {
       service: 'GitHub',
       danger: 'Ne cochez rien. Un dépôt vide vous donne les instructions toutes prêtes ; un dépôt prérempli ne vous donne rien.',
       gestes: [
-        { action: 'Donnez-lui le même nom que votre dossier.' },
+        { action: 'Donnez-lui un nom. Le même que votre dossier vous aidera à le retrouver plus tard.' },
         { action: 'Laissez Add README sur Off, No .gitignore et No license.' },
         { action: 'Cliquez sur Create repository.' },
       ],

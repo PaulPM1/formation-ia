@@ -81,11 +81,14 @@ for (const echec of requetesEnEchec) {
   echecs.push(`Ressource introuvable : ${echec}`);
 }
 
+// Les décomptes exacts (nombre de gestes, de pannes) relèvent de
+// tests/parcours-content.test.ts : ce script ne vérifie que le rendu sans
+// JavaScript, pas le contenu figé.
 await page.goto(`${base}/faq/naissance-projet/`);
 const gestes = await page.locator('.etape-gestes li').count();
-await attendu(Promise.resolve(gestes >= 16), `Les gestes ne sont pas rendus sans JavaScript (${gestes} trouvés).`);
+await attendu(Promise.resolve(gestes >= 1), `Les gestes ne sont pas rendus sans JavaScript (${gestes} trouvés).`);
 const pannes = await page.locator('details.panne').count();
-await attendu(Promise.resolve(pannes === 7), `Les pannes du guide 1 ne sont pas toutes rendues (${pannes} trouvées).`);
+await attendu(Promise.resolve(pannes >= 1), `Les pannes ne sont pas rendues sans JavaScript (${pannes} trouvées).`);
 
 await navigateur.close();
 server.close();
