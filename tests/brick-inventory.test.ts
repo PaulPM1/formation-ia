@@ -40,13 +40,13 @@ const DRAFTED_BRICK_IDS = [
 
 const DRAFTED_BRICK_OWNERS = new Set(['paul', 'matthieu', 'a-attribuer']);
 
-test('charge exactement les 24 briques fusionnées dans le bon ordre', async () => {
+test('charge exactement les 22 briques fusionnées dans le bon ordre', async () => {
   const documents = await loadBrickDocuments(contentDirectory);
   const ids = documents
     .toSorted((left, right) => Number(left.data.order) - Number(right.data.order))
     .map((document) => document.data.id);
 
-  assert.equal(documents.length, 24);
+  assert.equal(documents.length, 22);
   assert.deepEqual(ids, EXPECTED_IMPORTED_BRICK_IDS);
 });
 
@@ -116,7 +116,10 @@ test('la mission A2 propose quatre paires dans l’ordre Code, Chat, Work, Objec
   assert.doesNotMatch(mission, /parmi Claude Chat, ChatGPT Chat/);
 });
 
-test('les briques restantes demeurent des gabarits à rédiger', async () => {
+// Depuis le retrait du bloc F, le catalogue ne contient plus de gabarit :
+// l'invariant utile n'est plus « combien en reste-t-il » mais « aucune fiche
+// publiée n'est vide ». Une brique ajoutée sans contenu fait échouer ce test.
+test('le catalogue ne contient plus aucun gabarit à rédiger', async () => {
   const documents = await loadBrickDocuments(contentDirectory);
   const remaining = documents.filter(
     (document) =>
@@ -125,11 +128,18 @@ test('les briques restantes demeurent des gabarits à rédiger', async () => {
       ),
   );
 
-  assert.equal(remaining.length, 2);
-  assert.equal(
-    remaining.some((document) => hasVisibleEditorialContent(document.body)),
-    false,
+  assert.deepEqual(
+    remaining.map((document) => document.data.id),
+    [],
   );
+  for (const document of documents) {
+    assert.notEqual(document.data.status, 'a-rediger', document.data.id);
+    assert.equal(
+      hasVisibleEditorialContent(document.body),
+      true,
+      document.data.id,
+    );
+  }
 });
 
 test('considère les commentaires MDX comme des indications éditoriales invisibles', () => {

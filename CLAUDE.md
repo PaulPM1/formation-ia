@@ -8,10 +8,10 @@ ses propres projets, et un assistant personnel construit pendant l'atelier.
 
 ## Les quatre surfaces du site (Astro 7)
 
-- `/briques` : 24 fiches pédagogiques MDX (`src/content/briques/`, familles A
-  à F), documentation canonique. Frontmatter strict validé par
+- `/briques` : 22 fiches pédagogiques MDX (`src/content/briques/`, familles A
+  à E), documentation canonique. Frontmatter strict validé par
   `npm run content:check`.
-- `/presenter` : 105 slides pilotées par les manifestes TypeScript
+- `/presenter` : 83 slides pilotées par les manifestes TypeScript
   (`src/presentation/manifests/`), scènes réutilisables, validées par
   `npm run presentation:check`.
 - `/atelier` : le TP fil rouge « Construis ton assistant personnel », 5
@@ -23,13 +23,16 @@ ses propres projets, et un assistant personnel construit pendant l'atelier.
   plomberie. Registre non scolaire : pas de durée, pas d'objectif, pas de
   mission.
 
+Les retours d'expérience des participants ne vivent pas ici : ils ont leur
+propre dépôt, `retours-camp`, indépendant de ce site.
+
 ## État d'avancement
 
 - Briques A1 à C3 : rédigées par Paul, statut `a-relire`.
-- Briques D1 à E3 : rédigées par Matthieu, statut `a-relire`.
-- F1 et F2 : gabarits vides ; F1 sera dérivée de l'onglet Atelier une fois le
-  prototype validé.
-- Slides : blocs A à E complets (105). Aucune slide F.
+- Briques D1 à E4 : rédigées par Matthieu, statut `a-relire`.
+- Bloc F retiré : les gabarits vides F1 et F2 ont été supprimés, leur contenu
+  vivant désormais dans `/atelier`. Les 22 briques sont toutes rédigées.
+- Slides : blocs A à E complets, 22 decks et 83 slides, un deck par brique.
 - Prototype fil rouge : plan dans `docs/atelier/prototype-second-brain.md`,
   à construire par Matthieu (produit aussi les kits du TP : prompt
   d'interview, inbox de tri, skill capture, template dashboard).
@@ -56,8 +59,11 @@ socle : P1+P2. Principe du TP : on prémâche la saisie, on garde la décision.
 
 1. Prendre une brique : `owner`, `status: en-cours`, rédiger, renseigner
    `learningObjective` et `expectedOutcome`, passer `a-relire`.
-2. Toute brique rédigée s'ajoute à `DRAFTED_BRICK_IDS` dans
-   `tests/brick-inventory.test.ts` (et le compteur de gabarits restants baisse).
+2. Toute brique ajoutée s'inscrit dans `EXPECTED_IMPORTED_BRICK_IDS`
+   (`src/content/brick-files.ts`), dans `VALID_BRICK_IDS`
+   (`src/content/projet-model.ts`) et dans `DRAFTED_BRICK_IDS`
+   (`tests/brick-inventory.test.ts`), et fait évoluer le total affiché sur
+   l'accueil, le catalogue, la navigation et la page 404.
 3. Toute slide ajoutée fait évoluer les compteurs figés (tests
    `presentation-*` et scripts `qa-*`).
 4. Toute étape ou panne ajoutée à un guide `/faq` fait évoluer les

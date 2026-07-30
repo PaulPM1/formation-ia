@@ -1,5 +1,11 @@
 import { z } from 'astro/zod';
 
+/**
+ * Vocabulaire des familles. La famille `f` ne porte plus aucune brique depuis
+ * le retrait des gabarits F1 et F2 : elle reste déclarée parce que le
+ * validateur de présentation s'appuie sur cette liste, et parce qu'une famille
+ * sans brique n'apparaît jamais au catalogue (voir `groupBricksByFamily`).
+ */
 export const BRICK_FAMILIES = ['a', 'b', 'c', 'd', 'e', 'f'] as const;
 export const BRICK_PRIORITIES = ['socle', 'bonus', 'facultatif', 'rattrapage', 'a-trancher'] as const;
 export const BRICK_TYPES = [

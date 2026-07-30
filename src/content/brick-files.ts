@@ -28,8 +28,6 @@ export const EXPECTED_IMPORTED_BRICK_IDS = [
   'e2',
   'e3',
   'e4',
-  'f1',
-  'f2',
 ] as const;
 
 async function findMdxFiles(directory: string): Promise<string[]> {

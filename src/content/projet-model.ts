@@ -16,7 +16,7 @@ export const PROJET_DIFFICULTIES = [
   'ambitieux',
 ] as const;
 
-/** Les 23 briques du curriculum, après renumérotation. */
+/** Les 22 briques du curriculum, après renumérotation et retrait du bloc F. */
 export const VALID_BRICK_IDS = [
   'a1',
   'a2',
@@ -39,8 +39,7 @@ export const VALID_BRICK_IDS = [
   'e1',
   'e2',
   'e3',
-  'f1',
-  'f2',
+  'e4',
 ] as const;
 
 export const projetFrontmatterSchema = z

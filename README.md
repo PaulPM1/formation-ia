@@ -49,10 +49,11 @@ ateliers et restitutions.
 
 Statuts autorisés : `a-rediger`, `en-cours`, `a-relire`, `validee`.
 
-## Prolonger les slides — blocs D à F
+## Prolonger les slides
 
-Le mode formateur est disponible sur `/presenter/`. Pour conserver la même
-structure et le même langage visuel quand Mathieu ajoute les blocs D, E et F :
+Le mode formateur est disponible sur `/presenter/`. Les blocs A à E sont
+complets. Pour conserver la même structure et le même langage visuel en
+ajoutant ou en retouchant une slide :
 
 1. Invoquer `$slide-visual-director` avant de concevoir ou de modifier une
    slide. Le nombre de slides est dicté par la compréhension du concept, jamais
@@ -86,7 +87,7 @@ structure et le même langage visuel quand Mathieu ajoute les blocs D, E et F :
    npm run qa:block-c
    ```
 
-`presentation:check` reste local : il valide les 110 slides actuellement,
+`presentation:check` reste local : il valide les 83 slides actuellement,
 ainsi que l’origine canonique du wiki, les identifiants de briques
 et les ancres produites par le moteur Markdown du site, sans requête réseau.
 
