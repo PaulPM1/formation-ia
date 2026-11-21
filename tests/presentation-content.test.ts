@@ -8,7 +8,7 @@ import { validatePresentation } from '../src/presentation/presentation-validatio
 const expectedIds = [
   'a1', 'a2', 'a3', 'a4',
   'c1', 'c2', 'c3', 'd1', 'd2', 'd2-bis', 'd3', 'd4', 'e1', 'e2',
-  'e3', 'e4',
+  'e3',
 ];
 
 const expectedSlides = [
@@ -71,9 +71,6 @@ const expectedSlides = [
   { id: 'e3-mvp', claim: 'Le MVP est la plus petite version qui rend déjà service.', visualKey: 'context-budget' },
   { id: 'e3-etapes', claim: 'Si une étape ne peut pas être testée, elle est trop grosse.', visualKey: 'context-comparison' },
   { id: 'e3-enlisement', claim: "Trois signaux d'enlisement appellent trois parades, pas plus d'insistance.", visualKey: 'checkpoint' },
-  { id: 'e4-cycle', claim: 'Cadrer, architecturer, construire : planifier par rôles avant d’écrire une ligne.', visualKey: 'ipmtr-loop' },
-  { id: 'e4-prompt', claim: 'Un prompt rejoue les trois rôles, un par message, avant tout code.', visualKey: 'prompt-builder' },
-  { id: 'e4-bmad', claim: 'BMAD installe pour de bon l’équipe d’agents des projets ambitieux.', visualKey: 'resource-rail' },
 ];
 
 test('A1 résout la même amorce dans deux univers sémantiques', () => {
@@ -101,11 +98,11 @@ function slideData(slideId: string) {
   return slide.visual.data;
 }
 
-test('couvre toutes les briques A1 à E4 dans l’ordre pédagogique', () => {
+test('couvre toutes les briques A1 à E3 dans l’ordre pédagogique', () => {
   assert.deepEqual(PRESENTATION_DECKS.map((deck) => deck.brickId), expectedIds);
 });
 
-test('contient les 62 étapes de compréhension validées', () => {
+test('contient les 59 étapes de compréhension validées', () => {
   assert.deepEqual(
     PRESENTATION_SLIDES.map((slide) => ({
       id: slide.id,

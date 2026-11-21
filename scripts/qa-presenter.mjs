@@ -57,8 +57,8 @@ const slideRoutes = generatedPages
   .map((page) => `/presenter/${page.replaceAll(path.sep, '/').replace(/\/index\.html$/, '')}`)
   .toSorted();
 
-if (slideRoutes.length !== 62) failures.push(`inventaire slides ${slideRoutes.length}/62`);
-if (generatedPages.length !== 63) failures.push(`inventaire présentateur ${generatedPages.length}/63`);
+if (slideRoutes.length !== 59) failures.push(`inventaire slides ${slideRoutes.length}/59`);
+if (generatedPages.length !== 60) failures.push(`inventaire présentateur ${generatedPages.length}/60`);
 for (const route of removedBlockBRoutes) {
   const response = await fetch(`${baseURL}${route}`, { redirect: 'manual' });
   if (response.status !== 404 || response.headers.has('location')) {
@@ -229,5 +229,5 @@ if (failures.length) {
   console.error(failures.join('\n'));
   process.exitCode = 1;
 } else {
-  console.log('QA présentateur : 62/62 routes mobiles, 12 anciennes routes en 404 sans redirection, contrôleur natif, plein écran, zoom, mouvement réduit et impression validés ; 63 pages générées.');
+  console.log('QA présentateur : 59/59 routes mobiles, 12 anciennes routes en 404 sans redirection, contrôleur natif, plein écran, zoom, mouvement réduit et impression validés ; 60 pages générées.');
 }

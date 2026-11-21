@@ -135,22 +135,6 @@ la même solution, le code enfle sans progrès), trois parades (revenir en
 arrière, repartir propre, redécouper). Plus le timeboxing des décisions
 cosmétiques.
 
-### E4 : La méthode d'équipe (3 slides, brique e4, BONUS)
-
-**1. Cadrer, architecturer, construire.** Faire jouer à l'IA les rôles d'une
-équipe (analyste, chef de produit, architecte) avant de coder. Le plan est
-écrit, donc corrigeable à froid. Seul face à l'IA, on saute ces rôles et on
-récupère un tas de code incontrôlable.
-
-**2. Le prompt de cadrage (démo).** Un prompt rejoue les trois rôles, un par
-message, et sort un plan avant tout code. Contrainte forte : « ne code rien tant
-que je n'ai pas validé les trois rôles ».
-
-**3. BMAD.** L'outillage complet de cette idée, pour les projets ambitieux :
-`npx bmad-method install`, puis `bmad-help` comme point d'entrée. Ne lancez PAS
-l'installation en séance avec des débutants ; nommez-le, renvoyez au tutoriel
-officiel.
-
 ---
 
 ## Ce qu'on a coupé (et pourquoi vous n'avez pas à en parler)
@@ -172,7 +156,6 @@ contenu reste dans les briques si quelqu'un veut le détail.
 - **E1** : l'accroche ; la fenêtre de contexte détaillée ; la mission.
 - **E2** : l'accroche ; la mission.
 - **E3** : la slide « cycle » d'ouverture ; la mission.
-- **E4** : les rôles détaillés ; la mission.
 
 Si on vous pose une question sur un point coupé, la réponse est simple : « c'est
 dans la fiche de référence, on la regarde ensemble à l'atelier ». Vous n'avez

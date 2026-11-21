@@ -106,7 +106,7 @@ test('les tokens typographiques des slides gardent un plancher de 0,75 rem', asy
   }
 });
 
-test('la QA durable mesure les textes HTML et SVG à 12 px sur 62 routes et au zoom 200 %', async () => {
+test('la QA durable mesure les textes HTML et SVG à 12 px sur 59 routes et au zoom 200 %', async () => {
   const [qa, ready, packageJson] = await Promise.all([
     read('scripts/qa-font-floor.mjs'),
     read('scripts/qa-page-ready.mjs'),
@@ -117,7 +117,7 @@ test('la QA durable mesure les textes HTML et SVG à 12 px sur 62 routes et au z
   assert.match(qa, /const FONT_FLOOR_PX = 11\.99/);
   assert.match(qa, /querySelectorAll\(['"]svg text['"]\)/);
   assert.match(qa, /deviceScaleFactor:\s*2/);
-  assert.match(qa, /routes\.length[^\n]*62|62[^\n]*routes\.length/);
+  assert.match(qa, /routes\.length[^\n]*59|59[^\n]*routes\.length/);
   assert.match(qa, /navigateAndWaitForFonts/);
   assert.match(ready, /waitUntil:\s*'domcontentloaded'/);
   assert.match(ready, /Promise\.race/);
