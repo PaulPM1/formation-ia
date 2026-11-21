@@ -12,28 +12,56 @@ const steps = [
 
 <figure class="cc-loop" data-cc-loop data-step="4">
   <div class="cc-window" aria-hidden="true">
-    <div class="cc-bar">
-      <span class="cc-folder">mes-recettes</span>
-      <span class="cc-tabs"><span>Chat</span><span class="is-on">Code</span></span>
+    <div class="cc-titlebar">
+      <span class="cc-lights"><i></i><i></i><i></i></span>
+      <span class="cc-mode"><span>Chat</span><span class="is-on">Code</span></span>
     </div>
 
-    <div class="cc-panes">
+    <div class="cc-body">
+      <aside class="cc-side">
+        <p class="cc-side-new"><b>+</b> New session</p>
+        <p class="cc-side-label">Today</p>
+        <p class="cc-side-item is-on">Page recettes de famille</p>
+        <p class="cc-side-label">Yesterday</p>
+        <p class="cc-side-item">Idées de projet</p>
+        <p class="cc-side-item">Lettre à la mairie</p>
+      </aside>
+
       <div class="cc-talk">
-        <p class="cc-msg cc-you">Crée une page qui présente mes recettes de famille.</p>
-        <ul class="cc-work from-2">
-          <li>Lit le dossier</li>
-          <li>Écrit 3 fichiers</li>
-          <li>Lance le projet</li>
-        </ul>
-        <p class="cc-msg cc-you from-4">Les photos plus grandes, et un fond plus chaud.</p>
-        <ul class="cc-work from-4">
-          <li>Modifie 1 fichier</li>
-        </ul>
+        <div class="cc-thread">
+          <p class="cc-you">Crée une page qui présente mes recettes de famille.</p>
+
+          <div class="cc-claude from-2">
+            <p class="cc-say">Je crée la page et je vous la montre.</p>
+            <p class="cc-tool"><i></i>Read <b>mes-recettes</b></p>
+            <p class="cc-tool"><i></i>Wrote <b>index.html</b> and 2 more</p>
+            <div class="cc-ask only-2">
+              <p>Allow Claude to start the project?</p>
+              <span><em>Deny</em><em class="is-yes">Allow once</em></span>
+            </div>
+            <p class="cc-tool from-3"><i></i>Started <b>preview</b></p>
+          </div>
+
+          <p class="cc-you from-4">Les photos plus grandes, et un fond plus chaud.</p>
+          <div class="cc-claude from-4">
+            <p class="cc-tool"><i></i>Edited <b>style.css</b></p>
+            <p class="cc-say">C’est fait, regardez l’aperçu.</p>
+          </div>
+        </div>
+
+        <div class="cc-input">
+          <p>Reply to Claude…</p>
+          <div>
+            <span class="cc-chip">mes-recettes</span>
+            <span class="cc-chip">Local</span>
+            <span class="cc-send">↑</span>
+          </div>
+        </div>
       </div>
 
       <div class="cc-preview">
-        <p class="cc-preview-name">Aperçu</p>
-        <p class="cc-empty">Rien à voir pour l’instant.</p>
+        <div class="cc-url"><span>Preview</span><em>localhost:3000</em></div>
+        <p class="cc-empty">Nothing to preview yet</p>
         <div class="cc-page from-3">
           <p class="cc-page-title">Recettes de famille</p>
           <div class="cc-dishes">
@@ -122,205 +150,344 @@ const steps = [
 </script>
 
 <style>
+  /* La fenêtre reprend l'allure de l'application Claude (thème sombre), pas
+     celle du site : on doit reconnaître l'outil qu'on ouvrira ensuite. */
   .cc-loop {
-    inline-size: min(58rem, 100vw - 2rem);
+    --app-bg: #262624;
+    --app-side: #1f1e1d;
+    --app-raise: #30302e;
+    --app-line: #3d3d3a;
+    --app-text: #f0eee6;
+    --app-muted: #a6a39a;
+    --app-accent: #d97757;
+    --app-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --app-serif: ui-serif, "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+
+    inline-size: min(64rem, 100vw - 2rem);
     margin-block: 2.5rem;
     margin-inline-start: 50%;
     transform: translateX(-50%);
   }
 
   .cc-window {
-    border: 2px solid var(--ink);
-    border-radius: var(--radius-md);
-    background: var(--surface);
-    box-shadow: var(--shadow-block-strong);
+    border: 1px solid #000;
+    border-radius: 12px;
+    background: var(--app-bg);
+    box-shadow: 0 1.5rem 3rem rgb(22 34 29 / 28%), 0 0.25rem 0.75rem rgb(22 34 29 / 18%);
+    color: var(--app-text);
+    font-family: var(--app-sans);
     overflow: hidden;
   }
 
-  .cc-bar {
+  .cc-window p { margin: 0; }
+
+  .cc-titlebar {
+    position: relative;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 0.55rem 0.9rem;
-    border-block-end: 2px solid var(--ink);
-    background: var(--family-accent);
-    font-size: var(--text-small);
-    font-weight: var(--weight-semibold);
+    justify-content: center;
+    padding: 0.55rem 0.8rem;
+    border-block-end: 1px solid var(--app-line);
+    background: var(--app-side);
   }
 
-  .cc-folder::before {
-    display: inline-block;
-    inline-size: 0.95rem;
-    block-size: 0.7rem;
-    margin-inline-end: 0.45rem;
-    border: 2px solid var(--ink);
-    border-radius: 2px;
-    background: var(--surface);
-    content: "";
-  }
-
-  .cc-tabs {
+  .cc-lights {
+    position: absolute;
+    inset-inline-start: 0.8rem;
     display: flex;
-    border: 2px solid var(--ink);
-    border-radius: var(--radius-sm);
-    background: var(--surface);
+    gap: 0.4rem;
+  }
+
+  .cc-lights i {
+    inline-size: 0.7rem;
+    block-size: 0.7rem;
+    border-radius: 50%;
+    background: #ff5f57;
+  }
+
+  .cc-lights i:nth-child(2) { background: #febc2e; }
+  .cc-lights i:nth-child(3) { background: #28c840; }
+
+  .cc-mode {
+    display: flex;
+    gap: 2px;
+    padding: 2px;
+    border-radius: 8px;
+    background: var(--app-raise);
+    font-size: 0.78rem;
+    font-weight: 500;
+  }
+
+  .cc-mode span {
+    padding: 0.15rem 0.85rem;
+    border-radius: 6px;
+    color: var(--app-muted);
+  }
+
+  .cc-mode .is-on {
+    background: #4a4a46;
+    color: var(--app-text);
+  }
+
+  .cc-body {
+    display: grid;
+    grid-template-columns: 11rem minmax(0, 1fr) minmax(0, 1.05fr);
+    block-size: 25rem;
+  }
+
+  .cc-side {
+    padding: 0.7rem 0.5rem;
+    border-inline-end: 1px solid var(--app-line);
+    background: var(--app-side);
+    font-size: 0.78rem;
+  }
+
+  .cc-loop .cc-side p {
+    padding: 0.35rem 0.5rem;
+    border-radius: 6px;
+    font-size: inherit;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .cc-loop .cc-side-new { margin-block-end: 0.6rem; background: var(--app-raise); }
+  .cc-side-new b { margin-inline-end: 0.35rem; font-weight: 400; }
+  .cc-loop .cc-side-label { padding-block: 0.6rem 0.15rem; color: var(--app-muted); font-size: 0.7rem; }
+  .cc-loop .cc-side-item { color: #d6d3c9; }
+  .cc-loop .cc-side-item.is-on { background: var(--app-raise); color: var(--app-text); }
+
+  .cc-talk {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    min-inline-size: 0;
+  }
+
+  .cc-thread {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1rem 1rem 0.6rem;
     overflow: hidden;
   }
 
-  .cc-tabs span {
-    padding: 0.1rem 0.6rem;
-  }
-
-  .cc-tabs .is-on {
-    background: var(--ink);
-    color: var(--surface);
-  }
-
-  .cc-panes {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-    min-block-size: 19rem;
-  }
-
-  .cc-talk {
-    display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
-    padding: 1rem;
-    border-inline-end: 2px solid var(--ink);
-  }
-
-  .cc-loop .cc-msg {
-    max-inline-size: 22ch;
-    margin: 0;
-    padding: 0.55rem 0.75rem;
-    border: 2px solid var(--ink);
-    border-radius: var(--radius-md) var(--radius-md) 0 var(--radius-md);
-    background: var(--paper);
-    font-size: var(--text-small);
-    line-height: 1.4;
+  .cc-loop .cc-you {
     align-self: flex-end;
+    max-inline-size: 85%;
+    padding: 0.5rem 0.8rem;
+    border-radius: 12px;
+    background: #141413;
+    font-size: 0.82rem;
+    line-height: 1.45;
   }
 
-  .cc-loop .cc-work {
+  .cc-claude {
     display: grid;
-    gap: 0.3rem;
-    margin: 0;
-    padding: 0;
-    list-style: none;
+    gap: 0.4rem;
   }
 
-  .cc-loop .cc-work li {
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
+  .cc-loop .cc-say {
+    font-family: var(--app-serif);
+    font-size: 0.92rem;
+    line-height: 1.45;
+  }
+
+  .cc-loop .cc-tool {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--app-muted);
+    font-size: 0.76rem;
     line-height: 1.4;
-    transition: opacity 0.35s ease, transform 0.35s ease;
   }
 
-  .cc-work li::before {
-    display: inline-grid;
-    place-items: center;
-    inline-size: 1.1rem;
-    block-size: 1.1rem;
-    margin-inline-end: 0.5rem;
-    border: 1.5px solid var(--ink);
-    border-radius: 2px;
-    background: var(--brick-green);
+  .cc-tool b { color: #d6d3c9; font-weight: 500; }
+
+  .cc-tool i {
+    flex: none;
+    inline-size: 0.4rem;
+    block-size: 0.4rem;
+    border-radius: 50%;
+    background: #6fbf7f;
+  }
+
+  .cc-ask {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--app-accent);
+    border-radius: 10px;
+    background: var(--app-raise);
+    font-size: 0.78rem;
+  }
+
+  .cc-loop .cc-ask p { font-size: 0.8rem; line-height: 1.4; }
+  .cc-ask span { display: flex; gap: 0.35rem; }
+
+  .cc-ask em {
+    padding: 0.2rem 0.6rem;
+    border: 1px solid var(--app-line);
+    border-radius: 6px;
+    font-style: normal;
+    font-weight: 500;
+  }
+
+  .cc-ask .is-yes {
+    border-color: var(--app-text);
+    background: var(--app-text);
+    color: #1f1e1d;
+  }
+
+  .cc-input {
+    margin: 0 1rem 0.9rem;
+    padding: 0.6rem 0.7rem 0.5rem;
+    border: 1px solid var(--app-line);
+    border-radius: 14px;
+    background: var(--app-raise);
+  }
+
+  .cc-loop .cc-input p { color: var(--app-muted); font-size: 0.82rem; line-height: 1.4; }
+
+  .cc-input div {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-block-start: 0.55rem;
+  }
+
+  .cc-chip {
+    padding: 0.1rem 0.5rem;
+    border: 1px solid var(--app-line);
+    border-radius: 6px;
+    color: #d6d3c9;
     font-size: 0.7rem;
-    content: "✓";
   }
 
-  .cc-work li:nth-child(2) { transition-delay: 0.5s; }
-  .cc-work li:nth-child(3) { transition-delay: 1s; }
+  .cc-send {
+    display: grid;
+    place-items: center;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    margin-inline-start: auto;
+    border-radius: 8px;
+    background: var(--app-accent);
+    color: #fff;
+    font-size: 0.85rem;
+  }
 
   .cc-preview {
-    position: relative;
     display: grid;
-    grid-template-rows: auto 1fr;
-    background: var(--paper);
+    grid-template-rows: auto minmax(0, 1fr);
+    border-inline-start: 1px solid var(--app-line);
+    background: var(--app-side);
   }
 
-  .cc-loop .cc-preview-name {
-    margin: 0;
-    padding: 0.3rem 0.9rem;
-    border-block-end: 1.5px solid var(--hairline);
-    color: var(--muted);
-    font-size: var(--text-label);
-    font-weight: var(--weight-semibold);
+  .cc-url {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.4rem 0.7rem;
+    border-block-end: 1px solid var(--app-line);
+    font-size: 0.72rem;
+  }
+
+  .cc-url em {
+    flex: 1;
+    padding: 0.12rem 0.6rem;
+    border-radius: 6px;
+    background: var(--app-raise);
+    color: var(--app-muted);
+    font-style: normal;
   }
 
   .cc-loop .cc-empty {
     grid-area: 2 / 1;
     place-self: center;
-    margin: 0;
-    color: var(--muted);
-    font-size: var(--text-small);
+    color: var(--app-muted);
+    font-size: 0.8rem;
     transition: opacity 0.3s ease;
   }
 
+  /* La page construite : c'est le projet de la personne, donc claire et
+     sans rapport avec le thème de l'application. */
   .cc-page {
     grid-area: 2 / 1;
-    padding: 1.1rem;
-    background: var(--surface);
-    transition: opacity 0.5s ease, transform 0.5s ease, background-color 0.6s ease;
+    padding: 1.4rem 1.3rem;
+    background: #fff;
+    color: #1d1d1b;
+    transition: opacity 0.5s ease, transform 0.5s ease, background-color 0.7s ease;
   }
 
   .cc-loop .cc-page-title {
-    margin: 0 0 0.9rem;
-    font-family: var(--font-display);
-    font-size: 1.35rem;
-    font-weight: var(--weight-display);
+    margin-block-end: 1rem;
+    font-family: var(--app-serif);
+    font-size: 1.5rem;
+    font-weight: 700;
     line-height: 1.1;
   }
 
-  .cc-dishes {
-    display: grid;
-    gap: 0.6rem;
-  }
+  .cc-dishes { display: grid; gap: 0.65rem; }
 
   .cc-dishes div {
     display: flex;
     align-items: center;
-    gap: 0.7rem;
-    font-size: var(--text-small);
-    font-weight: var(--weight-medium);
+    gap: 0.8rem;
+    font-size: 0.88rem;
+    font-weight: 500;
   }
 
   .cc-dishes i {
     flex: none;
-    inline-size: 2rem;
-    block-size: 2rem;
-    border: 2px solid var(--ink);
-    border-radius: var(--radius-sm);
-    background: var(--brick-yellow);
-    transition: inline-size 0.6s ease, block-size 0.6s ease;
+    inline-size: 2.2rem;
+    block-size: 2.2rem;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #f2c26b, #d98a3d);
+    transition: inline-size 0.7s ease, block-size 0.7s ease;
   }
 
-  .cc-dishes div:nth-child(2) i { background: var(--brick-coral); }
-  .cc-dishes div:nth-child(3) i { background: var(--brick-green); }
+  .cc-dishes div:nth-child(2) i { background: linear-gradient(135deg, #e9a06b, #b5532c); }
+  .cc-dishes div:nth-child(3) i { background: linear-gradient(135deg, #a9c98a, #5f8f4e); }
 
   /* Étape 4 : la correction se voit, les photos grandissent et le fond change. */
-  .cc-loop[data-step="4"] .cc-page { background: #ffe9c7; }
+  .cc-loop[data-step="4"] .cc-page { background: #fbe8cf; }
   .cc-loop[data-step="4"] .cc-dishes i {
-    inline-size: 3.6rem;
-    block-size: 3.6rem;
+    inline-size: 4.2rem;
+    block-size: 4.2rem;
   }
 
-  /* Ce qui n'est pas encore arrivé à l'étape courante reste invisible. */
-  .cc-loop[data-step="1"] :is(.from-2, .from-3, .from-4),
-  .cc-loop[data-step="2"] :is(.from-3, .from-4),
-  .cc-loop[data-step="3"] .from-4,
-  .cc-loop[data-step="1"] .cc-work li,
-  .cc-loop:is([data-step="1"], [data-step="2"], [data-step="3"]) .cc-work.from-4 li {
+  /* Ce qui n'est pas encore arrivé à l'étape courante n'occupe pas de place
+     dans le fil, comme dans une vraie conversation. */
+  .cc-loop[data-step="1"] .cc-thread :is(.from-2, .from-3, .from-4),
+  .cc-loop[data-step="2"] .cc-thread :is(.from-3, .from-4),
+  .cc-loop[data-step="3"] .cc-thread .from-4,
+  .cc-loop:not([data-step="2"]) .only-2 {
+    display: none;
+  }
+
+  .cc-loop:is([data-step="1"], [data-step="2"]) .cc-page {
     opacity: 0;
-    transform: translateY(0.4rem);
-    transition-delay: 0s;
+    transform: translateY(0.5rem);
   }
 
-  .cc-msg { transition: opacity 0.35s ease, transform 0.35s ease; }
   .cc-loop:is([data-step="3"], [data-step="4"]) .cc-empty { opacity: 0; }
+
+  .cc-thread > *,
+  .cc-claude > * {
+    animation: cc-in 0.4s ease both;
+  }
+
+  .cc-claude > :nth-child(2) { animation-delay: 0.35s; }
+  .cc-claude > :nth-child(3) { animation-delay: 0.7s; }
+  .cc-claude > :nth-child(4) { animation-delay: 1.05s; }
+
+  @keyframes cc-in {
+    from { opacity: 0; transform: translateY(0.4rem); }
+  }
 
   .cc-loop .cc-steps {
     display: grid;
@@ -404,17 +571,26 @@ const steps = [
     cursor: pointer;
   }
 
+  @media (max-width: 56rem) {
+    .cc-body { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .cc-side { display: none; }
+  }
+
   @media (max-width: 40rem) {
-    .cc-panes { grid-template-columns: 1fr; }
-    .cc-talk {
-      border-inline-end: 0;
-      border-block-end: 2px solid var(--ink);
+    .cc-body {
+      grid-template-columns: 1fr;
+      block-size: auto;
     }
-    .cc-preview { min-block-size: 15rem; }
+    .cc-thread { min-block-size: 15rem; }
+    .cc-preview {
+      min-block-size: 17rem;
+      border-inline-start: 0;
+      border-block-start: 1px solid var(--app-line);
+    }
     .cc-loop .cc-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .cc-loop * { transition: none !important; }
+    .cc-loop * { transition: none !important; animation: none !important; }
   }
 </style>
