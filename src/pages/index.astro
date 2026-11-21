@@ -1,21 +1,22 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { BRICK_COUNT } from '../content/brick-files';
 ---
 
 <BaseLayout
   title="Les briques du Vibe Coding"
-  description="Une formation pratique pour comprendre l’IA, construire avec Claude et OpenAI, puis livrer un projet concret en 22 briques."
+  description={`Une formation pratique pour comprendre l’IA, construire avec Claude et OpenAI, puis livrer un projet concret en ${BRICK_COUNT} briques.`}
 >
   <section class="home-hero" aria-labelledby="home-title">
     <div class="home-copy">
-      <p class="eyebrow">Formation pratique · 22 briques · 2,5 jours</p>
+      <p class="eyebrow">Formation pratique · {BRICK_COUNT} briques · 2,5 jours</p>
       <h1 id="home-title">Les briques du <span>Vibe Coding</span></h1>
       <p class="home-lede">
         Comprendre ce que fait l’IA. Construire un outil qui vous ressemble.
         Le versionner, le partager et savoir comment continuer.
       </p>
       <div class="hero-actions">
-        <a class="button button-primary" href="/briques/">Explorer les 22 briques <span aria-hidden="true">→</span></a>
+        <a class="button button-primary" href="/briques/">Explorer les {BRICK_COUNT} briques <span aria-hidden="true">→</span></a>
         <a class="text-link" href="/faq/">Bloqué sur une manipulation ? Les gestes en images</a>
         <a class="text-link" href="#methode">Voir la méthode</a>
       </div>
@@ -31,7 +32,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       role="img"
       aria-label="Trois briques empilées : comprendre, construire et livrer"
     >
-      <div class="construction-tag" aria-hidden="true">KIT / 22</div>
+      <div class="construction-tag" aria-hidden="true">KIT / {BRICK_COUNT}</div>
       <div class="construction-block block-understand" aria-hidden="true">
         <span>A</span> COMPRENDRE
       </div>
@@ -64,7 +65,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <article>
         <span class="method-number">03</span>
         <h3>Un parcours qui reste utile</h3>
-        <p>Les 22 briques deviennent votre bibliothèque pour réviser, retrouver une commande et prolonger le projet après la formation.</p>
+        <p>Les {BRICK_COUNT} briques deviennent votre bibliothèque pour réviser, retrouver une commande et prolonger le projet après la formation.</p>
       </article>
     </div>
   </section>

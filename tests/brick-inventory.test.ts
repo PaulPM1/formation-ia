@@ -1,8 +1,10 @@
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
 import {
+  BRICK_COUNT,
   EXPECTED_IMPORTED_BRICK_IDS,
   hasVisibleEditorialContent,
   loadBrickDocuments,
@@ -146,4 +148,19 @@ test('considère les commentaires MDX comme des indications éditoriales invisib
   const body = '## Cap\n\n{/* Indication réservée aux auteurs. */}';
 
   assert.equal(hasVisibleEditorialContent(body), false);
+});
+
+test('les totaux affichés viennent de BRICK_COUNT', async () => {
+  assert.equal(BRICK_COUNT, EXPECTED_IMPORTED_BRICK_IDS.length);
+  for (const file of [
+    'src/layouts/BaseLayout.astro',
+    'src/pages/index.astro',
+    'src/pages/404.astro',
+    'src/pages/briques/index.astro',
+  ]) {
+    const source = await readFile(new URL(`../${file}`, import.meta.url), 'utf8');
+    assert.match(source, /BRICK_COUNT/, file);
+    assert.doesNotMatch(source, /\b\d+ briques\b/, file);
+    assert.doesNotMatch(source, /KIT \/ \d+/, file);
+  }
 });

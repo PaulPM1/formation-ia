@@ -30,6 +30,8 @@ export const EXPECTED_IMPORTED_BRICK_IDS = [
   'e4',
 ] as const;
 
+export const BRICK_COUNT: number = EXPECTED_IMPORTED_BRICK_IDS.length;
+
 async function findMdxFiles(directory: string): Promise<string[]> {
   const entries = await readdir(directory, { withFileTypes: true });
   const nestedFiles = await Promise.all(
