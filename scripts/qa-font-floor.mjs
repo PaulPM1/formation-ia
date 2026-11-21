@@ -15,7 +15,7 @@ for (const brick of await readdir(new URL('../dist/presenter/', import.meta.url)
   }
 }
 routes.sort((a, b) => a.localeCompare(b, 'fr', { numeric: true }));
-if (routes.length !== 83) throw new Error(`83 routes attendues, ${routes.length} trouvées.`);
+if (routes.length !== 62) throw new Error(`62 routes attendues, ${routes.length} trouvées.`);
 
 const stopPreview = () => {
   if (preview && !preview.killed) preview.kill('SIGTERM');
@@ -106,5 +106,5 @@ if (failures.length) {
   console.error(failures.join('\n'));
   process.exitCode = 1;
 } else {
-  console.log(`Plancher typographique : ${routes.length}/83 routes HTML, SVG et pseudo-contenus à au moins 12 px en desktop, mobile et zoom 200 %.`);
+  console.log(`Plancher typographique : ${routes.length}/62 routes HTML, SVG et pseudo-contenus à au moins 12 px en desktop, mobile et zoom 200 %.`);
 }

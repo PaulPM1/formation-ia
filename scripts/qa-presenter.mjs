@@ -57,8 +57,8 @@ const slideRoutes = generatedPages
   .map((page) => `/presenter/${page.replaceAll(path.sep, '/').replace(/\/index\.html$/, '')}`)
   .toSorted();
 
-if (slideRoutes.length !== 83) failures.push(`inventaire slides ${slideRoutes.length}/83`);
-if (generatedPages.length !== 84) failures.push(`inventaire présentateur ${generatedPages.length}/84`);
+if (slideRoutes.length !== 62) failures.push(`inventaire slides ${slideRoutes.length}/62`);
+if (generatedPages.length !== 63) failures.push(`inventaire présentateur ${generatedPages.length}/63`);
 for (const route of removedBlockBRoutes) {
   const response = await fetch(`${baseURL}${route}`, { redirect: 'manual' });
   if (response.status !== 404 || response.headers.has('location')) {
@@ -120,48 +120,21 @@ try {
   if (await optionalLabels.count() !== 0) {
     failures.push('sommaire présentateur : aucun badge optional attendu');
   }
-  if (await recoveryLabels.count() !== 1 || (await recoveryLabels.first().textContent())?.trim() !== 'Rattrapage') {
-    failures.push('sommaire présentateur : badge Rattrapage unique attendu');
+  if (await recoveryLabels.count() !== 0) {
+    failures.push('sommaire présentateur : aucun badge Rattrapage attendu');
   }
 
-  await navigateAndWaitForFonts(controllerPage, `${baseURL}/presenter/b3/b3-check/`);
-  const requiredNext = controllerPage.locator('[data-next]');
-  if (await requiredNext.getAttribute('href') !== '/presenter/b4/b4-context/') {
-    failures.push('parcours principal : B3 ne pointe pas vers B4');
-  }
-  await Promise.all([
-    controllerPage.waitForURL('**/presenter/b4/b4-context/', { waitUntil: 'domcontentloaded' }),
-    requiredNext.click({ noWaitAfter: true }),
-  ]);
-  const requiredPrevious = controllerPage.locator('[data-previous]');
-  if (await requiredPrevious.getAttribute('href') !== '/presenter/b3/b3-check/') {
-    failures.push('parcours principal : B4 ne revient pas vers B3');
-  }
-  const coreHeading = controllerPage.locator('.presentation-heading__track');
-  if (await coreHeading.isVisible().catch(() => false)) {
-    failures.push('parcours principal : B4 affiche un repère de piste');
-  }
-
-  await navigateAndWaitForFonts(controllerPage, `${baseURL}/presenter/b4/b4-test/`);
+  await navigateAndWaitForFonts(controllerPage, `${baseURL}/presenter/a4/a4-mission/`);
   if (await controllerPage.locator('[data-next]').getAttribute('href') !== '/presenter/c1/c1-repeat/') {
-    failures.push('parcours principal : B4 ne rejoint pas C1');
+    failures.push('parcours principal : A4 ne rejoint pas C1');
   }
   await Promise.all([
     controllerPage.waitForURL('**/presenter/c1/c1-repeat/', { waitUntil: 'domcontentloaded' }),
     controllerPage.locator('[data-next]').click({ noWaitAfter: true }),
   ]);
-  if (await controllerPage.locator('[data-previous]').getAttribute('href') !== '/presenter/b4/b4-test/') {
-    failures.push('parcours principal : C1 ne revient pas vers B4 test');
+  if (await controllerPage.locator('[data-previous]').getAttribute('href') !== '/presenter/a4/a4-mission/') {
+    failures.push('parcours principal : C1 ne revient pas vers A4');
   }
-
-  await navigateAndWaitForFonts(controllerPage, `${baseURL}/presenter/b4-bis/b4bis-install/`);
-  const recoveryHeading = controllerPage.locator('.presentation-heading__track');
-  if (!await recoveryHeading.isVisible() || (await recoveryHeading.textContent())?.trim() !== 'Rattrapage') {
-    failures.push('rattrapage : repère de slide absent sur B4-bis');
-  }
-  if (await controllerPage.locator('[data-previous]').count()) failures.push('rattrapage : la première slide possède un précédent');
-  await navigateAndWaitForFonts(controllerPage, `${baseURL}/presenter/b4-bis/b4bis-checkpoint/`);
-  if (await controllerPage.locator('[data-next]').count()) failures.push('rattrapage : la dernière slide possède une suivante');
 
   await navigateAndWaitForFonts(controllerPage, `${baseURL}/presenter/a4/a4-mission/`);
   const summary = controllerPage.locator('.mission-board__correction summary');
@@ -232,7 +205,6 @@ try {
 
   for (const route of [
     '/presenter/a4/a4-risk/',
-    '/presenter/b2/b2-mission/',
     '/presenter/c2/c2-permissions/',
   ]) {
     await navigateAndWaitForFonts(controllerPage, `${baseURL}${route}`);
@@ -257,5 +229,5 @@ if (failures.length) {
   console.error(failures.join('\n'));
   process.exitCode = 1;
 } else {
-  console.log('QA présentateur : 83/83 routes mobiles, parcours principal et rattrapage, 12 anciennes routes en 404 sans redirection, contrôleur natif, plein écran, zoom, mouvement réduit et impression validés ; 84 pages générées.');
+  console.log('QA présentateur : 62/62 routes mobiles, 12 anciennes routes en 404 sans redirection, contrôleur natif, plein écran, zoom, mouvement réduit et impression validés ; 63 pages générées.');
 }

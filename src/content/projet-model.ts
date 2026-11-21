@@ -16,18 +16,11 @@ export const PROJET_DIFFICULTIES = [
   'ambitieux',
 ] as const;
 
-/** Les 22 briques du curriculum, après renumérotation et retrait du bloc F. */
 export const VALID_BRICK_IDS = [
   'a1',
   'a2',
   'a3',
   'a4',
-  'b0',
-  'b1',
-  'b2',
-  'b3',
-  'b4',
-  'b4-bis',
   'c1',
   'c2',
   'c3',

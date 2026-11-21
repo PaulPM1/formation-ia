@@ -16,7 +16,7 @@ const links = {
 
 export const D_DECKS = [
   {
-    brickId: 'd1', family: 'd', order: 14, title: 'Lexique dev', slides: [
+    brickId: 'd1', family: 'd', order: 8, title: 'Lexique dev', slides: [
       slide({
         id: 'd1-reflex', role: 'opening',
         claim: 'Le lexique ne se mémorise pas : il se demande.',
@@ -36,7 +36,7 @@ export const D_DECKS = [
     ],
   },
   {
-    brickId: 'd2', family: 'd', order: 15, title: 'GitHub et versionnement', slides: [
+    brickId: 'd2', family: 'd', order: 9, title: 'GitHub et versionnement', slides: [
       slide({
         id: 'd2-fear', role: 'opening',
         claim: 'Un commit est un point de sauvegarde de jeu vidéo.',
@@ -93,7 +93,7 @@ export const D_DECKS = [
     ],
   },
   {
-    brickId: 'd2-bis', family: 'd', order: 16, title: 'Setup GitHub et Vercel', slides: [
+    brickId: 'd2-bis', family: 'd', order: 10, title: 'Setup GitHub et Vercel', slides: [
       slide({
         id: 'd2bis-ritual', role: 'opening',
         claim: 'Faire naître un projet suit un rituel en quatre temps, chacun avec son propriétaire.',
@@ -134,7 +134,7 @@ export const D_DECKS = [
     ],
   },
   {
-    brickId: 'd3', family: 'd', order: 17, title: 'Front-end et déploiement', slides: [
+    brickId: 'd3', family: 'd', order: 11, title: 'Front-end et déploiement', slides: [
       slide({
         id: 'd3-public', role: 'opening',
         claim: 'Le déploiement fait passer le projet de « chez moi » à une adresse pour tout le monde.',
@@ -194,7 +194,7 @@ export const D_DECKS = [
     ],
   },
   {
-    brickId: 'd4', family: 'd', order: 18, title: 'Sécurité et bonnes pratiques', slides: [
+    brickId: 'd4', family: 'd', order: 12, title: 'Sécurité et bonnes pratiques', slides: [
       slide({
         id: 'd4-exigence', role: 'opening',
         claim: 'L’IA écrit du code qui marche, pas forcément du code sûr.',

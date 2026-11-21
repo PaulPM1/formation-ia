@@ -9,8 +9,7 @@ export const SLIDE_VISUAL_KEYS = [
   'mission-board', 'checkpoint', 'resource-rail',
   'token-predictor', 'context-comparison', 'solution-comparison',
   'solution-prioritizer', 'model-cost-guide', 'context-budget', 'verification-audit',
-  'setup-diagnostic', 'prompt-builder', 'artifact-test-loop',
-  'pacte-workspace', 'ipmtr-loop', 'workspace-triptych',
+  'setup-diagnostic', 'prompt-builder', 'ipmtr-loop',
   'skill-anatomy', 'mcp-connection-map', 'trigger-timeline',
 ] as const;
 

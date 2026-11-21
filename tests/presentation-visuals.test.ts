@@ -3,9 +3,7 @@ import { readFile, readdir } from 'node:fs/promises';
 import test from 'node:test';
 
 import { A_DECKS } from '../src/presentation/manifests/a';
-import { B_DECKS } from '../src/presentation/manifests/b';
 import { C_DECKS } from '../src/presentation/manifests/c';
-import { D_DECKS } from '../src/presentation/manifests/d';
 import { E_DECKS } from '../src/presentation/manifests/e';
 import { SLIDE_VISUAL_KEYS } from '../src/presentation/presentation-model';
 
@@ -108,7 +106,7 @@ test('les tokens typographiques des slides gardent un plancher de 0,75 rem', asy
   }
 });
 
-test('la QA durable mesure les textes HTML et SVG à 12 px sur 83 routes et au zoom 200 %', async () => {
+test('la QA durable mesure les textes HTML et SVG à 12 px sur 62 routes et au zoom 200 %', async () => {
   const [qa, ready, packageJson] = await Promise.all([
     read('scripts/qa-font-floor.mjs'),
     read('scripts/qa-page-ready.mjs'),
@@ -119,7 +117,7 @@ test('la QA durable mesure les textes HTML et SVG à 12 px sur 83 routes et au z
   assert.match(qa, /const FONT_FLOOR_PX = 11\.99/);
   assert.match(qa, /querySelectorAll\(['"]svg text['"]\)/);
   assert.match(qa, /deviceScaleFactor:\s*2/);
-  assert.match(qa, /routes\.length[^\n]*83|83[^\n]*routes\.length/);
+  assert.match(qa, /routes\.length[^\n]*62|62[^\n]*routes\.length/);
   assert.match(qa, /navigateAndWaitForFonts/);
   assert.match(ready, /waitUntil:\s*'domcontentloaded'/);
   assert.match(ready, /Promise\.race/);
@@ -604,77 +602,11 @@ test('le prédicteur laisse réellement disparaître les tokens futurs', async (
   assert.match(token, /\[data-token\]\[hidden\]\s*{[^}]*display:\s*none/s);
 });
 
-test('enregistre tous les visuels du bloc B', async () => {
+test('enregistre les visuels conservés du dossier b', async () => {
   const registry = await read('src/components/presentation/VisualRegistry.astro');
   for (const name of [
-    'SetupDiagnostic', 'PromptBuilder', 'ArtifactTestLoop',
-    'PacteWorkspace', 'IpmtrLoop', 'WorkspaceTriptych',
+    'SetupDiagnostic', 'PromptBuilder', 'IpmtrLoop',
   ]) assert.match(registry, new RegExp(name));
-});
-
-test('les 21 routes du bloc B choisissent leur variante réelle', async () => {
-  const state = await import('../src/components/presentation/visuals/b/visual-state').catch(() => null);
-  assert.ok(state, "les helpers d’état du bloc B doivent exister");
-
-  const resolverByKey = {
-    'setup-diagnostic': state.getSetupVariant,
-    'prompt-builder': state.getPromptVariant,
-    'artifact-test-loop': state.getArtifactVariant,
-    'pacte-workspace': state.getPacteVariant,
-    'ipmtr-loop': state.getIpmtrVariant,
-    'workspace-triptych': state.getWorkspaceVariant,
-  } as const;
-
-  const specialized = B_DECKS.flatMap((deck) => deck.slides)
-    .filter((slide) => slide.visual.key in resolverByKey);
-  assert.equal(specialized.length, 18);
-
-  const expected = new Map<string, string>([
-    ['b1-vague', 'comparison'], ['b1-four-blocks', 'blocks'],
-    ['b1-mission', 'builder'], ['b1-loop', 'loop'],
-    ['b2-object', 'transfer'], ['b2-mvp', 'mvp'],
-    ['b2-mission', 'tests'], ['b2-correction', 'correction'],
-    ['b3-delegation', 'delegation'], ['b3-pacte', 'pacte'],
-    ['b3-mission', 'timeline'], ['b3-check', 'check'],
-    ['b4-context', 'context'], ['b4-ipmtr', 'process'],
-    ['b4-mission', 'permission'],
-    ['b4bis-install', 'panes'], ['b4bis-workspace', 'workspace'],
-    ['b4bis-checkpoint', 'path'],
-  ]);
-
-  for (const slide of specialized) {
-    const resolver = resolverByKey[slide.visual.key as keyof typeof resolverByKey];
-    assert.equal(resolver?.(slide.visual.data), expected.get(slide.id), slide.id);
-  }
-
-  assert.equal(B_DECKS.flatMap((deck) => deck.slides)
-    .find((slide) => slide.id === 'b4-test')?.visual.key, 'solution-prioritizer');
-});
-
-test('le checkpoint de transfert B4 verrouille quatre scénarios complets', () => {
-  const checkpoint = B_DECKS.flatMap((deck) => deck.slides)
-    .find((slide) => slide.id === 'b4-test');
-  assert.ok(checkpoint);
-  assert.equal(checkpoint.visual.key, 'solution-prioritizer');
-
-  const scenarios = checkpoint.visual.data.scenarios;
-  assert.ok(Array.isArray(scenarios));
-  assert.deepEqual(
-    scenarios.map((scenario) => scenario.title),
-    ['Répondre à un email', 'Créer un calculateur', 'Analyser douze entretiens', 'Corriger un tri existant'],
-  );
-  assert.deepEqual(
-    scenarios.map((scenario) => scenario.answer),
-    ['chat', 'object', 'work', 'code'],
-  );
-  for (const [index, scenario] of scenarios.entries()) {
-    assert.ok(Array.isArray(scenario.signals), `signaux du scénario ${index + 1}`);
-    assert.equal(scenario.signals.length, 4, `signaux du scénario ${index + 1}`);
-    for (const field of ['situation', 'reason', 'tempting', 'temptingReason']) {
-      assert.equal(typeof scenario[field], 'string', `${field} du scénario ${index + 1}`);
-      assert.notEqual(scenario[field].trim(), '', `${field} du scénario ${index + 1}`);
-    }
-  }
 });
 
 test('les états interactifs du bloc B restent déterministes et bloquent les portes', async () => {
@@ -705,17 +637,6 @@ test('les états interactifs du bloc B restent déterministes et bloquent les po
     loopIndex = state.advanceIpmtr(loopIndex, { permission: true, test: true, diff: true }).index;
     assert.equal(loopIndex, expected);
   }
-
-  assert.deepEqual(state.artifactViewState(3, null), {
-    active: null,
-    panels: [true, true, true],
-    nodes: [true, true, true],
-  });
-  assert.deepEqual(state.artifactViewState(3, 1), {
-    active: 1,
-    panels: [false, true, false],
-    nodes: [false, true, false],
-  });
 });
 
 test('I.P.M.T.R. consomme les portes et rebloque au second tour', async () => {
@@ -759,73 +680,13 @@ test('I.P.M.T.R. consomme les portes et rebloque au second tour', async () => {
 test('le comparatif de prompt conserve toujours le vrai état après du manifeste', async () => {
   const state = await import('../src/components/presentation/visuals/b/visual-state').catch(() => null);
   assert.ok(state, "les helpers d’état du bloc B doivent exister");
-  const vague = B_DECKS.flatMap((deck) => deck.slides).find((slide) => slide.id === 'b1-vague');
-  assert.ok(vague);
-  const target = String(vague.visual.data.after);
-  const questions = (vague.visual.data.assumptions as string[]) ?? [];
+  const target = 'Prompt cible complet';
+  const questions = ['Qui ?', 'Quoi ?', 'Où ?', 'Quand ?'];
 
   assert.equal(state.promptOutputForVariant('comparison', target, questions, [false, false, false, false]), target);
   assert.equal(state.promptOutputForVariant('comparison', target, questions, [true, false, true, false]), target);
   assert.notEqual(target, questions.join(' · '));
   assert.doesNotMatch(target, /Sélectionnez/);
-});
-
-test('le triptyque choisit un libellé path-like pour D1 et B4-bis', async () => {
-  const state = await import('../src/components/presentation/visuals/b/visual-state').catch(() => null);
-  assert.ok(state, "les helpers d’état du bloc B doivent exister");
-  const folderLabelFor = Reflect.get(state, 'workspaceFolderLabel') as
-    | ((data: Record<string, unknown>) => string)
-    | undefined;
-  assert.equal(typeof folderLabelFor, 'function', 'workspaceFolderLabel doit être exporté');
-  assert.ok(folderLabelFor);
-
-  const blockBSlides = B_DECKS.flatMap((deck) => deck.slides);
-  const bData = (id: string) => blockBSlides.find((slide) => slide.id === id)?.visual.data ?? {};
-  const d1Data = D_DECKS.flatMap((deck) => deck.slides)
-    .find((slide) => slide.id === 'd1-workspace')?.visual.data ?? {};
-
-  assert.equal(folderLabelFor(d1Data), 'projet');
-  assert.notEqual(folderLabelFor(d1Data), 'Un seul projet, trois vues');
-  for (const id of ['b4bis-install', 'b4bis-workspace', 'b4bis-checkpoint']) {
-    assert.equal(folderLabelFor(bData(id)), 'mini-application', id);
-  }
-  assert.equal(
-    folderLabelFor({ folderLabel: 'prioritaire', folder: 'kits/autre', explorerPath: 'kits/dernier' }),
-    'prioritaire',
-  );
-  assert.equal(folderLabelFor({ folder: 'C:\\kits\\bloc-b\\mini-application\\' }), 'mini-application');
-  assert.equal(folderLabelFor({ explorerPath: 'kits/bloc-b/mini-application/' }), 'mini-application');
-
-  assert.equal(state.workspaceSharedPath(bData('b4bis-install')), 'kits/bloc-b-assistant/mini-application/');
-  assert.equal(state.workspaceSharedPath(bData('b4bis-workspace')), 'kits/bloc-b-assistant/mini-application');
-  assert.equal(state.workspaceSharedPath(bData('b4bis-checkpoint')), 'kits/bloc-b-assistant/mini-application');
-
-  const triptych = await read('src/components/presentation/visuals/b/WorkspaceTriptych.astro');
-  assert.match(triptych, /workspaceFolderLabel/);
-  assert.match(triptych, /const folderLabel = workspaceFolderLabel\(data\)/);
-  assert.doesNotMatch(triptych, /normalizedSharedPath/);
-});
-
-test('Artifact route chaque claim vers un visuel central distinct et synchronisable', async () => {
-  const artifact = await read('src/components/presentation/visuals/b/ArtifactTestLoop.astro');
-  assert.match(artifact, /variant === 'transfer'/);
-  assert.match(artifact, /variant === 'anatomy'/);
-  assert.match(artifact, /variant === 'mvp'/);
-  assert.match(artifact, /isLoopVariant/);
-  assert.match(artifact, /data-artifact-node/);
-  assert.match(artifact, /data-artifact-overview/);
-  assert.match(artifact, /Vue d’ensemble/);
-  assert.match(artifact, /node\.classList\.toggle/);
-  assert.match(artifact, /document\.querySelectorAll<HTMLElement>\('\[data-artifact-loop\]'\)/);
-  assert.match(artifact, /scene\.querySelectorAll<HTMLButtonElement>\('\[data-artifact-stage\]'\)/);
-});
-
-test('la vue d’ensemble Artifact compacte les contrôles et panneaux sur une rangée', async () => {
-  const artifact = await read('src/components/presentation/visuals/b/ArtifactTestLoop.astro');
-  assert.match(artifact, /--artifact-panel-count/);
-  assert.match(artifact, /repeat\(var\(--artifact-panel-count\),\s*minmax\(0,\s*1fr\)\)/);
-  assert.match(artifact, /\.artifact__stage-buttons \.artifact__overview\s*{[^}]*grid-column:\s*auto/s);
-  assert.match(artifact, /\.artifact__panels article\s*{[^}]*min-block-size:\s*0/s);
 });
 
 test('I.P.M.T.R. annonce les trois portes sur une boucle non terminale', async () => {
@@ -839,17 +700,13 @@ test('I.P.M.T.R. annonce les trois portes sur une boucle non terminale', async (
 
 test('les visuels du bloc B gardent un état final sans JS et des contrôles natifs', async () => {
   const files = await Promise.all([
-    'SetupDiagnostic', 'PromptBuilder', 'ArtifactTestLoop',
-    'PacteWorkspace', 'IpmtrLoop', 'WorkspaceTriptych',
+    'SetupDiagnostic', 'PromptBuilder', 'IpmtrLoop',
   ].map((name) => read(`src/components/presentation/visuals/b/${name}.astro`))).catch(() => [] as string[]);
 
-  assert.equal(files.length, 6);
+  assert.equal(files.length, 3);
   assert.match(files[0] ?? '', /type="radio"/);
   assert.match(files[1] ?? '', /<button[^>]+type="button"/);
-  assert.match(files[2] ?? '', /<path[^>]+data-loop-path/);
-  assert.match(files[3] ?? '', /type="checkbox"/);
-  assert.match(files[4] ?? '', /<path[^>]+data-ipmtr-path/);
-  assert.match(files[5] ?? '', /data-command-mac/);
+  assert.match(files[2] ?? '', /<path[^>]+data-ipmtr-path/);
   for (const file of files) {
     assert.match(file, /data-enhanced/);
     assert.match(file, /prefers-reduced-motion/);
@@ -859,8 +716,7 @@ test('les visuels du bloc B gardent un état final sans JS et des contrôles nat
 
 test('le bloc B impose un plancher typographique lisible au vidéoprojecteur', async () => {
   const componentNames = [
-    'SetupDiagnostic', 'PromptBuilder', 'ArtifactTestLoop',
-    'PacteWorkspace', 'IpmtrLoop', 'WorkspaceTriptych',
+    'SetupDiagnostic', 'PromptBuilder', 'IpmtrLoop',
   ];
   const components = await Promise.all(componentNames.map(async (name) => ({
     name,
@@ -906,8 +762,6 @@ test('le bloc B impose un plancher typographique lisible au vidéoprojecteur', a
   }
   assert.match(familyB, /\.mission-board__steps li\s*{[^}]*font-size:\s*1rem/s);
   assert.match(familyB, /\.checkpoint-scene__checklist li\s*{[^}]*font-size:\s*var\(--b-font-body\)/s);
-  assert.match(source.ArtifactTestLoop, /\.artifact__stage-buttons button\s*{[^}]*var\(--b-font-control\)/s);
-  assert.match(source.ArtifactTestLoop, /\.artifact__panels article strong\s*{[^}]*var\(--b-font-body\)/s);
   assert.match(source.SetupDiagnostic, /\.setup__checklist label\s*{[^}]*var\(--b-font-control\)/s);
   assert.match(source.IpmtrLoop, /\.ipmtr__gates label\s*{[^}]*var\(--b-font-control\)/s);
 
@@ -919,11 +773,10 @@ test('le bloc B impose un plancher typographique lisible au vidéoprojecteur', a
   }
 });
 
-test('Prompt, Setup et Triptyque restent intrinsèquement fluides', async () => {
-  const [prompt, setup, triptych] = await Promise.all([
+test('Prompt et Setup restent intrinsèquement fluides', async () => {
+  const [prompt, setup] = await Promise.all([
     read('src/components/presentation/visuals/b/PromptBuilder.astro'),
     read('src/components/presentation/visuals/b/SetupDiagnostic.astro'),
-    read('src/components/presentation/visuals/b/WorkspaceTriptych.astro'),
   ]);
 
   assert.match(prompt, /data-variant='blocks'[^}]*\.prompt__construction[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s);
@@ -935,15 +788,12 @@ test('Prompt, Setup et Triptyque restent intrinsèquement fluides', async () => 
   assert.match(setup, /class="setup__route-label"/);
   assert.doesNotMatch(setup, /\.setup__route-label\s*{[^}]*display:\s*none/s);
 
-  assert.doesNotMatch(triptych, /--display-font/);
-  assert.match(triptych, /\.triptych__shared, \.triptych__destination\s*{[^}]*var\(--font-display\)/s);
 });
 
 test('les contenus longs du nouveau parcours B se contractent à 200 %', async () => {
-  const [comparison, prioritizer, pacte, presentation] = await Promise.all([
+  const [comparison, prioritizer, presentation] = await Promise.all([
     read('src/components/presentation/visuals/a/SolutionComparison.astro'),
     read('src/components/presentation/visuals/a/SolutionPrioritizer.astro'),
-    read('src/components/presentation/visuals/b/PacteWorkspace.astro'),
     read('src/styles/presentation.css'),
   ]);
 
@@ -972,39 +822,9 @@ test('les contenus longs du nouveau parcours B se contractent à 200 %', async (
     /\[data-solution-prioritizer\]:not\(\[data-enhanced='true'\]\) \.prioritizer__scenario\s*{[^}]*align-content:\s*start[^}]*min-block-size:\s*0/s,
   );
   assert.match(
-    pacte,
-    /\.pacte__workspace-lane strong\s*{[^}]*min-inline-size:\s*0[^}]*overflow-wrap:\s*anywhere/s,
-  );
-  assert.match(
     presentation,
     /\.presentation-stage\[data-family="b"\] \.mission-board__outcome dt\s*{[^}]*line-height:\s*1\.25/s,
   );
-});
-
-test('le sweep QA B contrôle les 21 routes, trois vues et les quatre niveaux', async () => {
-  const qa = await read('scripts/qa-block-b.mjs').catch(() => '');
-  assert.match(qa, /getComputedStyle/);
-  assert.match(qa, /getBoundingClientRect/);
-  assert.match(qa, /scrollWidth/);
-  assert.match(qa, /fontSize/);
-  assert.match(qa, /overflowX/);
-  assert.match(qa, /comparison__need strong/);
-  assert.match(qa, /Réponse.*Objet.*Livrable.*Projet/s);
-  assert.match(qa, /b4-context.*b4bis-checkpoint/s);
-  assert.match(qa, /b4-test/);
-  assert.match(qa, /presentation-heading__track/);
-  assert.doesNotMatch(qa, /Facultatif/);
-  assert.match(qa, /Rattrapage/);
-  assert.match(qa, /comparison__levels/);
-  assert.match(qa, /mission-board/);
-  assert.match(qa, /\.presentation-visual\.mission-board/);
-  assert.doesNotMatch(qa, /locator\(`\.presentation-visual \$\{proofSelector\}`\)/);
-  assert.match(qa, /data-prioritizer-scenario/);
-  assert.match(qa, /Dernière situation.*cadre/s);
-  assert.match(qa, /prioritizer__correction/);
-  assert.match(qa, /data-enhanced="false"/);
-  assert.match(qa, /zoom-200/);
-  assert.match(qa, /navigateAndWaitForFonts/);
 });
 
 test('enregistre tous les visuels du bloc C', async () => {

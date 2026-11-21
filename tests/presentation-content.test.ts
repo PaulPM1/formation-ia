@@ -6,7 +6,7 @@ import { PRESENTATION_DECKS, PRESENTATION_SLIDES } from '../src/presentation/man
 import { validatePresentation } from '../src/presentation/presentation-validation';
 
 const expectedIds = [
-  'a1', 'a2', 'a3', 'a4', 'b0', 'b1', 'b2', 'b3', 'b4', 'b4-bis',
+  'a1', 'a2', 'a3', 'a4',
   'c1', 'c2', 'c3', 'd1', 'd2', 'd2-bis', 'd3', 'd4', 'e1', 'e2',
   'e3', 'e4',
 ];
@@ -31,27 +31,6 @@ const expectedSlides = [
   { id: 'a4-risk', claim: "L'effort de vérification doit suivre le niveau de risque.", visualKey: 'verification-audit' },
   { id: 'a4-method', claim: "Stop — Source — Test — Décision rend l'incertitude visible.", visualKey: 'verification-audit' },
   { id: 'a4-mission', claim: 'Auditez une réponse avant de décider.', visualKey: 'mission-board' },
-  { id: 'b0-layers', claim: 'Une voie, quatre niveaux d’action à tester.', visualKey: 'solution-comparison' },
-  { id: 'b0-test', claim: 'Le kit est un banc d’essai, pas votre projet personnel.', visualKey: 'mission-board' },
-  { id: 'b1-vague', claim: 'Chat suffit lorsque la sortie est une réponse à relire.', visualKey: 'prompt-builder' },
-  { id: 'b1-four-blocks', claim: 'Objectif, contexte, contraintes et forme rendent cette réponse testable.', visualKey: 'prompt-builder' },
-  { id: 'b1-mission', claim: 'Transformez six notes en brief sourcé dans Claude Chat ou ChatGPT.', visualKey: 'prompt-builder' },
-  { id: 'b1-loop', claim: 'Un test binaire nomme l’écart avant la correction.', visualKey: 'prompt-builder' },
-  { id: 'b2-object', claim: 'Artifacts et Canvas transforment la réponse en objet manipulable.', visualKey: 'artifact-test-loop' },
-  { id: 'b2-mvp', claim: 'Une boîte de tri à trois états suffit pour tester l’idée.', visualKey: 'artifact-test-loop' },
-  { id: 'b2-mission', claim: 'Construisez puis exécutez cinq tests sur les six notes.', visualKey: 'artifact-test-loop' },
-  { id: 'b2-correction', claim: 'Une correction ciblée ne vaut que si les cinq tests repassent.', visualKey: 'artifact-test-loop' },
-  { id: 'b3-delegation', claim: 'Cowork et Work prennent plusieurs étapes en charge ; vous gardez le périmètre.', visualKey: 'pacte-workspace' },
-  { id: 'b3-pacte', claim: 'P.A.C.T.E. transforme une délégation en contrat observable.', visualKey: 'pacte-workspace' },
-  { id: 'b3-mission', claim: 'Faites produire un brief fini dans Cowork ou Work.', visualKey: 'pacte-workspace' },
-  { id: 'b3-check', claim: 'Le livrable n’est fini que si sources et incertitude passent le test.', visualKey: 'pacte-workspace' },
-  { id: 'b4-context', claim: 'Claude Code et Codex travaillent dans le contexte réel d’un projet.', visualKey: 'ipmtr-loop' },
-  { id: 'b4-ipmtr', claim: 'Inspecter, planifier, modifier, tester et relire borne le changement.', visualKey: 'ipmtr-loop' },
-  { id: 'b4-mission', claim: 'Ajoutez les sources aux cartes sans modifier le tri.', visualKey: 'ipmtr-loop' },
-  { id: 'b4-test', claim: 'Après quatre essais, choisissez la plus petite surface suffisante.', visualKey: 'solution-prioritizer' },
-  { id: 'b4bis-install', claim: 'Le rattrapage ne corrige que le maillon local qui manque.', visualKey: 'workspace-triptych' },
-  { id: 'b4bis-workspace', claim: 'Explorateur, fichier et terminal doivent pointer vers le même kit.', visualKey: 'workspace-triptych' },
-  { id: 'b4bis-checkpoint', claim: 'Le poste est prêt lorsque le test passe et l’agent de code ouvre le bon dossier.', visualKey: 'workspace-triptych' },
   { id: 'c1-repeat', claim: 'Une méthode répétée trois fois mérite peut-être un Skill.', visualKey: 'skill-anatomy' },
   { id: 'c1-neighbors', claim: 'Skill, contexte, outil et hook ne répondent pas au même besoin.', visualKey: 'skill-anatomy' },
   { id: 'c1-anatomy', claim: 'Description, procédure et sortie rendent le Skill découvrable et testable.', visualKey: 'skill-anatomy' },
@@ -126,7 +105,7 @@ test('couvre toutes les briques A1 à E4 dans l’ordre pédagogique', () => {
   assert.deepEqual(PRESENTATION_DECKS.map((deck) => deck.brickId), expectedIds);
 });
 
-test('contient les 83 étapes de compréhension validées', () => {
+test('contient les 62 étapes de compréhension validées', () => {
   assert.deepEqual(
     PRESENTATION_SLIDES.map((slide) => ({
       id: slide.id,
@@ -201,32 +180,7 @@ test('le checkpoint A1 contient les cinq affirmations nuancées validées', () =
   ]);
 });
 
-test('conserve les contenus canoniques revus de B0, A4 et P.A.C.T.E.', () => {
-  const b0Test = slideData('b0-test');
-  assert.deepEqual(b0Test.mission, [
-    'Choisir Claude ou OpenAI.',
-    'Télécharger le Kit d’entraînement du Bloc B.',
-    'Ouvrir les trois fichiers de notes/.',
-    'Nommer les quatre sorties à produire.',
-  ]);
-  assert.equal(
-    b0Test.successCriterion,
-    'Une voie choisie, trois notes ouvertes et aucune confusion avec le projet personnel.',
-  );
-  assert.deepEqual(b0Test.evidence, [
-    'Choix visible',
-    'Trois fichiers lisibles',
-    'Quatre niveaux reformulés',
-  ]);
-
-  const pacte = slideData('b3-pacte').pacte as Array<{ letter: string; name: string; prompt: string }>;
-  assert.deepEqual(pacte[3], {
-    letter: 'T',
-    name: 'Terminaison',
-    prompt: 'Le vérificateur passe et les empreintes sont identiques',
-  });
-  assert.ok(!pacte.some((item) => item.name === 'Trace'));
-
+test('conserve les contenus canoniques revus de A4', () => {
   const biases = slideData('a4-biases').biases as Array<{ name: string }>;
   assert.deepEqual(biases.map((bias) => bias.name), [
     "Biais d'automatisation",

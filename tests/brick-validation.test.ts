@@ -114,7 +114,7 @@ test('exige un objectif et un résultat à partir de la relecture', () => {
 
 test('valide les rubriques propres à chaque type', () => {
   const setup = makeBrick(
-    { id: 'b0', family: 'b', type: 'setup' },
+    { id: 'd2-bis', family: 'd', type: 'setup' },
     `${conceptBody}\n## Diagnostic initial\n<!-- À rédiger. -->`,
   );
 

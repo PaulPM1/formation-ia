@@ -93,16 +93,16 @@ test('construit uniquement des liens wiki canoniques', () => {
 });
 
 test('construit le téléchargement du kit depuis l’origine canonique', () => {
-  assert.deepEqual(kitLink('bloc-b-assistant.zip', 'Télécharger le kit'), {
+  assert.deepEqual(kitLink('setup-projet.zip', 'Télécharger le kit'), {
     kind: 'download',
     label: 'Télécharger le kit',
-    href: 'https://formation-ia-ruby.vercel.app/kits/bloc-b-assistant.zip',
+    href: 'https://formation-ia-ruby.vercel.app/kits/setup-projet.zip',
     target: '_blank',
     rel: 'noopener noreferrer',
   });
   assert.throws(() => kitLink('../secret.zip', 'Télécharger'), /Chemin de kit invalide/);
   assert.deepEqual(validatePresentation([invalidSlide({
-    links: [kitLink('bloc-b-assistant.zip', 'Télécharger le kit')],
+    links: [kitLink('setup-projet.zip', 'Télécharger le kit')],
   })]), []);
 });
 

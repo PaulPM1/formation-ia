@@ -25,14 +25,9 @@ test('la fusion A2 rejoint directement A3 et ne conserve aucune route A5', () =>
   assert.ok(PRESENTATION_SLIDES.every((slide) => !slide.id.startsWith(obsoletePrefix)));
 });
 
-test('relie le socle et le rattrapage', () => {
-  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b3-check').next?.id, 'b4-context');
-  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b4-context').previous?.id, 'b3-check');
-  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b4-context').next?.id, 'b4-ipmtr');
-  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b4-test').next?.id, 'c1-repeat');
-  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'c1-repeat').previous?.id, 'b4-test');
-  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b4bis-install').previous, null);
-  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'b4bis-checkpoint').next, null);
+test('le bloc A rejoint directement le bloc C', () => {
+  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'a4-mission').next?.id, 'c1-repeat');
+  assert.equal(getSlideNeighbors(PRESENTATION_SLIDES, 'c1-repeat').previous?.id, 'a4-mission');
 });
 
 test('le contrôleur ignore les raccourcis lorsque le focus est dans un contrôle', async () => {
@@ -58,7 +53,7 @@ test('le shell expose un état plein écran initial et une zone d’annonce', as
   assert.match(source, /data-presenter-announcer/);
 });
 
-test('la QA navigateur durable couvre navigation native, 404, plein écran et les 83 mobiles', async () => {
+test('la QA navigateur durable couvre navigation native, 404, plein écran et les 62 mobiles', async () => {
   const source = await readFile(
     new URL('../scripts/qa-presenter.mjs', import.meta.url),
     'utf8',
@@ -74,10 +69,9 @@ test('la QA navigateur durable couvre navigation native, 404, plein écran et le
   assert.match(source, /javaScriptEnabled:\s*false/);
   assert.match(source, /aria-pressed/);
   assert.match(source, /fullscreenchange/);
-  assert.match(source, /b3-check/);
   assert.match(source, /c1-repeat/);
   assert.match(source, /track-label/);
   assert.match(source, /Rattrapage/);
   assert.match(source, /removedBlockBRoutes/);
-  assert.match(source, /slideRoutes\.length[^\n]*83|83[^\n]*slideRoutes\.length/);
+  assert.match(source, /slideRoutes\.length[^\n]*62|62[^\n]*slideRoutes\.length/);
 });

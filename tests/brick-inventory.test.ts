@@ -20,12 +20,6 @@ const DRAFTED_BRICK_IDS = [
   'a2',
   'a3',
   'a4',
-  'b0',
-  'b1',
-  'b2',
-  'b3',
-  'b4',
-  'b4-bis',
   'c1',
   'c2',
   'c3',
@@ -42,13 +36,13 @@ const DRAFTED_BRICK_IDS = [
 
 const DRAFTED_BRICK_OWNERS = new Set(['paul', 'matthieu', 'a-attribuer']);
 
-test('charge exactement les 22 briques fusionnées dans le bon ordre', async () => {
+test('charge exactement les 16 briques fusionnées dans le bon ordre', async () => {
   const documents = await loadBrickDocuments(contentDirectory);
   const ids = documents
     .toSorted((left, right) => Number(left.data.order) - Number(right.data.order))
     .map((document) => document.data.id);
 
-  assert.equal(documents.length, 22);
+  assert.equal(documents.length, 16);
   assert.deepEqual(ids, EXPECTED_IMPORTED_BRICK_IDS);
 });
 
@@ -75,16 +69,6 @@ test('les briques rédigées sont complètes et prêtes à relire', async () => 
     assert.equal(hasVisibleEditorialContent(document.body), true, document.data.id);
     assert.doesNotMatch(document.body, /\{\/\*[\s\S]*?\*\/\}/, document.data.id);
   }
-});
-
-test('aucune brique du socle ne dépend du rattrapage B4-bis', async () => {
-  const documents = await loadBrickDocuments(contentDirectory);
-  const requiredWithRecoveryPrerequisite = documents
-    .filter((document) => document.data.priority === 'socle')
-    .filter((document) => document.data.prerequisites.includes('b4-bis'))
-    .map((document) => document.data.id);
-
-  assert.deepEqual(requiredWithRecoveryPrerequisite, []);
 });
 
 test('la mission A2 propose quatre paires dans l’ordre Code, Chat, Work, Object', async () => {

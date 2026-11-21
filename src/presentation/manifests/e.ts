@@ -12,7 +12,7 @@ const links = {
 
 export const E_DECKS = [
   {
-    brickId: 'e1', family: 'e', order: 19, title: 'Prompt et gestion du contexte', slides: [
+    brickId: 'e1', family: 'e', order: 13, title: 'Prompt et gestion du contexte', slides: [
       slide({
         id: 'e1-leviers', role: 'explanation',
         claim: "Contexte, spécificité, rôle et contraintes réduisent l'ambiguïté.",
@@ -65,7 +65,7 @@ export const E_DECKS = [
     ],
   },
   {
-    brickId: 'e2', family: 'e', order: 20, title: 'Code design', slides: [
+    brickId: 'e2', family: 'e', order: 14, title: 'Code design', slides: [
       slide({
         id: 'e2-roles', role: 'explanation',
         claim: 'Un fichier, un rôle : la séparation rend la modification possible.',
@@ -120,7 +120,7 @@ export const E_DECKS = [
     ],
   },
   {
-    brickId: 'e3', family: 'e', order: 21, title: 'Cadrage et itération', slides: [
+    brickId: 'e3', family: 'e', order: 15, title: 'Cadrage et itération', slides: [
       slide({
         id: 'e3-mvp', role: 'explanation',
         claim: 'Le MVP est la plus petite version qui rend déjà service.',
@@ -178,7 +178,7 @@ export const E_DECKS = [
     ],
   },
   {
-    brickId: 'e4', family: 'e', order: 22, title: 'La méthode d’équipe : planifier avant de coder', slides: [
+    brickId: 'e4', family: 'e', order: 16, title: 'La méthode d’équipe : planifier avant de coder', slides: [
       slide({
         id: 'e4-cycle', role: 'opening',
         claim: 'Cadrer, architecturer, construire : planifier par rôles avant d’écrire une ligne.',
