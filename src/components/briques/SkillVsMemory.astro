@@ -1,0 +1,72 @@
+---
+// CLAUDE.md contre skill : l'un est relu à chaque conversation, l'autre n'est
+// ouvert que quand la demande s'y prête. Schéma au style du site.
+---
+
+<figure class="ca-figure is-narrow svm">
+  <div class="svm-pair" aria-hidden="true">
+    <div>
+      <p class="svm-name">CLAUDE.md</p>
+      <p class="svm-when"><i></i><i></i><i></i><i></i></p>
+      <p>Relu à chaque conversation</p>
+    </div>
+    <div class="svm-skill">
+      <p class="svm-name">Un skill</p>
+      <p class="svm-when"><i class="is-off"></i><i></i><i class="is-off"></i><i class="is-off"></i></p>
+      <p>Ouvert quand il sert</p>
+    </div>
+  </div>
+  <figcaption>Quatre conversations : <code>CLAUDE.md</code> est lu quatre fois, le skill une seule.</figcaption>
+</figure>
+
+<style>
+  .svm-pair {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.2rem;
+  }
+
+  .svm-pair > div {
+    display: grid;
+    gap: 0.7rem;
+    padding: 1rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    box-shadow: var(--shadow-block);
+  }
+
+  .svm-pair p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.3;
+  }
+
+  .svm-pair .svm-name {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 800;
+  }
+
+  .svm-when { display: flex; gap: 0.4rem; }
+
+  .svm-when i {
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    border: 2px solid var(--ink);
+    border-radius: 50%;
+    background: var(--family-accent);
+  }
+
+  .svm-when .is-off { background: transparent; border-style: dashed; }
+
+  .svm figcaption {
+    margin-block-start: 1.1rem;
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 30rem) {
+    .svm-pair { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

@@ -1,0 +1,11 @@
+---
+// L'étiquette numérotée d'un mot du lexique, posée sur la carte du projet.
+import { LEXIQUE, numero } from './lexique';
+
+interface Props {
+  mot: (typeof LEXIQUE)[number]['mot'];
+}
+const { mot } = Astro.props;
+---
+
+<span class="lx-tag"><b>{numero(mot)}</b>{mot.toLowerCase().replace('api', 'API').replace('github', 'GitHub')}</span>

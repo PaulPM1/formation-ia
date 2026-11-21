@@ -1,0 +1,130 @@
+---
+// La conversation se remplit, Claude perd le fil du début ; une nouvelle
+// conversation repart légère, CLAUDE.md fait le lien. La jauge est un schéma
+// du site, posé sous la fenêtre : elle ne prétend pas être un écran de
+// l'application.
+import ClaudeApp from './ClaudeApp.astro';
+import Composer from './Composer.astro';
+import StepRail from './StepRail.astro';
+
+const steps = [
+  { label: 'Au début', text: 'La conversation est courte : Claude a tout en tête.' },
+  { label: 'Elle s’allonge', text: 'Chaque message, chaque fichier lu prend de la place.' },
+  { label: 'Il perd le fil', text: 'Le début s’efface : il oublie une consigne que vous aviez donnée.' },
+  { label: 'Nouvelle conversation', text: 'Elle repart légère. CLAUDE.md lui redonne l’essentiel.' },
+];
+---
+
+<figure class="ca-figure cg" data-stepper data-step="4">
+  <ClaudeApp sidebar={false} title="Mon projet">
+    <div class="ca-talk">
+      <div class="ca-thread cg-s1">
+        <p class="ca-you">Jamais de nom de famille sur le site.</p>
+        <div class="ca-claude">
+          <p class="ca-say">Noté : aucun nom de famille, nulle part.</p>
+        </div>
+      </div>
+      <div class="ca-thread cg-s2">
+        <p class="cg-gap">40 messages plus tard</p>
+        <p class="ca-you">Ajoute une page pour les desserts.</p>
+        <div class="ca-claude">
+          <p class="ca-tool"><i></i>Read 12 files</p>
+          <p class="ca-tool"><i></i>Wrote <b>desserts.html</b></p>
+          <p class="ca-say">La page des desserts est prête.</p>
+        </div>
+      </div>
+      <div class="ca-thread cg-s3">
+        <p class="cg-gap">Bien plus tard encore</p>
+        <p class="ca-you">Ajoute la tarte de mamie.</p>
+        <div class="ca-claude">
+          <p class="ca-tool"><i></i>Edited <b>desserts.html</b></p>
+          <p class="ca-say">C’est ajouté : « La tarte de <span class="cg-slip">Jeanne Martin</span> ».</p>
+        </div>
+      </div>
+      <div class="ca-thread cg-s4">
+        <p class="cg-gap">New session</p>
+        <p class="ca-you">On continue mon projet.</p>
+        <div class="ca-claude">
+          <p class="ca-tool"><i></i>Read <b>CLAUDE.md</b></p>
+          <p class="ca-say">Je reprends : le site de recettes, sans aucun nom de famille. Prochaine étape, la page des desserts.</p>
+        </div>
+      </div>
+      <Composer placeholder="Reply to Claude" />
+    </div>
+  </ClaudeApp>
+  <div class="cg-gauge">
+    <p>Ce que Claude doit garder en tête</p>
+    <div class="cg-bar"><i></i></div>
+    <p class="cg-ends"><span>Peu</span><span>Trop</span></p>
+  </div>
+  <StepRail steps={steps} />
+</figure>
+
+<style>
+  .cg {
+    inline-size: min(44rem, 100vw - 2rem);
+  }
+
+  .cg :global(.ca-thread) { block-size: 13.5rem; }
+
+  .cg:not([data-step="1"]) .cg-s1,
+  .cg:not([data-step="2"]) .cg-s2,
+  .cg:not([data-step="3"]) .cg-s3,
+  .cg:not([data-step="4"]) .cg-s4 {
+    display: none;
+  }
+
+  .cg .cg-gap {
+    align-self: center;
+    color: var(--app-muted);
+    font-size: 0.72rem;
+  }
+
+  .cg-slip {
+    text-decoration: underline wavy var(--app-accent);
+    text-underline-offset: 0.2em;
+    color: var(--app-accent);
+  }
+
+  .cg-gauge { margin-block-start: 1.4rem; }
+
+  .cg .cg-gauge p {
+    margin: 0;
+    font-size: var(--text-small);
+    font-weight: var(--weight-semibold);
+    line-height: 1.4;
+  }
+
+  .cg-bar {
+    block-size: 1.6rem;
+    margin-block: 0.4rem 0.3rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    box-shadow: 4px 4px 0 var(--ink);
+    overflow: hidden;
+  }
+
+  .cg-bar i {
+    display: block;
+    inline-size: 12%;
+    block-size: 100%;
+    border-inline-end: 2px solid var(--ink);
+    background: var(--family-accent);
+    transition: inline-size 1.2s ease, background-color 0.6s ease;
+  }
+
+  .cg[data-step="2"] .cg-bar i { inline-size: 62%; }
+  .cg[data-step="3"] .cg-bar i {
+    inline-size: 100%;
+    border-inline-end: 0;
+    background: var(--brick-coral);
+  }
+
+  .cg .cg-gauge .cg-ends {
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+    font-weight: var(--weight-regular);
+  }
+</style>

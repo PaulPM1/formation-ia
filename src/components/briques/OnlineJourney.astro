@@ -1,0 +1,70 @@
+---
+// Visuel principal de la brique D3 : le trajet du projet, de l'ordinateur à
+// une adresse que tout le monde peut ouvrir.
+import './claude-app.css';
+import './eco.css';
+import EcoIcon from './EcoIcon.astro';
+import StepRail from './StepRail.astro';
+
+const steps = [
+  { label: 'Sur votre ordinateur', text: 'Votre projet tourne dans l’aperçu. Vous seul pouvez le voir.' },
+  { label: 'Sur GitHub', text: 'Claude sauvegarde le projet sur GitHub.' },
+  { label: 'Vercel le met en ligne', text: 'Vercel prend le projet sur GitHub et le met en ligne.' },
+  { label: 'Une adresse à partager', text: 'Votre projet a une adresse. N’importe qui peut l’ouvrir, sur un téléphone aussi.' },
+];
+---
+
+<figure class="ca-figure oj" data-stepper data-step="4">
+  <div class="eco-flow" aria-hidden="true">
+    <div class="eco-node oj-1">
+      <EcoIcon name="laptop" />
+      <p class="eco-name">Votre ordinateur</p>
+      <p class="oj-url">localhost:3000</p>
+      <p class="eco-sub">l’aperçu, pour vous seul</p>
+    </div>
+    <span class="eco-arrow oj-2"></span>
+    <div class="eco-node oj-2">
+      <EcoIcon name="github" />
+      <p class="eco-name">GitHub</p>
+      <p class="eco-sub">la copie sauvegardée</p>
+    </div>
+    <span class="eco-arrow oj-3"></span>
+    <div class="eco-node oj-3">
+      <EcoIcon name="vercel" />
+      <p class="eco-name">Vercel</p>
+      <p class="eco-sub">met le projet en ligne</p>
+    </div>
+    <span class="eco-arrow oj-4"></span>
+    <div class="eco-node is-key oj-4">
+      <EcoIcon name="globe" />
+      <p class="eco-name">Votre adresse</p>
+      <p class="oj-url">mes-recettes.vercel.app</p>
+      <p class="eco-sub">pour tout le monde</p>
+    </div>
+  </div>
+  <StepRail steps={steps} />
+</figure>
+
+<style>
+  .oj :global(.eco-node) { padding-block: 1.3rem; }
+
+  .oj .oj-url {
+    max-inline-size: 100%;
+    margin: 0.2rem 0;
+    padding: 0.15rem 0.5rem;
+    border: 2px solid var(--ink);
+    border-radius: 999px;
+    background: var(--surface);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+
+  .oj[data-step="1"] :is(.oj-2, .oj-3, .oj-4),
+  .oj[data-step="2"] :is(.oj-3, .oj-4),
+  .oj[data-step="3"] .oj-4 {
+    opacity: 0.22;
+  }
+</style>

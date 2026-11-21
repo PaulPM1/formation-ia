@@ -1,150 +1,84 @@
 ---
 id: c2
-title: "MCP & API"
+title: "Connecteurs, MCP et API"
 family: c
 order: 8
 priority: socle
-durationMinutes: 20
+durationMinutes: 10
 type: demonstration
 platforms:
   - commun
 prerequisites:
-  - a2
   - c1
 status: a-relire
 owner: a-attribuer
-learningObjective: "Distinguer une API de MCP et appliquer une procédure sûre pour connecter, utiliser puis révoquer un serveur MCP."
-expectedOutcome: "Le participant cartographie une intégration et observe une requête en lecture seule avec outil, permission, résultat et révocation identifiés."
+learningObjective: "Brancher Claude sur un de vos outils avec un connecteur, et distinguer un connecteur d'une API."
+expectedOutcome: "Un connecteur branché sur un de vos outils, une question à laquelle Claude a répondu avec vos vraies données, et vous savez le débrancher."
 ---
 
-## Cap
+import ConnectorFlow from '../../../components/briques/ConnectorFlow.astro';
+import ConnectorVsApi from '../../../components/briques/ConnectorVsApi.astro';
+import CustomizePanel from '../../../components/briques/CustomizePanel.astro';
+import PromptCopy from '../../../components/briques/PromptCopy.astro';
 
-**Objectif :** comprendre comment Claude accède à un service externe sans confondre le service, son API et le protocole d'intégration.
+## L'essentiel
 
-- Durée cible : 20 minutes.
-- Prérequis : A2 et C1.
-- Résultat attendu : vous expliquez le trajet d'une demande et savez limiter une connexion MCP.
+Un **connecteur** branche Claude sur vos outils : messagerie, agenda, documents. Il peut alors y lire, et parfois y agir, quand vous le demandez.
 
-La démonstration utilise un serveur préparé et approuvé par le formateur, avec des données fictives et des droits de lecture seule. Aucun participant ne colle de clé ou jeton dans le chat.
+<ConnectorFlow />
 
-## Concept durable
+## À essayer
 
-Une **API** est un contrat permettant à deux logiciels d'échanger : opérations disponibles, paramètres, authentification et format des réponses. Chaque service peut posséder sa propre API.
+**1. Branchez un outil que vous utilisez déjà.**
 
-Le **Model Context Protocol (MCP)** est un standard ouvert permettant à une application d'IA de découvrir et d'utiliser des capacités fournies par un serveur. Un serveur MCP peut lui-même appeler une API, lire une base de données ou exposer un outil local.
+<CustomizePanel
+  tab="Connectors"
+  rows={[
+    { name: 'Google Calendar', about: 'Votre agenda.', state: 'connected', pin: 4 },
+    { name: 'Gmail', about: 'Votre messagerie.', state: 'connect' },
+    { name: 'Google Drive', about: 'Vos documents.', state: 'connect' },
+  ]}
+  legend={[
+    'Dans l’onglet Chat, ouvrez <b>Plugins</b>.',
+    'Passez sur <b>Connectors</b>.',
+    'Cliquez sur <b>Add</b>, choisissez votre outil, puis <b>Connect</b>.',
+    'Connectez-vous à votre compte dans la page qui s’ouvre : l’outil est branché.',
+  ]}
+/>
 
-```text
-Utilisateur → client Claude → serveur MCP → API ou ressource
-                                      ← résultat structuré
-```
+**2. Posez une question que seul cet outil peut résoudre.**
 
-MCP évite de développer une intégration différente pour chaque combinaison de client et de service. Il ne rend pas la connexion sûre par magie. Il faut encore vérifier :
+<PromptCopy>Regarde mon agenda de la semaine et dis-moi quels jours sont les plus chargés.</PromptCopy>
 
-- qui fournit le serveur et son code ;
-- quelles données et actions il expose ;
-- où s'exécute le serveur : localement ou à distance ;
-- comment il s'authentifie et stocke les autorisations ;
-- quelles permissions sont accordées ;
-- comment désactiver, retirer et auditer la connexion.
+## Comprendre
 
-Dans Claude Code, un serveur peut être personnel, partagé avec un projet ou géré par une organisation. Une configuration de projet provenant d'un dépôt inconnu doit être lue avant d'être approuvée.
+<div class="idea">
+  <div>
+    <h3>Connecteur ou API ?</h3>
+    <p>Le connecteur sert à Claude. L'API sert à votre projet, quand il doit parler lui-même à un service : c'est là qu'il faut une [clé API](/briques/a3/), que la [FAQ](/faq/) vous aide à obtenir.</p>
+  </div>
+  <ConnectorVsApi />
+</div>
 
-## Pratique avec Claude
+### MCP, le nom technique
 
-Le formateur configure à l'avance un serveur de démonstration nommé `catalogue-demo`, qui expose seulement la lecture de cinq produits fictifs.
+Dans la documentation, un connecteur s'appelle un serveur **MCP** (Model Context Protocol). C'est la même chose.
 
-Dans Claude Code :
+### Il a vos droits
 
-```bash
-claude mcp list
-```
+Branché, Claude voit ce que vous voyez dans cet outil. Lisez ce qu'il demande avant d'accepter, et débranchez ce qui ne sert plus.
 
-Puis, dans la session interactive :
+<details class="hint">
+  <summary>Pour aller plus loin</summary>
+  <p><strong>Débrancher.</strong> Retournez dans Plugins, Connectors, ouvrez le connecteur et déconnectez-le. Claude n'y a plus accès.</p>
+  <p><strong>Dans l'onglet Code.</strong> Les connecteurs servent aussi pendant la construction : Claude peut par exemple lire un document de votre espace de stockage pour remplir votre site.</p>
+  <p><strong>Lire ou agir.</strong> Lire un agenda est sans risque. Envoyer un message ou supprimer un fichier ne se rattrape pas : gardez la demande d'accord pour ces actions.</p>
+  <p>Documentation officielle : <a href="https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities">utiliser les connecteurs</a>, <a href="https://modelcontextprotocol.io/docs/getting-started/intro">introduction à MCP</a> et <a href="https://platform.claude.com/docs/en/api/overview">l'API Claude</a>.</p>
+</details>
 
-```text
-/mcp
-```
-
-Avant toute requête, relevez le nom du serveur et ses outils. Demandez ensuite :
-
-```text
-Utilise uniquement catalogue-demo. Liste les produits fictifs dont le stock est
-inférieur à 5. Ne tente aucune écriture et indique l'outil utilisé.
-```
-
-Comparez le résultat avec le fichier source connu du formateur. Enfin, montrez comment désactiver ou retirer le serveur de démonstration selon son mode d'installation.
-
-## Mission commune
-
-Sur papier ou avec le serveur de démonstration, produisez la fiche de connexion :
-
-1. besoin utilisateur ;
-2. client Claude ;
-3. serveur MCP et fournisseur ;
-4. ressource ou API en aval ;
-5. outils visibles ;
-6. permissions minimales ;
-7. donnée de test ;
-8. preuve de résultat ;
-9. procédure de révocation.
-
-**Critère de réussite :** une personne extérieure sait quelles données peuvent sortir, quelle action est possible et comment couper l'accès.
-
-## Livrable
-
-Un schéma du trajet de la demande, la capture expurgée de la liste d'outils, le résultat du test en lecture seule et la procédure de révocation. Aucun identifiant d'authentification ne figure dans le livrable.
-
-## Notes formateur
-
-- Préparer et tester la connexion avant la session ; garder une vidéo ou des captures comme repli.
-- Commencer par l'inventaire des outils, pas par une requête en langage naturel.
-- Faire vérifier un résultat contre une source connue pour rappeler que connecté ne signifie pas exact.
-- Révoquer réellement la connexion de démonstration à la fin.
-
-Message essentiel : **une intégration augmente la portée de Claude et la surface de risque dans le même mouvement.** Transition : les hooks et tâches planifiées ajoutent ensuite la question du déclenchement.
-
-## Défis avancés
-
-- Comparez serveur local `stdio` et serveur distant HTTP : exécution, réseau, authentification et maintenance.
-- Définissez des permissions séparées pour lire, créer, modifier et supprimer.
-- Analysez un fichier `.mcp.json` fictif et repérez commande, arguments, variables d'environnement et portée projet.
-
-## Variantes
-
-- **Aucun serveur disponible :** utiliser le schéma et des captures préparées ; l'objectif est la compréhension du trajet et des permissions.
-- **Organisation équipée :** auditer un connecteur déjà approuvé sans modifier sa configuration.
-- **Public développeur :** ajouter un serveur local factice et inspecter les échanges structurés, toujours avec des données non sensibles.
-
-## Dépannage
-
-- **Le serveur n'apparaît pas :** vérifier sa portée, relancer la session et consulter `claude mcp list` puis `/mcp`.
-- **Authentification requise :** utiliser le flux officiel, jamais un jeton collé dans une conversation ou committé dans `.mcp.json`.
-- **Aucun outil n'est exposé :** vérifier l'état du serveur et sa documentation ; ne pas élargir les permissions au hasard.
-- **Résultat trop volumineux :** filtrer la demande et limiter les données à la source afin de préserver contexte et confidentialité.
-
-## Ressources
-
-- [Connecter Claude Code avec MCP](https://code.claude.com/docs/en/mcp)
-- [Introduction au Model Context Protocol](https://modelcontextprotocol.io/docs/getting-started/intro)
-- [Architecture MCP](https://modelcontextprotocol.io/docs/learn/architecture)
-- [Référence de l'API Claude](https://platform.claude.com/docs/en/api/overview)
-
-## Ouverture
-
-Vous savez maintenant définir **comment** travailler avec un Skill et **avec quoi** agir grâce à MCP. Il reste à décider **quand** une action doit partir : sur un événement ou selon un calendrier.
-
-## Scénario de démonstration
-
-Point de départ : un mini-catalogue fictif contient cinq produits. Le serveur `catalogue-demo` expose une recherche en lecture seule. Le groupe inspecte la connexion, formule une requête bornée, vérifie deux résultats puis observe la révocation.
-
-Résultat visible : la requête utilise uniquement l'outil attendu, retourne les bons produits et échoue proprement après retrait du serveur.
-
-## Déroulé de démonstration
-
-1. Dessiner le trajet client → MCP → ressource.
-2. Exécuter `claude mcp list`, puis ouvrir `/mcp`.
-3. Lire le nom, l'état et le nombre d'outils exposés.
-4. Lancer la requête en lecture seule et observer la permission.
-5. Vérifier le résultat dans la source fictive.
-6. Retirer ou désactiver le serveur.
-7. Relancer la requête pour prouver que l'accès est bien coupé.
+<details class="hint">
+  <summary>Notes formateur</summary>
+  <p><strong>Démonstration en direct, cinq minutes.</strong> Sur un compte de démonstration aux données fictives, posez d'abord la question sans connecteur : Claude ne peut pas répondre. Branchez l'agenda, reposez la même question, et laissez le groupe lire la demande d'accord avec vous.</p>
+  <p><strong>À faire voir.</strong> La liste de Plugins, Connectors avant et après. Puis la déconnexion, et la même question qui échoue de nouveau.</p>
+  <p><strong>Pièges fréquents.</strong> Un compte professionnel dont l'administrateur bloque les connecteurs : passez sur un compte personnel ou regardez la démonstration. Une personne qui colle un mot de passe ou une clé dans la conversation : arrêtez-la, la connexion passe toujours par la page officielle de l'outil. Confondre « branché » et « exact » : faites vérifier une réponse dans l'agenda lui-même.</p>
+</details>

@@ -1,0 +1,83 @@
+---
+// Visuel principal de la brique C3 : vous demandez une fois, Claude range la
+// tâche dans Scheduled, puis une conversation démarre seule à l'heure dite.
+// La fenêtre est l'application ; le calendrier, à droite, est un schéma.
+import ClaudeApp from './ClaudeApp.astro';
+import Composer from './Composer.astro';
+import StepRail from './StepRail.astro';
+
+const steps = [
+  { label: 'Vous demandez une fois', text: 'Vous dites quoi faire et quand, avec vos mots.' },
+  { label: 'Claude planifie', text: 'La tâche est rangée dans Scheduled. Vous pouvez fermer la conversation.' },
+  { label: 'Elle part toute seule', text: 'À l’heure dite, une nouvelle conversation démarre et fait le travail.' },
+];
+---
+
+<figure class="ca-figure sch" data-stepper data-step="3">
+  <div class="sch-stage">
+    <ClaudeApp title="Point du matin" sidebar={false}>
+      <div class="ca-talk">
+        <div class="ca-thread">
+          <p class="ca-you">Tous les matins à 9 h, dis-moi où en est mon projet et propose la prochaine étape.</p>
+          <div class="ca-claude from-2">
+            <p class="ca-tool"><i></i>Created scheduled task <b>point-du-matin</b></p>
+            <p class="ca-say">C’est noté : tous les jours à 9 h.</p>
+          </div>
+        </div>
+        <Composer placeholder="Reply to Claude" />
+      </div>
+    </ClaudeApp>
+
+    <div class="sch-days" aria-hidden="true">
+      <p class="sch-day sch-done"><b>Lundi, 9 h</b><span>Page d’accueil faite. Prochaine étape : la fiche d’une recette.</span></p>
+      <p class="sch-day"><b>Mardi, 9 h</b></p>
+      <p class="sch-day"><b>Mercredi, 9 h</b></p>
+    </div>
+  </div>
+  <StepRail steps={steps} />
+</figure>
+
+<style>
+  .sch-stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .sch :global(.ca-thread) { min-block-size: 13rem; }
+
+  .sch-days { display: grid; gap: 0.9rem; }
+
+  .sch-days .sch-day {
+    display: grid;
+    gap: 0.3rem;
+    margin: 0;
+    padding: 0.7rem 0.9rem;
+    border: 2px dashed var(--ink);
+    border-radius: var(--radius-md);
+    font-size: 0.92rem;
+    line-height: 1.35;
+    transition: opacity 0.5s ease, background-color 0.5s ease, box-shadow 0.5s ease;
+  }
+
+  .sch-day b {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 800;
+  }
+
+  /* Étape 1 : rien n'est prévu. Étape 2 : les créneaux existent. Étape 3 : le
+     premier a tourné. */
+  .sch[data-step="1"] .sch-day { opacity: 0.25; }
+  .sch:not([data-step="3"]) .sch-day span { display: none; }
+  .sch[data-step="3"] .sch-done {
+    border-style: solid;
+    background: var(--family-accent);
+    box-shadow: var(--shadow-block);
+  }
+
+  @media (max-width: 40rem) {
+    .sch-stage { grid-template-columns: minmax(0, 1fr); gap: 1.4rem; }
+  }
+</style>

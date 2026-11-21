@@ -1,0 +1,73 @@
+---
+// Les mots qui aident à décrire une allure : au lieu de « fais joli », une
+// ambiance, des couleurs, une comparaison. Schéma au style du site.
+import './claude-app.css';
+---
+
+<figure class="ca-figure is-narrow lw">
+  <p class="lw-no">« Fais quelque chose de joli »</p>
+  <dl>
+    <div><dt>Une ambiance</dt><dd><span>chaleureux</span><span>sobre</span><span>joyeux</span><span>élégant</span></dd></div>
+    <div><dt>Des couleurs</dt><dd><span>fond crème</span><span>une seule couleur vive</span></dd></div>
+    <div><dt>Une comparaison</dt><dd><span>comme un magazine</span><span>comme tel site</span></dd></div>
+    <div><dt>De la place</dt><dd><span>grandes photos</span><span>peu de texte</span><span>aéré</span></dd></div>
+  </dl>
+</figure>
+
+<style>
+  .lw .lw-no {
+    inline-size: fit-content;
+    margin: 0 0 1rem;
+    padding: 0.3rem 0.7rem;
+    border: 2px dashed var(--ink);
+    border-radius: var(--radius-md);
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.4;
+    text-decoration: line-through;
+  }
+
+  .lw dl {
+    display: grid;
+    gap: 0.6rem;
+    margin: 0;
+  }
+
+  .lw dl div {
+    display: grid;
+    grid-template-columns: 8.5rem minmax(0, 1fr);
+    gap: 0.6rem;
+    align-items: center;
+    padding: 0.55rem 0.7rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+  }
+
+  .lw dt {
+    font-family: var(--font-display);
+    font-weight: var(--weight-display);
+    line-height: 1.2;
+  }
+
+  .lw dd {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 0;
+  }
+
+  .lw dd span {
+    padding: 0.1rem 0.55rem;
+    border: 1.5px solid var(--ink);
+    border-radius: 99px;
+    background: var(--family-accent);
+    font-size: var(--text-small);
+    font-weight: var(--weight-semibold);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 30rem) {
+    .lw dl div { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

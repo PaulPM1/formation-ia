@@ -4,128 +4,82 @@ title: "Skills"
 family: c
 order: 7
 priority: socle
-durationMinutes: 20
+durationMinutes: 10
 type: demonstration
 platforms:
   - commun
-prerequisites: []
+prerequisites:
+  - b2
 status: a-relire
 owner: a-attribuer
-learningObjective: "Expliquer quand créer un Skill et construire un SKILL.md minimal, ciblé et testable."
-expectedOutcome: "Le participant crée ou audite un Skill de relecture, le déclenche sur un texte factice et vérifie que sa sortie respecte trois critères."
+learningObjective: "Reconnaître un skill, en utiliser un, en ajouter un depuis l'application et en faire écrire un par Claude."
+expectedOutcome: "Vous savez quels skills Claude a sous la main, où en ajouter un, et vous lui en avez fait écrire un pour une tâche que vous répétez."
 ---
 
-## Cap
+import CustomizePanel from '../../../components/briques/CustomizePanel.astro';
+import PromptCopy from '../../../components/briques/PromptCopy.astro';
+import SkillLoads from '../../../components/briques/SkillLoads.astro';
+import SkillVsMemory from '../../../components/briques/SkillVsMemory.astro';
 
-**Objectif :** transformer une méthode répétée en capacité réutilisable que Claude charge au bon moment.
+## L'essentiel
 
-- Durée cible : 20 minutes.
-- Prérequis : un dossier de démonstration ouvert dans Claude Code, fourni par le formateur si nécessaire.
-- Résultat attendu : un dossier de Skill contenant un `SKILL.md` clair et un test réussi.
+Un **skill** est un savoir-faire rangé dans un dossier. Claude le charge quand votre demande en a besoin.
 
-## Concept durable
+<SkillLoads />
 
-Un **Skill** est un ensemble d'instructions réutilisables que Claude peut charger lorsqu'une tâche correspond à sa description. Il est utile lorsque vous répétez souvent la même méthode, la même checklist ou les mêmes conventions.
+## À essayer
 
-Un Skill se distingue de :
+**1. Demandez à Claude ce qu'il sait déjà faire.**
 
-- un **prompt ponctuel**, écrit pour une seule demande ;
-- le **contexte projet**, qui décrit des faits et règles valables presque tout le temps ;
-- un **outil**, qui donne une capacité d'action ou d'accès à des données ;
-- un **hook**, qui déclenche une règle à un moment précis du cycle.
+<PromptCopy>Quels skills as-tu sous la main, et à quoi sert chacun ?</PromptCopy>
 
-Le fichier d'entrée est `SKILL.md`. Son frontmatter aide Claude à décider quand le charger ; son corps décrit la procédure. Le dossier peut aussi contenir des modèles, exemples, références ou scripts, mais on ne les ajoute que s'ils servent réellement la tâche.
+**2. Ajoutez-en un.** Par exemple [setup-projet](/kits/setup-projet.zip), celui qui cadre votre projet.
 
-Un bon Skill possède une responsabilité claire, un déclencheur précis, des étapes observables et une sortie vérifiable. Une description trop vague le déclenche partout ; une procédure trop longue consomme du contexte et devient difficile à maintenir.
+<CustomizePanel
+  tab="Skills"
+  menu="Upload a skill"
+  rows={[
+    { name: 'setup-projet', about: 'Cadre un projet à partir d’une simple idée.', state: 'on', pin: 4 },
+    { name: 'skill-creator', about: 'Écrit de nouveaux skills avec vous.', state: 'on' },
+    { name: 'pdf', about: 'Lit et fabrique des fichiers PDF.', state: 'on' },
+  ]}
+  legend={[
+    'Dans l’onglet Chat, ouvrez <b>Plugins</b>.',
+    'Restez sur <b>Skills</b>.',
+    'Cliquez sur <b>Add</b>, puis déposez le fichier du skill.',
+    'Il apparaît dans la liste, allumé : Claude peut s’en servir.',
+  ]}
+/>
 
-## Pratique avec Claude
+**3. Faites-en écrire un pour une tâche que vous répétez.**
 
-Dans un projet de démonstration, créez `.claude/skills/relecture-claire/SKILL.md` :
+<PromptCopy>Je te réexplique souvent la même chose : [décrivez-la]. Écris un skill pour le faire toujours de cette façon.</PromptCopy>
 
-```markdown
----
-name: relecture-claire
-description: Relit un texte français destiné à des débutants. À utiliser quand l'utilisateur demande de clarifier, simplifier ou relire un contenu pédagogique.
----
+## Comprendre
 
-# Relecture claire
+<div class="idea">
+  <div>
+    <h3>Ni un prompt, ni CLAUDE.md</h3>
+    <p><code>CLAUDE.md</code> dit ce qu'est votre projet, à chaque conversation. Un skill dit comment faire une tâche précise, seulement quand elle se présente.</p>
+  </div>
+  <SkillVsMemory />
+</div>
 
-1. Repère les phrases de plus de 25 mots et le jargon non défini.
-2. Propose une version plus directe sans changer le sens.
-3. Conserve les exemples, avertissements et critères de réussite.
-4. Termine par trois changements expliqués, pas davantage.
+### La troisième fois, faites-en un skill
 
-## Sortie attendue
+Vous venez d'expliquer la même méthode pour la troisième fois ? Demandez à Claude de l'écrire : vous n'ouvrez jamais le fichier vous-même.
 
-- Version révisée
-- Trois changements expliqués
-- Information à confirmer, ou « Aucune »
-```
+<details class="hint">
+  <summary>Pour aller plus loin</summary>
+  <p><strong>Où vivent les skills.</strong> Un skill ajouté depuis cette page vous suit dans toutes vos conversations. Un skill rangé dans le dossier d'un projet ne sert que dans ce projet.</p>
+  <p><strong>Plugins.</strong> Un plugin est un paquet tout fait qui regroupe plusieurs skills et connecteurs. La même page en propose, dans son onglet <strong>Plugins</strong>.</p>
+  <p><strong>Prudence.</strong> Un skill est une suite de consignes que Claude suivra : n'ajoutez que ceux dont vous connaissez l'auteur.</p>
+  <p>Documentation officielle : <a href="https://support.claude.com/en/articles/12512180-using-skills-in-claude">utiliser les skills dans Claude</a> et <a href="https://code.claude.com/docs/en/skills">les skills dans Claude Code</a>.</p>
+</details>
 
-Relancez ou rechargez la session si nécessaire, puis demandez à Claude de relire un paragraphe factice. Vérifiez les quatre règles au lieu de vous contenter de voir le nom du Skill apparaître.
-
-## Mission commune
-
-1. Choisissez une procédure que vous répétez au moins trois fois : relecture, préparation de réunion, contrôle qualité ou analyse d'un brief.
-2. Écrivez une description qui dit **ce que fait** le Skill et **quand l'utiliser**.
-3. Limitez la procédure à cinq étapes.
-4. Définissez une forme de sortie et trois critères de test.
-5. Testez sur un exemple normal puis sur un cas qui ne devrait pas déclencher le Skill.
-
-**Critère de réussite :** le Skill intervient sur le bon cas, reste silencieux sur le cas hors périmètre et produit la forme annoncée.
-
-## Livrable
-
-Le dossier du Skill, les deux prompts de test et une fiche indiquant les trois critères : déclenchement, respect de la procédure et forme de sortie.
-
-## Notes formateur
-
-- Partir d'un copier-coller répétitif connu du groupe, pas d'un Skill abstrait.
-- Montrer d'abord la version minimale à un seul fichier.
-- Faire relire la description : c'est elle qui rend le Skill découvrable.
-- Tester un cas positif et un cas négatif ; un déclenchement trop fréquent est aussi un défaut.
-
-Message essentiel : **un Skill encode une méthode, pas un souhait vague ni un accès à un service.** Transition : lorsqu'une méthode a besoin de données ou d'actions externes, elle peut s'appuyer sur des outils exposés par MCP.
-
-## Défis avancés
-
-- Ajoutez un modèle de sortie dans un fichier séparé et référencez-le explicitement depuis `SKILL.md`.
-- Rendez le Skill invocable uniquement manuellement si son action ne doit jamais partir automatiquement.
-- Ajoutez un script de validation non destructif et documentez sa commande, son entrée et sa sortie.
-
-## Variantes
-
-- **Sans accès aux fichiers Claude Code :** rédiger le `SKILL.md` dans VS Code puis auditer sa structure collectivement.
-- **Cowork :** utiliser ou adapter un Skill disponible dans l'environnement, puis vérifier sa sortie sur des données factices.
-- **Équipe :** stocker un Skill de projet dans le dépôt afin qu'il soit relu et versionné avec le reste du travail.
-
-## Dépannage
-
-- **Le Skill ne se déclenche pas :** rendre la description plus explicite sur les formulations et situations attendues, puis démarrer une nouvelle session.
-- **Il se déclenche trop souvent :** resserrer le « quand l'utiliser » et ajouter des exclusions.
-- **Les consignes sont partiellement suivies :** réduire les étapes, supprimer les contradictions et rendre la sortie attendue mesurable.
-- **Claude ne trouve pas le Skill :** vérifier l'emplacement `.claude/skills/<nom>/SKILL.md` et la validité du frontmatter.
-
-## Ressources
-
-- [Étendre Claude avec des Skills — Claude Code Docs](https://code.claude.com/docs/en/skills)
-- [Standard ouvert Agent Skills](https://agentskills.io/home)
-
-## Ouverture
-
-Le Skill dit à Claude **comment** travailler. MCP lui donne des ressources et outils supplémentaires avec lesquels appliquer cette méthode.
-
-## Scénario de démonstration
-
-Point de départ : le formateur colle à chaque relecture la même checklist de clarté. Il la transforme en Skill minimal, teste un paragraphe volontairement complexe, puis essaie une demande sans rapport.
-
-Résultat visible : la relecture respecte les trois sections attendues et le Skill ne s'impose pas sur la demande hors périmètre.
-
-## Déroulé de démonstration
-
-1. Montrer la checklist répétée et identifier sa responsabilité unique.
-2. Créer le dossier et le `SKILL.md`.
-3. Lire le frontmatter, puis demander au groupe de prédire le déclenchement.
-4. Tester sur le paragraphe complexe et cocher les quatre règles.
-5. Tester une demande hors périmètre.
-6. Ajuster seulement la description ou l'étape qui a échoué, puis retester.
+<details class="hint">
+  <summary>Notes formateur</summary>
+  <p><strong>Démonstration en direct, cinq minutes.</strong> Dans un dossier vide de l'onglet Code, écrivez « lance setup-projet » et laissez le groupe voir la première question arriver : c'est le skill qui parle. Arrêtez-vous là, le cadrage complet vient avec la brique E3.</p>
+  <p><strong>À faire voir.</strong> L'ajout depuis Plugins, Skills, Add, avec le fichier <code>setup-projet.zip</code>. Puis le fichier <code>SKILL.md</code> ouvert une fois, pour montrer que ce n'est que du texte : une description, puis une méthode.</p>
+  <p><strong>Pièges fréquents.</strong> Un skill absent de la liste : vérifiez dans les réglages que la création de fichiers et l'exécution de code sont activées. Un skill qui ne se déclenche pas : nommez-le dans la demande. Une personne qui veut écrire le fichier à la main : ramenez-la à la phrase du geste 3.</p>
+</details>

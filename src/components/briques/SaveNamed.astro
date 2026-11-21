@@ -1,0 +1,28 @@
+---
+// Une sauvegarde porte un nom : ce que Claude répond après avoir sauvegardé.
+import ClaudeApp from './ClaudeApp.astro';
+---
+
+<figure class="ca-figure is-narrow sn">
+  <ClaudeApp sidebar={false} title="Page recettes de famille">
+    <div class="ca-thread">
+      <p class="ca-you">Sauvegarde mon projet sur GitHub.</p>
+      <div class="ca-claude">
+        <p class="ca-tool"><i></i>Ran <b>3 commands</b></p>
+        <p class="ca-say">C’est sauvegardé sur GitHub, sous le nom :</p>
+        <p class="sn-name">Ajout de la fiche d’une recette</p>
+      </div>
+    </div>
+  </ClaudeApp>
+</figure>
+
+<style>
+  .sn .sn-name {
+    justify-self: start;
+    padding: 0.35rem 0.7rem;
+    border: 1px solid var(--app-accent);
+    border-radius: 8px;
+    background: var(--app-raise);
+    font-weight: 600;
+  }
+</style>

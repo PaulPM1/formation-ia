@@ -1,0 +1,234 @@
+---
+// Visuel principal de la brique A2 : les quatre façons de travailler avec
+// Claude dans l'application, chacune avec son verbe.
+import ClaudeApp from './ClaudeApp.astro';
+---
+
+<figure class="ca-figure mm">
+  <div class="mm-grid">
+    <div>
+      <ClaudeApp mode="chat" sidebar={false} title="Chat">
+        <div class="ca-thread">
+          <p class="ca-you">Comment réussir une pâte à crêpes ?</p>
+          <div class="ca-claude">
+            <p class="ca-say">Trois règles : tamisez la farine, versez le lait peu à peu, laissez reposer une heure.</p>
+          </div>
+        </div>
+      </ClaudeApp>
+      <figcaption><b>La conversation</b> <em>répond</em> Pour comprendre, écrire, réfléchir.</figcaption>
+    </div>
+
+    <div>
+      <ClaudeApp mode="chat" sidebar={false} title="Chat">
+        <div class="mm-split">
+          <div class="ca-thread">
+            <p class="ca-you">Fais-moi un minuteur de cuisson.</p>
+            <div class="ca-claude">
+              <p class="ca-say">Le voici, à côté.</p>
+            </div>
+          </div>
+          <div class="mm-pane">
+            <p class="mm-bar">Minuteur de cuisson</p>
+            <div class="mm-timer">
+              <p>Crêpes</p>
+              <b>02:00</b>
+              <span>Démarrer</span>
+            </div>
+          </div>
+        </div>
+      </ClaudeApp>
+      <figcaption><b>L’artefact</b> <em>montre</em> Un objet affiché à côté : petit outil, schéma, page.</figcaption>
+    </div>
+
+    <div>
+      <ClaudeApp mode="code" sidebar={false} title="Code">
+        <div class="mm-split">
+          <div class="ca-thread">
+            <p class="ca-you">Construis mon site de recettes.</p>
+            <div class="ca-claude">
+              <p class="ca-tool"><i></i>Wrote 3 files</p>
+              <p class="ca-tool"><i></i>Started <b>preview</b></p>
+            </div>
+          </div>
+          <div class="mm-pane">
+            <p class="mm-bar">Preview</p>
+            <div class="mm-site">
+              <p>Recettes de famille</p>
+              <span><i></i>Gratin de mamie</span>
+              <span><i></i>Tarte aux pommes</span>
+            </div>
+          </div>
+        </div>
+      </ClaudeApp>
+      <figcaption><b>Code</b> <em>agit</em> Claude construit votre projet dans un dossier de votre ordinateur.</figcaption>
+    </div>
+
+    <div>
+      <ClaudeApp mode="chat" sidebar={false} title="Design">
+        <div class="mm-split">
+          <div class="ca-thread">
+            <p class="ca-you">Une affiche pour le repas de famille.</p>
+            <div class="ca-claude">
+              <p class="ca-say">Première version, à retoucher.</p>
+            </div>
+          </div>
+          <div class="mm-pane mm-canvas">
+            <div class="mm-poster">
+              <i></i>
+              <p>Grand repas<br />de famille</p>
+              <span>Dimanche, midi</span>
+            </div>
+          </div>
+        </div>
+      </ClaudeApp>
+      <figcaption><b>Design</b> <em>dessine</em> Affiches, maquettes, présentations.</figcaption>
+    </div>
+  </div>
+</figure>
+
+<style>
+  .mm-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.8rem 1.5rem;
+  }
+
+  .mm :global(.ca-thread) {
+    justify-content: flex-start;
+    min-block-size: 10.5rem;
+  }
+
+  .mm-split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .mm-split :global(.ca-thread) { padding-inline-end: 0.7rem; }
+
+  .mm-pane {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    border-inline-start: 1px solid var(--app-line);
+    background: var(--app-side);
+  }
+
+  .mm .mm-bar {
+    padding: 0.4rem 0.7rem;
+    border-block-end: 1px solid var(--app-line);
+    color: var(--app-soft);
+    font-size: 0.72rem;
+  }
+
+  /* Ce que Claude fabrique est clair : ce n'est plus l'application. */
+  .mm-timer,
+  .mm-site {
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    gap: 0.35rem;
+    padding: 0.8rem;
+    background: #fff;
+    color: #1d1d1b;
+  }
+
+  .mm-timer b {
+    font-family: var(--font-mono);
+    font-size: 1.9rem;
+    line-height: 1;
+  }
+
+  .mm-timer span {
+    padding: 0.25rem 0.8rem;
+    border-radius: 99px;
+    background: #e4572e;
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .mm-site {
+    justify-items: start;
+    background: #fbe8cf;
+  }
+
+  .mm .mm-site p {
+    margin-block-end: 0.3rem;
+    font-family: var(--app-serif);
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .mm-site span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.74rem;
+    font-weight: 500;
+  }
+
+  .mm-site span i {
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #f2c26b, #d98a3d);
+  }
+
+  .mm-site span:last-child i { background: linear-gradient(135deg, #e9a06b, #b5532c); }
+
+  .mm-canvas {
+    grid-template-rows: minmax(0, 1fr);
+    place-items: center;
+    padding: 0.8rem;
+    background: #151514 radial-gradient(#333331 1px, transparent 1px) 0 0 / 0.8rem 0.8rem;
+  }
+
+  .mm-poster {
+    display: grid;
+    gap: 0.3rem;
+    inline-size: min(100%, 7.2rem);
+    padding: 0.6rem;
+    border-radius: 4px;
+    background: #f6e7c8;
+    color: #1d1d1b;
+    box-shadow: 0 0 0 2px var(--app-accent);
+  }
+
+  .mm-poster i {
+    block-size: 2.6rem;
+    border-radius: 3px;
+    background: linear-gradient(135deg, #e4572e, #f2c26b);
+  }
+
+  .mm .mm-poster p {
+    font-family: var(--app-serif);
+    font-size: 0.86rem;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .mm-poster span { font-size: 0.62rem; }
+
+  .mm figcaption {
+    margin-block-start: 0.9rem;
+    font-size: 0.98rem;
+    line-height: 1.45;
+  }
+
+  .mm figcaption b { font-family: var(--font-display); font-size: 1.1rem; }
+
+  .mm figcaption em {
+    display: inline-block;
+    margin-inline: 0.2rem 0.35rem;
+    padding: 0 0.5rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-sm);
+    background: var(--family-accent);
+    font-size: 0.85rem;
+    font-style: normal;
+    font-weight: var(--weight-semibold);
+  }
+
+  @media (max-width: 44rem) {
+    .mm-grid { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

@@ -1,0 +1,89 @@
+---
+// Les douze mots de la brique D1 : un numéro (celui de la carte), une image,
+// une phrase.
+import './claude-app.css';
+import './eco.css';
+import EcoIcon from './EcoIcon.astro';
+import { LEXIQUE } from './lexique';
+---
+
+<figure class="ca-figure lc">
+  <ol class="lc-grid">
+    {LEXIQUE.map((entry, index) => (
+      <li>
+        <span class="lc-pic"><EcoIcon name={entry.icon} /><b>{index + 1}</b></span>
+        <p><strong>{entry.mot}</strong>{entry.phrase}</p>
+      </li>
+    ))}
+  </ol>
+</figure>
+
+<style>
+  .lc .lc-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem 1.2rem;
+    margin: 0;
+    padding: 0 6px 6px 0;
+    list-style: none;
+  }
+
+  .lc .lc-grid li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    margin: 0;
+    padding: 0.8rem 0.9rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+  }
+
+  .lc-pic {
+    position: relative;
+    display: grid;
+    place-items: center;
+    flex: none;
+    inline-size: 2.8rem;
+    block-size: 2.8rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-sm);
+    background: var(--family-accent);
+  }
+
+  .lc-pic b {
+    position: absolute;
+    inset: -0.55rem auto auto -0.55rem;
+    display: grid;
+    place-items: center;
+    inline-size: 1.25rem;
+    block-size: 1.25rem;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--brick-yellow);
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+  }
+
+  .lc .lc-grid p {
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.4;
+  }
+
+  .lc-grid strong {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 800;
+    line-height: 1.25;
+  }
+
+  @media (max-width: 56rem) {
+    .lc .lc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 34rem) {
+    .lc .lc-grid { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

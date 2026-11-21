@@ -1,0 +1,106 @@
+---
+// Visuel principal de la brique D2-bis : la phrase collée dans l'onglet Code,
+// Claude qui installe, le code GitHub à coller, puis le tableau final.
+import ClaudeApp from './ClaudeApp.astro';
+import Composer from './Composer.astro';
+import StepRail from './StepRail.astro';
+
+const steps = [
+  { label: 'Vous collez la phrase', text: 'Onglet Code, session Local, n’importe quel dossier. Vous collez la phrase et vous l’envoyez.' },
+  { label: 'Claude installe', text: 'Il vérifie ce qui manque et l’installe. Lisez sa demande, puis acceptez.' },
+  { label: 'Il relie GitHub', text: 'Une page GitHub s’ouvre dans votre navigateur. Vous y collez le code que Claude vous donne.' },
+  { label: 'Le tableau final', text: 'Tout est « prêt » : montrez ce tableau à un formateur.' },
+];
+const rows = ['Git', 'Node.js', 'npm', 'GitHub CLI', 'Connexion GitHub', 'Skill setup-projet'];
+---
+
+<figure class="ca-figure si" data-stepper data-step="4">
+  <ClaudeApp title="Préparer mon ordinateur" folder="projets" session="Préparer mon ordinateur">
+    <div class="ca-talk">
+      <div class="ca-thread">
+        <p class="ca-you">Prépare mon ordinateur pour construire des projets. Je débute : ne me demande jamais de taper une commande. Fais tout toi-même…</p>
+
+        <div class="ca-claude si-2">
+          <p class="ca-say">Je regarde ce qui est déjà installé, puis j’installe ce qui manque.</p>
+          <p class="ca-tool"><i></i>Ran <b>3 commands</b></p>
+          <div class="ca-ask">
+            <p>Allow Claude to run this command?</p>
+            <code>winget install OpenJS.NodeJS.LTS</code>
+            <p class="ca-ask-buttons"><em>Deny</em><em class="is-yes">Allow once</em></p>
+          </div>
+        </div>
+
+        <div class="ca-claude si-3">
+          <p class="ca-tool"><i></i>Installed <b>Git, Node.js, GitHub CLI</b></p>
+          <p class="ca-say">Une page GitHub vient de s’ouvrir dans votre navigateur. Collez-y ce code, puis cliquez sur Authorize :</p>
+          <p class="si-code">7C2F-A91B</p>
+        </div>
+
+        <div class="ca-claude si-4">
+          <p class="ca-say">Votre ordinateur est prêt.</p>
+          <div class="si-table">
+            {rows.map((row) => (
+              <p><span>{row}</span><b><i></i>prêt</b></p>
+            ))}
+          </div>
+        </div>
+      </div>
+      <Composer placeholder="Reply to Claude" folder="projets" />
+    </div>
+  </ClaudeApp>
+  <StepRail steps={steps} />
+</figure>
+
+<style>
+  .si :global(.ca-thread) { block-size: 21rem; }
+
+  .si:not([data-step="2"]) .si-2,
+  .si:not([data-step="3"]) .si-3,
+  .si:not([data-step="4"]) .si-4 {
+    display: none;
+  }
+
+  .si .si-code {
+    justify-self: start;
+    padding: 0.35rem 0.9rem;
+    border: 1px solid var(--app-accent);
+    border-radius: 8px;
+    background: var(--app-raise);
+    font-family: var(--font-mono);
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+  }
+
+  .si-table {
+    justify-self: start;
+    inline-size: min(22rem, 100%);
+    border: 1px solid var(--app-line);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .si .si-table p {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.32rem 0.75rem;
+  }
+
+  .si .si-table p + p { border-block-start: 1px solid var(--app-line); }
+
+  .si-table b {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: #8fd19c;
+    font-weight: 600;
+  }
+
+  .si-table i {
+    inline-size: 0.45rem;
+    block-size: 0.45rem;
+    border-radius: 50%;
+    background: #6fbf7f;
+  }
+</style>

@@ -1,6 +1,6 @@
 ---
 id: a3
-title: "Choisir son modèle et son mode de paiement"
+title: "Abonnement, clé API et choix du modèle"
 family: a
 order: 3
 priority: socle
@@ -12,87 +12,61 @@ prerequisites:
   - a1
 status: a-relire
 owner: a-attribuer
-learningObjective: "Choisir une gamme de modèles proportionnée au niveau d'exigence de la tâche, puis un mode d'accès adapté entre abonnement et API."
-expectedOutcome: "Le participant sait justifier un choix de modèle et de mode d'accès, puis produire une estimation API reproductible pour un cas simple."
+learningObjective: "Distinguer l'abonnement de la clé API et choisir un modèle plus ou moins puissant selon la tâche."
+expectedOutcome: "Vous savez ce que couvre votre abonnement, quoi faire quand une limite est atteinte et comment changer de modèle."
 ---
 
-## Cap
+import ModelTiers from '../../../components/briques/ModelTiers.astro';
+import PromptCopy from '../../../components/briques/PromptCopy.astro';
+import SubscriptionVsApiKey from '../../../components/briques/SubscriptionVsApiKey.astro';
+import UsageGauge from '../../../components/briques/UsageGauge.astro';
 
-**Objectif :** choisir une gamme de modèles et un mode d'accès proportionnés à la tâche, sans confondre puissance, prix et capacité d'usage.
+## L'essentiel
 
-- Durée cible : 8 minutes.
-- Prérequis : A1, « C'est quoi un LLM ».
-- Résultat attendu : une décision modèle–accès justifiée et une estimation API reproductible.
+Votre abonnement suffit pour construire votre projet avec Claude. La clé API, c'est autre chose, et vous n'en aurez peut-être jamais besoin.
 
-## Concept durable
+<SubscriptionVsApiKey />
 
-Le bon modèle n'est pas automatiquement le plus puissant. Il dépend du compromis entre le niveau d'exigence, le volume et le coût :
+## À essayer
 
-1. **Cadré et volumineux :** extraction, classement, reformulation et sous-tâches répétables.
-2. **Professionnel courant :** rédaction nuancée, analyse, code et agents ordinaires.
-3. **Très exigeant :** problème difficile, forte précision attendue ou agent long.
+**1. Dans l'onglet Chat, repérez le nom du modèle près de la zone de saisie et ouvrez son menu.**
 
-La règle durable est de **commencer à l'équilibre, descendre pour le volume et monter seulement après un test insuffisant**. Les gammes ne constituent pas un classement absolu entre Anthropic, OpenAI et Google.
+Chaque modèle y est décrit en une ligne. Choisissez le plus rapide, puis demandez :
 
-Le mode d'accès répond ensuite à une autre question. Un abonnement achète une capacité privilégiée dans un produit, avec des fonctions et des limites variables. Une API facture une consommation mesurée, permet l'automatisation et demande de plafonner la dépense. Les deux peuvent être combinés.
+<PromptCopy>Explique-moi en trois phrases la différence entre mon abonnement Claude et une clé API.</PromptCopy>
 
-Les offres individuelles payantes courantes se situent autour de 20 $ par mois ; les offres intensives donnent un ordre de grandeur de 100 à 250 $ par mois, sans quotas équivalents entre fournisseurs. À titre de comparaison, 100 dossiers du cas de référence représentent environ 22,50 à 150 $ via API selon le modèle.
+**2. Reposez la question au modèle le plus puissant, et comparez.**
 
-Les noms de modèles, prix, quotas et conditions d'accès évoluent. Les valeurs de cette brique sont un relevé daté du 21 juillet 2026, en dollars américains hors taxes.
+## Comprendre
 
-## Pratique avec Claude
+<div class="idea">
+  <div>
+    <h3>Des limites qui se rechargent</h3>
+    <p>L'abonnement n'est pas illimité, mais il ne coûte jamais plus que prévu. Une limite atteinte, c'est une pause.</p>
+  </div>
+  <UsageGauge />
+</div>
 
-Le cas de référence contient **100 000 tokens d'entrée** et **10 000 tokens de sortie** par dossier. Pour des tarifs exprimés par million de tokens :
+<div class="idea">
+  <div>
+    <h3>Le plus puissant n'est pas toujours le bon</h3>
+    <p>Un modèle plus puissant réfléchit mieux, mais il est plus lent et entame plus vite votre limite. Montez d'un cran quand le résultat ne suffit pas.</p>
+  </div>
+  <ModelTiers />
+</div>
 
-```text
-coût = 0,1 × prix d'entrée par million
-      + 0,01 × prix de sortie par million
-```
+<details class="hint">
+  <summary>Pour aller plus loin</summary>
+  <p><strong>Quand faut-il une clé API ?</strong> Quand le projet, une fois terminé, doit interroger une IA sans vous : un site qui résume les messages de ses visiteurs, par exemple. Claude vous le dira au moment voulu et vous guidera. Une clé se crée à part, se paie selon ce qui est consommé, et se plafonne.</p>
+  <p><strong>Une clé API est un secret.</strong> Elle ne se colle jamais dans une conversation ni dans une page publique : voir <a href="/briques/d4/">Sécurité</a> et les <a href="/faq/">questions fréquentes</a>.</p>
+  <p><strong>Où en êtes-vous ?</strong> Les réglages de l'application ont une rubrique consacrée à votre usage. Il existe une limite sur quelques heures et une autre sur la semaine.</p>
+  <p><strong>Les noms des modèles changent</strong> d'une année à l'autre. Fiez-vous à la description affichée dans le menu.</p>
+  <p>Documentation officielle : <a href="https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work">limites d'usage et de longueur</a>, <a href="https://platform.claude.com/docs/en/about-claude/models/overview">vue d'ensemble des modèles</a>.</p>
+</details>
 
-Exemple avec Gemini 3.6 Flash : `0,1 × 1,50 $ + 0,01 × 7,50 $ = 0,225 $` par dossier, soit `22,50 $` pour 100 dossiers identiques.
-
-Cette formule rend l'estimation reproductible, mais ne comprend pas les outils, la recherche, le cache, les images, le stockage ni les paliers de long contexte. Le cas n'est ni une consommation moyenne universelle ni une promesse de quota.
-
-## Mission commune
-
-Aucun exercice participant n'est prévu pour cette courte brique conceptuelle. La comparaison guidée des trois slides suffit à installer la décision modèle–coût–accès.
-
-## Livrable
-
-Aucun livrable participant n'est prévu pour cette courte brique conceptuelle. Le résultat attendu est une décision justifiable et un calcul que le participant saura reproduire lorsqu'un cas réel se présentera.
-
-## Notes formateur
-
-- **0–3 min :** faire comparer les trois niveaux d'exigence. Ne jamais présenter les marques comme un classement absolu ; distinguer Opus 4.8, orienté code agentique complexe, de Fable 5, orienté agents longs et raisonnements exigeants.
-- **3–6 min :** conserver la même hypothèse de 100 000 tokens d'entrée et 10 000 de sortie. Montrer le calcul, puis comparer 1, 10 et 100 dossiers.
-- **6–8 min :** opposer abonnement et API, puis montrer l'usage hybride. Environ 20 $ par mois est un ordre de grandeur pour les offres individuelles courantes, pas un préachat de tokens.
-
-Rappeler que le tarif de Claude Sonnet 5 est un tarif de lancement annoncé jusqu'au 31 août 2026, que Gemini 3.1 Pro est en Preview et que le modèle visible dans une interface ne correspond pas nécessairement à l'identifiant API. Prix, limites et inclusions doivent être revérifiés sur les pages officielles.
-
-## Défis avancés
-
-Pour prolonger hors de cette courte séquence, le formateur peut montrer comment recalculer le cas après un changement de tarif, séparer le coût des entrées et des sorties, ou tester un modèle équilibré avant d'autoriser une montée en gamme. Ces prolongements ne constituent pas un exercice requis dans A3.
-
-## Variantes
-
-- **Public non technique :** conserver uniquement le coût par dossier et l'ordre de grandeur pour 100 dossiers.
-- **Public développeur :** expliciter les deux coefficients `0,1` et `0,01`, puis nommer les coûts exclus sans les calculer.
-- **Usage uniquement dans une interface :** insister sur la capacité variable de l'abonnement et sur l'absence de volume garanti en tokens.
-- **Workflow automatisé :** insister sur le choix explicite du modèle, la mesure de consommation et le plafond de dépense API.
-
-## Dépannage
-
-- **« Quel est le meilleur modèle ? » :** revenir au niveau d'exigence et à un test concret ; ne pas classer globalement les éditeurs.
-- **Confusion abonnement/API :** rappeler que l'abonnement achète une capacité dans un produit tandis que l'API facture une consommation mesurée.
-- **Un montant diffère de la slide :** vérifier la date, le modèle exact, le palier de contexte, les taxes et les coûts additionnels sur la page officielle.
-- **Confusion interface/identifiant API :** préciser que le nom affiché dans le produit ne garantit pas un identifiant ni des conditions API identiques.
-
-## Ressources
-
-- Anthropic : [vue d'ensemble des modèles](https://platform.claude.com/docs/en/about-claude/models/overview), [tarification API](https://platform.claude.com/docs/en/about-claude/pricing) et [forfaits Claude](https://claude.com/pricing).
-- OpenAI : [catalogue des modèles](https://developers.openai.com/api/docs/models), [ChatGPT Plus](https://help.openai.com/en/articles/6950777) et [ChatGPT Pro](https://help.openai.com/en/articles/9793128/).
-- Google : [tarification Gemini API](https://ai.google.dev/gemini-api/docs/pricing) et [forfaits Google AI](https://one.google.com/intl/fr_fr/about/google-ai-plans/).
-
-## Ouverture
-
-Même le meilleur modèle ne transforme pas une réponse plausible en preuve. La brique suivante apprend à ajuster l'effort de vérification au niveau de risque.
+<details class="hint">
+  <summary>Notes formateur</summary>
+  <p><strong>Démonstration en direct, trois minutes.</strong> Ouvrez le menu des modèles, lisez les descriptions à voix haute, puis montrez la rubrique d'usage dans les réglages. Dites le réglage conseillé pour le week-end et tenez-vous-y.</p>
+  <p><strong>À dire clairement.</strong> Personne ne paiera un centime de plus que son abonnement pendant la session. La clé API ne concerne que quelques projets, et se traite au cas par cas, avec un formateur.</p>
+  <p><strong>Pièges fréquents.</strong> Tout faire avec le modèle le plus puissant et toucher la limite avant midi. Paniquer devant le message de limite : c'est une pause, pas une panne. Confondre l'abonnement et la clé API parce que les deux viennent du même fournisseur.</p>
+</details>

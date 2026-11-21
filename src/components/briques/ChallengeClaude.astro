@@ -1,0 +1,44 @@
+---
+// Visuel principal de la brique A4 : Claude va dans votre sens ; on lui
+// demande le contre, puis ses sources et ce qui reste à vérifier.
+import ClaudeApp from './ClaudeApp.astro';
+import Icon from './Icon.astro';
+import StepRail from './StepRail.astro';
+
+const steps = [
+  { label: 'Il va dans votre sens', text: 'Votre question contient déjà la réponse espérée. Claude vous la donne.' },
+  { label: 'Demandez le contre', text: 'La même idée, la question inverse : il trouve aussi de bonnes raisons d’en douter.' },
+  { label: 'Demandez ses sources', text: 'Il sépare ce qu’il suppose de ce qu’il faut aller vérifier ailleurs.' },
+];
+---
+
+<figure class="ca-figure is-narrow chc" data-stepper data-step="3">
+  <ClaudeApp mode="chat" sidebar={false} title="Mon idée de projet">
+    <div class="ca-talk">
+      <div class="ca-thread">
+        <p class="ca-you">Je veux faire un site payant pour mes recettes de famille. Bonne idée, non ?</p>
+        <div class="ca-claude">
+          <p class="ca-say">Très bonne idée ! Les recettes de famille ont une vraie valeur, et un abonnement vous assurerait un revenu régulier.</p>
+        </div>
+        <p class="ca-you from-2">Donne-moi trois raisons pour lesquelles ça pourrait ne pas marcher.</p>
+        <div class="ca-claude from-2">
+          <p class="ca-say">1. Des milliers de recettes sont gratuites en ligne.<br />2. Peu de gens paient avant d’avoir goûté.<br />3. Il faut publier souvent pour garder ses abonnés.</p>
+        </div>
+        <p class="ca-you from-3">Sur quoi t’appuies-tu ? Que dois-je vérifier ?</p>
+        <div class="ca-claude from-3">
+          <p class="ca-say">Sur des généralités : je n’ai aucun chiffre sur votre public. À vérifier vous-même : demandez à dix personnes si elles paieraient.</p>
+        </div>
+      </div>
+      <div class="ca-composer">
+        <p class="ca-field"><Icon name="plus" /><span>Reply to Claude</span><Icon name="mic" /></p>
+      </div>
+    </div>
+  </ClaudeApp>
+  <StepRail steps={steps} />
+</figure>
+
+<style>
+  .chc :global(.ca-thread) { min-block-size: 23rem; }
+  .chc :global(.ca-you) { max-inline-size: 80%; }
+  .chc :global(.ca-claude) { max-inline-size: 46rem; }
+</style>

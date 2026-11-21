@@ -1,0 +1,130 @@
+---
+// Visuel principal de la brique E3 : l'interview de setup-projet dans l'onglet
+// Code. Question, réponse, reformulation, correction ; à côté, les trois temps.
+import ClaudeApp from './ClaudeApp.astro';
+import Composer from './Composer.astro';
+import StepRail from './StepRail.astro';
+
+const steps = [
+  { label: 'Claude questionne', text: 'Une seule question à la fois, sur votre idée. Jamais sur la technique.' },
+  { label: 'Vous répondez', text: 'Avec vos mots, comme vous le raconteriez à un ami.' },
+  { label: 'Il reformule', text: 'Il redit ce qu’il a compris, et vous demande si c’est juste.' },
+  { label: 'Vous corrigez', text: 'Tant que ce n’est pas juste, il recommence. Ensuite seulement, le temps suivant.' },
+];
+---
+
+<figure class="ca-figure si" data-stepper data-step="4">
+  <div class="si-stage">
+    <ClaudeApp title="Mon projet" session="Mon projet">
+      <div class="ca-talk">
+        <div class="ca-thread">
+          <p class="ca-you">lance setup-projet</p>
+          <div class="ca-claude">
+            <p class="ca-say">Je vous pose quelques questions sur votre idée, on la découpe ensemble, et ensuite on construit.</p>
+            <p class="ca-say si-key">Quelle est votre idée ? Racontez-la comme à un ami.</p>
+          </div>
+          <p class="ca-you from-2">Un site pour garder les recettes de ma famille.</p>
+          <div class="ca-claude from-3">
+            <p class="ca-say">Si je comprends bien : un site où toute la famille retrouve les recettes de mamie, pour qu’elles ne se perdent pas.</p>
+            <p class="ca-say si-key">C’est bien ça ? Qu’est-ce qui est faux, qu’est-ce qui manque ?</p>
+          </div>
+          <p class="ca-you from-4">Presque : chacun doit pouvoir ajouter les siennes.</p>
+          <div class="ca-claude from-4">
+            <p class="ca-say">Compris : chacun retrouve les recettes, et ajoute les siennes. <span class="si-key">C’est juste, cette fois ?</span></p>
+          </div>
+        </div>
+        <Composer placeholder="Reply to Claude" />
+      </div>
+    </ClaudeApp>
+
+    <div class="si-temps">
+      <p class="si-temps-title">Trois temps</p>
+      <ol>
+        <li class="is-on"><b>1</b><span>L’idée</span></li>
+        <li><b>2</b><span>Les personnes et le geste</span></li>
+        <li><b>3</b><span>Les limites et la réussite</span></li>
+      </ol>
+      <p class="si-temps-note">À chaque temps : il reformule, vous corrigez.</p>
+    </div>
+  </div>
+  <StepRail steps={steps} />
+</figure>
+
+<style>
+  .si-stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 15rem;
+    gap: 1.5rem;
+    align-items: center;
+  }
+
+  .si :global(.ca-thread) { min-block-size: 23rem; }
+
+  .si .si-key {
+    color: var(--app-accent);
+    font-weight: 600;
+  }
+
+  .si .si-temps p { margin: 0; }
+
+  .si .si-temps .si-temps-title {
+    font-family: var(--font-display);
+    font-size: var(--text-h3);
+    font-weight: var(--weight-display);
+  }
+
+  .si .si-temps ol {
+    display: grid;
+    gap: 0.6rem;
+    margin: 0.8rem 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .si .si-temps li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0.55rem 0.7rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    font-size: 0.98rem;
+    font-weight: var(--weight-semibold);
+    line-height: 1.3;
+  }
+
+  .si .si-temps li.is-on {
+    background: var(--family-accent);
+    box-shadow: var(--shadow-block);
+  }
+
+  .si-temps b {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    border: 2px solid var(--ink);
+    border-radius: 50%;
+    background: var(--surface);
+    font-family: var(--font-display);
+  }
+
+  .si .si-temps .si-temps-note {
+    color: var(--muted);
+    font-size: var(--text-small);
+    line-height: 1.4;
+  }
+
+  @media (max-width: 56rem) {
+    .si-stage { grid-template-columns: minmax(0, 1fr); }
+    .si .si-temps ol { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .si .si-temps li { align-items: flex-start; }
+  }
+
+  @media (max-width: 40rem) {
+    .si .si-temps ol { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

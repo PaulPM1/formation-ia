@@ -1,0 +1,83 @@
+---
+// Visuel principal de la brique D4 : les quatre règles de sécurité que
+// setup-projet inscrit dans le CLAUDE.md du projet.
+import './claude-app.css';
+import './eco.css';
+import EcoIcon from './EcoIcon.astro';
+
+const rules = [
+  { icon: 'key', name: 'Les clés restent secrètes', text: 'Jamais dans le code, jamais sur GitHub.' },
+  { icon: 'form', name: 'Ce qu’un visiteur écrit est vérifié', text: 'Avant d’être utilisé ou enregistré.' },
+  { icon: 'eye', name: 'Rien de sensible à la vue', text: 'Ni dans les adresses, ni dans la page.' },
+  { icon: 'gauge', name: 'Une limite sur ce qui coûte', text: 'Personne ne peut faire grimper votre facture.' },
+] as const;
+---
+
+<figure class="ca-figure sr">
+  <ol class="sr-grid">
+    {rules.map((rule, index) => (
+      <li class="eco-node">
+        <b>{index + 1}</b>
+        <EcoIcon name={rule.icon} />
+        <p class="eco-name">{rule.name}</p>
+        <p class="eco-sub">{rule.text}</p>
+      </li>
+    ))}
+  </ol>
+  <figcaption><EcoIcon name="file" /><span>Déjà inscrites dans le fichier <b>CLAUDE.md</b> de votre projet.</span></figcaption>
+</figure>
+
+<style>
+  .sr .sr-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.2rem;
+    margin: 0;
+    padding: 0 6px 6px 0;
+    list-style: none;
+  }
+
+  .sr .sr-grid li {
+    position: relative;
+    margin: 0;
+    padding: 1.6rem 0.8rem 1.2rem;
+  }
+
+  .sr-grid :global(.eco-icon) {
+    inline-size: 3.2rem;
+    block-size: 3.2rem;
+    padding: 0.6rem;
+    border: 2px solid var(--ink);
+    border-radius: 50%;
+    background: var(--family-accent);
+  }
+
+  .sr-grid b {
+    position: absolute;
+    inset: 0.5rem auto auto 0.6rem;
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .sr figcaption {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-block-start: 1.2rem;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  .sr figcaption :global(.eco-icon) { inline-size: 1.3rem; block-size: 1.3rem; }
+
+  @media (max-width: 56rem) {
+    .sr .sr-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 26rem) {
+    .sr .sr-grid { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

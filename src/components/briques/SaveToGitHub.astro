@@ -1,0 +1,174 @@
+---
+// Visuel principal de la brique D2 : le projet vit sur l'ordinateur, vous
+// demandez une sauvegarde, GitHub en garde une copie avec son historique.
+import './claude-app.css';
+import './eco.css';
+import EcoIcon from './EcoIcon.astro';
+import StepRail from './StepRail.astro';
+
+const steps = [
+  { label: 'Sur votre ordinateur', text: 'Votre projet est un dossier sur votre ordinateur. S’il disparaît, tout disparaît.' },
+  { label: 'Vous demandez', text: 'Vous dites à Claude de sauvegarder. Il s’occupe de tout.' },
+  { label: 'GitHub garde une copie', text: 'GitHub garde le projet et son historique, à l’abri, même si votre ordinateur tombe en panne.' },
+];
+const files = ['index.html', 'style.css', 'recettes.js'];
+---
+
+<figure class="ca-figure sg" data-stepper data-step="3">
+  <div class="sg-stage" aria-hidden="true">
+    <div class="eco-node sg-place">
+      <EcoIcon name="laptop" />
+      <p class="eco-name">Votre ordinateur</p>
+      <div class="sg-folder">
+        <p><EcoIcon name="folder" />mes-recettes</p>
+        {files.map((file) => <p class="sg-file"><EcoIcon name="file" />{file}</p>)}
+      </div>
+    </div>
+
+    <div class="sg-middle">
+      <p class="sg-say">Sauvegarde sur GitHub.</p>
+      <span class="sg-arrow"></span>
+    </div>
+
+    <div class="eco-node sg-place sg-github">
+      <EcoIcon name="github" />
+      <p class="eco-name">GitHub</p>
+      <p class="sg-empty">Pas encore de copie</p>
+      <div class="sg-folder sg-copy">
+        <p><EcoIcon name="folder" />mes-recettes</p>
+        {files.map((file) => <p class="sg-file"><EcoIcon name="file" />{file}</p>)}
+      </div>
+      <p class="sg-history sg-copy"><i></i><i></i><i></i><span>3 sauvegardes</span></p>
+    </div>
+  </div>
+  <StepRail steps={steps} />
+</figure>
+
+<style>
+  .sg-stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(9rem, 0.7fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 1rem;
+    padding: 0 6px 6px 0;
+  }
+
+  .sg .sg-place {
+    align-self: stretch;
+    min-block-size: 15.5rem;
+  }
+
+  .sg-folder {
+    display: grid;
+    gap: 0.2rem;
+    inline-size: min(100%, 13rem);
+    margin-block-start: 0.5rem;
+    padding: 0.6rem 0.7rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-sm);
+    background: var(--paper);
+    text-align: start;
+  }
+
+  .sg .sg-folder p {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  .sg .sg-folder .sg-file { padding-inline-start: 1rem; font-weight: 400; }
+  .sg-folder :global(.eco-icon) { inline-size: 1rem; block-size: 1rem; }
+
+  .sg-middle {
+    display: grid;
+    justify-items: center;
+    gap: 0.8rem;
+  }
+
+  .sg .sg-say {
+    margin: 0;
+    padding: 0.5rem 0.8rem;
+    border: 2px solid var(--ink);
+    border-radius: 12px 12px 12px 2px;
+    background: var(--family-accent);
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.3;
+    text-align: center;
+  }
+
+  /* La flèche : un trait d'encre et sa pointe. */
+  .sg-arrow {
+    position: relative;
+    inline-size: 100%;
+    block-size: 4px;
+    background: var(--ink);
+    transition: opacity 0.5s ease;
+  }
+
+  .sg-arrow::after {
+    position: absolute;
+    inset: 50% -2px auto auto;
+    border: 9px solid transparent;
+    border-inline-start: 14px solid var(--ink);
+    border-inline-end: 0;
+    transform: translateY(-50%);
+    content: "";
+  }
+
+  .sg .sg-empty {
+    margin: 2.2rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .sg .sg-history {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin: 0.5rem 0 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .sg-history i {
+    inline-size: 0.7rem;
+    block-size: 0.7rem;
+    border: 2px solid var(--ink);
+    border-radius: 50%;
+    background: var(--family-accent);
+  }
+
+  .sg-history span { margin-inline-start: 0.3rem; }
+
+  .sg-copy { animation: ca-in 0.5s ease both; }
+
+  .sg[data-step="1"] .sg-say { visibility: hidden; }
+  .sg[data-step="1"] .sg-arrow { opacity: 0.2; }
+  .sg[data-step="1"] .sg-github,
+  .sg[data-step="2"] .sg-github { border-style: dashed; box-shadow: none; }
+  .sg[data-step="3"] .sg-empty,
+  .sg:not([data-step="3"]) .sg-copy { display: none; }
+  .sg[data-step="2"] .sg-arrow { animation: sg-pulse 1s ease infinite alternate; }
+
+  @keyframes sg-pulse { to { opacity: 0.35; } }
+
+  @media (max-width: 40rem) {
+    .sg-stage { grid-template-columns: minmax(0, 1fr); }
+    .sg .sg-place { min-block-size: 0; }
+    .sg .sg-github { min-block-size: 13rem; }
+    .sg-arrow { inline-size: 4px; block-size: 2.5rem; }
+    .sg-arrow::after {
+      inset: auto auto -2px 50%;
+      border: 9px solid transparent;
+      border-block-start: 14px solid var(--ink);
+      border-block-end: 0;
+      transform: translateX(-50%);
+    }
+  }
+</style>

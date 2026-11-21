@@ -1,0 +1,142 @@
+---
+// La règle la plus importante de la brique D4 : une clé écrite dans le code
+// part sur GitHub avec lui ; rangée à part, elle reste sur l'ordinateur.
+import './claude-app.css';
+import './eco.css';
+import EcoIcon from './EcoIcon.astro';
+---
+
+<figure class="ca-figure is-narrow kh">
+  <div class="kh-case is-bad">
+    <p class="kh-verdict"><EcoIcon name="cross" />La clé dans le code</p>
+    <div class="kh-row" aria-hidden="true">
+      <p class="kh-file"><span>recettes.js</span><code>cle = "sk-4f2a…"</code></p>
+      <i class="kh-arrow"></i>
+      <p class="kh-dest"><EcoIcon name="github" /><code>sk-4f2a…</code></p>
+    </div>
+    <p class="kh-result">Elle part sur GitHub avec le code. Qui la trouve s’en sert à vos frais.</p>
+  </div>
+  <div class="kh-case is-good">
+    <p class="kh-verdict"><EcoIcon name="check" />La clé rangée à part</p>
+    <div class="kh-row" aria-hidden="true">
+      <p class="kh-file"><span><EcoIcon name="lock" />.env</span><code>CLE=sk-4f2a…</code></p>
+      <i class="kh-arrow is-cut"></i>
+      <p class="kh-dest"><EcoIcon name="github" /><code>le code, sans la clé</code></p>
+    </div>
+    <p class="kh-result">Le fichier <b>.env</b> reste sur votre ordinateur. Il ne part jamais sur GitHub.</p>
+  </div>
+</figure>
+
+<style>
+  .kh {
+    display: grid;
+    gap: 1.2rem;
+    padding-inline-end: 6px;
+  }
+
+  .kh-case {
+    padding: 0.9rem 1rem 1rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    box-shadow: var(--shadow-block);
+  }
+
+  .kh .kh-case p { margin: 0; }
+
+  .kh .kh-verdict {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+
+  .kh-verdict :global(.eco-icon) {
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    padding: 0.2rem;
+    border: 2px solid var(--ink);
+    border-radius: 50%;
+    background: var(--family-accent);
+    stroke-width: 3;
+  }
+
+  .is-bad .kh-verdict :global(.eco-icon) { background: var(--brick-coral); }
+
+  .kh-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 3rem minmax(0, 1fr);
+    align-items: center;
+    gap: 0.6rem;
+    margin-block: 0.8rem 0.7rem;
+  }
+
+  .kh .kh-file,
+  .kh .kh-dest {
+    display: grid;
+    gap: 0.25rem;
+    padding: 0.5rem 0.6rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-sm);
+    background: var(--paper);
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .kh-file span {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .kh-row :global(.eco-icon) { inline-size: 1.1rem; block-size: 1.1rem; }
+
+  .kh .kh-row code {
+    padding: 0;
+    border: 0;
+    background: none;
+    font-size: 0.74rem;
+    font-weight: 400;
+    overflow-wrap: anywhere;
+  }
+
+  .is-bad .kh-row code { background: var(--brick-coral); padding-inline: 0.2rem; }
+  .is-good .kh-file code { background: var(--family-accent); padding-inline: 0.2rem; }
+
+  .kh-arrow {
+    position: relative;
+    block-size: 3px;
+    background: var(--ink);
+  }
+
+  .kh-arrow::after {
+    position: absolute;
+    inset: 50% -1px auto auto;
+    border: 7px solid transparent;
+    border-inline-start: 10px solid var(--ink);
+    border-inline-end: 0;
+    transform: translateY(-50%);
+    content: "";
+  }
+
+  /* La clé rangée à part ne passe pas : la flèche est barrée. */
+  .kh-arrow.is-cut { background: repeating-linear-gradient(90deg, var(--ink) 0 5px, transparent 5px 9px); }
+  .kh-arrow.is-cut::before {
+    position: absolute;
+    inset: 50% auto auto 40%;
+    inline-size: 4px;
+    block-size: 1.5rem;
+    background: var(--ink);
+    transform: translateY(-50%);
+    content: "";
+  }
+
+  .kh .kh-result {
+    font-size: 0.92rem;
+    line-height: 1.45;
+  }
+</style>

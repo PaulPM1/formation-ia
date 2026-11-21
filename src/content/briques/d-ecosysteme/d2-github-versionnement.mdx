@@ -1,115 +1,71 @@
 ---
 id: d2
-title: "GitHub et versionnement"
+title: "Sauvegarder sur GitHub"
 family: d
 order: 12
 priority: bonus
-durationMinutes: 15
+durationMinutes: 10
 type: concept
 platforms:
   - commun
 prerequisites:
-  - d1
+  - d2-bis
 status: a-relire
 owner: matthieu
-learningObjective: "Comprendre le versionnement comme un système de points de sauvegarde, et savoir déléguer commit, push et pull à l'IA sans lui faire confiance aveuglément."
-expectedOutcome: "Le participant crée des points de sauvegarde de son projet via Claude, vérifie ce qui part en ligne et sait revenir à une version qui marchait."
+learningObjective: "Faire sauvegarder son projet sur GitHub par Claude, et savoir demander un retour à une sauvegarde qui marchait."
+expectedOutcome: "Un projet sauvegardé sur GitHub, avec au moins une sauvegarde nommée."
 ---
 
-## Cap
+import PromptCopy from '../../../components/briques/PromptCopy.astro';
+import SaveNamed from '../../../components/briques/SaveNamed.astro';
+import SaveTimeline from '../../../components/briques/SaveTimeline.astro';
+import SaveToGitHub from '../../../components/briques/SaveToGitHub.astro';
 
-**Objectif :** comprendre à quoi servent GitHub et le versionnement, sans apprendre les commandes : c'est l'IA qui les tape, vous qui décidez.
+## L'essentiel
 
-- Durée cible : 15 minutes.
-- Prérequis : D1, « Lexique dev » (repo, Git vs GitHub).
-- Résultat attendu : votre projet a des points de sauvegarde, et vous savez demander un retour en arrière.
+GitHub garde une copie de votre projet et tout son historique. C'est Claude qui sauvegarde : vous le lui demandez.
 
-## Concept durable
+<SaveToGitHub />
 
-Le versionnement répond à une peur universelle : « et si je casse tout ? ». Un **commit** est un **point de sauvegarde de jeu vidéo** : à chaque étape franchie, vous figez l'état du projet. Si la suite tourne mal, vous rechargez la dernière sauvegarde au lieu de recommencer le niveau.
+## À essayer
 
-Trois mots suffisent :
+**1. Sauvegardez, dès que quelque chose marche.**
 
-- **Commit** : créer un point de sauvegarde local, avec un message qui dit ce qui a changé.
-- **Push** : envoyer vos sauvegardes sur GitHub : le projet est à l'abri en ligne, même si votre machine meurt.
-- **Pull** : récupérer la dernière version depuis GitHub, utile sur une autre machine ou à plusieurs.
+<PromptCopy>Sauvegarde mon projet sur GitHub.</PromptCopy>
 
-GitHub, lui, est le service qui héberge ces sauvegardes et permet le travail en équipe : chacun voit qui a changé quoi, quand, et pourquoi.
+**2. Regardez votre historique.**
 
-La bonne nouvelle : **vous ne taperez jamais ces commandes**. Claude les exécute pour vous : « sauvegarde mon travail », « envoie tout en ligne », « reviens à la version d'hier ». Ce qui reste votre travail, c'est le jugement : décider **quand** sauvegarder, et **vérifier** ce qui part. La règle pour le quand : après chaque petite victoire. Ça marche, checkpoint. C'est le complément direct de la méthode des petites étapes testables (E3) : sans point de sauvegarde, « revenir à la version qui marchait » est impossible.
+<PromptCopy>Montre-moi la liste de mes sauvegardes, de la plus récente à la plus ancienne.</PromptCopy>
 
-Le réflexe de vérification : avant de laisser Claude pousser, demandez-lui de résumer ce qu'il envoie. Faire confiance, oui ; à l'aveugle, non. Ce qui est poussé sur GitHub reste dans l'historique : y compris une erreur, y compris une clé API (D4 y revient).
+**3. Le jour où un changement casse tout, revenez en arrière.**
 
-## Pratique avec Claude
+<PromptCopy>Ce changement a tout cassé. Reviens à la dernière sauvegarde qui marchait.</PromptCopy>
 
-Trois demandes en langage naturel dans Claude Code, sur un projet existant :
+## Comprendre
 
-```text
-Sauvegarde l'état actuel du projet avec un message clair.
-```
+### Chaque sauvegarde est un point de retour
 
-```text
-Montre-moi l'historique des sauvegardes de ce projet.
-```
+<SaveTimeline />
 
-Puis le moment décisif, sans faire de nouvelle sauvegarde : cassez volontairement quelque chose (supprimez un morceau de l'interface), constatez le dégât, puis demandez :
+<div class="idea">
+  <div>
+    <h3>Une sauvegarde porte un nom</h3>
+    <p>Claude nomme chaque sauvegarde d'après ce qui vient d'être fait. C'est ce nom que vous retrouvez dans l'historique.</p>
+  </div>
+  <SaveNamed />
+</div>
 
-```text
-Reviens à la dernière version qui marchait.
-```
+<details class="hint">
+  <summary>Pour aller plus loin</summary>
+  <p><strong>Les mots que Claude emploiera.</strong> Un <em>dépôt</em> est l'espace de votre projet sur GitHub. Un <em>commit</em> est une sauvegarde nommée. <em>Pousser</em>, c'est envoyer vos sauvegardes sur GitHub.</p>
+  <p><strong>La première fois.</strong> Claude crée lui-même le dépôt sur votre compte GitHub. Vous pouvez ensuite ouvrir github.com et y voir votre projet.</p>
+  <p><strong>À plusieurs.</strong> GitHub sert aussi à travailler à plusieurs sur un même projet, avec des branches et des pull requests. Vous n'en avez pas besoin pour construire seul.</p>
+  <p>Documentation officielle : <a href="https://docs.github.com/fr/get-started/start-your-journey/about-github-and-git">À propos de GitHub et de Git</a>.</p>
+</details>
 
-Le projet ressuscite. Le filet de sécurité est réel : c'est lui qui permet de laisser l'IA travailler sans angoisse.
-
-Précision utile : ici, la casse n'avait pas été sauvegardée. Revenir en arrière consiste simplement à jeter les modifications en cours et retrouver le dernier point de sauvegarde. Si la casse a déjà été sauvegardée, voire envoyée en ligne, le retour reste possible : Claude sait annuler une sauvegarde précise, il suffit de lui dire laquelle. Ce sont deux opérations différentes, mais dans les deux cas vous les demandez en français.
-
-## Mission commune
-
-Sur votre projet de l'atelier B4 :
-
-1. Demandez à Claude de créer un point de sauvegarde avec un message que vous comprenez vous-même.
-2. Faites une modification volontairement ratée sans la sauvegarder (« mets tous les textes en jaune fluo »), constatez, puis demandez le retour arrière.
-3. Avant un push, demandez : « résume ce que tu t'apprêtes à envoyer en ligne », puis lisez la réponse et validez ou refusez.
-
-**Critère de réussite :** vous savez dire quand vous avez sauvegardé, ce qui est parti en ligne, et vous avez réussi un retour en arrière.
-
-## Livrable
-
-L'historique de votre projet : au moins deux points de sauvegarde aux messages compréhensibles, et un retour arrière réussi dont vous pouvez raconter le déroulé.
-
-## Notes formateur
-
-- **0–3 min :** la peur de tout casser ; l'analogie du point de sauvegarde de jeu vidéo.
-- **3–6 min :** commit / push / pull en trois phrases ; GitHub comme coffre en ligne et outil d'équipe.
-- **6–10 min :** démonstration casse + résurrection : c'est le moment fort, le soigner.
-- **10–14 min :** mission commune sur leurs projets.
-- **14–15 min :** la règle « petite victoire = checkpoint » + le réflexe de vérification avant push.
-
-Ne pas montrer une seule commande git : l'écran ne montre que du langage naturel dans Claude Code. Si un initié demande les branches ou les pull requests : une phrase (« des couloirs de travail parallèles pour les équipes ») et renvoyer au défi avancé, hors périmètre pour des projets solo de deux jours. Piège : laisser la démo de retour arrière improvisée. La répéter avant, un échec ici ruine le message de confiance. Transition : le projet est sauvegardé, reste à le rendre accessible au monde (D3).
-
-## Défis avancés
-
-- Demandez à Claude ce qu'est une branche et dans quel cas votre projet solo en mériterait une. Challenge : sa réponse justifie-t-elle la complexité ?
-- Explorez votre repo sur github.com : retrouvez votre historique, un fichier précis, et qui a modifié quoi.
-- Demandez à Claude de rédiger ses messages de commit selon une convention fixe, et vérifiez qu'il s'y tient sur trois commits.
-- Sauvegardez volontairement une modification ratée, puis demandez à Claude d'annuler cette sauvegarde précise. Comparez avec le retour arrière sur une modification non sauvegardée : que change le fait d'avoir déjà commité, voire pushé ?
-
-## Variantes
-
-- **Analogie alternative :** l'« historique des versions » de Google Docs : même principe, repère immédiat pour qui l'a déjà utilisé.
-- **Analogie approfondie :** prolonger le vocabulaire du jeu vidéo (checkpoint, respawn, sauvegarde cloud) si la salle a accroché.
-- **Sans projet B4 :** faire la mission sur un dossier de textes quelconque : le versionnement marche sur tout, pas que sur du code.
-
-## Dépannage
-
-- **« Claude a sauvegardé sans que je demande » :** certains agents committent d'office ; c'est l'occasion de rappeler qu'on peut exiger validation avant chaque commit.
-- **« Le retour arrière a effacé mon travail récent » :** revenir en arrière ramène à la sauvegarde choisie ; ce qui n'était pas sauvegardé est perdu, d'où la règle « petite victoire = checkpoint ».
-- **« Push refusé, il parle d'authentification » :** le lien machine ↔ GitHub n'est pas configuré ; c'est l'objet du setup D2-bis, ne pas déboguer en séance.
-
-## Ressources
-
-- [Hello World : premiers pas GitHub (documentation officielle)](https://docs.github.com/fr/get-started/start-your-journey/hello-world)
-- [À propos de Git (GitHub Docs)](https://docs.github.com/fr/get-started/using-git/about-git)
-
-## Ouverture
-
-Votre projet est versionné et à l'abri en ligne. Prochaine étape du voyage du code : le faire passer de « ça marche chez moi » à une vraie adresse web que tout le monde peut visiter : c'est le déploiement, avec Vercel (D3).
+<details class="hint">
+  <summary>Notes formateur</summary>
+  <p><strong>Démonstration en direct, cinq minutes.</strong> Sur le projet de démonstration, demandez « sauvegarde mon projet sur GitHub », puis ouvrez github.com : le projet y est. Cassez volontairement la page (« supprime tout le style »), montrez l'aperçu abîmé, puis demandez le retour en arrière.</p>
+  <p><strong>À faire voir.</strong> La liste des sauvegardes sur github.com, avec leurs noms. C'est la preuve que rien n'est perdu.</p>
+  <p><strong>Pièges fréquents.</strong> Une personne qui enchaîne dix changements sans sauvegarder : le retour en arrière l'emmènera trop loin. La règle à répéter : ça marche, on sauvegarde. Si l'envoi est refusé, la connexion GitHub n'a pas abouti : voir la brique D2-bis.</p>
+</details>

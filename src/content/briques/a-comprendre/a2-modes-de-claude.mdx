@@ -1,0 +1,72 @@
+---
+id: a2
+title: "Répondre ou agir : les modes de Claude"
+family: a
+order: 2
+priority: socle
+durationMinutes: 10
+type: concept
+platforms:
+  - commun
+prerequisites:
+  - a1
+status: a-relire
+owner: a-attribuer
+learningObjective: "Distinguer la conversation, l'artefact, Code et Design, et choisir entre une réponse de Claude et une action de Claude."
+expectedOutcome: "Pour votre idée de projet, vous savez dans quel mode commencer et pourquoi."
+---
+
+import AnswerOrAct from '../../../components/briques/AnswerOrAct.astro';
+import ModesMap from '../../../components/briques/ModesMap.astro';
+import ModesPath from '../../../components/briques/ModesPath.astro';
+import PromptCopy from '../../../components/briques/PromptCopy.astro';
+
+## L'essentiel
+
+Une seule application, quatre façons de travailler. Pour choisir, une question : voulez-vous que Claude vous **réponde**, ou qu'il **fasse** ?
+
+<ModesMap />
+
+## À essayer
+
+**1. Dans l'onglet Chat, faites-lui chercher des idées avec vous.**
+
+<PromptCopy>Voici ce que j'aime : [vos centres d'intérêt]. Propose-moi trois petits projets que je pourrais construire avec toi.</PromptCopy>
+
+**2. Demandez-lui par où commencer.**
+
+<PromptCopy>Pour chacune de ces idées, dis-moi ce qui convient le mieux : la conversation, un artefact, Code ou Design, et pourquoi.</PromptCopy>
+
+## Comprendre
+
+<div class="idea">
+  <div>
+    <h3>Un agent fait des actions</h3>
+    <p>La conversation vous donne un texte. Dans Code, Claude crée des fichiers, lance le projet, regarde ce que ça donne et corrige.</p>
+  </div>
+  <AnswerOrAct />
+</div>
+
+<div class="idea">
+  <div>
+    <h3>On passe de l'un à l'autre</h3>
+    <p>Les modes ne s'excluent pas. Un même projet les traverse.</p>
+  </div>
+  <ModesPath />
+</div>
+
+Pour le détail : [la conversation et les artefacts](/briques/b1/), [Claude Code](/briques/b2/), [Claude Design](/briques/c4/).
+
+<details class="hint">
+  <summary>Pour aller plus loin</summary>
+  <p><strong>Artefact ou Code ?</strong> Un artefact vit dans l'application Claude : parfait pour un objet seul, vite fait, à regarder ou à partager. Un projet dans Code vit dans un dossier à vous : il peut grandir, être sauvegardé et mis en ligne.</p>
+  <p><strong>Un agent demande avant d'agir.</strong> Dans Code, Claude attend votre accord avant de lancer une commande ou d'installer un outil.</p>
+  <p>Documentation officielle : <a href="https://support.claude.com/en/articles/9487310-what-are-artifacts-and-how-do-i-use-them">les artefacts</a>, <a href="https://code.claude.com/docs/en/desktop">Claude Code dans l'application de bureau</a>.</p>
+</details>
+
+<details class="hint">
+  <summary>Notes formateur</summary>
+  <p><strong>Démonstration en direct, cinq minutes.</strong> La même demande (« une page pour mes recettes ») trois fois : dans une conversation, en artefact, puis dans Code. Faites dire à la salle ce qui a changé : un texte, un objet à l'écran, des fichiers dans un dossier.</p>
+  <p><strong>À faire voir.</strong> Le sélecteur Chat / Code en haut à gauche, puis les entrées Artifacts et Design du menu de l'onglet Chat. Design n'est que montré ici : sa démonstration vient plus tard.</p>
+  <p><strong>Pièges fréquents.</strong> Vouloir construire tout son projet en artefact parce que c'est immédiat : dites clairement que le projet du week-end se construit dans Code. Croire qu'il faut choisir une fois pour toutes : on change de mode aussi souvent qu'on veut.</p>
+</details>

@@ -1,0 +1,26 @@
+---
+// La phrase d'installation de la brique D2-bis (fiche formateur, section 2).
+// Elle vit ici et non dans le MDX : la typographie automatique du Markdown y
+// transformerait les doubles tirets des options de commande.
+import PromptCopy from './PromptCopy.astro';
+---
+
+<div class="sp">
+  <PromptCopy>
+    Prépare mon ordinateur pour construire des projets. Je débute : ne me demande jamais de taper une commande. Fais tout toi-même et dis-moi seulement quand je dois cliquer sur une fenêtre ou taper le mot de passe de mon ordinateur.<br />
+    1. Vérifie si Git, Node.js (version LTS) et GitHub CLI (gh) sont installés.<br />
+    2. Installe ce qui manque avec la méthode officielle la plus simple pour mon système. Windows : winget. Mac : les outils en ligne de commande d'Apple pour Git, les installateurs officiels .pkg pour Node.js et gh. N'installe pas Homebrew s'il n'est pas déjà là.<br />
+    3. Si une commande reste introuvable juste après son installation, cherche-la à son emplacement habituel avant de conclure à un échec. Si elle y est, dis-moi de fermer complètement l'application Claude puis de la rouvrir.<br />
+    4. Relie mon compte GitHub : lance « gh auth login --web --clipboard --git-protocol https », et dis-moi de coller le code dans la page qui s'ouvre. Ensuite lance « gh auth setup-git » et renseigne mon nom et mon adresse Git à partir de mon compte GitHub.<br />
+    5. Installe le skill setup-projet dans mes skills personnels (~/.claude/skills/setup-projet/) depuis cette adresse : https://formation-ia-ruby.vercel.app/kits/setup-projet.zip<br />
+    6. Termine par un tableau : Git, Node.js, npm, gh, connexion GitHub, skill setup-projet. Pour chacun : prêt ou pas prêt, et la version.
+  </PromptCopy>
+</div>
+
+<style>
+  .sp :global(.prompt-copy p) {
+    max-block-size: 11.5rem;
+    overflow-y: auto;
+    font-size: 0.92rem;
+  }
+</style>

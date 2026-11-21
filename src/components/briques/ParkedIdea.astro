@@ -1,0 +1,24 @@
+---
+// Une idée nouvelle en cours de route : Claude la range dans la liste et
+// termine d'abord la fonctionnalité en cours.
+import ClaudeApp from './ClaudeApp.astro';
+---
+
+<figure class="ca-figure is-narrow pki">
+  <ClaudeApp sidebar={false} title="Mon projet">
+    <div class="ca-thread">
+      <p class="ca-you">Et si on pouvait aussi imprimer une recette ?</p>
+      <div class="ca-claude">
+        <p class="ca-tool"><i></i>Edited <b>backlog.md</b></p>
+        <p class="ca-say">Bonne idée, je l’ai notée dans la liste. On finit d’abord la fiche d’une recette.</p>
+      </div>
+    </div>
+  </ClaudeApp>
+</figure>
+
+<style>
+  .pki :global(.ca-thread) {
+    min-block-size: 0;
+    padding-block-end: 1rem;
+  }
+</style>

@@ -1,6 +1,6 @@
 ---
 id: d1
-title: "Lexique dev"
+title: "Les mots du projet"
 family: d
 order: 11
 priority: socle
@@ -11,103 +11,46 @@ platforms:
 prerequisites: []
 status: a-relire
 owner: matthieu
-learningObjective: "Associer chaque terme du vocabulaire dev (IDE, terminal, repo, GitHub, déploiement, clé API) à sa place dans le voyage du code."
-expectedOutcome: "Le participant garde une antisèche d'une page et ne bloque plus sur le vocabulaire pendant les briques D2 à D4 et les ateliers."
+learningObjective: "Reconnaître les douze mots que Claude emploie pendant un projet, et savoir où chacun se situe entre l'ordinateur, GitHub et le site en ligne."
+expectedOutcome: "Une carte à garder sous les yeux, et le réflexe de demander à Claude d'expliquer un mot inconnu."
 ---
 
-## Cap
+import LexiconCards from '../../../components/briques/LexiconCards.astro';
+import ProjectMap from '../../../components/briques/ProjectMap.astro';
+import PromptCopy from '../../../components/briques/PromptCopy.astro';
 
-**Objectif :** poser le vocabulaire minimal pour suivre les briques suivantes sans être perdu.
+## L'essentiel
 
-- Durée cible : 10 minutes.
-- Prérequis : aucun ; l’IDE, le terminal et le dossier de projet sont montrés directement.
-- Résultat attendu : chaque terme est relié à quelque chose que vous avez déjà vu ou que vous verrez dans les deux jours.
+Douze mots reviendront dans la bouche de Claude pendant votre projet. Les voici, chacun à sa place.
 
-## Concept durable
+<ProjectMap />
 
-Tous ces termes racontent une seule histoire : **le voyage du code**, de votre machine jusqu'aux utilisateurs. Quatre étapes.
+## À essayer
 
-**1. On l'écrit.**
+**1. Un mot vous échappe ? Demandez.**
 
-- **IDE** : l'atelier où l'on écrit et organise le code. VS Code est l’exemple utilisé pendant la formation.
-- **Terminal** : la fenêtre où l'on parle à l'ordinateur en lignes de commande, sans souris. C'est l'habitat naturel de Claude Code, mais pas le seul : Claude Code s'utilise aussi directement depuis l'application Claude, sans ouvrir ni IDE ni terminal.
+<PromptCopy>Tu viens d'employer un mot que je ne connais pas. Explique-le en une phrase, avec un exemple pris dans mon projet.</PromptCopy>
 
-**2. On le sauvegarde.**
+**2. Réglez la question une fois pour toutes.**
 
-- **Repo (dépôt)** : le dossier du projet, avec tout son historique de modifications.
-- **Git** : l'outil qui crée ces points de sauvegarde (le versionnement).
-- **GitHub** : le service qui héberge vos repos en ligne : le « Google Drive du code », pensé pour le travail en équipe. Git est l'outil, GitHub est la plateforme : ce n'est pas la même chose.
+<PromptCopy>Note dans CLAUDE.md : explique chaque mot technique la première fois que tu l'emploies.</PromptCopy>
 
-**3. On le met en ligne.**
+## Comprendre
 
-- **Serveur** : un ordinateur allumé en permanence qui rend votre projet accessible aux autres.
-- **Localhost** : votre projet qui tourne uniquement sur votre machine : « ça marche chez moi », personne d'autre n'y accède.
-- **Déploiement** : l'opération qui fait passer le projet de localhost à une vraie adresse web. **Vercel** est un service qui fait cela en quelques clics.
-- **Front-end / back-end** : ce que l'utilisateur voit (l'interface) / ce qui travaille derrière (données, calculs, secrets).
+Chaque numéro renvoie à la carte.
 
-**4. On le protège.**
+<LexiconCards />
 
-- **Clé API** : le mot de passe qui permet à un programme d'utiliser un service payant. Le vôtre, par exemple, pour appeler Claude.
-- **Variable d'environnement** : la boîte où l'on range les clés, hors du code, précisément pour qu'elles ne finissent pas en ligne.
+<details class="hint">
+  <summary>Pour aller plus loin</summary>
+  <p><strong>Les mots en action.</strong> Commit, dépôt et GitHub : <a href="/briques/d2/">Sauvegarder sur GitHub</a>. Localhost et déploiement : <a href="/briques/d3/">Mettre son projet en ligne</a>. Clé API : <a href="/briques/d4/">Sécurité</a>.</p>
+  <p><strong>Tous les projets n'ont pas tout.</strong> Une page simple n'a ni back, ni base de données, ni clé API. Claude ajoute ces pièces quand votre idée en a besoin.</p>
+  <p>Documentation officielle : <a href="https://docs.github.com/fr/get-started/learning-about-github/github-glossary">glossaire GitHub</a>.</p>
+</details>
 
-Ce parcours en quatre étapes est aussi le plan des briques qui viennent : sauvegarder (D2), mettre en ligne (D3), protéger (D4).
-
-## Pratique avec Claude
-
-Faites le **tour du poste de travail** : ouvrez VS Code avec un projet et retrouvez chaque terme à l'écran : l'IDE (la fenêtre entière), le terminal (le panneau du bas), le repo (l'arborescence à gauche). Puis ouvrez le même repo sur GitHub dans le navigateur, et une app déployée sur une vraie URL. Chaque terme reçoit une image.
-
-Ensuite, le réflexe qui rend le lexique inutile à mémoriser :
-
-```text
-Explique-moi ce qu'est un « repo » comme si je n'avais jamais codé,
-avec une analogie tirée de la cuisine.
-```
-
-Personne ne retient quinze définitions en dix minutes. L'important est de savoir quoi demander quand un terme bloque.
-
-## Mission commune
-
-En binômes, remplissez l'antisèche : pour chaque terme, écrivez votre propre définition en une phrase : pas celle de la slide, la vôtre. Les cinq termes prioritaires : IDE, terminal, repo, GitHub, déploiement.
-
-Puis testez-vous : chaque binôme lit une de ses définitions, la salle devine le terme.
-
-**Critère de réussite :** vos définitions utilisent vos mots et vos analogies, et vous savez dire à quelle étape du voyage chaque terme appartient.
-
-## Livrable
-
-Votre antisèche personnelle : les termes du voyage du code, chacun défini en une phrase avec vos mots. Elle reste sur la table pendant tout le reste de la formation.
-
-## Notes formateur
-
-- **0–2 min :** annoncer le contrat : « dix minutes de vocabulaire pour ne plus jamais être perdu ensuite ».
-- **2–6 min :** le voyage du code en quatre étapes, en pointant tout à l'écran (tour du poste de travail).
-- **6–9 min :** antisèche en binômes + devinettes.
-- **9–10 min :** rappeler le réflexe « demande une analogie à Claude » et annoncer que D2, D3, D4 suivent exactement ce voyage.
-
-Piège principal : la dérive encyclopédique. Chaque terme supplémentaire se paie en attention ; si un participant demande un terme absent (SDK, framework, base de données…), donner une réponse d'une phrase et renvoyer au réflexe Claude. Deuxième piège : définir Git/GitHub trop en détail : c'est le travail de D2, rester à l'intuition. Transition : « maintenant qu'on parle la même langue, voyons pourquoi les devs sauvegardent tout » (D2).
-
-## Défis avancés
-
-- Ajoutez trois termes de votre choix à votre antisèche en demandant à Claude une définition d'une phrase, et vérifiez-la en la reformulant.
-- Classez ces termes rencontrés depuis le début de la formation dans les quatre étapes du voyage : MCP, artifact, agent. Certains n'y rentrent pas : pourquoi ?
-
-## Variantes
-
-- **Format ludique :** transformer les devinettes en tournoi chronométré entre binômes.
-- **Initiés présents :** leur confier la rédaction des définitions « pièges » (Git vs GitHub, front vs back) et les faire valider par la salle.
-- **Format express :** distribuer l'antisèche pré-remplie et ne faire que le tour du poste de travail commenté.
-
-## Dépannage
-
-- **« Je confonds Git et GitHub » :** l'outil vs la plateforme : l'appareil photo vs Instagram. La nuance devient concrète en D2.
-- **« Localhost, je ne visualise pas » :** montrer la même app sur `localhost:4321` et sur son URL publique, côte à côte. C'est tout D3.
-- **« À quoi sert une clé API pour moi ? » :** dès qu'un projet appelle Claude ou un autre service, il en faut une, et sa protection est le cœur de D4.
-
-## Ressources
-
-- [Hello World : premiers pas GitHub (documentation officielle)](https://docs.github.com/fr/get-started/start-your-journey/hello-world)
-- [Documentation Vercel](https://vercel.com/docs)
-
-## Ouverture
-
-Le vocabulaire est posé ; reste à comprendre pourquoi les développeurs versionnent tout ce qu'ils font. Direction D2 : GitHub et le versionnement, la deuxième étape du voyage du code, en profondeur.
+<details class="hint">
+  <summary>Notes formateur</summary>
+  <p><strong>Deux minutes, pas plus.</strong> Projetez la carte et parcourez-la de gauche à droite en racontant le trajet d'un projet : il naît sur l'ordinateur, il est sauvegardé sur GitHub, il part en ligne. Ne lisez pas les douze définitions.</p>
+  <p><strong>À faire voir.</strong> Pendant les démonstrations suivantes, revenez pointer le mot sur la carte chaque fois que Claude l'emploie.</p>
+  <p><strong>Pièges fréquents.</strong> Vouloir tout comprendre avant de construire : les mots prennent leur sens en les rencontrant. Confondre l'aperçu et le site en ligne : c'est la confusion la plus fréquente, la brique D3 la lève.</p>
+</details>

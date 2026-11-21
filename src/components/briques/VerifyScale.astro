@@ -1,0 +1,48 @@
+---
+// Plus l'enjeu est grand, plus on vérifie : trois marches.
+---
+
+<figure class="ca-figure is-narrow vsc">
+  <ol>
+    <li><b>Une idée, un titre, une couleur</b><span>Essayez : vous verrez bien.</span></li>
+    <li><b>Un fait, un chiffre, une date</b><span>Demandez la source, puis ouvrez-la.</span></li>
+    <li><b>Santé, argent, droit</b><span>Demandez à une personne compétente.</span></li>
+  </ol>
+</figure>
+
+<style>
+  .vsc ol {
+    display: grid;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .vsc ol li {
+    display: grid;
+    gap: 0.1rem;
+    margin: 0;
+    padding: 0.6rem 0.8rem 0.7rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+
+  /* Les marches montent : chaque niveau est plus large et plus marqué. */
+  .vsc ol li:nth-child(1) { inline-size: 70%; }
+  .vsc ol li:nth-child(2) { inline-size: 85%; background: color-mix(in srgb, var(--family-accent) 45%, var(--surface)); }
+  .vsc ol li:nth-child(3) { background: var(--family-accent); box-shadow: var(--shadow-block); }
+
+  .vsc li b {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: var(--weight-display);
+  }
+
+  @media (max-width: 30rem) {
+    .vsc ol li:nth-child(n) { inline-size: auto; }
+  }
+</style>

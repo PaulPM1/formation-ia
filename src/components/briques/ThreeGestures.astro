@@ -1,0 +1,241 @@
+---
+// Les trois seuls gestes de l'installation : accepter la fenêtre du système,
+// taper le mot de passe de l'ordinateur, coller le code dans la page GitHub.
+import './claude-app.css';
+import EcoIcon from './EcoIcon.astro';
+---
+
+<figure class="ca-figure tg">
+  <ol class="tg-row">
+    <li>
+      <div class="tg-shot" aria-hidden="true">
+        <div class="tg-win">
+          <p class="tg-win-bar">Contrôle de compte d’utilisateur</p>
+          <p class="tg-win-q">Voulez-vous autoriser cette application à apporter des modifications à votre appareil ?</p>
+          <p class="tg-win-app"><EcoIcon name="shield" />Node.js</p>
+          <p class="tg-buttons"><em class="is-go">Oui</em><em>Non</em></p>
+        </div>
+      </div>
+      <p class="tg-cap"><b>1</b><span>Une fenêtre demande l’autorisation : cliquez <strong>Oui</strong>.</span></p>
+    </li>
+    <li>
+      <div class="tg-shot" aria-hidden="true">
+        <div class="tg-mac">
+          <p class="tg-mac-lock"><EcoIcon name="lock" /></p>
+          <p class="tg-mac-q">Programme d’installation essaie d’installer un nouveau logiciel.</p>
+          <p class="tg-mac-field">••••••••</p>
+          <p class="tg-buttons"><em>Annuler</em><em class="is-go">Installer le logiciel</em></p>
+        </div>
+      </div>
+      <p class="tg-cap"><b>2</b><span>Tapez le <strong>mot de passe de votre ordinateur</strong>, celui de l’ouverture de session.</span></p>
+    </li>
+    <li>
+      <div class="tg-shot" aria-hidden="true">
+        <div class="tg-gh">
+          <p class="tg-gh-logo"><EcoIcon name="github" /></p>
+          <p class="tg-gh-title">Device Activation</p>
+          <p class="tg-gh-sub">Enter the code displayed on your device</p>
+          <p class="tg-gh-code"><i>7</i><i>C</i><i>2</i><i>F</i><u></u><i>A</i><i>9</i><i>1</i><i>B</i></p>
+          <p class="tg-gh-go">Continue</p>
+        </div>
+      </div>
+      <p class="tg-cap"><b>3</b><span>Dans la page GitHub, <strong>collez le code</strong>, puis Continue et Authorize.</span></p>
+    </li>
+  </ol>
+</figure>
+
+<style>
+  .tg .tg-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tg .tg-row li { margin: 0; }
+
+  .tg-shot {
+    display: grid;
+    place-items: center;
+    block-size: 15rem;
+    padding: 1rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    background: #c9d3cd;
+    box-shadow: var(--shadow-block);
+    font-family: var(--app-sans);
+  }
+
+  .tg .tg-shot p {
+    margin: 0;
+    font-size: 0.78rem;
+    line-height: 1.4;
+  }
+
+  .tg-win, .tg-mac, .tg-gh {
+    inline-size: min(100%, 15.5rem);
+    border-radius: 8px;
+    box-shadow: 0 0.6rem 1.4rem rgb(0 0 0 / 30%);
+  }
+
+  .tg-buttons {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .tg-buttons em {
+    flex: 1;
+    padding: 0.3rem 0.4rem;
+    border-radius: 5px;
+    background: #e3e3e3;
+    color: #1d1d1b;
+    font-style: normal;
+    font-weight: 500;
+    text-align: center;
+  }
+
+  .tg-buttons .is-go {
+    background: #0067c0;
+    color: #fff;
+    outline: 3px solid var(--brick-yellow);
+    outline-offset: 2px;
+  }
+
+  /* Windows */
+  .tg-win {
+    display: grid;
+    gap: 0.6rem;
+    padding: 0 0.8rem 0.8rem;
+    background: #f3f3f3;
+    color: #1d1d1b;
+    overflow: hidden;
+  }
+
+  .tg .tg-shot .tg-win-bar {
+    margin-inline: -0.8rem;
+    padding: 0.4rem 0.8rem;
+    background: #0067c0;
+    color: #fff;
+    font-size: 0.7rem;
+  }
+
+  .tg .tg-shot .tg-win-q { font-weight: 600; }
+
+  .tg-win-app {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .tg-win-app :global(.eco-icon) { inline-size: 1.2rem; block-size: 1.2rem; color: #0067c0; }
+
+  /* Mac */
+  .tg-mac {
+    display: grid;
+    justify-items: center;
+    gap: 0.55rem;
+    padding: 0.9rem 0.8rem 0.8rem;
+    background: #ececec;
+    color: #1d1d1b;
+    text-align: center;
+  }
+
+  .tg-mac-lock :global(.eco-icon) { inline-size: 1.8rem; block-size: 1.8rem; }
+  .tg .tg-shot .tg-mac-q { font-weight: 600; }
+
+  .tg .tg-shot .tg-mac-field {
+    inline-size: 100%;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid #b9b9b9;
+    border-radius: 5px;
+    background: #fff;
+    outline: 3px solid var(--brick-yellow);
+    outline-offset: 2px;
+    text-align: start;
+    letter-spacing: 0.15em;
+  }
+
+  .tg-mac .tg-buttons { inline-size: 100%; margin-block-start: 0.2rem; }
+  .tg-mac .tg-buttons .is-go { outline: 0; background: #0a7aff; }
+
+  /* GitHub */
+  .tg-gh {
+    display: grid;
+    justify-items: center;
+    gap: 0.45rem;
+    padding: 0.9rem 0.8rem;
+    border: 1px solid #30363d;
+    background: #0d1117;
+    color: #e6edf3;
+    text-align: center;
+  }
+
+  .tg-gh-logo :global(.eco-icon) { inline-size: 1.9rem; block-size: 1.9rem; }
+  .tg .tg-shot .tg-gh-title { font-size: 1rem; font-weight: 600; }
+  .tg .tg-shot .tg-gh-sub { color: #9198a1; font-size: 0.7rem; }
+
+  .tg-gh-code {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 3px;
+    border-radius: 6px;
+    outline: 3px solid var(--brick-yellow);
+  }
+
+  .tg-gh-code i {
+    display: grid;
+    place-items: center;
+    inline-size: 1.25rem;
+    block-size: 1.6rem;
+    border: 1px solid #3d444d;
+    border-radius: 4px;
+    background: #151b23;
+    font-family: var(--font-mono);
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  .tg-gh-code u {
+    inline-size: 0.4rem;
+    block-size: 2px;
+    background: #9198a1;
+  }
+
+  .tg .tg-shot .tg-gh-go {
+    inline-size: 100%;
+    padding: 0.3rem;
+    border-radius: 6px;
+    background: #238636;
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .tg .tg-cap {
+    display: flex;
+    gap: 0.6rem;
+    margin: 1.1rem 0 0;
+    font-size: 0.98rem;
+    line-height: 1.45;
+  }
+
+  .tg-cap > b {
+    display: grid;
+    place-items: center;
+    flex: none;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    border: 2px solid var(--ink);
+    border-radius: 50%;
+    background: var(--brick-yellow);
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  @media (max-width: 48rem) {
+    .tg .tg-row { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

@@ -1,0 +1,65 @@
+---
+// Corriger en regardant l'aperçu : on nomme ce qu'on voit, une chose à la fois.
+import './claude-app.css';
+---
+
+<figure class="ca-figure is-narrow pf">
+  <div class="pf-stage">
+    <div class="ca-window" aria-hidden="true">
+      <div class="ca-pane">
+        <p class="ca-pane-bar"><span>Preview</span><em>localhost:3000</em></p>
+        <div class="pf-page">
+          <p class="pf-title">Recettes de famille</p>
+          <div class="pf-dishes"><i></i><i></i><i></i></div>
+          <p class="pf-text">Les plats de mamie, réunis pour toute la famille.</p>
+        </div>
+      </div>
+    </div>
+    <span class="ca-pin pf-pin-1">1</span>
+    <span class="ca-pin pf-pin-2">2</span>
+    <span class="ca-pin pf-pin-3">3</span>
+  </div>
+  <ol class="ca-legend">
+    <li><span>« Le titre plus grand. »</span></li>
+    <li><span>« Plus d’espace entre les photos. »</span></li>
+    <li><span>« Ce texte en plus foncé. »</span></li>
+  </ol>
+</figure>
+
+<style>
+  .pf-stage { position: relative; }
+  .pf.ca-figure .ca-legend { grid-template-columns: minmax(0, 1fr); }
+  .pf :global(.ca-pane) { border-inline-start: 0; }
+
+  .pf-page {
+    display: grid;
+    gap: 0.9rem;
+    padding: 1.3rem 1.3rem 1.5rem 2.6rem;
+    background: #fbe8cf;
+    color: #1d1d1b;
+  }
+
+  .pf .pf-page .pf-title {
+    font-family: var(--app-serif);
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+
+  .pf-dishes { display: flex; gap: 0.15rem; }
+
+  .pf-dishes i {
+    flex: 1;
+    block-size: 4rem;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #f2c26b, #d98a3d);
+  }
+
+  .pf-dishes i:nth-child(2) { background: linear-gradient(135deg, #e9a06b, #b5532c); }
+  .pf-dishes i:nth-child(3) { background: linear-gradient(135deg, #a9c98a, #5f8f4e); }
+
+  .pf .pf-page .pf-text { color: #b9a78e; font-size: 0.82rem; }
+
+  .pf-pin-1 { inset: 2.9rem auto auto 0.5rem; }
+  .pf-pin-2 { inset: 6rem auto auto 0.5rem; }
+  .pf-pin-3 { inset: auto auto 1.1rem 0.5rem; }
+</style>

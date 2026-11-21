@@ -1,0 +1,168 @@
+---
+// Le menu de l'onglet Chat, avec quatre repères. La fenêtre montre un Project
+// ouvert : des conversations, des consignes et des documents sur un même sujet.
+// ClaudeApp affiche le menu de l'onglet Code : la colonne est donc composée ici.
+import ClaudeApp from './ClaudeApp.astro';
+import Icon from './Icon.astro';
+
+const svg = { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': '1.7', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' } as const;
+---
+
+<figure class="ca-figure cm">
+  <ClaudeApp mode="chat" sidebar={false} title="Recettes de famille">
+    <div class="cm-body">
+      <div class="cm-side">
+        <div class="cm-group">
+          <p><Icon name="plus" />New</p>
+          <p><Icon name="search" />Search</p>
+          <span class="ca-pin">1</span>
+        </div>
+        <div class="cm-group">
+          <p class="is-on"><Icon name="folder" />Projects</p>
+          <span class="ca-pin">2</span>
+        </div>
+        <div class="cm-group">
+          <p><Icon name="artifacts" />Artifacts</p>
+          <span class="ca-pin">3</span>
+        </div>
+        <div class="cm-group">
+          <p><Icon name="clock" />Scheduled</p>
+          <p><svg class="ca-icon" {...svg}><path d="M4 20l4-1L19 8l-3-3L5 16z" /></svg>Design</p>
+          <p><svg class="ca-icon" {...svg}><path d="M9 3v5M15 3v5M7 8h10v3a5 5 0 0 1-10 0zM12 16v5" /></svg>Plugins</p>
+          <span class="ca-pin">4</span>
+        </div>
+      </div>
+
+      <div class="cm-main">
+        <p class="cm-title"><Icon name="folder" />Recettes de famille</p>
+        <div class="cm-cols">
+          <div class="cm-chats">
+            <p class="ca-field"><Icon name="plus" /><span>How can I help you today?</span></p>
+            <p>Menu de Noël pour douze</p>
+            <p>Liste de courses de la semaine</p>
+            <p>Convertir les quantités</p>
+          </div>
+          <div class="cm-know">
+            <div>
+              <p class="cm-label">Instructions</p>
+              <p>Réponds simplement. Quantités pour six personnes.</p>
+            </div>
+            <div>
+              <p class="cm-label">Files</p>
+              <p class="cm-file"><Icon name="file" />recettes-mamie.pdf</p>
+              <p class="cm-file"><Icon name="file" />allergies.docx</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ClaudeApp>
+  <ol class="ca-legend">
+    <li><span><b>New</b> ouvre une conversation, <b>Search</b> en retrouve une.</span></li>
+    <li><span><b>Projects</b> : un espace qui garde vos documents et vos consignes pour toutes les conversations d’un même sujet.</span></li>
+    <li><span><b>Artifacts</b> : tous les objets que Claude vous a fabriqués.</span></li>
+    <li><span><b>Scheduled</b>, <b>Design</b>, <b>Plugins</b> : pour étendre Claude, plus tard.</span></li>
+  </ol>
+</figure>
+
+<style>
+  .cm-body {
+    display: grid;
+    grid-template-columns: 10.5rem minmax(0, 1fr);
+    min-block-size: 19rem;
+  }
+
+  .cm-side {
+    display: grid;
+    align-content: start;
+    gap: 0.15rem;
+    padding: 0.6rem 0.45rem;
+    border-inline-end: 1px solid var(--app-line);
+    background: var(--app-side);
+  }
+
+  .cm-group { position: relative; }
+
+  .cm-side p {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.45rem 0.5rem;
+    border-radius: 7px;
+    color: var(--app-soft);
+    white-space: nowrap;
+  }
+
+  .cm-side .is-on { background: var(--app-on); color: var(--app-text); }
+
+  /* Le repère se pose au bout de son groupe de lignes, centré en hauteur. */
+  .cm-group .ca-pin {
+    inset: 50% 0.25rem auto auto;
+    translate: 0 -50%;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    font-size: 0.85rem;
+  }
+
+  .cm-main {
+    display: grid;
+    align-content: start;
+    gap: 0.9rem;
+    padding: 1.1rem 1.2rem;
+    min-inline-size: 0;
+  }
+
+  .cm .cm-title {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-family: var(--app-serif);
+    font-size: 1.25rem;
+  }
+
+  .cm-cols {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 1.2rem;
+    align-items: start;
+  }
+
+  .cm-chats { display: grid; }
+
+  .cm-chats p:not(.ca-field) {
+    padding: 0.6rem 0.2rem;
+    border-block-end: 1px solid var(--app-line);
+    color: var(--app-soft);
+  }
+
+  .cm-chats .ca-field { margin-block-end: 0.5rem; }
+
+  .cm-know { display: grid; gap: 0.6rem; }
+
+  .cm-know > div {
+    display: grid;
+    gap: 0.35rem;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid var(--app-line);
+    border-radius: 10px;
+    background: var(--app-side);
+    color: var(--app-soft);
+  }
+
+  .cm .cm-label { color: var(--app-text); font-weight: 600; }
+
+  .cm-file {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    overflow: hidden;
+  }
+
+  @media (max-width: 40rem) {
+    .cm-body { grid-template-columns: 9.6rem minmax(0, 1fr); }
+    .cm-main { padding: 0.8rem 0.7rem; }
+    .cm-cols { grid-template-columns: minmax(0, 1fr); }
+    .cm-chats p:not(.ca-field) { display: none; }
+    .cm-chats .ca-field span { display: none; }
+  }
+</style>

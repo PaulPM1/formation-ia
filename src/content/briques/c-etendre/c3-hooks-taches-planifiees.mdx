@@ -1,162 +1,62 @@
 ---
 id: c3
-title: "Hooks et tâches planifiées"
+title: "Tâches planifiées"
 family: c
 order: 9
 priority: bonus
-durationMinutes: 15
+durationMinutes: 5
 type: demonstration
 platforms:
   - commun
 prerequisites:
-  - c1
-  - c2
+  - b2
 status: a-relire
 owner: a-attribuer
-learningObjective: "Distinguer un hook déclenché par un événement d'une tâche déclenchée par une cadence, puis concevoir une automatisation observable et réversible."
-expectedOutcome: "Le participant observe un hook non destructif et spécifie une tâche planifiée avec source, fréquence, sortie, contrôle et procédure de pause."
+learningObjective: "Demander à Claude de faire quelque chose à heure fixe, vérifier le résultat et mettre la tâche en pause."
+expectedOutcome: "Une tâche planifiée créée par une simple phrase, lancée une fois à la main, et que vous savez retrouver et arrêter dans Scheduled."
 ---
 
-## Cap
+import PromptCopy from '../../../components/briques/PromptCopy.astro';
+import ScheduledRun from '../../../components/briques/ScheduledRun.astro';
+import ScheduledTaskPage from '../../../components/briques/ScheduledTaskPage.astro';
 
-**Objectif :** automatiser une action au bon moment sans créer une « boîte noire » impossible à arrêter ou à vérifier.
+## L'essentiel
 
-- Durée cible : 15 minutes.
-- Prérequis : C1 et C2.
-- Résultat attendu : vous choisissez correctement entre événement et calendrier, puis définissez les garde-fous.
+Une **tâche planifiée**, c'est une demande que Claude refait tout seul, à l'heure que vous choisissez.
 
-## Concept durable
+<ScheduledRun />
 
-Un **hook** réagit à un événement du cycle d'un outil. Dans Claude Code, il peut se déclencher avant l'utilisation d'un outil, après une modification, lorsqu'une permission est demandée ou à la fin d'une tâche. Un hook de commande est déterministe : l'événement survient, la règle configurée s'exécute.
+## À essayer
 
-Une **tâche planifiée** se déclenche selon une cadence ou à la demande : chaque matin, chaque semaine ou manuellement. Dans Cowork, elle enregistre des instructions et lance une nouvelle session avec les outils, Skills et plugins autorisés.
+**1. Demandez-le comme vous le diriez à quelqu'un.**
 
-```text
-Hook : événement observé → règle immédiate
-Tâche planifiée : heure ou cadence → nouvelle exécution
-```
+<PromptCopy>Tous les matins à 9 h, dis-moi où en est mon projet et propose la prochaine étape.</PromptCopy>
 
-Les deux peuvent employer un modèle ou un outil, mais répondent à des questions différentes : **« que faire quand ceci arrive ? »** contre **« que produire à ce moment ? »**
+**2. Retrouvez la tâche, lancez-la une fois, puis mettez-la en pause.**
 
-Toute automatisation doit être :
+<ScheduledTaskPage />
 
-- **bornée** par des sources et actions autorisées ;
-- **observable** grâce à un journal et une sortie identifiable ;
-- **idempotente** si possible : la relancer ne duplique pas ou ne détruit pas ;
-- **testable à la demande** avant d'être récurrente ;
-- **réversible**, avec pause, désactivation et suppression documentées ;
-- **propriétaire**, avec une personne responsable des résultats.
+## Comprendre
 
-## Pratique avec Claude
+### L'application doit être ouverte
 
-### Démonstration du hook
+Une tâche part seulement si l'application est ouverte et l'ordinateur allumé. Si l'heure est passée entre-temps, elle se rattrape une fois à votre retour.
 
-Dans un projet jetable, le formateur ajoute un hook local `Stop` dans `.claude/settings.local.json`. Il n'écrit dans aucun fichier métier et affiche seulement un repère :
+### Personne ne regarde
 
-```json
-{
-  "hooks": {
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo HOOK_DEMO_TERMINE"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
+Une tâche planifiée travaille sans vous : donnez-lui de quoi lire et résumer, pas de quoi envoyer ou supprimer.
 
-Après une tâche courte, observez le déclenchement, puis désactivez le hook en retirant le bloc du fichier local de démonstration.
+<details class="hint">
+  <summary>Pour aller plus loin</summary>
+  <p><strong>Une seule fois.</strong> « Demain à 15 h, rappelle-moi de sauvegarder mon projet » crée une tâche qui s'éteint après avoir tourné.</p>
+  <p><strong>Ordinateur éteint.</strong> Une tâche peut aussi tourner dans le cloud, sans votre ordinateur. Elle n'a alors plus accès à vos dossiers.</p>
+  <p><strong>Les hooks.</strong> Une tâche planifiée part à une heure donnée. Un hook part quand un événement se produit pendant que Claude travaille, par exemple chaque fois qu'il modifie un fichier. C'est un réglage avancé de Claude Code : demandez à Claude de le poser pour vous.</p>
+  <p>Documentation officielle : <a href="https://code.claude.com/docs/en/desktop-scheduled-tasks">les tâches planifiées dans l'application de bureau</a> et <a href="https://code.claude.com/docs/en/hooks-guide">les hooks</a>.</p>
+</details>
 
-### Conception de la tâche planifiée
-
-Dans Cowork, ouvrez une tâche et utilisez `/schedule`, ou ouvrez la page **Scheduled** si elle est disponible. Préparez une tâche manuelle avant toute récurrence :
-
-```text
-Chaque vendredi, lis uniquement les notes fictives enregistrées dans le dossier
-autorisé de ce projet. Produis un bilan avec : faits marquants, actions ouvertes
-et sources utilisées. N'envoie rien. Si une source manque, indique-le sans inventer.
-Conserve chaque résultat dans une nouvelle session datée.
-```
-
-Testez avec **Run now**, vérifiez la sortie, puis choisissez de planifier ou de laisser la tâche en mode manuel.
-
-## Mission commune
-
-Pour une automatisation de votre fil rouge, remplissez la carte :
-
-1. déclencheur : événement, cadence ou manuel ;
-2. sources autorisées ;
-3. action et sortie ;
-4. propriétaire ;
-5. journal ou preuve ;
-6. comportement si une donnée manque ;
-7. test à la demande ;
-8. pause et suppression ;
-9. durée de conservation des résultats.
-
-**Critère de réussite :** une autre personne peut tester, surveiller et arrêter l'automatisation sans vous contacter.
-
-## Livrable
-
-La carte d'automatisation, le résultat du test manuel et une capture expurgée de l'état `manuel`, `actif` ou `en pause`. Le hook de démonstration est retiré ou laissé uniquement dans un fichier local non partagé.
-
-## Notes formateur
-
-- Déclencher le hook une fois, puis le désactiver devant le groupe.
-- Pour la planification, commencer en mode manuel et utiliser des données fictives.
-- Faire nommer qui lira le résultat la semaine suivante ; sans propriétaire, la tâche ne doit pas être activée.
-- Souligner qu'une tâche distante ne peut pas toujours accéder à un dossier local ; la disponibilité dépend du mode d'exécution et des connexions.
-
-Message essentiel : **automatiser une tâche mal cadrée multiplie ses erreurs.** Fin de séquence : récapituler méthode, capacités et déclencheurs.
-
-## Défis avancés
-
-- Ajoutez une condition qui empêche deux sorties identiques d'être créées.
-- Concevez un hook de validation qui bloque une commande dangereuse dans un projet fictif, sans l'activer sur un vrai projet.
-- Définissez une alerte si trois exécutions successives échouent ou si la source devient indisponible.
-
-## Variantes
-
-- **Tâches planifiées indisponibles :** garder la tâche en mode manuel et planifier un rappel classique ; le brief reste réutilisable.
-- **Windows :** remplacer une commande spécifique au shell par un exemple PowerShell documenté et testé par le formateur.
-- **Organisation :** utiliser uniquement les hooks et planifications autorisés par la politique gérée ; conserver un propriétaire et un journal d'audit.
-
-## Dépannage
-
-- **Le hook ne se déclenche pas :** vérifier l'événement, le niveau d'imbrication JSON et l'emplacement du fichier ; consulter les diagnostics de hooks.
-- **Le hook se déclenche en boucle :** désactiver la configuration locale, puis vérifier qu'il ne relance pas l'événement qu'il écoute.
-- **La tâche ne s'exécute pas :** vérifier qu'elle est active, sa prochaine occurrence, le fuseau horaire et les autorisations des connecteurs.
-- **La tâche distante ne voit pas un fichier local :** enregistrer une copie non sensible dans l'espace autorisé ou choisir une exécution locale qui exige que le poste soit disponible.
-- **Le résultat consomme trop d'usage :** réduire les sources, la fréquence et la longueur de sortie, puis retester manuellement.
-
-## Ressources
-
-- [Automatiser avec les hooks Claude Code](https://code.claude.com/docs/en/hooks-guide)
-- [Référence complète des hooks](https://code.claude.com/docs/en/hooks)
-- [Planifier des tâches récurrentes dans Cowork](https://support.claude.com/en/articles/13854387-schedule-recurring-tasks-in-claude-cowork)
-- [Bien démarrer avec Cowork](https://support.claude.com/en/articles/13345190-get-started-with-claude-cowork)
-
-## Ouverture
-
-Vous disposez de trois briques d'extension complémentaires : **Skills pour la méthode, MCP pour les capacités, hooks et planification pour le déclenchement**. La suite du parcours pourra les intégrer dans un projet versionné, sécurisé et déployable.
-
-## Scénario de démonstration
-
-Point de départ : le groupe veut être averti lorsqu'une tâche Claude Code se termine et recevoir un bilan fictif chaque vendredi. Le formateur installe un hook d'affichage local, le déclenche et le retire ; il configure ensuite une tâche Cowork en mode manuel, l'exécute et montre la pause.
-
-Résultat visible : deux déclencheurs différents, deux journaux identifiables et deux procédures d'arrêt testées.
-
-## Déroulé de démonstration
-
-1. Faire classer « fin d'une tâche » et « vendredi 16 h » entre événement et cadence.
-2. Ajouter le hook `Stop`, lancer une tâche courte et observer `HOOK_DEMO_TERMINE`.
-3. Retirer le hook et confirmer qu'il ne se déclenche plus.
-4. Créer la tâche Cowork avec `/schedule` ou depuis **Scheduled**, en mode manuel.
-5. Exécuter **Run now** sur les données fictives et vérifier les sources citées.
-6. Montrer activation, prochaine exécution, historique, pause et suppression.
-7. Demander au groupe ce qui manquerait avant un usage réel.
+<details class="hint">
+  <summary>Notes formateur</summary>
+  <p><strong>Démonstration en direct, trois minutes.</strong> Créez la tâche par la phrase du geste 1, ouvrez Scheduled, cliquez sur Run now et laissez le groupe lire le résultat. Mettez-la en pause devant tout le monde.</p>
+  <p><strong>À faire voir.</strong> La conversation créée par la tâche : c'est une conversation ordinaire, qu'on peut relire et poursuivre.</p>
+  <p><strong>Pièges fréquents.</strong> Une tâche qui attend une permission sans que personne la voie : le premier Run now sert à donner les accords. Une tâche oubliée qui consomme l'abonnement chaque jour : faites le ménage dans Scheduled. Selon la version de l'application, le menu s'appelle encore Routines.</p>
+</details>

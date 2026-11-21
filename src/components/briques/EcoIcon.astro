@@ -1,0 +1,37 @@
+---
+// Pictogrammes des schémas de la famille D (ordinateur, GitHub, mise en ligne).
+const SHAPES = {
+  laptop: '<rect x="5" y="5" width="14" height="10" rx="1"/><path d="M2.5 18.5h19"/>',
+  folder: '<path d="M4 7a1 1 0 0 1 1-1h4l2 2h8a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/>',
+  file: '<path d="M7 4h7l4 4v12H7zM14 4v4h4"/>',
+  globe: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c3 3 3 14 0 17M12 3.5c-3 3-3 14 0 17"/>',
+  key: '<circle cx="8" cy="15" r="3.5"/><path d="m10.5 12.5 8-8M15 8l2.5 2.5M17.5 5.5 20 8"/>',
+  lock: '<rect x="6" y="11" width="12" height="9" rx="1.5"/><path d="M8.5 11V8a3.5 3.5 0 0 1 7 0v3"/>',
+  phone: '<rect x="7.5" y="3" width="9" height="18" rx="2"/><path d="M11 18h2"/>',
+  database: '<ellipse cx="12" cy="6.5" rx="7" ry="3"/><path d="M5 6.5v11c0 1.7 3.1 3 7 3s7-1.3 7-3v-11M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/>',
+  box: '<path d="m12 3 8 4.5v9L12 21l-8-4.5v-9zM4 7.5l8 4.5 8-4.5M12 12v9"/>',
+  shield: '<path d="M12 3 5 6v5.5c0 4.3 2.9 7.6 7 9.5 4.1-1.900 7-5.2 7-9.500V6z"/>',
+  eye: '<path d="M2.500 12S6 5.500 12 5.500 21.500 12 21.500 12 18 18.500 12 18.500 2.500 12 2.500 12z"/><circle cx="12" cy="12" r="2.800"/>',
+  gauge: '<path d="M4 17a8.500 8.500 0 1 1 16 0M12 14l4-5"/><circle cx="12" cy="14.500" r="1.200"/>',
+  form: '<rect x="4" y="5" width="16" height="5" rx="1"/><rect x="4" y="14" width="16" height="5" rx="1"/><path d="M7 7.500h5M7 16.500h3"/>',
+  save: '<path d="M5 4h11l3 3v13H5zM8 4v5h7V4M8 20v-6h8v6"/>',
+  back: '<path d="M9 7 4 12l5 5M4 12h10a6 6 0 0 1 6 6"/>',
+  check: '<path d="m5 12 5 5 9-10"/>',
+  cross: '<path d="m6 6 12 12M18 6 6 18"/>',
+  screen: '<rect x="3.500" y="5" width="17" height="12" rx="1.500"/><path d="M3.500 9h17M9 20h6"/>',
+  server: '<rect x="4" y="4" width="16" height="6.500" rx="1.500"/><rect x="4" y="13.500" width="16" height="6.500" rx="1.500"/><path d="M7.500 7.250h.01M7.500 16.750h.01"/>',
+  rocket: '<path d="M12 15c-1.500-1-3-2.500-3-3 0-4 3-8 9-9 0 5-3 9-6 12zM9 12l-4 1 2-4zM12 15l-1 4 4-2zM5.500 18.500 8 16"/>',
+} as const;
+
+const GITHUB = '<path fill="currentColor" stroke="none" d="M8 0C3.580 0 0 3.580 0 8c0 3.540 2.290 6.530 5.470 7.590.4.070.550-.170.550-.380 0-.190-.010-.820-.010-1.490-2.010.370-2.530-.490-2.690-.940-.090-.230-.480-.940-.820-1.130-.280-.150-.680-.520-.010-.530.630-.010 1.080.580 1.230.820.720 1.210 1.870.870 2.330.660.070-.520.280-.870.510-1.070-1.780-.200-3.640-.890-3.640-3.950 0-.870.310-1.590.820-2.150-.080-.200-.360-1.020.080-2.120 0 0 .670-.210 2.200.820.640-.180 1.320-.270 2-.270s1.360.090 2 .270c1.530-1.040 2.200-.820 2.200-.820.440 1.100.160 1.920.080 2.120.510.560.820 1.270.820 2.150 0 3.070-1.870 3.750-3.650 3.950.290.250.540.730.540 1.480 0 1.070-.010 1.930-.010 2.200 0 .210.150.460.550.380A8.010 8.010 0 0 0 16 8c0-4.420-3.580-8-8-8z"/>';
+const VERCEL = '<path fill="currentColor" stroke="none" d="M12 4 21.500 20h-19z"/>';
+
+interface Props {
+  name: keyof typeof SHAPES | 'github' | 'vercel';
+}
+const { name } = Astro.props;
+const viewBox = name === 'github' ? '0 0 16 16' : '0 0 24 24';
+const shape = name === 'github' ? GITHUB : name === 'vercel' ? VERCEL : SHAPES[name];
+---
+
+<svg class="eco-icon" viewBox={viewBox} fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={shape} />

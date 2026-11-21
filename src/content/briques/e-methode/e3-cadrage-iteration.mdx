@@ -1,106 +1,95 @@
 ---
 id: e3
-title: "Cadrage et itération"
+title: "Lancer son projet"
 family: e
 order: 18
 priority: socle
 durationMinutes: 15
-type: concept
+type: demonstration
 platforms:
   - commun
 prerequisites:
+  - b2
   - e1
 status: a-relire
 owner: matthieu
-learningObjective: "Découper un projet en étapes testables à partir d'un MVP et détecter quand une session avec l'IA s'enlise."
-expectedOutcome: "Le participant produit le cadrage de son projet final : idée en une phrase, MVP, trois premières étapes testables et liste « plus tard »."
+learningObjective: "Lancer setup-projet dans un dossier vide, répondre à l'interview, puis faire construire le projet une fonctionnalité à la fois."
+expectedOutcome: "Votre idée découpée en fonctionnalités rangées dans l'ordre, et la première en cours de construction."
 ---
 
-## Cap
+import FeatureLoop from '../../../components/briques/FeatureLoop.astro';
+import IdeaToFeatures from '../../../components/briques/IdeaToFeatures.astro';
+import ParkedIdea from '../../../components/briques/ParkedIdea.astro';
+import PromptCopy from '../../../components/briques/PromptCopy.astro';
+import SetupInterview from '../../../components/briques/SetupInterview.astro';
 
-**Objectif :** la méthode de travail qui fait la différence entre « j'ai joué avec l'IA » et « j'ai livré un projet ».
+## L'essentiel
 
-- Durée cible : 15 minutes.
-- Prérequis : E1, « Prompt et gestion du contexte » (le réflexe de repartir propre).
-- Résultat attendu : vous repartez avec le plan d'attaque cadré de votre projet personnel.
+Un dossier vide, une idée. Avant de construire quoi que ce soit, Claude vous interroge jusqu'à avoir bien compris.
 
-## Concept durable
+<SetupInterview />
 
-Un projet qui aboutit suit un cycle : **cadrer → petite étape → tester → ajuster**, puis recommencer. On ne demande jamais le projet entier ; on demande la prochaine étape vérifiable. Comme en randonnée, on ne vise pas le sommet : on vise le prochain repère visible.
+## À essayer
 
-Le point de départ est le **MVP** (produit minimum viable) : la version la plus petite qui rend déjà service, souvent une seule fonctionnalité. Tout le reste va dans une liste « plus tard » : elle n'est pas une poubelle, c'est le carnet de route des itérations suivantes.
+**1. Ouvrez un dossier vide dans l'onglet Code** ([le geste est ici](/briques/b2/)), puis écrivez :
 
-Chaque étape doit être **testable** : si vous ne pouvez pas vérifier qu'elle fonctionne, elle est trop grosse. « Ajoute la gestion complète du budget » n'est pas testable ; « affiche mes trois dernières dépenses » l'est.
+<PromptCopy>lance setup-projet</PromptCopy>
 
-Travailler avec une IA ajoute une compétence : **détecter l'enlisement**. Trois signaux fiables : elle « corrige » en cassant autre chose ; elle propose la même solution reformulée ; le code enfle sans progrès visible. Trois réflexes en réponse : revenir à la dernière version qui marchait ; repartir d'une conversation propre avec un résumé de l'état (réflexe de E1) ; redécouper le problème en plus petit.
+**2. Répondez avec vos mots.** Quand il reformule, corrigez-le jusqu'à ce que ce soit juste.
 
-Dernier outil : le **timeboxing** des décisions. Un choix cosmétique (couleur, nom, libellé) se prend en cinq minutes maximum. L'énergie va au cœur du projet, pas aux détails réversibles.
+**3. Triez la liste qu'il propose** : ce que vous gardez, ce qui manque, l'ordre.
 
-## Pratique avec Claude
+**4. Lancez la construction.**
 
-Comparez deux façons de démarrer le même projet :
+<PromptCopy>construis la première fonctionnalité</PromptCopy>
 
-```text
-Fais-moi une application complète de gestion de budget avec comptes multiples,
-graphiques, catégories automatiques et export.
-```
+**5. Regardez l'aperçu, faites corriger, puis continuez.**
 
-```text
-Je construis un suivi de dépenses, étape par étape. Première étape uniquement :
-une page qui affiche une liste de trois dépenses saisies en dur. Je testerai,
-puis nous ajouterons la saisie.
-```
+<PromptCopy>Ça me va. Sauvegarde, puis construis la fonctionnalité suivante.</PromptCopy>
 
-La première demande produit un résultat volumineux, difficile à vérifier, qui échoue souvent sans qu'on sache pourquoi. La seconde donne un résultat contrôlable en une minute, sur lequel on empile la suite. Elle annonce aussi la méthode de travail à l'IA : ses réponses se cadreront d'elles-mêmes.
+## Comprendre
 
-## Mission commune
+<div class="idea">
+  <div>
+    <h3>Votre idée devient une liste</h3>
+    <p>Claude la découpe avec vous en fonctionnalités, dans un ordre. Le projet n'a pas à être fini ce week-end : vous le poursuivrez à votre rythme.</p>
+  </div>
+  <IdeaToFeatures />
+</div>
 
-Cadrez le projet que vous présenterez en restitution finale :
+<div class="idea">
+  <div>
+    <h3>Une fonctionnalité à la fois</h3>
+    <p>Tant que celle en cours ne vous convient pas, on ne passe pas à la suivante.</p>
+  </div>
+  <FeatureLoop />
+</div>
 
-1. Votre idée en une phrase.
-2. Le MVP : la version à une seule fonctionnalité qui rend déjà service.
-3. Les trois premières étapes testables, avec pour chacune le critère de vérification.
-4. La liste « plus tard » : tout ce que vous avez volontairement écarté.
+<div class="idea">
+  <div>
+    <h3>Une idée en route ? Dans la liste</h3>
+    <p>Dites-la tout de suite : Claude la note, et termine d'abord ce qui est commencé.</p>
+  </div>
+  <ParkedIdea />
+</div>
 
-Soumettez ensuite ce cadrage à Claude et demandez-lui de le challenger : « Est-ce vraiment un MVP ? Que retirerais-tu encore ? Quelle étape est trop grosse ? »
+### Il note tout, pour lui
 
-**Critère de réussite :** chaque étape a un critère de vérification observable, et votre MVP a résisté à la question « que peut-on encore retirer ? ».
+Claude écrit ce qu'il a appris dans des fichiers du dossier, et les relit à chaque conversation. Vous n'avez ni à les lire ni à les tenir.
 
-## Livrable
+<details class="hint">
+  <summary>Pour aller plus loin</summary>
+  <p><strong>Reprendre un autre jour.</strong> Rouvrez le même dossier et écrivez de nouveau « lance setup-projet » : Claude relit ses notes, dit où en est le projet et reprend.</p>
+  <p><strong>La conversation devient longue ou confuse.</strong> Ouvrez-en une nouvelle dans le même dossier : ses notes suffisent pour repartir (voir <a href="/briques/e1/">Demande et contexte</a>).</p>
+  <p><strong>Les choix techniques.</strong> Claude les fait pour vous, selon votre idée, et vous explique chaque geste important avant de le faire. Vous décidez ce que fait le projet et pour qui.</p>
+  <p><strong>Si « lance setup-projet » ne donne rien.</strong> Le savoir-faire n'est pas installé : il s'ajoute comme n'importe quel skill (voir <a href="/briques/c1/">Skills</a>).</p>
+  <p>Documentation officielle : <a href="https://code.claude.com/docs/en/skills">les skills dans Claude Code</a>.</p>
+</details>
 
-Le plan d'attaque de votre projet : idée, MVP, trois étapes testables avec critères, liste « plus tard ». Ce document est réutilisé tel quel pour la présentation finale (F2).
-
-## Notes formateur
-
-- **0–4 min :** le cycle cadrer → petite étape → tester → ajuster ; l'analogie de la randonnée.
-- **4–7 min :** MVP et étapes testables ; démonstration des deux demandes contrastées.
-- **7–13 min :** mission commune, chacun cadre son propre projet.
-- **13–15 min :** deux ou trois volontaires lisent leur MVP ; la salle vote « vraiment minimal ou pas ? ».
-
-Anecdote à incarner : le participant qui demande l'application complète et se retrouve vingt minutes plus tard avec un projet cassé qu'il ne comprend pas, contre celui qui empile les petites victoires. C'est la brique à rappeler pendant tous les ateliers : quand quelqu'un est bloqué, la bonne question est presque toujours « quelle est la plus petite étape testable ? ». Dire explicitement que cette méthode vaut pour n'importe quel projet, avec ou sans IA : cela élargit la portée de la brique. Transition : ce cadrage est exactement ce qui sera évalué lors de la présentation finale.
-
-## Défis avancés
-
-- Prenez une étape de votre plan et découpez-la encore en deux : que gagne-t-on, que perd-on ?
-- Rédigez le résumé de relance : le message qui permettrait de reprendre votre projet dans une conversation neuve sans rien perdre.
-- Simulez un enlisement : demandez volontairement une étape trop grosse, identifiez le signal d'alarme, puis appliquez un des trois réflexes.
-
-## Variantes
-
-- **Administratif :** cadrer une réorganisation de dossiers partagés en trois étapes vérifiables plutôt qu'un « grand rangement ».
-- **Pédagogie :** construire un parcours de révision en commençant par un seul chapitre testé, pas le programme entier.
-- **Développement :** définir le premier test automatisé comme critère de vérification de chaque étape.
-
-## Dépannage
-
-- **« Mon MVP a cinq fonctionnalités » :** ce n'est pas un MVP. Demander laquelle rend service seule ; les quatre autres vont dans « plus tard ».
-- **« Je ne sais pas si l'étape marche » :** le critère de vérification manque ; reformuler l'étape jusqu'à ce qu'un test d'une minute existe.
-- **« L'IA tourne en rond depuis dix minutes » :** arrêter d'insister ; revenir à la dernière version qui marchait et repartir d'une conversation propre avec un résumé.
-
-## Ressources
-
-- [Bonnes pratiques Claude Code (Anthropic)](https://www.anthropic.com/engineering/claude-code-best-practices)
-
-## Ouverture
-
-Votre cadrage devient le fil conducteur de la pratique : c'est lui que vous déroulerez pendant les ateliers du bloc F, et c'est sur sa qualité (MVP réaliste, étapes claires) que votre présentation finale s'appuiera.
+<details class="hint">
+  <summary>Notes formateur</summary>
+  <p><strong>Démonstration en direct, sept minutes.</strong> Dossier vide projeté, « lance setup-projet », et une idée donnée par la salle. Jouez un seul temps en entier : question, réponse, reformulation. Corrigez volontairement la reformulation une fois, pour que le groupe voie que dire « non, pas tout à fait » est le geste attendu. Montrez ensuite une liste de fonctionnalités déjà préparée, puis lancez tout le monde.</p>
+  <p><strong>À faire voir.</strong> La première fonctionnalité désignée par Claude, et la phrase « construis la première fonctionnalité ». C'est le passage de la matinée à la construction : ne refermez pas la brique par un résumé, faites ouvrir les dossiers.</p>
+  <p><strong>Pièges fréquents.</strong> Répondre par un mot : demandez à la personne de raconter une fois où quelqu'un s'en sert. Valider une reformulation fausse pour aller plus vite : relisez-la avec elle. Vouloir tout construire d'un coup : ramenez à la première ligne de la liste. Ouvrir les fichiers de notes et s'y perdre : ce sont les notes de Claude, pas un devoir.</p>
+  <p><strong>Durée.</strong> L'interview prend une dizaine de minutes par personne. Une première fonctionnalité doit se voir fonctionner en moins d'une heure : au-delà, aidez à la redécouper.</p>
+</details>

@@ -1,95 +1,79 @@
 ---
 id: e2
-title: "Code design"
+title: "Donner de l'allure à son projet"
 family: e
 order: 17
 priority: bonus
-durationMinutes: 15
+durationMinutes: 10
 type: concept
 platforms:
   - commun
-prerequisites: []
+prerequisites:
+  - b2
 status: a-relire
 owner: matthieu
-learningObjective: "Lire l'architecture d'un projet généré par l'IA : rôle des fichiers et séparation des responsabilités, sans lire le code ligne à ligne."
-expectedOutcome: "Le participant explique le rôle de chaque fichier de son projet en une phrase et identifie où intervenir pour une modification donnée."
+learningObjective: "Décrire l'apparence voulue avec des mots simples et un exemple, demander plusieurs versions et corriger en regardant l'aperçu."
+expectedOutcome: "Une page de votre projet dont vous avez choisi l'allure parmi plusieurs versions, puis corrigée à votre goût."
 ---
 
-## Cap
+import LookWords from '../../../components/briques/LookWords.astro';
+import PointAndFix from '../../../components/briques/PointAndFix.astro';
+import PromptCopy from '../../../components/briques/PromptCopy.astro';
+import StyleBrief from '../../../components/briques/StyleBrief.astro';
 
-**Objectif :** comprendre l'organisation de ce que l'IA produit : non pas pour écrire le code soi-même, mais pour pouvoir le relire, le faire évoluer et ne pas subir son propre projet.
+## L'essentiel
 
-- Durée cible : 15 minutes.
-- Prérequis : B4, « Claude Code » (un projet généré existe déjà).
-- Résultat attendu : vous savez expliquer la structure de votre projet et pointer le fichier à modifier pour un changement donné.
+Un projet qui a de l'allure se demande comme le reste : vous décrivez, vous montrez un exemple, vous choisissez.
 
-## Concept durable
+<StyleBrief />
 
-Un projet n'est pas un bloc de code : c'est un ensemble de fichiers qui ont chacun un rôle. Vous n'avez pas besoin de savoir maçonner pour lire le plan d'une maison : cuisine, chambres, tableau électrique. Un projet se lit de la même façon : interface (ce qu'on voit), logique (ce que ça fait), données (ce que ça retient), configuration (comment ça tourne).
+## À essayer
 
-Le principe central est la **séparation des responsabilités** : un fichier, un rôle. Elle permet de changer une pièce sans casser le reste. Un fichier unique de deux mille lignes qui fait tout est un signal d'alarme, pour vous comme pour l'IA : un agent modifie mieux un projet bien rangé. L'architecture n'est pas un luxe d'expert : c'est ce qui rend la modification suivante possible.
+**1. Décrivez l'allure et demandez plusieurs versions.**
 
-Le risque propre au développement assisté par IA est un projet qui fonctionne mais que personne ne comprend. Il devient alors impossible à faire évoluer, et chaque correction en casse une autre. Le test des trente secondes : si vous ne pouvez pas expliquer votre projet en trente secondes, vous ne le contrôlez plus.
+<PromptCopy>Je veux que ça ressemble à [un carnet de cuisine, un magazine, tel site] : [l'ambiance], [les couleurs]. Propose-moi trois versions différentes dans l'aperçu.</PromptCopy>
 
-Dernier réflexe : exiger une architecture simple. Pour un mini-outil, trois fichiers bien nommés valent mieux qu'une structure de framework complète. La sur-ingénierie est aussi un défaut de design.
+**2. Joignez la capture d'écran d'un site qui vous plaît.**
 
-## Pratique avec Claude
+<PromptCopy>Inspire-toi de cette capture pour les couleurs et la mise en page, pas pour le contenu.</PromptCopy>
 
-Ouvrez le projet créé en B4 et demandez :
+**3. Choisissez, puis corrigez une chose à la fois.**
 
-```text
-Décris le rôle de chaque fichier de ce projet en une phrase, sans jargon.
-Puis dis-moi lequel je devrais modifier pour changer la couleur du titre,
-et lequel pour ajouter une nouvelle fonctionnalité de rappel quotidien.
-```
+<PromptCopy>Je garde la version 2. Mets le titre plus grand.</PromptCopy>
 
-La carte d'un projet s'interroge sans lire son code. Si la réponse ne distingue pas clairement les rôles, c'est le projet qui a un problème, pas la question.
+## Comprendre
 
-## Mission commune
+<div class="idea">
+  <div>
+    <h3>Des mots de tous les jours</h3>
+    <p>Aucun vocabulaire de graphiste : une ambiance, des couleurs, une comparaison suffisent.</p>
+  </div>
+  <LookWords />
+</div>
 
-Sur votre propre projet issu de B4 :
+<div class="idea">
+  <div>
+    <h3>Dites ce que vous voyez</h3>
+    <p>Regardez l'aperçu et nommez ce qui vous gêne, à l'endroit où vous le voyez.</p>
+  </div>
+  <PointAndFix />
+</div>
 
-1. Demandez à Claude la carte du projet : rôle de chaque fichier en une phrase.
-2. Choisissez une modification que vous aimeriez faire et demandez où elle vivrait, sans la réaliser.
-3. Posez la question de contrôle : « Y a-t-il un fichier qui fait trop de choses ? Si oui, comment le découper ? »
+### Claude Design, pour chercher une allure
 
-**Critère de réussite :** vous savez restituer la carte de votre projet à voix haute, sans notes, en moins de trente secondes.
+L'application a aussi un espace fait pour cela, dans l'onglet Chat : [Claude Design](/briques/c4/). Vous y cherchez une allure, puis vous la donnez en exemple à votre projet.
 
-## Livrable
+<details class="hint">
+  <summary>Pour aller plus loin</summary>
+  <p><strong>Une allure qui dure.</strong> Quand elle vous plaît, demandez à Claude de noter les couleurs et le style retenus dans <code>CLAUDE.md</code> : les pages suivantes auront le même air de famille.</p>
+  <p><strong>Sur téléphone aussi.</strong> Demandez à voir la page telle qu'elle apparaît sur un téléphone avant de la partager.</p>
+  <p><strong>Lisible avant d'être beau.</strong> Un texte clair sur fond clair est joli de loin et illisible de près : demandez à Claude de vérifier que tout se lit bien.</p>
+  <p>Documentation officielle : <a href="https://code.claude.com/docs/en/desktop">Claude Code dans l'application de bureau</a>.</p>
+</details>
 
-La carte de votre projet : une liste de vos fichiers avec leur rôle en une phrase, plus l'emplacement identifié de votre prochaine modification.
-
-## Notes formateur
-
-- **0–4 min :** l'analogie de la maison et les quatre zones (interface, logique, données, configuration).
-- **4–7 min :** séparation des responsabilités + le signal d'alarme du fichier fourre-tout.
-- **7–12 min :** mission commune sur les projets des participants.
-- **12–15 min :** deux ou trois participants restituent leur carte ; test des trente secondes.
-
-Message essentiel : « vous ne relisez pas le code ligne à ligne, vous vérifiez que la carte est logique ». Ne pas dériver vers le jargon (MVC, patterns, couches) : rester au niveau de la carte. Cette brique rassure ceux qui pensent que « le code, ce n'est pas pour eux ». Transition : une bonne carte rend possible l'itération par petits pas, objet de E3.
-
-## Défis avancés
-
-- Demandez à Claude de proposer un découpage d'un fichier trop chargé, et faites-lui justifier chaque nouveau fichier.
-- Comparez deux architectures proposées pour le même besoin et demandez les compromis de chacune.
-- Introduisez volontairement une demande floue (« améliore le projet ») et observez pourquoi le résultat est moins bon qu'une demande localisée sur un fichier.
-
-## Variantes
-
-- **Sans projet B4 :** utiliser un projet d'exemple préparé par le formateur, avec un fichier volontairement fourre-tout à diagnostiquer.
-- **Non-développeurs :** appliquer la même grille à un dossier de documents (un dossier, un rôle) pour ancrer le principe hors code.
-- **Initiés :** nommer les conventions du framework utilisé et vérifier que le projet les respecte.
-
-## Dépannage
-
-- **« Je ne comprends pas la réponse de Claude » :** demander une reformulation « comme à quelqu'un qui n'a jamais codé », une phrase par fichier.
-- **« Mon projet tient dans un seul fichier » :** normal pour un mini-outil ; demander à partir de quelle taille il faudrait découper, et selon quels rôles.
-- **« Claude propose une refonte complète » :** refuser ; demander le plus petit changement qui améliore la structure. La refonte totale est rarement la bonne première étape.
-
-## Ressources
-
-- [Bonnes pratiques Claude Code (Anthropic)](https://www.anthropic.com/engineering/claude-code-best-practices)
-
-## Ouverture
-
-Savoir lire la carte permet d'avancer par petits pas sûrs : le cadrage et l'itération (E3) transforment cette lecture en méthode de travail complète, jusqu'à la présentation de votre projet final.
+<details class="hint">
+  <summary>Notes formateur</summary>
+  <p><strong>Fiche à consulter, hors matinée.</strong> À sortir pendant la construction, quand une personne dit « ça marche, mais c'est moche ».</p>
+  <p><strong>Démonstration possible, trois minutes.</strong> Sur un projet de la salle : une capture d'un site aimé, la demande de trois versions, puis un vote à main levée.</p>
+  <p><strong>Pièges fréquents.</strong> Peaufiner l'apparence avant que la première fonctionnalité marche : l'allure vient après. Demander dix changements d'un coup : un à la fois, en regardant l'aperçu. Répondre « je ne sais pas ce que je veux » : faites chercher deux sites aimés, la capture fera le reste.</p>
+</details>

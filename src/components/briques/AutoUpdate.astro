@@ -1,0 +1,22 @@
+---
+// Après la première mise en ligne : chaque sauvegarde met le site à jour.
+import './claude-app.css';
+import './eco.css';
+import EcoIcon from './EcoIcon.astro';
+---
+
+<figure class="ca-figure is-narrow au">
+  <div class="eco-flow" aria-hidden="true">
+    <div class="eco-node"><EcoIcon name="save" /><p class="eco-name">Vous sauvegardez</p><p class="eco-sub">sur GitHub</p></div>
+    <span class="eco-arrow"></span>
+    <div class="eco-node"><EcoIcon name="vercel" /><p class="eco-name">Vercel le voit</p><p class="eco-sub">et refait le site</p></div>
+    <span class="eco-arrow"></span>
+    <div class="eco-node is-key"><EcoIcon name="globe" /><p class="eco-name">Le site est à jour</p><p class="eco-sub">à la même adresse</p></div>
+  </div>
+</figure>
+
+<style>
+  .au :global(.eco-name) { font-size: 0.98rem; }
+  .au :global(.eco-node) { padding-inline: 0.5rem; }
+  .au :global(.eco-arrow) { inline-size: 1.3rem; font-size: 1.3rem; }
+</style>

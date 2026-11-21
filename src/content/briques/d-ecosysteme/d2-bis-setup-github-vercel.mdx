@@ -1,137 +1,78 @@
 ---
 id: d2-bis
-title: "Setup GitHub et Vercel"
+title: "Préparer son ordinateur"
 family: d
 order: 13
 priority: socle
-durationMinutes: null
+durationMinutes: 15
 type: setup
 platforms:
   - commun
-prerequisites:
-  - d2
+prerequisites: []
 status: a-relire
 owner: matthieu
-learningObjective: "Créer ses comptes GitHub et Vercel, autoriser sa machine, puis faire naître un projet complet (créé, versionné et mis en ligne par l'IA) en suivant un rituel vérifiable."
-expectedOutcome: "Le participant possède un compte GitHub relié à sa machine, un compte Vercel relié à GitHub, et un premier repo en ligne créé de bout en bout par Claude sous sa supervision."
+learningObjective: "Faire préparer son ordinateur par Claude : outils installés et compte GitHub relié, sans taper une seule commande."
+expectedOutcome: "Un tableau où tout est « prêt », montré à un formateur."
 ---
 
-## Cap
+import SetupBefore from '../../../components/briques/SetupBefore.astro';
+import SetupInstall from '../../../components/briques/SetupInstall.astro';
+import SetupPrompt from '../../../components/briques/SetupPrompt.astro';
+import SetupTools from '../../../components/briques/SetupTools.astro';
+import ThreeGestures from '../../../components/briques/ThreeGestures.astro';
+import VercelLater from '../../../components/briques/VercelLater.astro';
 
-**Objectif :** passer de « je n'ai rien » à « mon projet existe, il est versionné et visible en ligne », sans taper une seule commande mais sans rien subir non plus.
+## L'essentiel
 
-- Durée indicative : 20 à 40 minutes selon les comptes déjà existants et les emails de vérification.
-- Prérequis : D2 (vous savez ce que sont commit et push) et un éditeur avec Claude Code opérationnel. La brique facultative B4-bis sert de guide de rattrapage si nécessaire.
-- Résultat attendu : votre repo est visible sur github.com et votre compte Vercel est relié à GitHub.
+Vous collez une phrase. Claude installe ce qu'il faut et relie votre compte GitHub.
 
-Les gestes en images, écran par écran : [Questions fréquentes, créer un projet et le mettre sur GitHub](/faq/naissance-projet/).
+<SetupInstall />
 
-## Concept durable
+## À essayer
 
-Faire naître un projet suit un rituel en quatre temps, et chaque temps a son propriétaire :
+**1. Vérifiez ce que vous avez fait chez vous.**
 
-1. **Identité (vous).** Créer vos comptes (GitHub, Vercel). Personne ne peut le faire à votre place, et surtout pas l'IA : vos mots de passe et vos comptes n'ont jamais à transiter par elle.
-2. **Autorisation (vous, guidé).** Connecter votre machine à votre compte GitHub. L'IA vous guide, mais c'est vous qui cliquez sur « Autoriser ».
-3. **Création (l'IA).** Créer le dossier du projet, l'initialiser, faire la première sauvegarde, créer le repo en ligne, tout envoyer. C'est de la plomberie : déléguez.
-4. **Preuve visible (vous).** Ouvrir github.com et voir votre projet. Pas de preuve à l'écran, pas d'étape suivante.
+<SetupBefore />
 
-La règle qui rend ce rituel réutilisable toute votre vie : **on n'avance jamais sans preuve visible**. C'est elle qui distingue « l'IA a dit que c'était fait » de « c'est fait ». Règle d'hygiène : un projet = un dossier = un repo.
+**2. Onglet Code, session Local, n'importe quel dossier : collez cette phrase.**
 
-## Pratique avec Claude
+<SetupPrompt />
 
-Le rituel complet, dans l'ordre :
+**3. Faites vos trois seuls gestes, quand Claude vous le dit.**
 
-1. **Identité :** création d'un compte sur github.com (email, nom d'utilisateur, vérification), puis d'un compte Vercel via « Continue with GitHub » : un compte s'appuie sur l'autre, aucun mot de passe supplémentaire.
-2. **Autorisation :** dans Claude Code, demander :
+<ThreeGestures />
 
-```text
-Guide-moi pour connecter cette machine à mon compte GitHub.
-Explique chaque étape avant que je la fasse ; c'est moi qui valide les autorisations.
-```
+**4. Montrez le tableau final à un formateur.** Une ligne « pas prêt » ? Appelez-le tout de suite.
 
-3. **Création :** le prompt rituel, à conserver précieusement :
+## Comprendre
 
-```text
-Crée un nouveau projet vide nommé mon-assistant dans mon dossier atelier-ia.
-Initialise le versionnement, fais une première sauvegarde,
-crée le repo sur mon compte GitHub et envoie tout en ligne.
-Annonce chaque étape avant de la faire et montre-moi comment vérifier.
-```
+<div class="idea">
+  <div>
+    <h3>Trois outils, une seule fois</h3>
+    <p>Claude s'en sert à votre place, pour tous vos projets. Vous n'aurez jamais à les ouvrir.</p>
+  </div>
+  <SetupTools />
+</div>
 
-4. **Preuve :** ouvrir github.com dans le navigateur : le repo est là, avec sa première sauvegarde.
+<div class="idea">
+  <div>
+    <h3>Vercel, ce sera plus tard</h3>
+    <p>Le jour où votre projet doit aller en ligne, un clic suffit : vous vous connectez à Vercel avec votre compte GitHub.</p>
+  </div>
+  <VercelLater />
+</div>
 
-## Mission commune
+<details class="hint">
+  <summary>Pour aller plus loin</summary>
+  <p><strong>Si quelque chose bloque, trois réflexes.</strong> Fermez complètement l'application Claude et rouvrez-la : elle ne voit les nouveaux outils qu'après. Collez le message d'erreur à Claude, avec « répare ça et explique-moi en deux phrases ». Au deuxième échec, appelez un formateur.</p>
+  <p><strong>Chez vous, plus tard.</strong> Votre ordinateur reste prêt. S'il manque un outil un jour, la même phrase répare : elle n'installe que ce qui manque.</p>
+  <p>Documentation officielle : <a href="https://code.claude.com/docs/en/desktop">Claude Code dans l'application de bureau</a>, <a href="https://docs.github.com/fr/get-started/start-your-journey/creating-an-account-on-github">créer un compte GitHub</a>.</p>
+</details>
 
-Reproduisez le rituel pour votre propre projet : compte GitHub créé, machine autorisée, puis demandez à Claude de faire naître le projet que vous utiliserez pour le fil rouge. Terminez par la preuve : votre repo affiché dans votre navigateur, et votre compte Vercel relié.
-
-**Critère de réussite :** vous pouvez montrer l'URL de votre repo à votre voisin, et raconter qui a fait quoi, vous ou l'IA, à chacun des quatre temps.
-
-## Livrable
-
-L'URL de votre premier repo GitHub, contenant la première sauvegarde d'un projet créé de bout en bout par Claude sous votre supervision, et un compte Vercel prêt pour le déploiement.
-
-## Notes formateur
-
-C'est la brique la plus exposée aux imprévus de toute la formation : emails de vérification qui n'arrivent pas, noms d'utilisateur pris, réseaux qui bloquent. Prévoir large, faire travailler en binômes (un qui fait, un qui lit les étapes), et garder un déroulé de secours en démonstration si un participant est bloqué : on ne débogue pas un cas particulier devant la salle.
-
-- Faire créer les comptes GitHub en tout début de séance, voire à la pause précédente : la vérification d'email tourne pendant qu'on fait autre chose.
-- Marteler le message : « l'IA fait la plomberie, vous gardez les clés ». Aucun mot de passe ne se tape dans une conversation avec l'IA, jamais.
-- Le choix du nom d'utilisateur GitHub mérite dix secondes : il est public et durable, éviter les pseudos regrettables.
-- Insister sur la preuve visible à chaque temps ; c'est la méthodologie qu'ils remporteront, plus encore que les comptes.
-
-Transition : le projet est en ligne comme code ; D3 le rend accessible comme site, et Vercel attend déjà.
-
-## Défis avancés
-
-- Refaites naître un second projet en une seule demande à Claude : le rituel doit tenir en deux minutes montre en main.
-- Explorez les réglages de votre repo sur github.com : rendez-le privé, puis public, et expliquez la différence à votre voisin.
-- Demandez à Claude ce qu'il a fait exactement à l'étape « autorisation » et faites-vous expliquer chaque terme inconnu.
-
-## Variantes
-
-- **Compte GitHub existant :** passer directement à l'autorisation ; vérifier quand même que le compte est accessible (mot de passe retrouvé, double authentification fonctionnelle).
-- **Réseau restrictif (école, entreprise) :** si l'autorisation échoue sur le réseau, basculer sur un partage de connexion téléphonique le temps du setup.
-
-## Dépannage
-
-- **« Le nom d'utilisateur est déjà pris » :** en choisir un autre ; ne pas perdre cinq minutes, ce nom peut se changer plus tard dans les réglages.
-- **« L'email de vérification n'arrive pas » :** vérifier les indésirables, puis renvoyer l'email ; pendant l'attente, préparer l'étape suivante.
-- **« Claude dit que le push est refusé » :** l'autorisation (temps 2) n'a pas abouti ; la refaire calmement avant de retenter, ne pas enchaîner les tentatives.
-- **« Vercel ne voit pas mes repos » :** lors du « Continue with GitHub », l'accès aux repos n'a pas été accordé ; se déconnecter de Vercel et recommencer en acceptant l'autorisation.
-
-## Ressources
-
-- [Créer un compte GitHub (documentation officielle)](https://docs.github.com/fr/get-started/start-your-journey/creating-an-account-on-github)
-- [Débuter avec Vercel (documentation officielle)](https://vercel.com/docs/getting-started-with-vercel)
-
-## Ouverture
-
-Le rituel de naissance d'un projet vous appartient désormais : identité, autorisation, création, preuve. Prochaine étape, la plus gratifiante : transformer ce repo en site accessible au monde entier avec le déploiement Vercel (D3).
-
-## Diagnostic initial
-
-Avant de créer quoi que ce soit :
-
-1. avez-vous déjà un compte GitHub ? Testez une connexion sur github.com ;
-2. dans Claude Code, demandez : « cette machine est-elle déjà connectée à un compte GitHub ? » ;
-3. avez-vous déjà un compte Vercel ? Testez une connexion sur vercel.com ;
-4. ne créez que ce qui manque : un seul compte par service, pas de doublon.
-
-## Test final
-
-Trois preuves à l'écran, dans cet ordre :
-
-1. votre repo est visible sur github.com avec sa première sauvegarde ;
-2. dans Claude Code : « vérifie que le projet local est bien relié au repo en ligne et que tout est envoyé », et la réponse confirme sans erreur ;
-3. le tableau de bord Vercel affiche votre compte GitHub comme connecté.
-
-## Dépannage Mac
-
-- **macOS propose d'installer les « outils de développement en ligne de commande » :** accepter : Git n'est pas préinstallé, cette fenêtre est normale, et l'installation prend quelques minutes.
-- **La fenêtre d'autorisation ne s'ouvre pas dans le navigateur :** copier l'URL que Claude fournit et l'ouvrir manuellement dans Safari ou Chrome.
-
-## Dépannage Windows
-
-- **Git est introuvable :** installer « Git for Windows » depuis le site officiel avec les options par défaut, puis fermer et rouvrir VS Code pour que le terminal le trouve.
-- **Le terminal ne reconnaît toujours pas les commandes :** fermer complètement VS Code (pas seulement l'onglet du terminal) et le relancer ; le PATH ne se met à jour qu'au redémarrage.
-- **Une fenêtre « Git Credential Manager » apparaît :** c'est le gestionnaire officiel qui mémorise l'autorisation GitHub ; se connecter via le navigateur quand il le propose.
+<details class="hint">
+  <summary>Notes formateur</summary>
+  <p><strong>Premier geste du samedi, avant toute théorie.</strong> Projetez la phrase, collez-la avec le groupe, puis laissez les installations tourner pendant le premier bloc. Passez voir les tableaux à la première pause.</p>
+  <p><strong>À faire voir.</strong> Une demande de permission lue à voix haute avant d'accepter, puis la page GitHub où l'on colle le code. Le mot de passe demandé est celui de l'ordinateur, jamais celui de Claude ni de GitHub.</p>
+  <p><strong>Pièges fréquents.</strong> Un outil « introuvable » juste après son installation : quitter l'application et la rouvrir. Un ordinateur de travail qui refuse toute installation : ne pas insister, passer en session cloud ou en binôme. Le guide manuel, la table des pannes et le plan B sont dans <code>docs/atelier/installation-depannage.md</code>.</p>
+  <p><strong>À prévoir.</strong> Une clé USB avec les installateurs, un partage de connexion de secours, un ou deux ordinateurs déjà prêts.</p>
+</details>

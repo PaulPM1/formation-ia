@@ -1,0 +1,112 @@
+---
+// La même page à deux adresses : l'aperçu sur l'ordinateur, le site en ligne.
+import './claude-app.css';
+import EcoIcon from './EcoIcon.astro';
+---
+
+<figure class="ca-figure is-narrow lo">
+  <div class="lo-pair">
+    {[
+      { url: 'localhost:3000', icon: 'laptop', who: 'Aperçu', text: 'sur votre ordinateur, pour vous seul' },
+      { url: 'mes-recettes.vercel.app', icon: 'globe', who: 'En ligne', text: 'une adresse, pour tout le monde' },
+    ].map((side) => (
+      <div>
+        <div class="lo-browser" aria-hidden="true">
+          <p class="lo-bar"><i></i><i></i><i></i><em>{side.url}</em></p>
+          <div class="lo-page">
+            <p>Recettes de famille</p>
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+        <figcaption><EcoIcon name={side.icon as 'laptop' | 'globe'} /><span><b>{side.who}</b> : {side.text}.</span></figcaption>
+      </div>
+    ))}
+  </div>
+</figure>
+
+<style>
+  .lo-pair {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.2rem;
+    padding-inline-end: 6px;
+  }
+
+  .lo-browser {
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    background: #fff;
+    box-shadow: var(--shadow-block);
+    overflow: hidden;
+  }
+
+  .lo .lo-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin: 0;
+    padding: 0.4rem 0.5rem;
+    border-block-end: 2px solid var(--ink);
+    background: var(--paper);
+    line-height: 1.2;
+  }
+
+  .lo-bar i {
+    flex: none;
+    inline-size: 0.45rem;
+    block-size: 0.45rem;
+    border: 1.5px solid var(--ink);
+    border-radius: 50%;
+  }
+
+  .lo-bar em {
+    flex: 1;
+    min-inline-size: 0;
+    margin-inline-start: 0.3rem;
+    padding: 0.1rem 0.5rem;
+    border: 2px solid var(--ink);
+    border-radius: 999px;
+    background: var(--brick-yellow);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-style: normal;
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .lo-page {
+    display: grid;
+    gap: 0.4rem;
+    padding: 0.9rem;
+  }
+
+  .lo .lo-page p {
+    margin: 0 0 0.2rem;
+    font-family: Georgia, serif;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .lo-page span {
+    block-size: 1.3rem;
+    border-radius: 5px;
+    background: linear-gradient(90deg, #f2c26b 1.3rem, #eee 1.3rem);
+  }
+
+  .lo figcaption {
+    display: flex;
+    gap: 0.5rem;
+    margin-block-start: 0.9rem;
+    font-size: 0.92rem;
+    line-height: 1.4;
+  }
+
+  .lo figcaption :global(.eco-icon) { inline-size: 1.3rem; block-size: 1.3rem; }
+
+  @media (max-width: 30rem) {
+    .lo-pair { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

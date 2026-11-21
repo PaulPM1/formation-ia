@@ -139,7 +139,7 @@ export const A_DECKS = [
             },
           },
         },
-        links: [wikiLink('a1', 'concept-durable', 'Comprendre le mécanisme'), claudeOverview],
+        links: [wikiLink('a1', 'comprendre', 'Comprendre le mécanisme'), claudeOverview],
         speaker: {
           durationMinutes: 2,
           notes: "Laisser jouer une boucle complète. Préciser que les scores sont illustratifs et qu'en pratique un token peut être un fragment ou un signe.",
@@ -174,7 +174,7 @@ export const A_DECKS = [
             observation: 'Même amorce, deux sens, deux suites plausibles',
           },
         },
-        links: [wikiLink('a1', 'pratique-avec-claude', 'Comparer les prompts')],
+        links: [wikiLink('a1', 'à-essayer', 'Comparer les prompts')],
         speaker: {
           durationMinutes: 2,
           notes: 'Afficher les deux branches et faire nommer le sens du mot « navigateur » avant de révéler chaque suite.',
@@ -221,7 +221,7 @@ export const A_DECKS = [
             ],
           },
         },
-        links: [wikiLink('a1', 'concept-durable', 'Voir les trois conséquences'), usageLimits],
+        links: [wikiLink('a1', 'comprendre', 'Voir les trois conséquences'), usageLimits],
         speaker: {
           durationMinutes: 3,
           notes: 'Faire voter avant chaque correction. Ne pas annoncer que quatre affirmations sur cinq sont exactes : le déséquilibre est volontairement contre-intuitif.',
@@ -248,7 +248,7 @@ export const A_DECKS = [
             deliverables: ['Définition personnelle en trois phrases', 'Deux consignes', 'Une limite à garder en tête'],
           },
         },
-        links: [wikiLink('a1', 'mission-commune', 'Mission A1 complète')],
+        links: [wikiLink('a1', 'à-essayer', 'Mission A1 complète')],
         speaker: {
           durationMinutes: 2,
           notes: 'Faire formuler la définition par deux participants et vérifier explicitement les trois éléments du critère de réussite.',
@@ -304,7 +304,7 @@ export const A_DECKS = [
             warning: 'Fonctions et accès disponibles selon le forfait et le workspace.',
           },
         },
-        links: [wikiLink('a2', 'concept-durable', 'Choisir par la sortie'), agentsGuide, chatgptWorkGuide],
+        links: [wikiLink('a2', 'comprendre', 'Choisir par la sortie'), agentsGuide, chatgptWorkGuide],
         speaker: {
           durationMinutes: 3,
           notes: 'Faire nommer la sortie avant les marques. Présenter les quatre niveaux comme des établis et non comme une hiérarchie de puissance.',
@@ -340,7 +340,7 @@ export const A_DECKS = [
             choiceSignal: 'Choisir l’écosystème déjà disponible lorsque la réponse elle-même est le livrable.',
           },
         },
-        links: [wikiLink('a2', 'concept-durable', 'Réponse conversationnelle'), claudeOverview, chatgptWorkGuide],
+        links: [wikiLink('a2', 'comprendre', 'Réponse conversationnelle'), claudeOverview, chatgptWorkGuide],
         speaker: {
           durationMinutes: 3,
           notes: 'Utiliser l’exemple d’un email collé. Faire constater que la preuve tient dans la lecture de la réponse et qu’aucun accès supplémentaire n’est utile.',
@@ -376,7 +376,7 @@ export const A_DECKS = [
             choiceSignal: 'Choisir un objet lorsque l’édition ou l’essai apporte plus de valeur qu’une réponse figée.',
           },
         },
-        links: [wikiLink('a2', 'concept-durable', 'Objet éditable'), artifactsGuide, chatgptCanvasGuide],
+        links: [wikiLink('a2', 'comprendre', 'Objet éditable'), artifactsGuide, chatgptCanvasGuide],
         speaker: {
           durationMinutes: 3,
           notes: 'Comparer un calculateur interactif à une description du calculateur. Montrer que l’aperçu est la preuve, puis rappeler la frontière avec un projet réel.',
@@ -412,7 +412,7 @@ export const A_DECKS = [
             choiceSignal: 'Choisir le travail agentique lorsque le résultat exige plusieurs étapes, sources ou outils.',
           },
         },
-        links: [wikiLink('a2', 'concept-durable', 'Livrable multiétape'), coworkGuide, chatgptWorkGuide],
+        links: [wikiLink('a2', 'comprendre', 'Livrable multiétape'), coworkGuide, chatgptWorkGuide],
         speaker: {
           durationMinutes: 3,
           notes: 'Faire distinguer un rapport fini d’une réponse sur la méthode. Insister sur le plan, les sources autorisées et la relecture indépendante.',
@@ -448,7 +448,7 @@ export const A_DECKS = [
             choiceSignal: 'Choisir l’outil déjà configuré pour le dépôt, puis borner fichiers, commandes et critère d’arrêt.',
           },
         },
-        links: [wikiLink('a2', 'concept-durable', 'Projet vérifié'), codeOverview, codexGuide],
+        links: [wikiLink('a2', 'comprendre', 'Projet vérifié'), codeOverview, codexGuide],
         speaker: {
           durationMinutes: 3,
           notes: 'Faire lire le flux à voix haute. Exiger une preuve de fin observable : test, diff ou revue, jamais le simple résumé de l’agent.',
@@ -476,7 +476,7 @@ export const A_DECKS = [
             warning: 'Ne pas choisir un agent uniquement parce que la tâche paraît longue.',
           },
         },
-        links: [wikiLink('a2', 'pratique-avec-claude', 'Grille de décision')],
+        links: [wikiLink('a2', 'à-essayer', 'Grille de décision')],
         speaker: {
           durationMinutes: 3,
           notes: 'Faire répondre au groupe dans l’ordre. La sortie élimine d’abord trois niveaux ; l’écosystème ne tranche qu’entre solutions comparables.',
@@ -540,7 +540,7 @@ export const A_DECKS = [
             successCriterion: '4 décisions sur 4 en choisissant la paire minimale qui produit la preuve attendue.',
           },
         },
-        links: [wikiLink('a2', 'mission-commune', 'Mission A2 complète')],
+        links: [wikiLink('a2', 'à-essayer', 'Mission A2 complète')],
         speaker: {
           durationMinutes: 7,
           notes: 'Faire voter avant chaque validation. Après la correction, demander quelle permission ou quel contexte rend l’alternative trop faible ou trop large.',
@@ -706,7 +706,7 @@ export const A_DECKS = [
             initialSignal: 'Ton fluide et affirmatif',
           },
         },
-        links: [wikiLink('a4', 'concept-durable', 'Comprendre le risque'), hallucinationGuide],
+        links: [wikiLink('a4', 'comprendre', 'Comprendre le risque'), hallucinationGuide],
         speaker: {
           durationMinutes: 3,
           notes: 'Montrer une fausse information bien formulée et demander un vote rapide. Ne pas résumer par « l’IA ment ».',
@@ -732,7 +732,7 @@ export const A_DECKS = [
             ],
           },
         },
-        links: [wikiLink('a4', 'concept-durable', 'Hallucination et biais')],
+        links: [wikiLink('a4', 'comprendre', 'Hallucination et biais')],
         speaker: {
           durationMinutes: 4,
           notes: 'Nommer hallucination et cinq biais sans culpabiliser les participants ; demander un exemple concret pour chacun.',
@@ -783,7 +783,7 @@ export const A_DECKS = [
             output: 'Faits, inférences, inconnues et recommandation calibrée',
           },
         },
-        links: [wikiLink('a4', 'pratique-avec-claude', 'Appliquer la méthode'), hallucinationGuide],
+        links: [wikiLink('a4', 'à-essayer', 'Appliquer la méthode'), hallucinationGuide],
         speaker: {
           durationMinutes: 3,
           notes: 'Réaliser un audit en binômes et exiger une source indépendante ou un test concret avant la décision.',
@@ -818,7 +818,7 @@ export const A_DECKS = [
             successCriterion: 'Votre version corrigée ne masque aucune affirmation incertaine derrière un ton affirmatif.',
           },
         },
-        links: [wikiLink('a4', 'mission-commune', 'Mission A4 complète')],
+        links: [wikiLink('a4', 'à-essayer', 'Mission A4 complète')],
         speaker: {
           durationMinutes: 3,
           notes: 'Partager une vérification et faire expliciter les incertitudes restantes dans la version corrigée.',

@@ -1,109 +1,74 @@
 ---
 id: e1
-title: "Prompt et gestion du contexte"
+title: "Demande et contexte"
 family: e
 order: 16
 priority: socle
-durationMinutes: 20
+durationMinutes: 15
 type: concept
 platforms:
   - commun
 prerequisites:
-  - a1
+  - b2
 status: a-relire
 owner: matthieu
-learningObjective: "Structurer une demande avec les quatre leviers d'un bon prompt et gérer la fenêtre de contexte sur la durée d'un projet."
-expectedOutcome: "Le participant transforme un prompt vague en demande exploitable et sait quand repartir d'une conversation propre plutôt que d'empiler les corrections."
+learningObjective: "Formuler une demande qui dit le but, le contexte et à quoi ressemble « réussi », et ouvrir une nouvelle conversation quand la première devient trop longue."
+expectedOutcome: "Une demande réécrite en trois phrases pour votre projet, et le réflexe de faire noter l'avancement dans CLAUDE.md avant de repartir d'une conversation neuve."
 ---
 
-## Cap
+import ContextGauge from '../../../components/briques/ContextGauge.astro';
+import PromptCopy from '../../../components/briques/PromptCopy.astro';
+import VagueVsClear from '../../../components/briques/VagueVsClear.astro';
+import WhatClaudeSees from '../../../components/briques/WhatClaudeSees.astro';
 
-**Objectif :** obtenir des résultats fiables en donnant au modèle ce qu'il ne peut pas deviner, et garder le contrôle du contexte sur la durée.
+## L'essentiel
 
-- Durée cible : 20 minutes.
-- Prérequis : A1, « C'est quoi un LLM » (tokens, fenêtre de contexte).
-- Résultat attendu : vous réécrivez une demande vague en demande exploitable et vous savez quand relancer une conversation propre.
+Claude ne devine pas ce que vous avez en tête. Dites-lui trois choses : le but, le contexte, et à quoi ressemble « réussi ».
 
-## Concept durable
+<VagueVsClear />
 
-La qualité d'une réponse dépend d'abord de la qualité de la demande : le modèle ne connaît ni votre situation, ni vos attentes implicites. Briefer une IA revient à briefer un collaborateur brillant mais sans aucune mémoire de vous.
+## À essayer
 
-Quatre leviers structurent une bonne demande :
+**1. Écrivez votre prochaine demande en trois phrases.**
 
-- **Contexte** : de quoi il s'agit, pour qui, dans quel but.
-- **Spécificité** : ce que vous voulez précisément : longueur, langue, niveau de détail.
-- **Rôle et format de sortie** : « agis comme… », « réponds sous forme de tableau ».
-- **Contraintes** : ce qu'il ne faut pas faire.
+<PromptCopy>Je veux [le but]. C'est pour [qui, dans quelle situation]. Ce sera réussi si [ce qu'on doit voir ou pouvoir faire].</PromptCopy>
 
-Deux réflexes complètent ces leviers. D'abord, décomposer une grosse demande en étapes plutôt que tout demander d'un coup. Ensuite, donner des exemples quand le format ou le style compte : aucun exemple (*zero-shot*) suffit pour les tâches simples ; un exemple (*one-shot*) cale le format ; plusieurs exemples cohérents (*few-shot*) fiabilisent un motif récurrent. Quelques exemples diversifiés valent mieux que beaucoup d'exemples redondants.
+**2. Laissez Claude vous poser ses questions.**
 
-Enfin, le contexte est une ressource limitée. La fenêtre de contexte se remplit au fil de la conversation : sur un long échange, le modèle perd le fil du début, et chaque correction ratée pollue la suite. Quand une conversation dérape, la reformulation propre bat l'empilement de rustines. Sur un projet qui dure, un fichier de référence (par exemple un `CLAUDE.md` ou un document de specs) conserve le cap d'une conversation à l'autre.
+<PromptCopy>Avant de commencer, pose-moi les questions dont tu as besoin pour bien faire.</PromptCopy>
 
-## Pratique avec Claude
+**3. La conversation devient longue ? Faites noter l'avancement, puis ouvrez-en une nouvelle dans le même dossier.**
 
-Comparez ces deux demandes pour la même tâche :
+<PromptCopy>Note dans CLAUDE.md où on en est et ce qu'il reste à faire.</PromptCopy>
 
-```text
-Fais-moi un planning de révisions.
-```
+## Comprendre
 
-```text
-Je prépare mes partiels dans six semaines, disponible 1 h par soir sauf le
-mercredi. Prépare un planning de révisions sous forme de tableau par semaine,
-en gardant les week-ends légers. Commence par les deux matières où j'ai le
-plus de retard : statistiques et comptabilité.
-```
+<div class="idea">
+  <div>
+    <h3>Il ne voit que ce qu'on lui donne</h3>
+    <p>La conversation et les fichiers du dossier : rien d'autre. Ce qui vous paraît évident doit être écrit.</p>
+  </div>
+  <WhatClaudeSees />
+</div>
 
-La première produit un résultat générique. La seconde donne au modèle le contexte, la spécificité, le format et les contraintes : le résultat est directement utilisable. Aucun des deux prompts n'est « magique » : le second fournit simplement ce que le modèle ne pouvait pas deviner.
+### Une conversation trop longue perd le fil
 
-## Mission commune
+Ouvrez-en une nouvelle : [CLAUDE.md](/briques/b2/) fait le lien.
 
-Prenez une tâche réelle de votre quotidien (message délicat, organisation d'un événement, aide à la décision) et rédigez deux versions de la demande :
+<ContextGauge />
 
-1. Une version en une phrase, comme vous l'auriez écrite spontanément.
-2. Une version structurée avec les quatre leviers, identifiés explicitement.
+<details class="hint">
+  <summary>Pour aller plus loin</summary>
+  <p><strong>Montrer vaut mieux que décrire.</strong> Joignez une capture d'écran, un fichier ou un exemple de ce que vous voulez : c'est du contexte, et souvent le plus efficace.</p>
+  <p><strong>Deux corrections ratées de suite.</strong> N'en empilez pas une troisième. Réécrivez la demande en entier, avec ce que vous avez appris, ou repartez d'une conversation neuve.</p>
+  <p><strong>Un sujet, une conversation.</strong> Changer de sujet dans la même conversation la remplit de choses qui ne servent plus.</p>
+  <p>Documentation officielle : <a href="https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview">bien formuler une demande</a> et <a href="https://code.claude.com/docs/en/memory">la mémoire de Claude Code</a>.</p>
+</details>
 
-Soumettez les deux à Claude et comparez les réponses. Puis dégradez volontairement un levier (retirez le contexte, ou le format) et observez ce qui change.
-
-**Critère de réussite :** vous savez nommer le levier qui a le plus amélioré votre résultat, et celui qui manquait dans votre version spontanée.
-
-## Livrable
-
-Vos deux prompts côte à côte, annotés : pour chaque levier, où il apparaît dans la version structurée et ce qu'il a changé dans la réponse.
-
-## Notes formateur
-
-- **0–4 min :** rappel de A1, où « qualité d'entrée = qualité de sortie » devient une méthode. Analogie du collaborateur brillant sans mémoire.
-- **4–8 min :** les quatre leviers, un exemple par levier.
-- **8–12 min :** démonstration mauvais vs bon prompt (planning de révisions), résultats côte à côte. Variante participative : faire réparer le mauvais prompt levier par levier par la salle.
-- **12–18 min :** mission commune en autonomie.
-- **18–20 min :** debrief + le réflexe « repartir propre » quand une conversation s'enlise.
-
-Piège à nommer : quand le résultat déçoit, l'instinct est de répondre « non, pas comme ça » cinq fois de suite. Chaque rustine pollue le contexte ; il faut reformuler la demande complète ou repartir d'une conversation neuve. Ne pas transformer la section en cours magistral : cinq minutes de leviers, puis la démonstration fait le travail. Transition : ces réflexes servent dans tous les ateliers qui suivent, on les rappellera à chaque brique.
-
-## Défis avancés
-
-- Fiabilisez un style d'écriture par *few-shot* : donnez trois messages que vous avez réellement écrits et demandez le quatrième dans le même ton.
-- Ajoutez une consigne de raisonnement (« réfléchis étape par étape avant de répondre ») sur un problème à plusieurs contraintes et comparez avec la version directe.
-- Rédigez le début d'un fichier de specs pour votre projet final : objectif, public, contraintes, ce qui est hors périmètre.
-
-## Variantes
-
-- **Administratif :** transformer « réponds à cet email » en demande avec ton, longueur et points à couvrir imposés.
-- **Pédagogie :** faire produire un quiz au bon niveau en donnant deux exemples de questions du niveau visé.
-- **Développement :** cadrer une demande de code avec le langage, les contraintes et un exemple d'entrée/sortie attendue.
-
-## Dépannage
-
-- **« La réponse est trop générique » :** il manque presque toujours le contexte ou la spécificité. Faire relire le prompt avec la grille des quatre leviers.
-- **« Il ignore une partie de ma demande » :** demande trop longue et non structurée ; découper en étapes ou lister les exigences explicitement.
-- **« Ça empire à chaque correction » :** la conversation est polluée ; repartir d'une conversation neuve avec un résumé propre de l'état et de l'objectif.
-
-## Ressources
-
-- [Prompt engineering : vue d'ensemble (Anthropic)](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview)
-- [Utiliser des exemples : multishot prompting (Anthropic)](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/multishot-prompting)
-
-## Ouverture
-
-Quand une consigne devient récurrente (même format, même style, à chaque fois), il est temps d'en faire une brique réutilisable : c'est exactement le rôle des Skills vus en C1. Et pour garder le cap sur un projet entier, le cadrage méthodique arrive en E3.
+<details class="hint">
+  <summary>Notes formateur</summary>
+  <p><strong>Démonstration en direct, cinq minutes.</strong> Deux conversations, même dossier vide. Dans la première, la demande floue ; dans la seconde, la demande en trois phrases, dictée par la salle. Affichez les deux aperçus côte à côte et laissez le groupe dire ce qui a changé.</p>
+  <p><strong>À faire voir.</strong> Une vraie conversation longue qui déraille est difficile à provoquer en direct : racontez un cas vécu, puis montrez le geste (faire noter l'avancement, nouvelle conversation, « on continue »).</p>
+  <p><strong>Pièges fréquents.</strong> Répondre « non, pas comme ça » cinq fois de suite : faites réécrire la demande entière. Croire que Claude se souvient de la conversation de la veille : il ne relit que les fichiers. Confondre demande claire et demande longue : trois phrases suffisent.</p>
+  <p><strong>Transition.</strong> La brique suivante (<a href="/briques/e3/">Lancer son projet</a>) applique ces trois phrases à grande échelle : c'est Claude qui pose les questions.</p>
+</details>

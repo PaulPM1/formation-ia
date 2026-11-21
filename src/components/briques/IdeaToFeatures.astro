@@ -1,0 +1,143 @@
+---
+// Une idée floue devient une liste ordonnée de fonctionnalités : la première
+// est mise en avant, le reste attend son tour. Schéma au style du site.
+import './claude-app.css';
+---
+
+<figure class="ca-figure is-narrow itf">
+  <div class="itf-row">
+    <p class="itf-idea"><small>Votre idée</small>Un site pour les recettes de la famille</p>
+    <span class="itf-arrow" aria-hidden="true"></span>
+    <ol class="itf-list">
+      <li class="is-first"><b>1</b><span>Voir la liste des recettes</span><em>On commence ici</em></li>
+      <li><b>2</b><span>Ouvrir la fiche d’une recette</span></li>
+      <li><b>3</b><span>Ajouter une recette</span></li>
+      <li><b>4</b><span>Chercher par ingrédient</span></li>
+      <li><b>5</b><span>Inviter la famille</span></li>
+    </ol>
+  </div>
+  <figcaption>Rien n’est retiré : tout est rangé dans l’ordre.</figcaption>
+</figure>
+
+<style>
+  .itf-row {
+    display: grid;
+    grid-template-columns: minmax(0, 0.7fr) 2.2rem minmax(0, 1.3fr);
+    gap: 0.8rem;
+    align-items: center;
+  }
+
+  .itf .itf-idea {
+    margin: 0;
+    padding: 1.1rem 1rem;
+    border: 2px dashed var(--ink);
+    border-radius: 2rem 1.4rem 2.2rem 1.2rem;
+    background: var(--surface);
+    font-size: 1.05rem;
+    font-weight: var(--weight-semibold);
+    line-height: 1.35;
+    transform: rotate(-2deg);
+  }
+
+  .itf-idea small {
+    display: block;
+    margin-block-end: 0.3rem;
+    color: var(--muted);
+    font-size: var(--text-label);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+  }
+
+  .itf-arrow {
+    block-size: 2px;
+    background: var(--ink);
+    position: relative;
+  }
+
+  .itf-arrow::after {
+    position: absolute;
+    inset: -0.3rem 0 auto auto;
+    inline-size: 0.6rem;
+    block-size: 0.6rem;
+    border: solid var(--ink);
+    border-width: 2px 2px 0 0;
+    transform: rotate(45deg);
+    content: "";
+  }
+
+  .itf .itf-list {
+    display: grid;
+    gap: 0.45rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .itf .itf-list li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.3rem 0.6rem;
+    margin: 0;
+    padding: 0.4rem 0.65rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    font-size: 0.95rem;
+    line-height: 1.3;
+  }
+
+  .itf .itf-list li.is-first {
+    margin-block-end: 0.5rem;
+    padding-block: 0.65rem;
+    background: var(--family-accent);
+    box-shadow: var(--shadow-block);
+    font-weight: var(--weight-heading);
+  }
+
+  .itf-list li span { flex: 1; }
+
+  .itf-list b {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    inline-size: 1.4rem;
+    block-size: 1.4rem;
+    border: 2px solid var(--ink);
+    border-radius: 50%;
+    background: var(--surface);
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+  }
+
+  .itf-list em {
+    padding: 0.1rem 0.5rem;
+    border-radius: var(--radius-sm);
+    background: var(--ink);
+    color: var(--surface);
+    font-size: var(--text-label);
+    font-style: normal;
+    font-weight: var(--weight-semibold);
+    white-space: nowrap;
+  }
+
+  .itf figcaption {
+    margin-block-start: 1rem;
+    color: var(--muted);
+    font-size: var(--text-small);
+  }
+
+  @media (max-width: 40rem) {
+    .itf-row { grid-template-columns: minmax(0, 1fr); }
+    .itf-arrow {
+      justify-self: center;
+      inline-size: 2px;
+      block-size: 1.6rem;
+    }
+    .itf-arrow::after {
+      inset: auto auto 0 -0.25rem;
+      transform: rotate(135deg);
+    }
+  }
+</style>

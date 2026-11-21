@@ -1,10 +1,10 @@
 ---
 id: a4
-title: "Biais cognitifs des IA"
+title: "Vérifier ce que dit Claude"
 family: a
 order: 4
 priority: socle
-durationMinutes: 15
+durationMinutes: 10
 type: concept
 platforms:
   - commun
@@ -12,108 +12,60 @@ prerequisites:
   - a1
 status: a-relire
 owner: a-attribuer
-learningObjective: "Repérer les erreurs plausibles d'un modèle et les biais humains qui conduisent à leur accorder trop de confiance."
-expectedOutcome: "Le participant audite une réponse avec la méthode Stop — Source — Test — Décision et explicite ce qui reste incertain."
+learningObjective: "Repérer quand Claude va dans votre sens, lui demander le contre, ses sources et ce qui pourrait être faux."
+expectedOutcome: "Trois objections sérieuses à votre idée de projet, et la liste de ce qu'il vous reste à vérifier."
 ---
 
-## Cap
+import ChallengeClaude from '../../../components/briques/ChallengeClaude.astro';
+import PromptCopy from '../../../components/briques/PromptCopy.astro';
+import SameClaimTwoLooks from '../../../components/briques/SameClaimTwoLooks.astro';
+import VerifyScale from '../../../components/briques/VerifyScale.astro';
 
-**Objectif :** garder son esprit critique lorsque Claude répond vite, clairement et avec assurance.
+## L'essentiel
 
-- Durée cible : 15 minutes.
-- Prérequis : A1, « C'est quoi un LLM ».
-- Résultat attendu : vous savez ralentir au bon moment et choisir une vérification proportionnée au risque.
+Claude va dans votre sens, et il écrit bien. Deux bonnes raisons de vérifier avant de le croire.
 
-## Concept durable
+<ChallengeClaude />
 
-Un modèle peut produire une **hallucination** : une information inventée ou déformée, mais présentée de façon cohérente. Le danger ne vient pas seulement du modèle. Il vient de la rencontre entre cette réponse convaincante et nos propres raccourcis mentaux.
+## À essayer
 
-- **Biais d'automatisation :** croire la machine parce qu'elle a répondu vite et proprement.
-- **Biais de confirmation :** retenir surtout ce qui conforte notre idée initiale.
-- **Ancrage :** laisser la première proposition orienter toutes les suivantes.
-- **Anthropomorphisme :** attribuer au modèle une intention, une mémoire ou une compréhension humaine.
-- **Effet d'autorité :** confondre ton affirmatif, vocabulaire technique et preuve.
+**1. Dans l'onglet Chat, faites-lui attaquer votre idée.**
 
-La prudence dépend de l'enjeu. Une idée de titre peut être testée rapidement. Une décision médicale, juridique, financière, de sécurité ou concernant une personne exige des sources compétentes et une validation humaine qualifiée.
+<PromptCopy>Voici mon idée de projet : [votre idée]. Donne-moi les trois raisons les plus sérieuses pour lesquelles elle pourrait ne pas marcher.</PromptCopy>
 
-Utilisez la méthode **Stop — Source — Test — Décision** :
+**2. Demandez-lui ce qui pourrait être faux.**
 
-1. **Stop :** quelle erreur aurait une conséquence réelle ?
-2. **Source :** quelle affirmation vient d'un document fourni, d'une source externe ou du modèle seul ?
-3. **Test :** quelle vérification indépendante peut réfuter la réponse ?
-4. **Décision :** qui assume le choix final et que reste-t-il d'incertain ?
+<PromptCopy>Dans ta réponse, qu'est-ce qui est sûr, qu'est-ce que tu supposes, et qu'est-ce que je devrais vérifier ailleurs ?</PromptCopy>
 
-## Pratique avec Claude
+## Comprendre
 
-Demandez :
+<div class="idea">
+  <div>
+    <h3>Bien écrit ne veut pas dire vrai</h3>
+    <p>Un texte propre, structuré et sûr de lui inspire confiance. Claude écrit toujours ainsi, qu'il ait raison ou non.</p>
+  </div>
+  <SameClaimTwoLooks />
+</div>
 
-```text
-Réponds à cette question en séparant clairement :
-1. les faits présents dans mon contexte ;
-2. tes déductions ;
-3. les informations manquantes ;
-4. les vérifications à réaliser avant de décider.
+<div class="idea">
+  <div>
+    <h3>Plus l'enjeu est grand, plus vous vérifiez</h3>
+    <p>Tout vérifier est impossible. Vérifiez ce qui coûterait cher si c'était faux.</p>
+  </div>
+  <VerifyScale />
+</div>
 
-Question : [insérez une question simple de votre domaine]
-```
+<details class="hint">
+  <summary>Pour aller plus loin</summary>
+  <p><strong>Les mots pour le dire.</strong> Une réponse inventée mais plausible s'appelle une « hallucination ». Notre tendance à croire la machine parce qu'elle répond vite et proprement s'appelle le biais d'automatisation ; celle à ne retenir que ce qui nous arrange, le biais de confirmation.</p>
+  <p><strong>Une source se vérifie aussi.</strong> Claude peut citer une page qui n'existe pas ou qui ne dit pas cela. Ouvrez le lien.</p>
+  <p><strong>Dans votre projet</strong>, la vérification est simple : regardez l'aperçu et essayez vous-même. Ce qui marche sous vos yeux marche.</p>
+  <p>Documentation officielle : <a href="https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations">réduire les hallucinations</a>.</p>
+</details>
 
-Puis ajoutez :
-
-```text
-Cherche maintenant l'argument le plus solide contre ta première réponse.
-```
-
-Le but n'est pas de rendre Claude infaillible, mais de rendre l'incertitude visible.
-
-## Mission commune
-
-Le formateur fournit une réponse courte contenant : deux faits vérifiables, une inférence raisonnable, une affirmation sans source et une recommandation trop sûre.
-
-En binôme :
-
-1. surlignez chaque catégorie avec une couleur ;
-2. appliquez Stop — Source — Test — Décision ;
-3. réécrivez la réponse pour rendre les limites explicites ;
-4. choisissez une source indépendante ou un test concret.
-
-**Critère de réussite :** votre version corrigée ne masque aucune affirmation incertaine derrière un ton affirmatif.
-
-## Livrable
-
-Une fiche d'audit comprenant la réponse annotée, les deux vérifications prioritaires et la décision qui doit rester humaine.
-
-## Notes formateur
-
-- **0–3 min :** montrer une fausse information bien formulée et demander un vote rapide.
-- **3–7 min :** nommer hallucination et cinq biais sans culpabiliser les participants.
-- **7–12 min :** réaliser l'audit en binômes.
-- **12–15 min :** partager une vérification et relier son effort au niveau de risque.
-
-Ne pas résumer par « l'IA ment » : mentir suppose une intention. Préférer « le modèle peut générer une information fausse ». Transition : les mêmes réflexes seront appliqués à toutes les interfaces, surtout lorsqu'elles peuvent modifier des fichiers ou utiliser des outils.
-
-## Défis avancés
-
-- Demandez trois réponses indépendantes, puis vérifiez si leur accord repose réellement sur des sources différentes.
-- Construisez une matrice `probabilité d'erreur × gravité` pour choisir le niveau de contrôle.
-- Créez une grille d'évaluation avant de demander une recommandation afin d'éviter l'ancrage sur la première réponse.
-
-## Variantes
-
-- **Marketing :** audit d'une statistique ou d'une promesse client.
-- **Ressources humaines :** repérage des inférences injustifiées à propos d'un candidat fictif.
-- **Code :** distinguer « le code compile », « les tests passent » et « le besoin est satisfait ».
-
-## Dépannage
-
-- **Claude invente encore des sources :** demandez des liens vérifiables, puis ouvrez-les ; l'existence d'un lien ne garantit pas qu'il soutient l'affirmation.
-- **Le groupe cherche une certitude totale :** reformulez en niveau de confiance, preuve disponible et décision réversible.
-- **Le sujet devient sensible :** arrêtez l'exercice et remplacez-le par un exemple fictif sans donnée personnelle.
-
-## Ressources
-
-- [Réduire les hallucinations — documentation Anthropic](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations)
-- [Principes de transparence d'Anthropic](https://www.anthropic.com/transparency)
-
-## Ouverture
-
-Vous disposez maintenant d'un modèle mental, d'une distinction LLM/agent et d'une méthode de contrôle. La famille B passe à la pratique dans les interfaces Claude.
+<details class="hint">
+  <summary>Notes formateur</summary>
+  <p><strong>Démonstration en direct, cinq minutes.</strong> Deux conversations projetées côte à côte, la même idée : « pourquoi est-ce une bonne idée ? », puis « pourquoi est-ce une mauvaise idée ? ». Les deux réponses sont convaincantes. Demandez à la salle laquelle croire.</p>
+  <p><strong>À faire voir.</strong> La question « qu'est-ce qui pourrait être faux dans ta réponse ? » posée après une réponse très assurée : le ton change tout de suite.</p>
+  <p><strong>Pièges fréquents.</strong> Conclure que Claude est inutilisable : non, on s'en sert comme d'un collègue brillant qu'on relit. Demander « tu es sûr ? » : il s'excuse et change parfois une réponse juste. Mieux vaut demander ce qui pourrait être faux et pourquoi.</p>
+</details>

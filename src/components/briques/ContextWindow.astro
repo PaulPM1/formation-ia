@@ -1,0 +1,77 @@
+---
+// La fenêtre de contexte : Claude ne travaille qu'avec ce qu'il a sous les
+// yeux. Le reste n'existe pas pour lui.
+---
+
+<figure class="ca-figure is-narrow cw">
+  <div class="cw-in">
+    <p class="cw-label">Ce que Claude a sous les yeux</p>
+    <ul>
+      <li>Votre message</li>
+      <li>La conversation en cours</li>
+      <li>Les fichiers que vous lui donnez</li>
+    </ul>
+  </div>
+  <div class="cw-out">
+    <p class="cw-label">Ce qu’il ne voit pas</p>
+    <ul>
+      <li>Ce que vous avez en tête</li>
+      <li>Ce que vous ne lui avez pas montré</li>
+      <li>Le début d’une conversation trop longue</li>
+    </ul>
+  </div>
+</figure>
+
+<style>
+  .cw {
+    display: grid;
+    gap: 1.1rem;
+  }
+
+  .cw-in {
+    padding: 1rem 1.1rem 1.1rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    box-shadow: var(--shadow-block);
+  }
+
+  .cw-out { padding: 0 1.1rem; }
+
+  .cw .cw-label {
+    margin: 0 0 0.6rem;
+    font-size: var(--text-label);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+  }
+
+  .cw-out .cw-label { color: var(--muted); }
+
+  .cw ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .cw ul li {
+    margin: 0;
+    padding: 0.3rem 0.7rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-sm);
+    background: var(--family-accent);
+    font-size: 0.95rem;
+    font-weight: var(--weight-semibold);
+    line-height: 1.35;
+  }
+
+  .cw .cw-out li {
+    border: 2px dashed var(--muted);
+    background: none;
+    color: var(--muted);
+    font-weight: var(--weight-medium);
+  }
+</style>

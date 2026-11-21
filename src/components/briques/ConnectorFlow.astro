@@ -1,0 +1,105 @@
+---
+// Visuel principal de la brique C2 : la question part dans le Chat, Claude
+// passe par le connecteur, et répond avec vos vraies données. La fenêtre est
+// l'application ; le trajet, à droite, est un schéma au style du site.
+import ClaudeApp from './ClaudeApp.astro';
+import Icon from './Icon.astro';
+import StepRail from './StepRail.astro';
+
+const steps = [
+  { label: 'Vous demandez', text: 'Une question sur votre agenda, que Claude ne peut pas connaître tout seul.' },
+  { label: 'Claude passe par le connecteur', text: 'Il va lire votre agenda, avec votre accord et avec vos droits.' },
+  { label: 'Il répond avec vos données', text: 'La réponse vient de votre agenda, pas de sa mémoire.' },
+];
+---
+
+<figure class="ca-figure cnf" data-stepper data-step="3">
+  <div class="cnf-stage">
+    <ClaudeApp mode="chat" sidebar={false} title="Ma journée de demain">
+      <div class="ca-talk">
+        <div class="ca-thread">
+          <p class="ca-you">Qu’est-ce que j’ai de prévu demain ?</p>
+          <div class="ca-claude from-2">
+            <p class="ca-tool"><i></i>Google Calendar <b>List events</b></p>
+            <p class="ca-say from-3">Demain : dentiste à 9 h, puis déjeuner avec Léa à 12 h 30. L’après-midi est libre.</p>
+          </div>
+        </div>
+        <div class="ca-composer">
+          <p class="ca-field"><Icon name="plus" /><span>Reply to Claude</span><Icon name="mic" /></p>
+        </div>
+      </div>
+    </ClaudeApp>
+
+    <div class="cnf-path" aria-hidden="true">
+      <p class="cnf-node cnf-claude">Claude</p>
+      <p class="cnf-link"><i></i></p>
+      <p class="cnf-node cnf-plug">Connecteur</p>
+      <p class="cnf-link"><i></i></p>
+      <p class="cnf-node cnf-tool">Votre agenda</p>
+    </div>
+  </div>
+  <StepRail steps={steps} />
+</figure>
+
+<style>
+  .cnf-stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .cnf :global(.ca-thread) { min-block-size: 15rem; }
+
+  .cnf-path {
+    display: grid;
+    justify-items: center;
+  }
+
+  .cnf-path .cnf-node {
+    inline-size: min(100%, 14rem);
+    margin: 0;
+    padding: 0.8rem 1rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 800;
+    line-height: 1.2;
+    text-align: center;
+    transition: background-color 0.5s ease, box-shadow 0.5s ease;
+  }
+
+  .cnf-path .cnf-link {
+    margin: 0;
+    block-size: 2.4rem;
+    line-height: 0;
+  }
+
+  .cnf-link i {
+    display: block;
+    inline-size: 4px;
+    block-size: 100%;
+    background: var(--ink);
+    transition: opacity 0.5s ease;
+  }
+
+  /* Ce qui travaille à chaque étape s'allume. */
+  .cnf[data-step="1"] .cnf-link i { opacity: 0.2; }
+  .cnf[data-step="1"] .cnf-claude,
+  .cnf[data-step="2"] .cnf-plug,
+  .cnf[data-step="2"] .cnf-tool,
+  .cnf[data-step="3"] .cnf-claude {
+    background: var(--family-accent);
+    box-shadow: var(--shadow-block);
+  }
+
+  @media (max-width: 40rem) {
+    .cnf-stage { grid-template-columns: minmax(0, 1fr); gap: 1.4rem; }
+    .cnf-path { grid-template-columns: 1fr auto 1fr auto 1fr; align-items: center; }
+    .cnf-path .cnf-node { padding: 0.6rem 0.3rem; font-size: 0.9rem; }
+    .cnf-path .cnf-link { inline-size: 1rem; block-size: 4px; }
+    .cnf-link i { inline-size: 100%; }
+  }
+</style>

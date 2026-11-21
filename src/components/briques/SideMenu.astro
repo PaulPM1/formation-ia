@@ -1,0 +1,83 @@
+---
+// Le menu latéral de l'application, pour les maquettes « où cliquer » de la
+// famille C : ClaudeApp fige le menu de l'onglet Code avec « New » allumé, on
+// le recompose donc ici avec l'entrée active et ses repères. Le menu reste
+// visible sur téléphone, sinon les repères ne pointent sur rien.
+import Icon from './Icon.astro';
+
+interface Props {
+  mode?: 'chat' | 'code';
+  active?: string;
+  pins?: Record<string, number>;
+}
+const { mode = 'chat', active, pins = {} } = Astro.props;
+
+const EXTRA: Record<string, string> = {
+  Design: '<path d="M12 4a8 8 0 1 0 0 16c1.2 0 1.8-.9 1.4-1.9-.5-1.2.3-2.1 1.6-2.1H17a3 3 0 0 0 3-3c0-5-3.6-9-8-9z"/><circle cx="8.5" cy="11" r=".6"/><circle cx="11.5" cy="8" r=".6"/><circle cx="15" cy="9.5" r=".6"/>',
+};
+const ICONS: Record<string, 'plus' | 'search' | 'folder' | 'artifacts' | 'clock' | 'plug'> = {
+  New: 'plus', Search: 'search', Projects: 'folder', Artifacts: 'artifacts', Scheduled: 'clock', Plugins: 'plug',
+};
+const items = mode === 'chat'
+  ? ['New', 'Search', 'Projects', 'Artifacts', 'Scheduled', 'Design', 'Plugins']
+  : ['New', 'Search', 'Artifacts', 'Scheduled', 'Plugins'];
+---
+
+<div class="sm-shell">
+  <div class="sm-side">
+    {items.map((item) => (
+      <p class:list={{ 'is-on': item === active }}>
+        {EXTRA[item]
+          ? <svg class="ca-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" set:html={EXTRA[item]} />
+          : <Icon name={ICONS[item]} />}
+        {item}
+        {pins[item] && <span class="ca-pin">{pins[item]}</span>}
+      </p>
+    ))}
+  </div>
+  <div class="sm-main"><slot /></div>
+</div>
+
+<style>
+  .sm-shell {
+    display: grid;
+    grid-template-columns: 10.5rem minmax(0, 1fr);
+    min-block-size: 19rem;
+  }
+
+  .sm-side {
+    display: grid;
+    align-content: start;
+    gap: 0.1rem;
+    padding: 0.6rem 0.45rem;
+    border-inline-end: 1px solid var(--app-line);
+    background: var(--app-side);
+  }
+
+  .sm-side p {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.4rem 0.5rem;
+    border-radius: 7px;
+    color: var(--app-soft);
+    white-space: nowrap;
+  }
+
+  .sm-side .is-on { background: var(--app-on); color: var(--app-text); }
+
+  .sm-side .ca-pin {
+    inset: 50% 0.2rem auto auto;
+    translate: 0 -50%;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    font-size: 0.85rem;
+  }
+
+  .sm-main { min-inline-size: 0; }
+
+  @media (max-width: 40rem) {
+    .sm-shell { grid-template-columns: 8.4rem minmax(0, 1fr); }
+  }
+</style>

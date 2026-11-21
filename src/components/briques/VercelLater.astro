@@ -1,0 +1,58 @@
+---
+// Vercel se relie plus tard, en un clic, avec le compte GitHub. Repris de la
+// capture de l'écran de connexion Vercel (public/faq/mise-en-ligne/).
+import './claude-app.css';
+import EcoIcon from './EcoIcon.astro';
+---
+
+<figure class="ca-figure is-narrow vl">
+  <div class="vl-page" aria-hidden="true">
+    <p class="vl-logo"><EcoIcon name="vercel" /></p>
+    <p class="vl-title">Log in to Vercel</p>
+    <p class="vl-btn">Continue with Google</p>
+    <p class="vl-btn is-on"><EcoIcon name="github" />Continue with GitHub</p>
+    <p class="vl-btn">Continue with Apple</p>
+  </div>
+</figure>
+
+<style>
+  .vl-page {
+    display: grid;
+    justify-items: center;
+    gap: 0.55rem;
+    padding: 1.2rem 1.2rem 1.6rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    background: #000;
+    box-shadow: var(--shadow-block);
+    color: #fff;
+    font-family: var(--app-sans);
+  }
+
+  .vl .vl-page p { margin: 0; font-size: 0.85rem; line-height: 1.3; }
+  .vl-logo { justify-self: start; }
+  .vl-logo :global(.eco-icon) { inline-size: 1.2rem; block-size: 1.2rem; }
+  .vl .vl-page .vl-title { margin-block-end: 0.5rem; font-size: 1.3rem; font-weight: 600; }
+
+  .vl-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    inline-size: min(100%, 17rem);
+    padding: 0.5rem;
+    border: 1px solid #333;
+    border-radius: 6px;
+    background: #0a0a0a;
+    color: #888;
+    font-weight: 500;
+  }
+
+  .vl-btn.is-on {
+    color: #fff;
+    outline: 3px solid var(--brick-yellow);
+    outline-offset: 3px;
+  }
+
+  .vl-btn :global(.eco-icon) { inline-size: 1.1rem; block-size: 1.1rem; }
+</style>

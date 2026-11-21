@@ -9,20 +9,64 @@ type: demonstration
 platforms:
   - commun
 prerequisites: []
-status: en-cours
+status: a-relire
 owner: matthieu
-learningObjective: null
-expectedOutcome: null
+learningObjective: "Dans l'onglet Chat, obtenir un artefact, le faire changer en répondant à Claude, et lui faire lire un fichier."
+expectedOutcome: "Un artefact à vous, modifié au moins une fois à votre demande, que vous retrouvez dans le menu Artifacts."
 ---
+
+import ChatArtifactLoop from '../../../components/briques/ChatArtifactLoop.astro';
+import ChatMenu from '../../../components/briques/ChatMenu.astro';
+import PromptCopy from '../../../components/briques/PromptCopy.astro';
+import TroisProjets from '../../../components/briques/TroisProjets.astro';
 
 ## L'essentiel
 
-À écrire.
+Dans l'onglet **Chat**, vous parlez à Claude. Quand il fabrique quelque chose, l'objet s'affiche à côté de la conversation : c'est un **artefact**.
+
+<ChatArtifactLoop />
 
 ## À essayer
 
-À écrire.
+**1. Demandez un artefact, sur un sujet à vous.**
+
+<PromptCopy>Crée un artefact : un quiz de cinq questions sur la cuisine française, une question à la fois.</PromptCopy>
+
+**2. Répondez pour le faire changer.**
+
+<PromptCopy>Ajoute le score à la fin et des couleurs plus gaies.</PromptCopy>
+
+**3. Joignez un fichier avec le bouton +, et faites-le travailler dessus.**
+
+<PromptCopy>Résume ce document en cinq points, puis dis-moi ce qui manque.</PromptCopy>
 
 ## Comprendre
 
-À écrire.
+### Le menu de Chat
+
+<ChatMenu />
+
+<div class="idea">
+  <div>
+    <h3>« Projet » : un mot, trois sens</h3>
+    <p>Un Project range vos conversations. Votre projet, c'est votre idée. Elle se construit dans un dossier, côté Code.</p>
+  </div>
+  <TroisProjets />
+</div>
+
+Un artefact reste dans Claude. Pour construire un vrai projet sur votre ordinateur, passez à l'onglet Code : [Claude Code](/briques/b2/).
+
+<details class="hint">
+  <summary>Pour aller plus loin</summary>
+  <p><strong>Quand la réponse déçoit.</strong> Dites ce qui ne va pas, dans la même conversation : Claude garde tout ce qui précède. Changez de conversation quand vous changez de sujet.</p>
+  <p><strong>Quand ouvrir un Project.</strong> Dès que vous répétez les mêmes consignes ou rejoignez les mêmes documents. Vous les déposez une fois, toutes les conversations du Project les retrouvent.</p>
+  <p>Documentation officielle : <a href="https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-i-use-them">les artefacts</a> et <a href="https://support.claude.com/en/articles/9517075-what-are-projects">les Projects</a>.</p>
+</details>
+
+<details class="hint">
+  <summary>Notes formateur</summary>
+  <p><strong>Démonstration en direct, dix minutes.</strong> Demandez à la salle un sujet de quiz, écrivez la demande, laissez l'artefact apparaître, jouez une question. Puis faites dicter une correction par quelqu'un : c'est la réponse, pas une nouvelle conversation, qui fait changer l'objet.</p>
+  <p><strong>À faire voir.</strong> Une photo ou un PDF joint avec le bouton +, puis une question dessus. L'entrée Artifacts du menu, où l'on retrouve l'objet. Un Project déjà préparé, avec une consigne et un document : ouvrez deux conversations et montrez que les deux les connaissent.</p>
+  <p><strong>Chacun le fait, quinze minutes.</strong> Tout le monde repart avec un artefact modifié au moins une fois. Passez dans les rangs : celui qui n'a pas encore répondu à Claude n'a pas fini.</p>
+  <p><strong>Pièges fréquents.</strong> Recommencer une conversation à chaque retouche. Demander dix changements d'un coup. Confondre Project et projet personnel : montrez le schéma. Si Claude répond par du texte au lieu d'un artefact, faites ajouter « fais-en un artefact ».</p>
+</details>

@@ -1,0 +1,23 @@
+---
+// Avant de partager largement : Claude relit le projet comme un attaquant et
+// corrige le point le plus grave.
+import ClaudeApp from './ClaudeApp.astro';
+---
+
+<figure class="ca-figure is-narrow ar">
+  <ClaudeApp sidebar={false} title="Page recettes de famille">
+    <div class="ca-thread">
+      <p class="ca-you">Relis mon projet comme le ferait un attaquant et corrige le point le plus grave.</p>
+      <div class="ca-claude">
+        <p class="ca-tool"><i></i>Read <b>12 files</b></p>
+        <p class="ca-say">Trois points à revoir. Le plus grave : le formulaire « Ajouter une recette » accepte n’importe quel texte, sans vérification. Je le corrige.</p>
+        <p class="ca-tool"><i></i>Edited <b>2 files</b></p>
+        <p class="ca-say">C’est corrigé. Voulez-vous que je traite les deux autres ?</p>
+      </div>
+    </div>
+  </ClaudeApp>
+</figure>
+
+<style>
+  .ar { margin-block: 1rem 2rem; }
+</style>

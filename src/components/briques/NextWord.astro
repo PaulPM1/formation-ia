@@ -1,0 +1,125 @@
+---
+// Visuel principal de la brique A1 : Claude prédit la suite d'un texte, un
+// morceau après l'autre, sans jamais vérifier.
+import './claude-app.css';
+import StepRail from './StepRail.astro';
+
+const steps = [
+  { label: 'Votre texte', text: 'Claude reçoit votre texte. Sa seule tâche : écrire la suite.' },
+  { label: 'Il pèse les suites', text: 'Pour le mot suivant, il estime ce qui est le plus probable. Sydney n’est pas loin derrière.' },
+  { label: 'Il en choisit une', text: 'Le plus souvent la bonne. Parfois la mauvaise, écrite avec la même assurance.' },
+  { label: 'Il recommence', text: 'Mot après mot, jusqu’à la fin de la réponse. À aucun moment il ne vérifie.' },
+];
+---
+
+<figure class="ca-figure is-narrow nw" data-stepper data-step="4">
+  <div class="nw-board" aria-hidden="true">
+    <p class="nw-label">Le texte</p>
+    <p class="nw-line">
+      La capitale de l’Australie est
+      <b class="from-3">Canberra</b><span class="from-4">, une</span><span class="from-4"> ville</span><span class="from-4"> construite</span><span class="from-4"> pour</span><span class="from-4"> ce</span><span class="from-4"> rôle.</span><i class="nw-caret"></i>
+    </p>
+    <p class="nw-label nw-next">Le mot suivant ?</p>
+    <ul class="nw-cands">
+      <li class="is-top"><span>Canberra</span><i style="--w: 58%"></i></li>
+      <li><span>Sydney</span><i style="--w: 33%"></i></li>
+      <li><span>Melbourne</span><i style="--w: 9%"></i></li>
+    </ul>
+  </div>
+  <StepRail steps={steps} />
+</figure>
+
+<style>
+  .nw-board {
+    padding: 1.4rem 1.5rem 1.5rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    box-shadow: var(--shadow-block);
+  }
+
+  .nw .nw-label {
+    margin: 0 0 0.4rem;
+    color: var(--muted);
+    font-size: var(--text-label);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+  }
+
+  .nw .nw-line {
+    min-block-size: 3.2em;
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 1rem + 1.6vw, 1.9rem);
+    font-weight: var(--weight-heading);
+    line-height: 1.3;
+  }
+
+  .nw-line b {
+    padding: 0 0.3rem;
+    border-radius: var(--radius-sm);
+    background: var(--family-accent);
+    animation: nw-in 0.4s ease both;
+  }
+
+  .nw-line span { animation: nw-in 0.3s ease both; }
+  .nw-line span:nth-of-type(2) { animation-delay: 0.25s; }
+  .nw-line span:nth-of-type(3) { animation-delay: 0.5s; }
+  .nw-line span:nth-of-type(4) { animation-delay: 0.75s; }
+  .nw-line span:nth-of-type(5) { animation-delay: 1s; }
+  .nw-line span:nth-of-type(6) { animation-delay: 1.25s; }
+
+  .nw-caret {
+    display: inline-block;
+    inline-size: 0.14em;
+    block-size: 1em;
+    margin-inline-start: 0.15em;
+    background: var(--ink);
+    vertical-align: -0.12em;
+    animation: nw-blink 1s steps(2) infinite;
+  }
+
+  .nw .nw-next { margin-block-start: 1.2rem; }
+
+  .nw .nw-cands {
+    display: grid;
+    gap: 0.45rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .nw .nw-cands li {
+    display: grid;
+    grid-template-columns: 7.5rem minmax(0, 1fr);
+    align-items: center;
+    gap: 0.8rem;
+    margin: 0;
+    font-weight: var(--weight-semibold);
+  }
+
+  .nw-cands i {
+    inline-size: var(--w);
+    block-size: 1.1rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-sm);
+    background: var(--paper);
+    transition: inline-size 0.6s ease;
+  }
+
+  /* Étape 1 : rien n'est encore pesé. Dès l'étape 3 : le choix est marqué. */
+  .nw[data-step="1"] .nw-next,
+  .nw[data-step="1"] .nw-cands { visibility: hidden; }
+  .nw[data-step="1"] .nw-cands i { inline-size: 0; }
+  .nw:not([data-step="1"], [data-step="2"]) .is-top i { background: var(--family-accent); }
+  .nw[data-step="4"] .nw-cands { opacity: 0.35; }
+
+  @keyframes nw-in {
+    from { opacity: 0; transform: translateY(0.3rem); }
+  }
+
+  @keyframes nw-blink {
+    50% { opacity: 0; }
+  }
+</style>

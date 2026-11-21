@@ -1,110 +1,79 @@
 ---
 id: d3
-title: "Front-end et déploiement"
+title: "Mettre son projet en ligne"
 family: d
 order: 14
 priority: bonus
-durationMinutes: 15
+durationMinutes: 10
 type: demonstration
 platforms:
   - commun
 prerequisites:
-  - d2-bis
+  - d2
 status: a-relire
 owner: matthieu
-learningObjective: "Comprendre ce qu'est un déploiement et la boucle repo connecté, push, mise à jour automatique du site en ligne."
-expectedOutcome: "Le participant ouvre son projet sur une vraie URL depuis son téléphone et vérifie qu'un changement demandé à Claude apparaît en ligne après un push."
+learningObjective: "Faire mettre son projet en ligne par Claude et comprendre le trajet : ordinateur, GitHub, Vercel, une adresse."
+expectedOutcome: "Une adresse qui ouvre votre projet sur un téléphone, et qui se met à jour après chaque sauvegarde."
 ---
 
-## Cap
+import AutoUpdate from '../../../components/briques/AutoUpdate.astro';
+import LocalVsOnline from '../../../components/briques/LocalVsOnline.astro';
+import OnlineJourney from '../../../components/briques/OnlineJourney.astro';
+import PromptCopy from '../../../components/briques/PromptCopy.astro';
 
-**Objectif :** passer de « ça marche chez moi » à une adresse web que n'importe qui peut ouvrir.
+## L'essentiel
 
-- Durée cible : 15 minutes.
-- Prérequis : D2-bis (compte Vercel relié à GitHub, projet versionné en ligne).
-- Résultat attendu : votre projet est en ligne, et chaque push le met à jour automatiquement.
+Votre projet tourne d'abord sur votre ordinateur. Une fois en ligne, il a une adresse que vous pouvez partager.
 
-Le déploiement geste par geste, en images : [Questions fréquentes, mettre votre site en ligne](/faq/mise-en-ligne/).
+<OnlineJourney />
 
-## Concept durable
+## À essayer
 
-Le **front-end**, c'est ce que le visiteur voit : la page, les boutons, les textes. Tant que le projet tourne en localhost, vous êtes la seule personne au monde à pouvoir le voir. Le **déploiement** l'installe sur un serveur allumé en permanence, avec une URL que tout le monde peut ouvrir.
+**1. Demandez la mise en ligne.**
 
-**Vercel** fait ce travail à partir de votre repo GitHub, et son offre gratuite suffit pour les projets personnels. Le vrai concept à retenir est la boucle :
+<PromptCopy>Mets mon projet en ligne.</PromptCopy>
 
-```text
-repo connecté à Vercel  →  chaque push  →  le site se met à jour tout seul
-```
+Claude vous guide. Les écrans de Vercel, un par un : [guide de mise en ligne](/faq/mise-en-ligne/).
 
-Une fois cette boucle en place, mettre son site à jour ne demande plus rien : vous demandez un changement à Claude, il sauvegarde et pousse, et quelques secondes plus tard la version en ligne a changé. Chaque push reçoit en plus sa propre adresse de prévisualisation, l'URL principale restant celle de la version stable.
+**2. Ouvrez l'adresse sur votre téléphone.**
 
-Une conséquence à garder en tête : ce qui est déployé est **public**. Tout ce que contient le front-end est visible par n'importe qui, code compris. Une clé API n'a donc jamais sa place dans un front-end (D4 en fait un réflexe).
+**3. Changez quelque chose, sauvegardez, puis rechargez l'adresse.**
 
-## Pratique avec Claude
+<PromptCopy>Change le titre de la page d'accueil, puis sauvegarde sur GitHub.</PromptCopy>
 
-La mise en ligne se fait une seule fois, dans l'interface Vercel : importer le repo, cliquer sur Deploy, obtenir l'URL. Ensuite, tout passe par Claude :
+## Comprendre
 
-```text
-Change le titre de la page d'accueil, sauvegarde et envoie en ligne.
-```
+<div class="idea">
+  <div>
+    <h3>Aperçu ou en ligne</h3>
+    <p>Une adresse qui commence par <code>localhost</code> ne marche que sur votre ordinateur. Pour la partager, il faut mettre en ligne.</p>
+  </div>
+  <LocalVsOnline />
+</div>
 
-Rechargez la page publique : le nouveau titre est là. C'est toute la boucle du déploiement continu, vécue en une minute.
+<div class="idea">
+  <div>
+    <h3>Ensuite, tout se fait seul</h3>
+    <p>Après la première mise en ligne, chaque sauvegarde sur GitHub met le site à jour.</p>
+  </div>
+  <AutoUpdate />
+</div>
 
-## Mission commune
+### Tout n'a pas besoin d'être en ligne
 
-1. Importez votre projet dans Vercel et déployez-le.
-2. Ouvrez l'URL sur votre téléphone, puis envoyez-la à votre voisin.
-3. Demandez à Claude un changement visible (titre, couleur, texte), laissez-le pousser, et vérifiez que la version en ligne se met à jour.
+Un outil que vous utilisez seul, sur votre ordinateur, peut y rester. La mise en ligne sert quand d'autres personnes doivent y accéder.
 
-**Critère de réussite :** votre projet s'ouvre sur un appareil qui n'est pas le vôtre, et le changement demandé y est visible.
+<details class="hint">
+  <summary>Pour aller plus loin</summary>
+  <p><strong>Vercel.</strong> C'est un service qui héberge votre projet : il le garde allumé pour que l'adresse réponde à toute heure. Vous vous y connectez avec votre compte GitHub, sans nouveau mot de passe.</p>
+  <p><strong>Si la mise en ligne échoue.</strong> Vercel affiche un message d'erreur : copiez-le, collez-le à Claude et demandez-lui de corriger. Il sauvegarde, Vercel réessaie.</p>
+  <p><strong>Les mots que Claude emploiera.</strong> <em>Déployer</em>, c'est mettre en ligne. Le <em>front</em> est ce que le visiteur voit, le <em>back</em> ce qui tourne derrière.</p>
+  <p>Documentation officielle : <a href="https://vercel.com/docs/getting-started-with-vercel">débuter avec Vercel</a>.</p>
+</details>
 
-## Livrable
-
-L'URL publique de votre projet, ouverte sur un téléphone, avec au moins une mise à jour passée par la boucle push et déploiement automatique.
-
-## Notes formateur
-
-- **0–3 min :** rappel front-end et localhost (D1), puis le concept de la boucle.
-- **3–8 min :** démonstration complète (scénario ci-dessous).
-- **8–14 min :** mission commune ; le moment fort est l'URL qui circule de téléphone en téléphone, le laisser vivre.
-- **14–15 min :** la mise en garde « déployé = public » comme pont vers D4.
-
-Ne pas dériver vers les noms de domaine personnalisés, les DNS ou les offres payantes : hors périmètre. Si un build échoue en direct, en faire une occasion : lire l'erreur avec la salle et demander à Claude de la corriger, c'est le vrai flux de travail. Si le temps manque, basculer la mission en démonstration seule et donner les étapes en ressource.
-
-## Défis avancés
-
-- Explorez les adresses de prévisualisation : retrouvez l'URL propre au dernier push et comparez-la avec l'URL principale.
-- Demandez à Claude à quoi serviraient les variables d'environnement dans Vercel, et dans quel cas votre projet en aurait besoin.
-- Cassez volontairement le build (supprimez un fichier nécessaire), lisez l'erreur dans Vercel, puis faites corriger et redéployer par Claude.
-
-## Variantes
-
-- **Sans projet à déployer :** créer avec Claude une page unique (une carte de visite web, par exemple) en deux minutes, puis la déployer : la boucle s'apprend aussi bien sur un projet minuscule.
-- **Format express :** démonstration seule, puis distribuer les étapes d'import à refaire chez soi.
-
-## Dépannage
-
-- **« Le build a échoué » :** copiez le message d'erreur affiché par Vercel et donnez-le à Claude : « le déploiement échoue avec cette erreur, corrige et renvoie en ligne ».
-- **« Le site affiche l'ancienne version » :** vérifiez que le push est bien parti (demandez à Claude), puis rechargez la page en forçant le cache.
-- **« Vercel ne trouve pas mon repo » :** l'autorisation d'accès aux repos n'a pas été accordée lors du setup ; reprendre le point correspondant de D2-bis.
-
-## Ressources
-
-- [Débuter avec Vercel (documentation officielle)](https://vercel.com/docs/getting-started-with-vercel)
-- [Les déploiements sur Vercel](https://vercel.com/docs/deployments)
-
-## Ouverture
-
-Votre projet est en ligne, public, accessible au monde entier. C'est exactement pour cela que la brique suivante existe : les réflexes de sécurité qui évitent que cette visibilité se retourne contre vous (D4).
-
-## Scénario de démonstration
-
-Point de départ : le projet du fil rouge, versionné et poussé sur GitHub (D2-bis), et un compte Vercel connecté. Actions montrées : l'import du repo dans Vercel, le premier déploiement, l'ouverture de l'URL sur un téléphone, puis un changement demandé à Claude qui apparaît en ligne sans toucher à Vercel. Résultat visible : le même projet, sur l'écran du poste et sur un téléphone, qui se met à jour après un simple push.
-
-## Déroulé de démonstration
-
-1. Dans Vercel : Add New Project, choisir le repo, Deploy. Attendre la fin du build.
-2. Ouvrir l'URL fournie sur le poste, puis la scanner ou la taper sur un téléphone.
-3. Dans Claude Code : « Change le titre de la page d'accueil, sauvegarde et envoie en ligne. »
-4. Montrer le déploiement qui se déclenche seul dans Vercel.
-5. Recharger la page sur le téléphone : le titre a changé. Conclure sur la boucle repo, push, mise à jour.
+<details class="hint">
+  <summary>Notes formateur</summary>
+  <p><strong>Démonstration en direct, cinq minutes.</strong> Mettez le projet de démonstration en ligne devant le groupe, puis affichez l'adresse en grand : chacun l'ouvre sur son téléphone. Changez une couleur, sauvegardez, faites recharger.</p>
+  <p><strong>À faire voir.</strong> Les deux adresses côte à côte : celle de l'aperçu, qui ne marche que sur votre ordinateur, et celle du site.</p>
+  <p><strong>Pièges fréquents.</strong> Envoyer à quelqu'un une adresse en <code>localhost</code>. Vouloir tout mettre en ligne : un outil personnel ou un projet qui a besoin de l'ordinateur lui-même reste local. Vercel qui ne voit pas le projet : l'accès à GitHub n'a pas été accordé, recommencer la connexion en l'acceptant.</p>
+</details>

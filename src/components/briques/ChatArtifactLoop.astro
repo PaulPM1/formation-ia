@@ -1,0 +1,148 @@
+---
+// Visuel principal de la brique B1 : dans l'onglet Chat, on joint un fichier,
+// Claude fabrique un artefact à côté de la conversation, on répond, il change.
+import ClaudeApp from './ClaudeApp.astro';
+import Icon from './Icon.astro';
+import StepRail from './StepRail.astro';
+
+const steps = [
+  { label: 'Vous demandez', text: 'Vous écrivez avec vos mots. Le bouton + joint un fichier : photo, PDF, tableau.' },
+  { label: 'Claude fabrique', text: 'L’objet s’affiche à côté de la conversation : c’est un artefact.' },
+  { label: 'Vous répondez', text: 'Vous dites ce qui manque. Vous ne recommencez pas : vous répondez.' },
+  { label: 'L’artefact change', text: 'Claude modifie l’objet sous vos yeux. Et ainsi de suite.' },
+];
+---
+
+<figure class="ca-figure cal" data-stepper data-step="4">
+  <ClaudeApp mode="chat" sidebar={false} title="Quiz des recettes">
+    <div class="ca-split">
+      <div class="ca-talk">
+        <div class="ca-thread">
+          <div class="ca-you">
+            <p class="cal-file"><Icon name="file" />recettes-mamie.pdf</p>
+            <p>Fais-moi un quiz à partir de ces recettes.</p>
+          </div>
+          <div class="ca-claude from-2">
+            <p class="ca-say">Voici un quiz tiré de vos recettes.</p>
+            <p class="cal-card"><Icon name="artifacts" /><span><b>Quiz des recettes</b><i>Interactive artifact</i></span></p>
+          </div>
+          <p class="ca-you from-3">Ajoute le score, et des couleurs plus gaies.</p>
+          <div class="ca-claude from-4">
+            <p class="ca-say">C’est fait : le score s’affiche en haut.</p>
+          </div>
+        </div>
+        <div class="ca-composer">
+          <p class="ca-field"><Icon name="plus" /><span>Reply to Claude</span><Icon name="mic" /></p>
+        </div>
+      </div>
+
+      <div class="ca-pane from-2">
+        <p class="ca-pane-bar"><Icon name="artifacts" /><span>Quiz des recettes</span></p>
+        <div class="cal-quiz ca-enter">
+          <p class="cal-top"><span>Question 2 sur 5</span><b class="from-4">Score : 1</b></p>
+          <p class="cal-question">Quel fromage dans le gratin de mamie ?</p>
+          <p class="cal-option">Emmental</p>
+          <p class="cal-option is-picked">Comté</p>
+          <p class="cal-option">Chèvre</p>
+          <p class="cal-next">Suivant</p>
+        </div>
+      </div>
+    </div>
+  </ClaudeApp>
+  <StepRail steps={steps} />
+</figure>
+
+<style>
+  /* Avant le premier artefact, la conversation occupe toute la fenêtre. */
+  .cal[data-step="1"] .ca-talk { grid-column: 1 / -1; }
+
+  .cal div.ca-you { display: grid; gap: 0.4rem; }
+
+  .cal .cal-file,
+  .cal .cal-card {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.6rem;
+    border: 1px solid var(--app-line);
+    border-radius: 8px;
+    background: var(--app-bg);
+    color: var(--app-soft);
+  }
+
+  .cal .cal-card {
+    justify-self: start;
+    padding: 0.55rem 0.9rem 0.55rem 0.7rem;
+    border-radius: 10px;
+    background: var(--app-raise);
+    font-size: 1rem;
+  }
+
+  .cal-card span { display: grid; font-size: 0.8rem; }
+  .cal-card b { color: var(--app-text); font-weight: 600; }
+  .cal-card i { color: var(--app-muted); font-size: 0.72rem; font-style: normal; }
+
+  /* L'artefact : un objet à part, clair, sans rapport avec le thème de
+     l'application. */
+  .cal-quiz {
+    display: grid;
+    align-content: start;
+    gap: 0.5rem;
+    padding: 1.2rem 1.2rem;
+    background: #fff;
+    color: #1d1d1b;
+    transition: background-color 0.7s ease;
+  }
+
+  .cal .cal-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-block-size: 1.6rem;
+    color: #6b6a65;
+    font-size: 0.74rem;
+  }
+
+  .cal-top b {
+    padding: 0.15rem 0.6rem;
+    border-radius: 99px;
+    background: #1d1d1b;
+    color: #fff;
+  }
+
+  .cal .cal-question {
+    margin-block-end: 0.3rem;
+    font-family: var(--app-serif);
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .cal .cal-option {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d8d6cf;
+    border-radius: 8px;
+    font-size: 0.86rem;
+    transition: background-color 0.7s ease, border-color 0.7s ease;
+  }
+
+  .cal .cal-option.is-picked { border-color: #1d1d1b; font-weight: 600; }
+
+  .cal .cal-next {
+    justify-self: end;
+    margin-block-start: 0.3rem;
+    padding: 0.35rem 0.9rem;
+    border-radius: 8px;
+    background: #1d1d1b;
+    color: #fff;
+    font-weight: 600;
+    transition: background-color 0.7s ease;
+  }
+
+  /* Étape 4 : la réponse se voit, les couleurs arrivent avec le score. */
+  .cal[data-step="4"] .cal-quiz { background: #fff3d6; }
+  .cal[data-step="4"] .cal-option { border-color: #f0c36a; background: #fffaf0; }
+  .cal[data-step="4"] .cal-option.is-picked { border-color: #2f9e6b; background: #c9f0d8; }
+  .cal[data-step="4"] .cal-next,
+  .cal[data-step="4"] .cal-top b { background: #e4572e; }
+</style>

@@ -14,7 +14,7 @@ async function listFiles(directory: string, extension: string) {
 }
 
 const REMOVED_TARGETS =
-  /\/briques\/(b0|b1|b2|b3|b4|b4-bis|e4)\b|\/atelier\/projets\/|\/presenter\/(b|e4)|bloc-b-assistant\.zip/;
+  /\/briques\/(b0|b3|b4|b4-bis|e4)\b|\/atelier\/projets\/|\/presenter\/(b|e4)|bloc-b-assistant\.zip/;
 
 test('aucun lien interne ne pointe vers une page supprimée', async () => {
   const files = (await Promise.all([

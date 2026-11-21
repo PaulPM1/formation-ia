@@ -1,0 +1,70 @@
+---
+// Un projet passe d'un mode à l'autre : on réfléchit dans Chat, on construit
+// dans Code, on revient à Chat pour une question.
+---
+
+<figure class="ca-figure is-narrow mp">
+  <ol>
+    <li><b>Chat</b><span>Vous réfléchissez à votre idée.</span></li>
+    <li class="is-main"><b>Code</b><span>Claude construit le projet. La plus grande partie du temps.</span></li>
+    <li><b>Design</b><span>Vous soignez l’allure, si le projet en a besoin.</span></li>
+  </ol>
+</figure>
+
+<style>
+  .mp ol {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1fr;
+    gap: 1.4rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .mp ol li {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: 0.3rem;
+    margin: 0;
+    padding: 0.7rem 0.8rem 0.8rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    font-size: 0.9rem;
+    line-height: 1.35;
+  }
+
+  .mp ol .is-main {
+    background: var(--family-accent);
+    box-shadow: var(--shadow-block);
+  }
+
+  .mp li b {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: var(--weight-display);
+  }
+
+  /* Flèche vers le mode suivant */
+  .mp li:not(:last-child)::after {
+    position: absolute;
+    inset: 50% -1.05rem auto auto;
+    inline-size: 0.5rem;
+    block-size: 0.5rem;
+    border: solid var(--ink);
+    border-width: 2px 2px 0 0;
+    rotate: 45deg;
+    translate: 0 -50%;
+    content: "";
+  }
+
+  @media (max-width: 30rem) {
+    .mp ol { grid-template-columns: minmax(0, 1fr); }
+    .mp li:not(:last-child)::after {
+      inset: auto auto -1.05rem 50%;
+      rotate: 135deg;
+      translate: -50% 0;
+    }
+  }
+</style>

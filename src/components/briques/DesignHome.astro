@@ -1,0 +1,125 @@
+---
+// La page d'accueil de Design, reprise de la capture de l'application : le
+// menu de l'onglet Chat, les tuiles « Make something new », puis les designs
+// déjà faits.
+import ClaudeApp from './ClaudeApp.astro';
+import SideMenu from './SideMenu.astro';
+
+const tiles = [
+  { name: 'Slides', tone: 'slides', pin: 2 },
+  { name: 'Design', tone: 'design', pin: 3 },
+  { name: 'Design in codebase', tone: 'code' },
+  { name: 'Design System', tone: 'design' },
+  { name: 'Whiteboard', tone: 'board' },
+];
+---
+
+<figure class="ca-figure dsm">
+  <ClaudeApp mode="chat" sidebar={false} title="Design">
+    <SideMenu mode="chat" active="Design" pins={{ Design: 1 }}>
+      <div class="dsm-main">
+        <p class="dsm-title">Design</p>
+        <p class="dsm-tabs"><span class="is-on">All</span><span>Yours</span><span>Shared with you</span></p>
+        <p class="dsm-label">Make something new</p>
+        <div class="dsm-tiles">
+          {tiles.map((tile) => (
+            <p class={`dsm-tile is-${tile.tone}`}><i></i><span>{tile.name}</span>{tile.pin && <b class="ca-pin">{tile.pin}</b>}</p>
+          ))}
+        </div>
+        <div class="dsm-cards">
+          <p><i></i><span>Recettes de famille</span><em>Design</em></p>
+          <p><i></i><span>Menu de Noël</span><em>Slides</em></p>
+        </div>
+      </div>
+    </SideMenu>
+  </ClaudeApp>
+  <ol class="ca-legend">
+    <li><span>Dans l’onglet Chat, ouvrez <b>Design</b>.</span></li>
+    <li><span><b>Slides</b> : une présentation, exportable en PowerPoint.</span></li>
+    <li><span><b>Design</b> : une page de site, un logo, un écran d’application.</span></li>
+  </ol>
+</figure>
+
+<style>
+  .dsm-main {
+    display: grid;
+    align-content: start;
+    gap: 0.8rem;
+    padding: 1.1rem 1.3rem 1.3rem;
+  }
+
+  .dsm .dsm-title { font-family: var(--app-serif); font-size: 1.35rem; }
+
+  .dsm-tabs { display: flex; gap: 0.3rem; color: var(--app-soft); }
+  .dsm-tabs span { padding: 0.2rem 0.6rem; border-radius: 6px; }
+  .dsm-tabs .is-on { background: var(--app-on); color: var(--app-text); }
+
+  .dsm .dsm-label { color: var(--app-muted); font-size: 0.72rem; }
+
+  .dsm-tiles {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 6.5rem));
+    gap: 0.6rem;
+  }
+
+  .dsm-tile {
+    position: relative;
+    display: grid;
+    gap: 0.35rem;
+    min-inline-size: 0;
+  }
+
+  .dsm-tile i {
+    aspect-ratio: 3 / 2;
+    border-radius: 8px;
+    background: #3a2ea0;
+  }
+
+  .dsm-tile.is-slides i { background: #7a3413; }
+  .dsm-tile.is-code i { background: var(--app-raise); border: 1px solid var(--app-line); }
+  .dsm-tile.is-board i { background: #6b1f3a; }
+
+  .dsm-tile span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .dsm .ca-pin {
+    inset: -0.6rem auto auto -0.6rem;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    font-size: 0.85rem;
+  }
+
+  .dsm-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.8rem;
+    margin-block-start: 0.4rem;
+  }
+
+  .dsm-cards p {
+    display: grid;
+    gap: 0.15rem;
+    padding-block-end: 0.6rem;
+    border: 1px solid var(--app-line);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .dsm-cards i {
+    block-size: 3.4rem;
+    margin-block-end: 0.4rem;
+    background: #2c2360;
+  }
+
+  .dsm-cards span, .dsm-cards em { padding-inline: 0.7rem; }
+  .dsm-cards em { color: var(--app-muted); font-style: normal; font-size: 0.72rem; }
+
+  @media (max-width: 40rem) {
+    .dsm-main { padding: 0.9rem 0.7rem 1rem 1rem; }
+    .dsm-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.8rem 0.6rem; }
+    .dsm-tile:nth-child(n + 3), .dsm-cards { display: none; }
+  }
+</style>

@@ -1,0 +1,31 @@
+---
+// Les trois outils que Claude installe, et à quoi chacun sert.
+import './claude-app.css';
+import './eco.css';
+import EcoIcon from './EcoIcon.astro';
+---
+
+<figure class="ca-figure is-narrow st">
+  <div class="st-list">
+    <div class="eco-node"><EcoIcon name="save" /><div><p class="eco-name">Git</p><p class="eco-sub">garde l’historique de votre projet</p></div></div>
+    <div class="eco-node"><EcoIcon name="screen" /><div><p class="eco-name">Node.js</p><p class="eco-sub">fait tourner le projet et son aperçu</p></div></div>
+    <div class="eco-node"><EcoIcon name="github" /><div><p class="eco-name">GitHub CLI</p><p class="eco-sub">relie Claude à votre compte GitHub</p></div></div>
+  </div>
+</figure>
+
+<style>
+  .st-list {
+    display: grid;
+    gap: 0.9rem;
+    padding-inline-end: 6px;
+  }
+
+  .st :global(.eco-node) {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    justify-items: start;
+    gap: 0.9rem;
+    padding: 0.7rem 1rem;
+    text-align: start;
+  }
+</style>

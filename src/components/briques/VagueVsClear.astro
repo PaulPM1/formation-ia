@@ -1,0 +1,166 @@
+---
+// Visuel principal de la brique E1 : la même envie, demandée de façon floue
+// puis de façon claire, et les deux résultats dans l'aperçu.
+import ClaudeApp from './ClaudeApp.astro';
+---
+
+<figure class="ca-figure vc">
+  <div class="vc-pair">
+    <div>
+      <ClaudeApp sidebar={false} title="Demande floue">
+        <div class="vc-col">
+          <div class="ca-thread">
+            <p class="ca-you">Fais-moi un site de recettes.</p>
+          </div>
+          <div class="ca-pane">
+            <p class="ca-pane-bar"><span>Preview</span><em>localhost:3000</em></p>
+            <div class="vc-page is-vague">
+              <p class="vc-page-title">Mon site de recettes</p>
+              <p class="vc-row"><i></i>Recette 1</p>
+              <p class="vc-row"><i></i>Recette 2</p>
+              <p class="vc-row"><i></i>Recette 3</p>
+            </div>
+          </div>
+        </div>
+      </ClaudeApp>
+      <p class="vc-cap"><b>Floue :</b> Claude devine, le résultat est passe-partout.</p>
+    </div>
+    <div>
+      <ClaudeApp sidebar={false} title="Demande claire">
+        <div class="vc-col">
+          <div class="ca-thread">
+            <p class="ca-you"><span class="vc-but">Je veux garder les recettes de ma famille.</span> <span class="vc-ctx">Mes cousins les liront sur leur téléphone.</span> <span class="vc-ok">C’est réussi si on trouve le gratin de mamie en deux gestes.</span></p>
+          </div>
+          <div class="ca-pane">
+            <p class="ca-pane-bar"><span>Preview</span><em>localhost:3000</em></p>
+            <div class="vc-page">
+              <p class="vc-page-title">Recettes de famille</p>
+              <p class="vc-search">Chercher une recette</p>
+              <p class="vc-row"><i></i>Gratin de mamie</p>
+              <p class="vc-row"><i></i>Tarte aux pommes</p>
+            </div>
+          </div>
+        </div>
+      </ClaudeApp>
+      <p class="vc-cap"><b>Claire :</b> Claude sait quoi viser.</p>
+    </div>
+  </div>
+  <ul class="vc-legend">
+    <li class="vc-but">Le but</li>
+    <li class="vc-ctx">Le contexte</li>
+    <li class="vc-ok">À quoi ressemble « réussi »</li>
+  </ul>
+</figure>
+
+<style>
+  .vc-pair {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+
+  .vc-col {
+    display: grid;
+    grid-template-rows: 8.5rem auto;
+  }
+
+  .vc :global(.ca-thread) { padding-block-end: 1rem; }
+  .vc :global(.ca-you) { max-inline-size: 95%; }
+
+  .vc :global(.ca-pane) {
+    border-inline-start: 0;
+    border-block-start: 1px solid var(--app-line);
+  }
+
+  /* Les trois ingrédients d'une demande, repérés par leur couleur. */
+  .vc .vc-but { --vc-mark: var(--brick-yellow); }
+  .vc .vc-ctx { --vc-mark: var(--brick-blue); }
+  .vc .vc-ok { --vc-mark: var(--brick-green); }
+
+  .vc :global(.ca-you) span {
+    border-block-end: 2px solid var(--vc-mark);
+    line-height: 1.75;
+  }
+
+  .vc-page {
+    display: grid;
+    align-content: start;
+    gap: 0.55rem;
+    min-block-size: 11.5rem;
+    padding: 1.1rem 1.2rem;
+    background: #fbe8cf;
+    color: #1d1d1b;
+  }
+
+  .vc-page.is-vague {
+    background: #fff;
+    color: #8a8a86;
+  }
+
+  .vc .vc-page .vc-page-title {
+    font-family: var(--app-serif);
+    font-size: 1.3rem;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .vc .vc-page .vc-search {
+    padding: 0.35rem 0.7rem;
+    border: 1.5px solid #1d1d1b;
+    border-radius: 99px;
+    background: #fff;
+    color: #6b6b66;
+    font-size: 0.78rem;
+  }
+
+  .vc .vc-page .vc-row {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-size: 0.86rem;
+    font-weight: 500;
+  }
+
+  .vc-row i {
+    flex: none;
+    inline-size: 2rem;
+    block-size: 2rem;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #f2c26b, #d98a3d);
+  }
+
+  .vc-row:last-child i { background: linear-gradient(135deg, #e9a06b, #b5532c); }
+  .is-vague .vc-row i { background: #e4e4e0; }
+
+  .vc .vc-cap {
+    margin: 0.9rem 0 0;
+    font-size: 0.98rem;
+    line-height: 1.4;
+  }
+
+  .vc .vc-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.8rem;
+    margin: 1.3rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .vc .vc-legend li {
+    margin: 0;
+    padding: 0.25rem 0.7rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-sm);
+    background: var(--vc-mark);
+    font-size: var(--text-small);
+    font-weight: var(--weight-semibold);
+    line-height: 1.4;
+  }
+
+  @media (max-width: 40rem) {
+    .vc-pair { grid-template-columns: minmax(0, 1fr); }
+    .vc-col { grid-template-rows: auto auto; }
+    .vc :global(.ca-thread) { min-block-size: 0; }
+  }
+</style>

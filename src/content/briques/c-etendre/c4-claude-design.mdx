@@ -8,21 +8,80 @@ durationMinutes: 15
 type: demonstration
 platforms:
   - commun
-prerequisites: []
-status: en-cours
+prerequisites:
+  - b2
+status: a-relire
 owner: matthieu
-learningObjective: null
-expectedOutcome: null
+learningObjective: "Faire dessiner par Claude une page, un logo, une présentation ou un écran d'application, comparer des variantes, puis passer le design retenu à Claude Code."
+expectedOutcome: "Vous avez vu une page dessinée, corrigée de trois façons, puis envoyée à Claude Code, et vous savez quand commencer par Design."
 ---
+
+import DesignFlow from '../../../components/briques/DesignFlow.astro';
+import DesignHome from '../../../components/briques/DesignHome.astro';
+import DesignHandoff from '../../../components/briques/DesignHandoff.astro';
+import DesignUses from '../../../components/briques/DesignUses.astro';
+import DesignRefine from '../../../components/briques/DesignRefine.astro';
+import PromptCopy from '../../../components/briques/PromptCopy.astro';
 
 ## L'essentiel
 
-À écrire.
+Avec **Design**, vous voyez et vous choisissez l'apparence avant de construire. Puis vous donnez le design à Claude Code.
+
+<DesignFlow />
 
 ## À essayer
 
-À écrire.
+**1. Ouvrez Design et choisissez quoi créer.**
+
+<DesignHome />
+
+**2. Décrivez ce que vous voulez voir.**
+
+<PromptCopy>Dessine la page d'accueil de mon projet : [décrivez-le en une phrase]. Ambiance chaleureuse, grandes photos, lisible sur téléphone.</PromptCopy>
+
+**3. Demandez des variantes, puis choisissez.**
+
+<PromptCopy>Montre-moi deux autres mises en page, vraiment différentes.</PromptCopy>
+
+**4. Envoyez le design retenu à Claude Code**, avec **Send to local coding agent**, puis demandez-lui de construire.
+
+<PromptCopy>Construis la page d'accueil à partir de ce design.</PromptCopy>
 
 ## Comprendre
 
-À écrire.
+### Quatre choses à lui faire dessiner
+
+<DesignUses />
+
+<div class="idea">
+  <div>
+    <h3>Trois façons de corriger</h3>
+    <p>Dites-le dans la conversation, posez un commentaire sur l'élément qui vous gêne, ou déplacez-le vous-même.</p>
+  </div>
+  <DesignRefine />
+</div>
+
+<div class="idea">
+  <div>
+    <h3>Le dessin d'abord</h3>
+    <p>Changer d'avis sur un dessin prend une phrase. Sur une page déjà construite, c'est plus long : choisissez l'allure avant.</p>
+  </div>
+  <DesignHandoff />
+</div>
+
+<details class="hint">
+  <summary>Pour aller plus loin</summary>
+  <p><strong>Donnez-lui de la matière.</strong> Une capture d'un site que vous aimez, vos couleurs, un logo : Claude s'en inspire. Une bonne description dit le but, la disposition, le contenu et le public.</p>
+  <p><strong>Gardez une piste avant d'en essayer une autre.</strong> Il n'y a pas d'historique des versions : demandez « garde ce que nous avons et essaie une approche complètement différente ».</p>
+  <p><strong>Sans passer par le menu.</strong> Demander un design dans n'importe quelle conversation suffit : il se construit à côté de la conversation.</p>
+  <p><strong>Les autres tuiles.</strong> Design System garde vos couleurs et vos polices pour tous vos designs. Design in codebase part d'un projet déjà construit. Whiteboard est un tableau blanc.</p>
+  <p><strong>Pas obligatoire.</strong> Pour un outil sans apparence travaillée, passez directement à l'onglet Code.</p>
+  <p>Documentation officielle : <a href="https://support.claude.com/en/articles/14604416-get-started-with-claude-design">bien démarrer avec Claude Design</a>.</p>
+</details>
+
+<details class="hint">
+  <summary>Notes formateur</summary>
+  <p><strong>Démonstration en direct, quinze minutes.</strong> Prenez l'idée de projet d'une personne de la salle. Décrivez sa page d'accueil à voix haute, laissez Claude dessiner, puis demandez deux variantes et faites voter le groupe. Corrigez une fois de chaque façon : une phrase, un commentaire, une retouche à la main.</p>
+  <p><strong>À faire voir.</strong> Le passage à Claude Code jusqu'au bout : le design envoyé, puis la vraie page dans l'aperçu de l'onglet Code, à côté du dessin.</p>
+  <p><strong>Pièges fréquents.</strong> Répétez le passage vers Code avant la séance : l'emplacement du bouton et la suite exacte changent avec les versions. Design consomme le même abonnement que le reste : prévenez avant que tout le groupe s'y lance. Une personne qui peaufine son dessin pendant une heure : rappelez que le dessin sert à décider, pas à finir.</p>
+</details>

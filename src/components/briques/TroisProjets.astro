@@ -1,0 +1,74 @@
+---
+// Le mot « projet » désigne trois choses : schéma au style du site, votre idée
+// au centre, l'espace qui en parle (Chat) et le dossier qui la construit (Code).
+import './claude-app.css';
+import Icon from './Icon.astro';
+---
+
+<figure class="ca-figure is-narrow tp">
+  <ol>
+    <li>
+      <em><Icon name="chat" />Dans Chat</em>
+      <b>Un Project</b>
+      <span>L’espace où l’on en parle.</span>
+    </li>
+    <li class="is-mine">
+      <em>Dans votre tête</em>
+      <b>Votre projet</b>
+      <span>L’idée que vous voulez voir exister.</span>
+    </li>
+    <li>
+      <em><Icon name="code" />Dans Code</em>
+      <b>Un dossier</b>
+      <span>L’endroit où elle se construit.</span>
+    </li>
+  </ol>
+</figure>
+
+<style>
+  :global(.brick-content) .tp ol {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.9rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  :global(.brick-content) .tp li {
+    display: grid;
+    align-content: start;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0.9rem 0.8rem 1rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    box-shadow: var(--shadow-block);
+    font-size: 0.92rem;
+    line-height: 1.35;
+  }
+
+  :global(.brick-content) .tp li.is-mine { background: var(--family-accent); }
+
+  .tp em {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.78rem;
+    font-style: normal;
+    font-weight: var(--weight-semibold);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .tp b {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    line-height: 1.15;
+  }
+
+  @media (max-width: 30rem) {
+    :global(.brick-content) .tp ol { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

@@ -11,104 +11,62 @@ platforms:
 prerequisites: []
 status: a-relire
 owner: a-attribuer
-learningObjective: "Expliquer simplement comment un LLM produit une réponse et nommer deux de ses limites."
-expectedOutcome: "Le participant formule une définition en trois phrases qui mentionne prédiction, contexte et vérification."
+learningObjective: "Expliquer que Claude prédit la suite d'un texte, qu'il peut se tromper avec aplomb et qu'il ne travaille qu'avec ce qu'il a sous les yeux."
+expectedOutcome: "Une erreur de Claude repérée sur un sujet que vous connaissez par cœur."
 ---
 
-## Cap
+import ConfidentAnswer from '../../../components/briques/ConfidentAnswer.astro';
+import ContextWindow from '../../../components/briques/ContextWindow.astro';
+import NextWord from '../../../components/briques/NextWord.astro';
+import PromptCopy from '../../../components/briques/PromptCopy.astro';
 
-**Objectif :** comprendre ce qui se passe derrière une réponse de Claude sans entrer dans les mathématiques.
+## L'essentiel
 
-- Durée cible : 10 minutes.
-- Prérequis : aucun.
-- Résultat attendu : vous savez expliquer pourquoi une réponse peut être fluide sans être forcément vraie.
+Claude ne « sait » pas : il devine la suite la plus probable de votre texte, un mot après l'autre. Le plus probable n'est pas toujours le vrai.
 
-## Concept durable
+<NextWord />
 
-Un **LLM** (*Large Language Model*, ou grand modèle de langage) est un système entraîné sur beaucoup de textes. Il apprend des régularités : quels fragments de texte ont tendance à apparaître ensemble, dans quel ordre et dans quel contexte.
+## À essayer
 
-Quand vous écrivez une demande, le modèle découpe le texte en **tokens**. Un token est un petit fragment : un mot court, une partie de mot, un signe de ponctuation ou quelques caractères. Il calcule ensuite le fragment le plus plausible, l'ajoute à la réponse et recommence. La réponse se construit donc pas à pas.
+**1. Dans l'onglet Chat, interrogez-le sur un sujet que vous connaissez par cœur.**
 
-Trois conséquences sont essentielles :
+<PromptCopy>Raconte-moi en cinq lignes l'histoire de [votre ville, votre club, votre métier], avec des dates et des noms.</PromptCopy>
 
-1. **Il génère, il ne récite pas une fiche.** Un LLM n'est pas une base de données qui retrouve toujours une ligne exacte.
-2. **Le contexte guide la réponse.** Votre demande, les messages précédents et les documents fournis constituent son espace de travail du moment.
-3. **Une phrase plausible peut être fausse.** Le modèle optimise la cohérence de la suite, pas la vérité du monde.
+Cherchez l'erreur : une date, un nom, un détail qui sonne juste mais ne l'est pas.
 
-Le mot « intelligence » ne signifie pas qu'il comprend, ressent ou veut quelque chose comme un humain. Pour travailler efficacement avec lui, observez ses capacités réelles : reformuler, comparer, synthétiser, produire des variantes et raisonner à partir du contexte fourni.
+**2. Reposez exactement la même question dans une nouvelle conversation.**
 
-## Pratique avec Claude
+La réponse change : il ne récite pas une fiche, il réécrit à chaque fois.
 
-Dans Claude Chat, envoyez successivement :
+## Comprendre
 
-```text
-Explique ce qu'est un LLM à un enfant de 10 ans, en 4 phrases maximum.
-```
+<div class="idea">
+  <div>
+    <h3>Il se trompe avec aplomb</h3>
+    <p>Une réponse inventée a le même ton qu'une réponse juste. C'est à vous de vérifier ce qui compte.</p>
+  </div>
+  <ConfidentAnswer />
+</div>
 
-Puis :
+<div class="idea">
+  <div>
+    <h3>Il ne voit que ce qu'il a sous les yeux</h3>
+    <p>C'est sa « fenêtre de contexte ». Ce que vous ne lui donnez pas n'existe pas pour lui.</p>
+  </div>
+  <ContextWindow />
+</div>
 
-```text
-Explique maintenant la même notion à un adulte non technique.
-Mentionne les tokens, la prédiction et une limite. Reste sous 120 mots.
-```
+<details class="hint">
+  <summary>Pour aller plus loin</summary>
+  <p><strong>LLM</strong> veut dire <em>Large Language Model</em>, grand modèle de langage. Claude a été entraîné sur une immense quantité de textes, jusqu'à une certaine date : il en a retenu des régularités, pas des fiches à ressortir.</p>
+  <p><strong>Les « tokens ».</strong> Claude ne compte pas en mots mais en petits morceaux de texte, les tokens. La taille de sa fenêtre de contexte et les limites de votre abonnement se mesurent ainsi.</p>
+  <p><strong>Quand la conversation s'allonge</strong>, le début finit par peser moins. Mieux vaut en ouvrir une nouvelle en redonnant l'essentiel : voir <a href="/briques/e1/">Prompt et contexte</a>.</p>
+  <p>Documentation officielle : <a href="https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work">limites d'usage et de longueur</a>.</p>
+</details>
 
-Enfin :
-
-```text
-Dans ta réponse précédente, sépare ce qui est une analogie de ce qui décrit
-réellement le mécanisme.
-```
-
-Observez ce qui change lorsque le public, les contraintes et le vocabulaire attendu sont précisés.
-
-## Mission commune
-
-1. Choisissez une notion que vous connaissez bien : votre métier, une règle de jeu ou une recette.
-2. Demandez à Claude de l'expliquer à un débutant en cinq phrases.
-3. Repérez une phrase exacte, une phrase simplifiée et une phrase qui demanderait une vérification.
-4. Réécrivez la consigne pour améliorer la réponse.
-
-**Critère de réussite :** votre deuxième consigne précise au moins le public, le niveau de détail et la forme attendue.
-
-## Livrable
-
-Conservez :
-
-- votre définition personnelle d'un LLM en trois phrases ;
-- la première et la deuxième consigne ;
-- une limite à garder en tête lorsque vous utiliserez Claude.
-
-## Notes formateur
-
-- **0–2 min :** faire compléter oralement « Claude est… » sans corriger immédiatement.
-- **2–5 min :** dessiner la boucle « contexte → prochain token → réponse ».
-- **5–8 min :** réaliser les trois prompts et comparer les sorties.
-- **8–10 min :** faire formuler la définition par deux participants.
-
-Message essentiel : **la fluidité est une capacité ; la vérité doit encore être établie.** Éviter les analogies du cerveau ou de la personne omnisciente. Transition : si le modèle produit du texte, qu'est-ce qui lui permet aussi d'agir ?
-
-## Défis avancés
-
-- Donnez à Claude deux contextes contradictoires et demandez-lui d'identifier le conflit avant de répondre.
-- Faites expliquer la notion en 30, 100 puis 300 mots. Comparez ce que chaque limite force à conserver ou à supprimer.
-
-## Variantes
-
-- **Groupe métier :** utilisez un concept propre au secteur des participants.
-- **Groupe très débutant :** remplacez « token » par « fragment de texte », puis introduisez le terme exact.
-- **Sans accès à Claude :** le formateur montre deux réponses préparées et le groupe les compare.
-
-## Dépannage
-
-- **La réponse est trop longue :** ajoutez une limite de mots et un nombre exact de points.
-- **Claude utilise encore du jargon :** demandez-lui de définir chaque terme technique entre parenthèses.
-- **Les deux réponses se ressemblent :** rendez les publics plus contrastés et imposez un exemple différent.
-
-## Ressources
-
-- [Présentation de Claude et de ses capacités — Anthropic](https://platform.claude.com/docs/en/intro)
-- [Comprendre les limites d'usage et de longueur — Claude Help Center](https://support.claude.com/en/articles/11647753-how-do-usage-and-length-limits-work)
-
-## Ouverture
-
-Un LLM répond à partir de son contexte. La brique suivante montre ce qui change lorsqu'on lui ajoute des outils, des étapes et une capacité d'action : on passe du modèle à l'agent.
+<details class="hint">
+  <summary>Notes formateur</summary>
+  <p><strong>Démonstration en direct, cinq minutes.</strong> Écrivez un début de phrase au tableau (« La capitale de l'Australie est… ») et faites voter la salle pour le mot suivant : beaucoup diront Sydney. C'est exactement le calcul de Claude, et la raison de ses erreurs.</p>
+  <p><strong>À faire voir.</strong> La même question posée deux fois dans deux conversations : deux réponses différentes. Puis une question sur un détail local que vous connaissez et où il se trompe.</p>
+  <p><strong>Pièges fréquents.</strong> « Il ment » : non, il n'a aucune intention, il prolonge un texte. « Il se souvient de moi » : seulement de ce qui est dans la conversation ou dans les fichiers qu'on lui donne. Un groupe déçu parce qu'il ne trouve pas d'erreur : faites choisir un sujet plus local ou plus pointu.</p>
+</details>

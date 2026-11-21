@@ -1,0 +1,117 @@
+---
+// Trois façons de corriger un design, toutes décrites dans la documentation :
+// la conversation, un commentaire posé sur un élément, la retouche à la main.
+---
+
+<figure class="ca-figure is-narrow dsr">
+  <div class="dsr-stage" aria-hidden="true">
+    <div class="dsr-board">
+      <p class="dsr-title">Recettes de famille<span class="ca-pin">2</span></p>
+      <p class="dsr-note">Plus grand, ce titre.</p>
+      <div class="dsr-photos">
+        <i></i>
+        <i class="dsr-picked"><b></b><b></b><b></b><b></b><span class="ca-pin">3</span></i>
+      </div>
+    </div>
+    <p class="dsr-chat">Des couleurs plus chaudes partout.<span class="ca-pin">1</span></p>
+  </div>
+  <ol class="ca-legend">
+    <li><span>Dans la conversation : les grands changements.</span></li>
+    <li><span>Un commentaire sur un élément : une retouche précise.</span></li>
+    <li><span>À la main : déplacer, agrandir, aligner.</span></li>
+  </ol>
+</figure>
+
+<style>
+  .dsr-stage {
+    display: grid;
+    gap: 0.9rem;
+    padding: 1.4rem 1.2rem 1.1rem 2rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    box-shadow: var(--shadow-block);
+  }
+
+  .dsr-stage p { margin: 0; line-height: 1.3; }
+
+  .dsr-board {
+    position: relative;
+    display: grid;
+    gap: 0.8rem;
+    padding: 1rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-sm);
+    background: #fff7ea;
+  }
+
+  .dsr-stage .dsr-title {
+    position: relative;
+    justify-self: start;
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 800;
+  }
+
+  .dsr-stage .dsr-note {
+    justify-self: start;
+    margin-block-start: -0.5rem;
+    padding: 0.3rem 0.6rem;
+    border: 2px solid var(--ink);
+    border-radius: 0 10px 10px 10px;
+    background: var(--brick-yellow);
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .dsr-photos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .dsr-photos i {
+    position: relative;
+    block-size: 4.5rem;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #f2c26b, #d98a3d);
+  }
+
+  .dsr-photos .dsr-picked {
+    background: linear-gradient(135deg, #a9c98a, #5f8f4e);
+    outline: 2px solid var(--brick-blue);
+    outline-offset: 3px;
+  }
+
+  /* Les quatre poignées de la retouche à la main. */
+  .dsr-picked b {
+    position: absolute;
+    inline-size: 0.55rem;
+    block-size: 0.55rem;
+    border: 2px solid var(--brick-blue);
+    background: #fff;
+  }
+
+  .dsr-picked b:nth-child(1) { inset: -8px auto auto -8px; }
+  .dsr-picked b:nth-child(2) { inset: -8px -8px auto auto; }
+  .dsr-picked b:nth-child(3) { inset: auto auto -8px -8px; }
+  .dsr-picked b:nth-child(4) { inset: auto -8px -8px auto; }
+
+  .dsr-stage .dsr-chat {
+    position: relative;
+    padding: 0.55rem 0.8rem;
+    border: 2px solid var(--ink);
+    border-radius: 12px;
+    font-size: 0.9rem;
+  }
+
+  .dsr .ca-pin {
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    font-size: 0.85rem;
+  }
+
+  .dsr-title .ca-pin { inset: 50% auto auto -1.9rem; translate: 0 -50%; }
+  .dsr-picked .ca-pin { inset: 50% auto auto 50%; translate: -50% -50%; }
+  .dsr-chat .ca-pin { inset: 50% auto auto -1.7rem; translate: 0 -50%; }
+</style>

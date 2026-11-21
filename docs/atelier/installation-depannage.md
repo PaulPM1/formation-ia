@@ -48,7 +48,8 @@ dois cliquer sur une fenêtre ou taper le mot de passe de mon ordinateur.
    s'ouvre. Ensuite lance « gh auth setup-git » et renseigne mon nom et mon
    adresse Git à partir de mon compte GitHub.
 5. Installe le skill setup-projet dans mes skills personnels
-   (~/.claude/skills/setup-projet/) depuis cette adresse : [ADRESSE DU ZIP].
+   (~/.claude/skills/setup-projet/) depuis cette adresse :
+   https://formation-ia-ruby.vercel.app/kits/setup-projet.zip
 6. Termine par un tableau : Git, Node.js, npm, gh, connexion GitHub, skill
    setup-projet. Pour chacun : prêt ou pas prêt, et la version.
 ```
@@ -71,8 +72,8 @@ Sur Mac, les outils d'Apple (Git) se téléchargent chez Apple et prennent cinq 
 quinze minutes : c'est l'installation la plus lente, d'où l'intérêt de la
 lancer dès l'arrivée.
 
-`[ADRESSE DU ZIP]` : l'adresse publique de `kits/setup-projet.zip` sur le site
-de la formation, à renseigner une fois le site en ligne.
+L'adresse du zip est celle du site de la formation : elle ne répond qu'une fois
+cette version du site mise en ligne.
 
 ## 3. Installation à la main, si Claude bute
 
@@ -188,7 +189,7 @@ phrase (section 2) répare : elle ne réinstalle que ce qui manque.
 - Que `gh auth login --web --clipboard` lancé par Claude ouvre bien le
   navigateur sans attendre une touche Entrée.
 - Qu'un skill posé dans `~/.claude/skills/` apparaît bien dans une session
-  locale de l'onglet Code (documenté), et qu'un zip téléversé par Customize
+  locale de l'onglet Code (documenté), et qu'un zip téléversé par Plugins
   aussi (non documenté).
 - Le comportement sur un ordinateur de travail réel.
 - Le débit du wifi du lieu avec tout le groupe qui installe en même temps.

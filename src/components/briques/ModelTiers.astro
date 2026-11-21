@@ -1,0 +1,88 @@
+---
+// Choisir un modèle : du plus rapide au plus puissant. Plus il est puissant,
+// plus il consomme la limite de l'abonnement.
+---
+
+<figure class="ca-figure is-narrow mt">
+  <ol>
+    <li>
+      <b>Le plus rapide</b>
+      <span>Questions simples, petites retouches.</span>
+      <em><i class="is-on"></i><i></i><i></i></em>
+    </li>
+    <li class="is-main">
+      <b>L’équilibré</b>
+      <span>Le bon choix par défaut.</span>
+      <em><i class="is-on"></i><i class="is-on"></i><i></i></em>
+    </li>
+    <li>
+      <b>Le plus puissant</b>
+      <span>Quand ça coince ou que la tâche est difficile.</span>
+      <em><i class="is-on"></i><i class="is-on"></i><i class="is-on"></i></em>
+    </li>
+  </ol>
+  <figcaption>Les points : ce que chaque demande consomme de votre limite.</figcaption>
+</figure>
+
+<style>
+  .mt ol {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.9rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .mt ol li {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0.7rem 0.8rem 0.8rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    font-size: 0.9rem;
+    line-height: 1.35;
+  }
+
+  .mt ol .is-main {
+    background: var(--family-accent);
+    box-shadow: var(--shadow-block);
+  }
+
+  .mt li b {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: var(--weight-display);
+    line-height: 1.15;
+  }
+
+  .mt li em {
+    display: flex;
+    gap: 0.3rem;
+    margin-block-start: 0.3rem;
+  }
+
+  .mt li em i {
+    inline-size: 0.8rem;
+    block-size: 0.8rem;
+    border: 2px solid var(--ink);
+    border-radius: 50%;
+    background: var(--surface);
+  }
+
+  .mt li em .is-on { background: var(--ink); }
+
+  .mt figcaption {
+    margin-block-start: 1rem;
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 30rem) {
+    .mt ol { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

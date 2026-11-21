@@ -1,0 +1,34 @@
+---
+// Une réponse inventée, écrite avec aplomb : rien à l'écran ne la distingue
+// d'une réponse juste.
+import ClaudeApp from './ClaudeApp.astro';
+---
+
+<figure class="ca-figure is-narrow cfa">
+  <ClaudeApp mode="chat" sidebar={false} title="Chat">
+    <div class="ca-thread">
+      <p class="ca-you">En quelle année a été construit le pont de mon village, Saint-Aubin-le-Vieux ?</p>
+      <div class="ca-claude">
+        <p class="ca-say">Le pont de Saint-Aubin-le-Vieux a été construit en <mark>1887</mark> par l’ingénieur <mark>Paul Mercier</mark>, pour remplacer l’ancien bac.</p>
+      </div>
+    </div>
+  </ClaudeApp>
+  <figcaption>Une date, un nom, aucune hésitation. Rien ne dit que c’est vrai.</figcaption>
+</figure>
+
+<style>
+  .cfa :global(.ca-thread) { padding-block-end: 1.2rem; }
+
+  .cfa mark {
+    background: none;
+    color: inherit;
+    text-decoration: underline wavy var(--app-accent);
+    text-underline-offset: 0.25em;
+  }
+
+  .cfa figcaption {
+    margin-block-start: 0.8rem;
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+</style>

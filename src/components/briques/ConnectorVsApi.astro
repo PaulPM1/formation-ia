@@ -1,0 +1,52 @@
+---
+// Connecteur ou API : qui parle à quoi. Le connecteur sert à Claude, l'API
+// sert au projet que vous construisez, et c'est elle qui demande une clé.
+---
+
+<figure class="ca-figure is-narrow cva">
+  <div class="cva-rows" aria-hidden="true">
+    <p><b>Claude</b><i>connecteur</i><b>Vos outils</b></p>
+    <p><b>Votre projet</b><i class="is-key">API + clé</i><b>Un service</b></p>
+  </div>
+  <figcaption>Le connecteur se branche avec votre compte. L’API demande une clé, à garder secrète.</figcaption>
+</figure>
+
+<style>
+  .cva-rows { display: grid; gap: 1.2rem; }
+
+  .cva-rows p {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .cva-rows b {
+    padding: 0.8rem 0.4rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    box-shadow: 4px 4px 0 var(--ink);
+    font-family: var(--font-display);
+    font-weight: 800;
+  }
+
+  .cva-rows i {
+    padding-block: 0.35rem;
+    border-block-end: 4px solid var(--ink);
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  .cva-rows .is-key { border-block-end-style: dashed; }
+  .cva-rows p:first-child b:first-child { background: var(--family-accent); }
+
+  .cva figcaption {
+    margin-block-start: 1.1rem;
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+</style>

@@ -1,0 +1,34 @@
+---
+// Le bloc « Sécurité » que setup-projet écrit dans le CLAUDE.md du projet
+// (texte repris du skill).
+import './claude-app.css';
+import Icon from './Icon.astro';
+---
+
+<figure class="ca-figure is-narrow sm">
+  <div class="ca-window" aria-hidden="true">
+    <p class="ca-pane-bar"><Icon name="file" /><span>CLAUDE.md</span></p>
+    <div class="sm-file">
+      <p class="sm-h">Sécurité</p>
+      <p>- Aucune clé ni secret dans le code : fichier .env, listé dans le .gitignore.</p>
+      <p>- Toute saisie d’un visiteur est vérifiée côté serveur.</p>
+      <p>- Aucune donnée sensible dans les adresses ni dans ce qui est envoyé au navigateur.</p>
+      <p>- Une limite de requêtes sur tout ce qui coûte de l’argent.</p>
+    </div>
+  </div>
+</figure>
+
+<style>
+  .sm-file {
+    display: grid;
+    gap: 0.45rem;
+    padding: 1rem 1.1rem 1.2rem;
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+  }
+
+  .sm .sm-file .sm-h {
+    color: var(--app-accent);
+    font-weight: 600;
+  }
+</style>

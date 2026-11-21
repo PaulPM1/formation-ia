@@ -1,0 +1,45 @@
+---
+// Ce qui est fait chez soi avant de venir : trois choses, rien d'autre.
+import './claude-app.css';
+import './eco.css';
+import EcoIcon from './EcoIcon.astro';
+---
+
+<figure class="ca-figure is-narrow sb">
+  <div class="sb-row">
+    <div class="eco-node"><EcoIcon name="laptop" /><p class="eco-name">L’application Claude</p><p class="eco-sub">installée, un premier message envoyé</p><span class="sb-ok"><EcoIcon name="check" /></span></div>
+    <div class="eco-node"><EcoIcon name="key" /><p class="eco-name">L’abonnement</p><p class="eco-sub">actif sur votre compte Claude</p><span class="sb-ok"><EcoIcon name="check" /></span></div>
+    <div class="eco-node"><EcoIcon name="github" /><p class="eco-name">Un compte GitHub</p><p class="eco-sub">créé sur github.com</p><span class="sb-ok"><EcoIcon name="check" /></span></div>
+  </div>
+</figure>
+
+<style>
+  .sb { margin-block: 1.2rem 2rem; }
+
+  .sb-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    padding-inline-end: 6px;
+  }
+
+  .sb :global(.eco-node) { position: relative; }
+
+  .sb-ok {
+    position: absolute;
+    inset: -0.7rem -0.6rem auto auto;
+    display: grid;
+    place-items: center;
+    inline-size: 1.7rem;
+    block-size: 1.7rem;
+    border: 2px solid var(--ink);
+    border-radius: 50%;
+    background: var(--family-accent);
+  }
+
+  .sb-ok :global(.eco-icon) { inline-size: 1rem; block-size: 1rem; stroke-width: 3; }
+
+  @media (max-width: 40rem) {
+    .sb-row { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

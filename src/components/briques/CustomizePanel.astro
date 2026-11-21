@@ -1,0 +1,169 @@
+---
+// Où cliquer dans la page Plugins (onglet Chat) pour ajouter un skill ou brancher un
+// connecteur. Sert aux briques C1 et C2 : même écran, onglet différent.
+import ClaudeApp from './ClaudeApp.astro';
+import SideMenu from './SideMenu.astro';
+
+interface Row {
+  name: string;
+  about: string;
+  state: 'on' | 'connected' | 'connect';
+  pin?: number;
+}
+interface Props {
+  tab: 'Skills' | 'Connectors';
+  rows: Row[];
+  menu?: string;
+  legend: string[];
+}
+const { tab, rows, menu, legend } = Astro.props;
+---
+
+<figure class="ca-figure cz">
+  <ClaudeApp mode="chat" sidebar={false} title="Plugins">
+    <SideMenu mode="chat" active="Plugins" pins={{ Plugins: 1 }}>
+      <div class="cz-main">
+        <p class="cz-tabs">
+          {['Skills', 'Connectors', 'Plugins'].map((name) => (
+            <span class:list={{ 'is-on': name === tab }}>{name}{name === tab && <i class="ca-pin">2</i>}</span>
+          ))}
+        </p>
+        <div class="cz-head">
+          <p class="cz-title">{tab}</p>
+          {menu && <p class="cz-menu">{menu}</p>}
+          <p class="cz-add">+ Add<i class="ca-pin">3</i></p>
+        </div>
+        <div class="cz-rows">
+          {rows.map((row) => (
+            <p class="cz-row">
+              <span><b>{row.name}</b><em>{row.about}</em></span>
+              {row.state === 'on' && <i class="cz-toggle"></i>}
+              {row.state === 'connected' && <u>Connected</u>}
+              {row.state === 'connect' && <u class="cz-btn">Connect</u>}
+              {row.pin && <i class="ca-pin">{row.pin}</i>}
+            </p>
+          ))}
+        </div>
+      </div>
+    </SideMenu>
+  </ClaudeApp>
+  <ol class="ca-legend">
+    {legend.map((line) => <li><span set:html={line} /></li>)}
+  </ol>
+</figure>
+
+<style>
+  .cz-main {
+    display: grid;
+    align-content: start;
+    gap: 0.9rem;
+    padding: 1rem 1.2rem 1.3rem;
+  }
+
+  .cz .cz-tabs {
+    display: flex;
+    gap: 0.3rem;
+    border-block-end: 1px solid var(--app-line);
+  }
+
+  .cz-tabs span {
+    position: relative;
+    padding: 0.4rem 0.7rem;
+    color: var(--app-muted);
+  }
+
+  .cz-tabs .is-on {
+    color: var(--app-text);
+    box-shadow: inset 0 -2px 0 var(--app-accent);
+  }
+
+  .cz .ca-pin {
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    font-size: 0.85rem;
+    font-style: normal;
+  }
+
+  .cz-tabs .ca-pin { inset: -0.75rem -0.6rem auto auto; }
+
+  .cz-head {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .cz .cz-title {
+    margin-inline-end: auto;
+    font-family: var(--app-serif);
+    font-size: 1.25rem;
+  }
+
+  .cz-add {
+    position: relative;
+    padding: 0.3rem 0.8rem;
+    border-radius: 7px;
+    background: var(--app-text);
+    color: #1f1e1d;
+    font-weight: 600;
+  }
+
+  .cz-add .ca-pin { inset: -0.75rem auto auto -0.9rem; }
+
+  .cz-menu {
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--app-line);
+    border-radius: 9px;
+    background: var(--app-raise);
+    white-space: nowrap;
+  }
+
+  .cz-rows { display: grid; gap: 0.5rem; }
+
+  .cz-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--app-line);
+    border-radius: 10px;
+    background: var(--app-side);
+  }
+
+  .cz-row span { display: grid; gap: 0.1rem; min-inline-size: 0; }
+  .cz-row b { font-weight: 600; }
+  .cz-row em { color: var(--app-muted); font-style: normal; }
+
+  .cz-row u {
+    flex: none;
+    color: #6fbf7f;
+    text-decoration: none;
+  }
+
+  .cz-row .cz-btn {
+    padding: 0.2rem 0.65rem;
+    border: 1px solid var(--app-muted);
+    border-radius: 6px;
+    color: var(--app-text);
+  }
+
+  .cz-toggle {
+    flex: none;
+    inline-size: 1.9rem;
+    block-size: 1.1rem;
+    border-radius: 1rem;
+    background: var(--app-accent) radial-gradient(circle at 1.35rem 50%, #fff 0.38rem, transparent 0.42rem);
+  }
+
+  .cz-row .ca-pin { inset: 50% auto auto -0.8rem; translate: 0 -50%; }
+
+  @media (max-width: 40rem) {
+    .cz-main { padding: 0.9rem 0.7rem 1rem 1rem; }
+    .cz-tabs span { padding-inline: 0.35rem; }
+    .cz-row em { display: none; }
+    .cz .cz-title { display: none; }
+    .cz-head { justify-content: flex-end; }
+  }
+</style>

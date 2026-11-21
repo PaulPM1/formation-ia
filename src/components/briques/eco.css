@@ -1,0 +1,84 @@
+/* Schémas de la famille D, au style du site : papier, encre, blocs à ombre
+   décalée. Les maquettes de l'application restent dans claude-app.css. */
+
+.eco-icon {
+  flex: none;
+  inline-size: 1.7rem;
+  block-size: 1.7rem;
+}
+
+/* Un lieu du trajet : votre ordinateur, GitHub, Vercel, l'adresse. */
+
+.eco-node {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 0.35rem;
+  min-inline-size: 0;
+  padding: 0.9rem 0.8rem;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-block);
+  color: var(--ink);
+  text-align: center;
+  transition: opacity 0.5s ease, background-color 0.5s ease;
+}
+
+.eco-node.is-key { background: var(--family-accent); }
+
+.brick-content .eco-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.brick-content .eco-sub {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
+.eco-node.is-key .eco-sub { color: var(--ink); }
+
+/* Le trajet : des lieux reliés par des flèches, en ligne puis en colonne. */
+
+.eco-flow {
+  display: flex;
+  align-items: stretch;
+  gap: 0.5rem;
+  padding-block-end: 6px;
+  padding-inline-end: 6px;
+}
+
+.eco-flow > .eco-node { flex: 1 1 0; }
+
+.eco-flow > .eco-arrow {
+  display: grid;
+  place-items: center;
+  flex: none;
+  align-self: center;
+  inline-size: 2rem;
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 800;
+  line-height: 1;
+  transition: opacity 0.5s ease;
+}
+
+.eco-arrow::before { content: "→"; }
+
+.eco-dim { opacity: 0.28; }
+
+@media (max-width: 40rem) {
+  .eco-flow { flex-direction: column; }
+  .eco-flow > .eco-arrow { inline-size: 100%; }
+  .eco-arrow::before { content: "↓"; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eco-node, .eco-arrow { transition: none !important; animation: none !important; }
+}

@@ -1,0 +1,66 @@
+---
+// Les limites de l'abonnement : une jauge qui descend quand on travaille et
+// qui se recharge toute seule.
+import './claude-app.css';
+import StepRail from './StepRail.astro';
+
+const steps = [
+  { label: 'Vous travaillez', text: 'Chaque demande consomme un peu de votre limite. Les longues tâches, davantage.' },
+  { label: 'Limite atteinte', text: 'Claude s’arrête et vous indique l’heure de reprise. Rien n’est perdu.' },
+  { label: 'Elle se recharge', text: 'Quelques heures plus tard, la limite est revenue. Sans rien payer de plus.' },
+];
+---
+
+<figure class="ca-figure is-narrow ug" data-stepper data-step="3">
+  <div class="ug-board" aria-hidden="true">
+    <p class="ug-label">Votre limite d’usage</p>
+    <p class="ug-bar"><i></i></p>
+    <p class="ug-state only-1">Il vous en reste.</p>
+    <p class="ug-state only-2">Pause. Reprise dans quelques heures.</p>
+    <p class="ug-state ug-full">De nouveau pleine.</p>
+  </div>
+  <StepRail steps={steps} />
+</figure>
+
+<style>
+  .ug-board {
+    padding: 1rem 1.1rem 1.1rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    box-shadow: var(--shadow-block);
+  }
+
+  .ug .ug-board p { margin: 0; }
+
+  .ug .ug-label {
+    font-size: var(--text-label);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+  }
+
+  .ug .ug-bar {
+    block-size: 1.6rem;
+    margin-block: 0.6rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-sm);
+    background: var(--paper);
+    overflow: hidden;
+  }
+
+  .ug-bar i {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    border-inline-end: 2px solid var(--ink);
+    background: var(--family-accent);
+    transition: inline-size 1.2s ease, background-color 0.6s ease;
+  }
+
+  .ug[data-step="1"] .ug-bar i { inline-size: 45%; }
+  .ug[data-step="2"] .ug-bar i { inline-size: 3%; background: var(--brick-coral); }
+
+  .ug .ug-state { font-weight: var(--weight-semibold); }
+  .ug:not([data-step="3"]) .ug-full { display: none; }
+</style>

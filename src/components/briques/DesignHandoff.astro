@@ -1,0 +1,66 @@
+---
+// Du dessin à la vraie page : Design choisit l'apparence, Code la construit.
+---
+
+<figure class="ca-figure is-narrow dsh">
+  <div class="dsh-row" aria-hidden="true">
+    <p><b>Design</b><span>Un dessin : on en change en une phrase.</span></p>
+    <i></i>
+    <p class="dsh-code"><b>Code</b><span>La vraie page, dans votre dossier.</span></p>
+  </div>
+</figure>
+
+<style>
+  .dsh-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 2.5rem minmax(0, 1fr);
+    align-items: center;
+  }
+
+  .dsh-row p {
+    display: grid;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 1rem;
+    border: 2px dashed var(--ink);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    font-size: 0.95rem;
+    line-height: 1.35;
+  }
+
+  .dsh-row .dsh-code {
+    border-style: solid;
+    background: var(--family-accent);
+    box-shadow: var(--shadow-block);
+  }
+
+  .dsh-row b {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 800;
+  }
+
+  /* La flèche : un trait et sa pointe. */
+  .dsh-row i {
+    block-size: 4px;
+    background: var(--ink);
+    position: relative;
+  }
+
+  .dsh-row i::after {
+    position: absolute;
+    inset: 50% -1px auto auto;
+    translate: 0 -50%;
+    border: 0.5rem solid transparent;
+    border-inline-start-color: var(--ink);
+    border-inline-end-width: 0;
+    content: "";
+  }
+
+  @media (max-width: 30rem) {
+    .dsh-row { grid-template-columns: minmax(0, 1fr); justify-items: stretch; }
+    .dsh-row i { justify-self: center; inline-size: 4px; block-size: 1.6rem; }
+    .dsh-row i::after { display: none; }
+  }
+</style>

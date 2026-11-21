@@ -1,0 +1,191 @@
+---
+// Visuel principal de la brique C4 : décrire, voir une proposition, comparer
+// des variantes, choisir et passer à Claude Code. L'écran reprend la capture
+// d'un design ouvert : conversation à gauche, canevas à droite, barre d'outils
+// en bas. Seul l'emplacement de « Send to local coding agent » est supposé.
+import ClaudeApp from './ClaudeApp.astro';
+import Icon from './Icon.astro';
+import StepRail from './StepRail.astro';
+
+const steps = [
+  { label: 'Vous décrivez', text: 'Vous dites à quoi la page doit ressembler, et pour qui.' },
+  { label: 'Claude dessine', text: 'Une proposition apparaît sur le canevas, à droite de la conversation.' },
+  { label: 'Vous comparez', text: 'Vous demandez d’autres pistes. Les voir côte à côte aide à choisir.' },
+  { label: 'Vous passez à Code', text: 'Le design retenu part vers Claude Code, qui construit la vraie page.' },
+];
+---
+
+<figure class="ca-figure dsf" data-stepper data-step="4">
+  <ClaudeApp mode="chat" sidebar={false} title="Recettes de famille">
+    <div class="ca-split">
+      <div class="ca-talk">
+        <div class="ca-thread">
+          <p class="ca-you until-2">Dessine la page d’accueil de mon site de recettes de famille. Chaleureuse, avec de grandes photos.</p>
+          <p class="ca-say only-2">Voici une première proposition.</p>
+          <p class="ca-you from-3">Montre-moi deux autres mises en page.</p>
+          <p class="ca-say from-3">En voici trois, côte à côte.</p>
+          <p class="ca-you from-4">Je garde la deuxième.</p>
+          <p class="ca-say from-4">Elle est prête à partir vers Claude Code.</p>
+        </div>
+        <div class="ca-composer">
+          <p class="ca-field"><Icon name="plus" /><span>Write a message…</span><Icon name="mic" /></p>
+          <p class="ca-settings"><span>Add folder</span><span>Manual</span><span class="ca-model">Opus 5.5 <i>Medium</i></span></p>
+        </div>
+      </div>
+
+      <div class="ca-pane">
+        <p class="ca-pane-bar"><span>Recettes de famille</span><b class="dsf-share">Share</b></p>
+        <div class="dsf-canvas">
+          <p class="dsf-chip dsf-page">Page 1</p>
+          <p class="dsf-chip dsf-zoom">50%</p>
+          <p class="dsf-menu from-4">Send to local coding agent</p>
+          <div class="dsf-empty only-1">
+            <p>This canvas has no artboards yet. Add one, or let Claude add some.</p>
+            <p><b>Add an artboard</b></p>
+          </div>
+          <div class="dsf-board dsf-a from-2 ca-enter">
+            <i class="dsf-title"></i><i class="dsf-hero"></i><i class="dsf-text"></i><i class="dsf-text"></i>
+          </div>
+          <div class="dsf-board dsf-b from-3 ca-enter">
+            <i class="dsf-title"></i>
+            <div class="dsf-grid"><i></i><i></i><i></i><i></i></div>
+          </div>
+          <div class="dsf-board dsf-c from-3 ca-enter">
+            <i class="dsf-title"></i>
+            <div class="dsf-list"><i></i><i></i><i></i></div>
+          </div>
+          <p class="dsf-tools"><b class="is-on">↖</b><b>T</b><b>#</b><b>▢</b><Icon name="chat" /><span>Ask Claude</span></p>
+        </div>
+      </div>
+    </div>
+  </ClaudeApp>
+  <StepRail steps={steps} />
+</figure>
+
+<style>
+  @media (min-width: 40.01rem) {
+    .dsf :global(.ca-split) {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      block-size: 24rem;
+    }
+  }
+
+  .dsf-share { margin-inline-start: auto; font-weight: 500; }
+
+  .dsf-canvas {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    min-block-size: 17rem;
+    padding: 2.6rem 1rem 3rem;
+    background: var(--app-bg);
+  }
+
+  .dsf-chip,
+  .dsf-tools,
+  .dsf-menu {
+    position: absolute;
+    padding: 0.25rem 0.6rem;
+    border: 1px solid var(--app-line);
+    border-radius: 8px;
+    background: var(--app-raise);
+    color: var(--app-soft);
+    font-size: 0.72rem;
+  }
+
+  .dsf-page { inset: 0.6rem auto auto 0.7rem; }
+  .dsf-zoom { inset: 0.6rem 0.7rem auto auto; }
+
+  .dsf-canvas .dsf-menu {
+    z-index: 1;
+    inset: 0.3rem 0.5rem auto auto;
+    border-color: var(--app-accent);
+    background: var(--app-accent);
+    color: #fff;
+    font-weight: 600;
+    animation: ca-in 0.4s ease both;
+  }
+
+  .dsf[data-step="4"] .dsf-zoom { display: none; }
+
+  .dsf-tools {
+    inset: auto auto 0.6rem 50%;
+    translate: -50% 0;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    white-space: nowrap;
+  }
+
+  .dsf-tools b { font-weight: 500; }
+  .dsf-tools .is-on { color: #6ea8ff; }
+  .dsf-tools span { color: var(--app-muted); }
+
+  .dsf-empty {
+    display: grid;
+    justify-items: center;
+    gap: 0.6rem;
+    max-inline-size: 16rem;
+    color: var(--app-muted);
+    font-size: 0.74rem;
+    text-align: center;
+  }
+
+  .dsf-empty b {
+    padding: 0.3rem 0.7rem;
+    border-radius: 7px;
+    background: var(--app-on);
+    color: var(--app-text);
+    font-weight: 500;
+  }
+
+  .dsf-board {
+    flex: 1;
+    display: grid;
+    align-content: start;
+    gap: 0.4rem;
+    max-inline-size: 12rem;
+    aspect-ratio: 3 / 4;
+    padding: 0.6rem;
+    border-radius: 6px;
+    background: #fff7ea;
+    transition: opacity 0.5s ease, box-shadow 0.5s ease;
+  }
+
+  /* Ces blocs ont leur propre display : on répète ici la règle d'étape. */
+  .dsf:not([data-step="1"]) .dsf-empty,
+  .dsf[data-step="1"] .dsf-board,
+  .dsf[data-step="2"] .dsf-board.from-3 { display: none; }
+
+  .dsf-board i { display: block; border-radius: 3px; }
+  .dsf-title { inline-size: 60%; block-size: 0.55rem; background: #2b2a27; }
+  .dsf-text { block-size: 0.3rem; background: #d9cfbd; }
+  .dsf-hero { background: linear-gradient(135deg, #f2c26b, #d98a3d); }
+  .dsf-a { grid-template-rows: auto 45% auto auto; }
+
+  .dsf-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.35rem;
+  }
+
+  .dsf-grid i { aspect-ratio: 1; background: linear-gradient(135deg, #e9a06b, #b5532c); }
+  .dsf-grid i:nth-child(2), .dsf-grid i:nth-child(3) { background: linear-gradient(135deg, #a9c98a, #5f8f4e); }
+
+  .dsf-list { display: grid; gap: 0.4rem; }
+
+  .dsf-list i {
+    block-size: 1.3rem;
+    background: radial-gradient(circle at 0.65rem 50%, #d98a3d 0.55rem, transparent 0.6rem), linear-gradient(#d9cfbd, #d9cfbd) 1.6rem 50% / 60% 0.3rem no-repeat;
+  }
+
+  /* Étape 4 : la planche retenue ressort, les autres s'effacent. */
+  .dsf[data-step="4"] .dsf-board:not(.dsf-b) { opacity: 0.3; }
+  .dsf[data-step="4"] .dsf-b { box-shadow: 0 0 0 3px var(--app-accent); }
+
+  @media (max-width: 40rem) {
+    .dsf-canvas { gap: 0.5rem; padding-inline: 0.6rem; }
+  }
+</style>

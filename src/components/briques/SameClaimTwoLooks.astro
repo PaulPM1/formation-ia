@@ -1,0 +1,72 @@
+---
+// La même affirmation sans preuve, griffonnée puis bien présentée : on croit
+// la seconde, alors que seule la forme a changé.
+---
+
+<figure class="ca-figure is-narrow sctl">
+  <div class="sctl-pair" aria-hidden="true">
+    <div class="sctl-note">
+      <p>68 % des abonnés restent + d’1 an ??</p>
+      <p>(lu quelque part)</p>
+    </div>
+    <div class="sctl-clean">
+      <p class="sctl-h">Analyse du marché</p>
+      <p>Les sites de recettes payants fidélisent durablement : <b>68 % des abonnés</b> restent plus d’un an.</p>
+    </div>
+  </div>
+  <figcaption>Le même chiffre, sans source dans les deux cas. Seule la forme change.</figcaption>
+</figure>
+
+<style>
+  .sctl-pair {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: 1.2rem;
+    align-items: center;
+  }
+
+  .sctl .sctl-pair p { margin: 0; }
+
+  .sctl-note {
+    display: grid;
+    gap: 0.3rem;
+    padding: 0.8rem;
+    border: 2px dashed var(--muted);
+    border-radius: var(--radius-md);
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1.35;
+    rotate: -2deg;
+  }
+
+  .sctl-clean {
+    display: grid;
+    gap: 0.4rem;
+    padding: 0.9rem 1rem 1rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    box-shadow: var(--shadow-block);
+    font-size: 0.95rem;
+    line-height: 1.45;
+  }
+
+  .sctl .sctl-h {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: var(--weight-display);
+  }
+
+  .sctl-clean b { background: var(--family-accent); }
+
+  .sctl figcaption {
+    margin-block-start: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 30rem) {
+    .sctl-pair { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>
