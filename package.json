@@ -7,6 +7,7 @@
     "dev": "astro dev",
     "build": "npm run content:check && npm run presentation:check && npm run parcours:check && npm run typecheck && astro build",
     "preview": "astro preview",
+    "prebuild": "node scripts/skill-zip.mjs",
     "kit:block-b": "node scripts/block-b-kit.mjs",
     "kit:block-b:check": "node scripts/block-b-kit.mjs --check",
     "qa:block-b": "node scripts/qa-block-b.mjs",

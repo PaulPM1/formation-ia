@@ -9,3 +9,6 @@ dist/
 .superpowers/brainstorm/*/state/
 .vercel
 .env.local
+
+# Régénéré à chaque build depuis kits/kit-projet.
+public/kits/setup-projet.zip

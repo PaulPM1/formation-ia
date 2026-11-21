@@ -1,0 +1,11 @@
+# Ce qui ne doit jamais partir en ligne : vos clés et vos secrets.
+.env*
+
+# Fichiers fabriqués automatiquement, inutiles à garder.
+node_modules/
+.next/
+.vercel
+
+# Fichiers système.
+.DS_Store
+Thumbs.db
