@@ -327,9 +327,14 @@ aucun paragraphe. Les decks suivent le skill
   ordonne les fonctionnalités au lieu de réduire l'idée, et la restitution du
   dimanche montre une première fonctionnalité qui marche et la suite prévue,
   pas un produit terminé.
-- **Git, Node et GitHub CLI sont installés par Claude**, pas par la personne :
-  une phrase à coller chez soi, qui se termine par un tableau « prêt ou pas
-  prêt » à renvoyer aux formateurs. Lien GitHub par `gh auth login` (un code à
+- **Git, Node et GitHub CLI sont installés par Claude, sur place** (décision de
+  Matthieu : des personnes totalement novices n'installent rien seules chez
+  elles ; ceci annule « avant de venir » plus haut). Premier geste du samedi
+  matin : tout le groupe colle la même phrase, les installations tournent
+  pendant le premier bloc de théorie, les formateurs contrôlent le tableau
+  « prêt ou pas prêt » à la pause. Chez soi : application, abonnement, compte
+  GitHub, rien d'autre. Prévoir clé USB d'installateurs et connexion de
+  secours. Lien GitHub par `gh auth login` (un code à
   coller, ni jeton ni clé). Guides manuels Mac et Windows, table des pannes
   classiques et plan B (session cloud) : `docs/atelier/installation-depannage.md`,
   fiche formateur. La brique d2-bis et la FAQ en tireront la version

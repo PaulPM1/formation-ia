@@ -1,7 +1,8 @@
 # Installation et dépannage : Git, Node, GitHub
 
-Fiche formateur. Elle sert à deux moments : avant la session (ce que chaque
-personne fait chez elle) et pendant (régler une panne en moins de cinq minutes).
+Fiche formateur. Toute l'installation se fait sur place, le samedi matin, avec
+les formateurs. Chez elle, la personne ne fait que ce qu'elle sait faire seule :
+installer l'application Claude, prendre l'abonnement, créer son compte GitHub.
 
 Principe : la personne ne tape aucune commande. Claude vérifie, installe et
 relie GitHub. Elle ne fait que trois gestes : cliquer « Oui » quand son
@@ -23,7 +24,7 @@ L'onglet Code fonctionne sans rien de tout cela (sur Windows sans Git, Claude
 passe par PowerShell). Donc Claude peut toujours démarrer, et c'est lui qui
 installe le reste.
 
-## 2. Le chemin normal : une phrase à coller chez soi
+## 2. Le chemin normal : une phrase à coller, tous ensemble, en arrivant
 
 Dans l'application Claude, onglet **Code**, session **Local**, n'importe quel
 dossier (par exemple un dossier « projets » créé dans le dossier personnel).
@@ -52,9 +53,23 @@ dois cliquer sur une fenêtre ou taper le mot de passe de mon ordinateur.
    setup-projet. Pour chacun : prêt ou pas prêt, et la version.
 ```
 
-Le tableau final est la preuve à demander dans le message de préparation
-(« envoyez-nous une capture du tableau »). Qui n'envoie rien ou envoie un « pas
-prêt » est traité avant le samedi, pas pendant.
+C'est le premier geste de la matinée, avant toute théorie : tout le monde colle
+la phrase en même temps, un formateur la projette et la fait avec le groupe.
+Les installations tournent ensuite pendant le premier bloc de théorie. Les
+formateurs passent voir les tableaux à la première pause et traitent les « pas
+prêt » avec les sections 3 et 5.
+
+Ce qu'il faut avoir préparé, parce que vingt téléchargements simultanés
+peuvent saturer le wifi du lieu :
+
+- une clé USB avec les installateurs de Node.js LTS, Git pour Windows et
+  GitHub CLI, pour Mac et pour Windows ;
+- un partage de connexion de secours ;
+- un ou deux ordinateurs déjà prêts à prêter.
+
+Sur Mac, les outils d'Apple (Git) se téléchargent chez Apple et prennent cinq à
+quinze minutes : c'est l'installation la plus lente, d'où l'intérêt de la
+lancer dès l'arrivée.
 
 `[ADRESSE DU ZIP]` : l'adresse publique de `kits/setup-projet.zip` sur le site
 de la formation, à renseigner une fois le site en ligne.
@@ -161,18 +176,10 @@ Cas typique : ordinateur de travail sans droits. Ne pas y passer la matinée.
 
 À prévoir : un ou deux ordinateurs de secours déjà préparés.
 
-## 7. Le samedi matin, cinq minutes
+## 7. Reprendre chez soi
 
-Chaque personne colle dans l'onglet Code :
-
-```text
-Vérifie que mon ordinateur est prêt : Git, Node.js, npm, gh, connexion GitHub,
-skill setup-projet. Donne-moi un tableau prêt ou pas prêt, et répare ce qui ne
-l'est pas.
-```
-
-Un formateur passe voir les tableaux. Tout ce qui n'est pas réglé en cinq
-minutes part en plan B.
+La machine reste prête après la session. Si un outil manque plus tard, la même
+phrase (section 2) répare : elle ne réinstalle que ce qui manque.
 
 ## Ce qui reste à tester
 
@@ -184,3 +191,4 @@ minutes part en plan B.
   locale de l'onglet Code (documenté), et qu'un zip téléversé par Customize
   aussi (non documenté).
 - Le comportement sur un ordinateur de travail réel.
+- Le débit du wifi du lieu avec tout le groupe qui installe en même temps.
