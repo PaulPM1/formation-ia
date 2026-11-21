@@ -8,12 +8,13 @@
 </div>
 
 <script>
-  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-copy]')) {
-    button.addEventListener('click', async () => {
-      const text = button.parentElement?.querySelector('[data-copy-text]')?.textContent?.trim() ?? '';
-      await navigator.clipboard.writeText(text);
-      button.textContent = 'Copié';
-      window.setTimeout(() => (button.textContent = 'Copier'), 1600);
-    });
-  }
+  // Délégué au document : fonctionne aussi après un changement de slide.
+  document.addEventListener('click', async (event) => {
+    const button = (event.target as Element | null)?.closest<HTMLButtonElement>('[data-copy]');
+    if (!button) return;
+    const text = button.parentElement?.querySelector('[data-copy-text]')?.textContent?.trim() ?? '';
+    await navigator.clipboard.writeText(text);
+    button.textContent = 'Copié';
+    window.setTimeout(() => (button.textContent = 'Copier'), 1600);
+  });
 </script>

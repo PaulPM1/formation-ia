@@ -1,0 +1,32 @@
+---
+// Des cartes à ranger dans deux cases, une par une. La salle crie la réponse,
+// le formateur clique, le score s'affiche à la fin.
+import type { RoutedSlide } from '../../../presentation/presentation-model';
+
+interface Props {
+  slide: RoutedSlide;
+}
+const { slide } = Astro.props;
+const { buckets = ['', ''], items = [] } = slide.visual.data as {
+  buckets?: [string, string];
+  items?: { label: string; bucket: 0 | 1; why?: string }[];
+};
+---
+
+<div class="slide-game" data-sort data-items={JSON.stringify(items)}>
+  <div class="slide-game__meta">
+    <span class="slide-game__dots" data-sort-dots>{items.map(() => <i></i>)}</span>
+    <span data-sort-score></span>
+    <button type="button" data-sort-replay hidden>Rejouer</button>
+  </div>
+  <p class="slide-game__card" data-sort-card>{items[0]?.label}</p>
+  <div class="slide-game__options">
+    <button type="button" data-bucket="0">{buckets[0]}</button>
+    <button type="button" data-bucket="1">{buckets[1]}</button>
+  </div>
+  <p class="slide-game__why" aria-live="polite" data-sort-why></p>
+</div>
+
+<script>
+  import './games';
+</script>

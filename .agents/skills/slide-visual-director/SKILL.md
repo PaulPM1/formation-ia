@@ -5,6 +5,29 @@ description: Conçoit, adapte et vérifie les visuels des slides Web de la forma
 
 # Directeur visuel des slides
 
+## Le format (session 2)
+
+Une slide montre, le formateur parle. Elle tient en un titre de 60 caractères
+au plus, trois points de 45 caractères au plus, et une des cinq formes de
+`src/presentation/presentation-model.ts` :
+
+- `cover` : le titre seul, en grand, pour ouvrir un deck.
+- `visual` : un visuel de `src/components/briques/`, désigné par son nom de
+  fichier (`data.name`), avec `data.props` s'il en attend. `data.layout: 'side'`
+  pose les points à gauche et le visuel à droite, pour un visuel étroit. Sans
+  lui, le visuel occupe la largeur sous le titre (fenêtres d'application,
+  animations à étapes). Pas de points sur une slide dont le visuel porte déjà
+  ses étapes ou sa légende.
+- `quiz` : une question, deux à quatre réponses, une seule bonne, un « pourquoi »
+  chacune. `sort` : cinq à sept cartes à ranger dans deux cases. La salle vote,
+  le formateur clique.
+- `demo` : la consigne d'une démonstration en direct, trois ou quatre gestes.
+
+Les visuels se créent avec le skill `creer-brique` (`.claude/skills/`) : une
+brique et sa slide partagent le même visuel. Référence à imiter :
+`src/presentation/manifests/b.ts`. Vérification obligatoire sur captures :
+`node scripts/slide-shot.mjs <brique> <dossier>`.
+
 ## Entrées obligatoires
 
 Lire la thèse, l'objectif pédagogique, la slide précédente, la slide suivante,

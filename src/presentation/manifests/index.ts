@@ -1,16 +1,17 @@
-import { flattenSlides } from '../presentation-validation';
 import type { PresentationDeck } from '../presentation-model';
+import { flattenSlides } from '../presentation-validation';
 import { A_DECKS } from './a';
+import { B_DECKS } from './b';
 import { C_DECKS } from './c';
 import { D_DECKS } from './d';
 import { E_DECKS } from './e';
 
+// L'ordre est celui de la matinée, porté par le champ `order` de chaque deck :
+// on prépare les ordinateurs (d2-bis), puis A, B, C, D, E.
 export const PRESENTATION_DECKS: PresentationDeck[] = [
-  ...A_DECKS,
-  ...C_DECKS,
-  ...D_DECKS,
-  ...E_DECKS,
-];
+  ...A_DECKS, ...B_DECKS, ...C_DECKS, ...D_DECKS, ...E_DECKS,
+].toSorted((left, right) => left.order - right.order);
+
 export const PRESENTATION_SLIDES = flattenSlides(PRESENTATION_DECKS);
 
 export function getPresentationSlide(brickId: string, slideId: string) {

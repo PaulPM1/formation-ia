@@ -1,22 +1,9 @@
 ---
 import type { RoutedSlide, SlideVisualKey } from '../../presentation/presentation-model';
-import CheckpointScene from './scenes/CheckpointScene.astro';
-import MissionBoard from './scenes/MissionBoard.astro';
-import ResourceRail from './scenes/ResourceRail.astro';
-import StaticConceptScene from './scenes/StaticConceptScene.astro';
-import ContextComparison from './visuals/a/ContextComparison.astro';
-import ContextBudget from './visuals/a/ContextBudget.astro';
-import ModelCostGuide from './visuals/a/ModelCostGuide.astro';
-import SolutionComparison from './visuals/a/SolutionComparison.astro';
-import SolutionPrioritizer from './visuals/a/SolutionPrioritizer.astro';
-import TokenPredictor from './visuals/a/TokenPredictor.astro';
-import VerificationAudit from './visuals/a/VerificationAudit.astro';
-import IpmtrLoop from './visuals/b/IpmtrLoop.astro';
-import PromptBuilder from './visuals/b/PromptBuilder.astro';
-import SetupDiagnostic from './visuals/b/SetupDiagnostic.astro';
-import McpConnectionMap from './visuals/c/McpConnectionMap.astro';
-import SkillAnatomy from './visuals/c/SkillAnatomy.astro';
-import TriggerTimeline from './visuals/c/TriggerTimeline.astro';
+import DemoScene from './scenes/DemoScene.astro';
+import QuizScene from './scenes/QuizScene.astro';
+import SortScene from './scenes/SortScene.astro';
+import VisualScene from './scenes/VisualScene.astro';
 
 interface Props {
   slide: RoutedSlide;
@@ -24,30 +11,16 @@ interface Props {
 
 const { slide } = Astro.props;
 
+// `cover` n'a pas de scène : le titre occupe toute la slide.
 const sceneRegistry = {
-  'mission-board': MissionBoard,
-  checkpoint: CheckpointScene,
-  'resource-rail': ResourceRail,
-  'token-predictor': TokenPredictor,
-  'context-comparison': ContextComparison,
-  'solution-comparison': SolutionComparison,
-  'solution-prioritizer': SolutionPrioritizer,
-  'model-cost-guide': ModelCostGuide,
-  'context-budget': ContextBudget,
-  'verification-audit': VerificationAudit,
-  'setup-diagnostic': SetupDiagnostic,
-  'prompt-builder': PromptBuilder,
-  'ipmtr-loop': IpmtrLoop,
-  'skill-anatomy': SkillAnatomy,
-  'mcp-connection-map': McpConnectionMap,
-  'trigger-timeline': TriggerTimeline,
-} satisfies Record<SlideVisualKey, typeof StaticConceptScene>;
+  cover: null,
+  visual: VisualScene,
+  quiz: QuizScene,
+  sort: SortScene,
+  demo: DemoScene,
+} satisfies Record<SlideVisualKey, unknown>;
 
 const Scene = sceneRegistry[slide.visual.key];
-
-if (!Scene) {
-  throw new Error(`Clé visuelle inconnue : ${String(slide.visual.key)}`);
-}
 ---
 
-<Scene slide={slide} />
+{Scene && <Scene slide={slide} />}

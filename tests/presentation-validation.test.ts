@@ -19,8 +19,8 @@ const deck: PresentationDeck = {
       id: 'a1-opening',
       role: 'opening',
       claim: 'Une réponse fluide n’est pas une preuve.',
-      visual: { key: 'token-predictor', data: {} },
-      links: [wikiLink('a1', 'concept-durable', 'Approfondir')],
+      visual: { key: 'visual', data: { name: 'NextWord' } },
+      links: [wikiLink('a1', 'comprendre', 'Approfondir')],
       speaker: { durationMinutes: 2, notes: 'Faire observer.', transition: 'Montrer le contexte.' },
       accessibleDescription: 'Le contexte alimente une prédiction token par token.',
     },
@@ -72,7 +72,7 @@ test('rejette des decks valides fournis dans l’ordre inverse', () => {
 test('rejette une slide dont l’identité, le rôle ou le contrat visuel sont invalides', () => {
   assert.ok(validatePresentation([invalidSlide({ id: 'b1-opening' })]).some((issue) => issue.includes('n’appartient pas')));
   assert.ok(validatePresentation([invalidSlide({ role: 'quiz' })]).some((issue) => issue.includes('Rôle invalide')));
-  assert.ok(validatePresentation([invalidSlide({ visual: { key: 'token-predictor', data: null } })]).some((issue) => issue.includes('Données visuelles invalides')));
+  assert.ok(validatePresentation([invalidSlide({ visual: { key: 'visual', data: null } })]).some((issue) => issue.includes('Données visuelles invalides')));
   assert.ok(validatePresentation([invalidSlide({ visual: { key: '', data: {} } })]).some((issue) => issue.includes('Visuel inconnu')));
 });
 
@@ -80,9 +80,9 @@ test('rejette les notes formateur et les liens incomplets', () => {
   assert.ok(validatePresentation([invalidSlide({ speaker: { durationMinutes: 0, notes: 'Note', transition: 'Suite' } })]).some((issue) => issue.includes('Durée formateur invalide')));
   assert.ok(validatePresentation([invalidSlide({ speaker: { durationMinutes: 1, notes: ' ', transition: 'Suite' } })]).some((issue) => issue.includes('Notes formateur vides')));
   assert.ok(validatePresentation([invalidSlide({ speaker: { durationMinutes: 1, notes: 'Note', transition: ' ' } })]).some((issue) => issue.includes('Transition formateur vide')));
-  assert.ok(validatePresentation([invalidSlide({ links: [{ ...wikiLink('a1', 'concept-durable', 'Approfondir'), label: ' ' }] })]).some((issue) => issue.includes('Libellé de lien vide')));
-  assert.ok(validatePresentation([invalidSlide({ links: [{ ...wikiLink('a1', 'concept-durable', 'Approfondir'), target: '_self' }] })]).some((issue) => issue.includes('Cible de lien invalide')));
-  assert.ok(validatePresentation([invalidSlide({ links: [{ ...wikiLink('a1', 'concept-durable', 'Approfondir'), rel: 'noopener' }] })]).some((issue) => issue.includes('Relation de lien invalide')));
+  assert.ok(validatePresentation([invalidSlide({ links: [{ ...wikiLink('a1', 'comprendre', 'Approfondir'), label: ' ' }] })]).some((issue) => issue.includes('Libellé de lien vide')));
+  assert.ok(validatePresentation([invalidSlide({ links: [{ ...wikiLink('a1', 'comprendre', 'Approfondir'), target: '_self' }] })]).some((issue) => issue.includes('Cible de lien invalide')));
+  assert.ok(validatePresentation([invalidSlide({ links: [{ ...wikiLink('a1', 'comprendre', 'Approfondir'), rel: 'noopener' }] })]).some((issue) => issue.includes('Relation de lien invalide')));
 });
 
 test('construit uniquement des liens wiki canoniques', () => {

@@ -51,43 +51,37 @@ Statuts autorisés : `a-rediger`, `en-cours`, `a-relire`, `validee`.
 
 ## Prolonger les slides
 
-Le mode formateur est disponible sur `/presenter/`. Les blocs A à E sont
-complets. Pour conserver la même structure et le même langage visuel en
-ajoutant ou en retouchant une slide :
+Le mode formateur est disponible sur `/presenter/` : un deck par brique, dans
+l'ordre de la matinée. Les slides montrent, le formateur parle.
 
 1. Invoquer `$slide-visual-director` avant de concevoir ou de modifier une
    slide. Le nombre de slides est dicté par la compréhension du concept, jamais
-   par un quota automatique ; chaque slide doit rester claire à survoler.
-2. Ajouter ou modifier le manifeste de la famille dans
-   `src/presentation/manifests/`. Une slide déclare sa thèse, son support, son
-   visuel, ses liens, ses notes formateur et sa description accessible.
-3. Réutiliser un composant visuel existant ou créer celui retenu avec le skill
-   dans `src/components/presentation/visuals/`, puis l’enregistrer dans
-   `VisualRegistry.astro`. Le visuel porte l’explication ; le texte la complète.
-4. Ajouter seulement des états et interactions qui rendent le concept plus
-   compréhensible. Le premier état doit déjà expliquer la slide sans JavaScript.
-5. Construire les liens avec `wikiLink` ou `externalLink` depuis
-   `src/presentation/presentation-links.ts`. Les liens wiki doivent cibler la
-   brique et, si utile, son ancre exacte. Les ressources et téléchargements
-   pointent vers les sites officiels ; le composant commun les ouvre dans un
-   nouvel onglet avec `target="_blank"` et `rel="noopener noreferrer"`.
-6. Contrôler au clavier les boutons, le sommaire, les notes, les liens et les
-   états finaux. Vérifier aussi `prefers-reduced-motion`, le rendu sans
-   JavaScript et l’absence de débordement sur mobile et au projecteur.
-7. Exécuter les contrôles avant de fusionner :
+   par un quota automatique.
+2. Modifier le manifeste de la famille dans `src/presentation/manifests/`.
+   Une slide déclare son titre, trois points au plus, sa forme, ses liens, ses
+   notes formateur et sa description accessible.
+3. Choisir une des cinq formes (`src/presentation/presentation-model.ts`) :
+   `cover` (titre seul), `visual` (un visuel de `src/components/briques/`,
+   désigné par son nom de fichier), `quiz`, `sort` (deux mini-jeux) et `demo`
+   (la consigne d'une démonstration en direct). Un visuel créé pour une brique
+   est aussitôt disponible pour sa slide.
+4. Construire les liens avec `wikiLink` ou `externalLink` depuis
+   `src/presentation/presentation-links.ts`.
+5. Regarder le résultat : `node scripts/slide-shot.mjs <brique> <dossier>`
+   capture chaque slide du deck au format d'un vidéoprojecteur et sur
+   téléphone, et signale ce qui dépasse de l'écran.
+6. Exécuter les contrôles avant de fusionner :
 
    ```bash
    npm test
    npm run presentation:check
    npm run typecheck
    npm run build
-   npm run qa:presenter
-   npm run qa:block-c
    ```
 
-`presentation:check` reste local : il valide les 59 slides actuellement,
-ainsi que l’origine canonique du wiki, les identifiants de briques
-et les ancres produites par le moteur Markdown du site, sans requête réseau.
+`presentation:check` reste local : il valide toutes les slides, l’origine
+canonique du wiki, les identifiants de briques et les ancres produites par le
+moteur Markdown du site, sans requête réseau.
 
 ## Ajouter une brique
 

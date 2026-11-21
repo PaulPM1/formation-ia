@@ -15,11 +15,12 @@ const contentDirectory = fileURLToPath(
 );
 
 function deckWithWikiLink(link: PresentationLink): PresentationDeck[] {
-  const sourceDeck = PRESENTATION_DECKS[0];
+  const sourceDeck = PRESENTATION_DECKS.find((deck) => deck.brickId === 'a1')!;
   const sourceSlide = sourceDeck.slides[0];
 
   return [{
     ...sourceDeck,
+    order: 1,
     slides: [{ ...sourceSlide, links: [link] }],
   }];
 }
@@ -34,11 +35,14 @@ function wikiLink(href: string): PresentationLink {
   };
 }
 
-test('contrôle les 59 slides et leurs cibles wiki sans accès réseau', async () => {
+test('contrôle toutes les slides et leurs cibles wiki sans accès réseau', async () => {
   const documents = await loadBrickDocuments(contentDirectory);
   const result = await checkPresentation(PRESENTATION_DECKS, documents);
 
-  assert.equal(result.slideCount, 59);
+  assert.equal(
+    result.slideCount,
+    PRESENTATION_DECKS.reduce((sum, deck) => sum + deck.slides.length, 0),
+  );
   assert.deepEqual(result.issues, []);
 });
 
@@ -60,17 +64,18 @@ test('signale une brique wiki inconnue avec la slide et la cible', async () => {
   );
 
   assert.equal(result.issues.length, 1);
-  assert.match(result.issues[0], /a1-opening/);
+  assert.match(result.issues[0], /a1-/);
   assert.match(result.issues[0], /brique wiki inconnue/i);
   assert.match(result.issues[0], /z9/);
 });
 
 test('signale un manifeste rattaché à une brique source inconnue', async () => {
   const documents = await loadBrickDocuments(contentDirectory);
-  const sourceDeck = PRESENTATION_DECKS[0];
+  const sourceDeck = PRESENTATION_DECKS.find((deck) => deck.brickId === 'a1')!;
   const result = await checkPresentation(
     [{
       ...sourceDeck,
+      order: 1,
       brickId: 'f9',
       family: 'f',
       slides: [{ ...sourceDeck.slides[0], id: 'f9-opening', links: [] }],

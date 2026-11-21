@@ -1,0 +1,18 @@
+---
+// La consigne d'une démonstration en direct : ce que le formateur fait à
+// l'écran, en quatre gestes au plus.
+import type { RoutedSlide } from '../../../presentation/presentation-model';
+
+interface Props {
+  slide: RoutedSlide;
+}
+const { slide } = Astro.props;
+const { steps = [], tag = 'Démonstration en direct' } = slide.visual.data as { steps?: string[]; tag?: string };
+---
+
+<div class="slide-demo">
+  <p class="slide-demo__tag">{tag}</p>
+  <ol>
+    {steps.map((step, index) => <li style={`--i: ${index}`}>{step}</li>)}
+  </ol>
+</div>

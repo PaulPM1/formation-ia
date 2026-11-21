@@ -3,10 +3,13 @@ import PresentationLayout from '../../layouts/PresentationLayout.astro';
 import { PRESENTATION_DECKS } from '../../presentation/manifests';
 
 const familyLabels = {
-  a: 'Comprendre',
-  b: 'Choisir ses interfaces',
-  c: 'Étendre ses outils',
+  a: "Comprendre l'IA",
+  b: 'Prendre Claude en main',
+  c: 'Étendre Claude',
+  d: 'Le minimum pour construire',
+  e: 'La méthode',
 } as const;
+const first = PRESENTATION_DECKS[0];
 
 const families = Object.entries(
   Object.groupBy(PRESENTATION_DECKS, (deck) => deck.family),
@@ -19,8 +22,8 @@ const trackLabels = { core: '', optional: 'Facultatif', recovery: 'Rattrapage' }
     <header>
       <p class="presentation-kicker">Support formateur</p>
       <h1 id="presenter-title">Les briques du Vibe Coding</h1>
-      <p>Un parcours visuel pour comprendre, pratiquer et transmettre le Vibe Coding.</p>
-      <a class="presentation-start" href="/presenter/a1/a1-opening/">Commencer la présentation</a>
+      <p>Le samedi matin en images : comprendre, prendre Claude en main, puis lancer son projet.</p>
+      <a class="presentation-start" href={`/presenter/${first.brickId}/${first.slides[0].id}/`}>Commencer la présentation</a>
     </header>
 
     <nav aria-label="Sommaire de la présentation">

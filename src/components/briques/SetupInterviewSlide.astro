@@ -1,0 +1,13 @@
+---
+// SetupInterview pour la slide E3 : même visuel, sans le menu latéral et sans
+// hauteur minimale, pour tenir sur un écran de vidéoprojecteur.
+import SetupInterview from './SetupInterview.astro';
+---
+
+<div class="sis"><SetupInterview /></div>
+
+<style>
+  .sis :global(.ca-side) { display: none; }
+  .sis :global(.ca-body) { grid-template-columns: minmax(0, 1fr); }
+  .sis :global(.si .ca-thread) { min-block-size: 0; }
+</style>

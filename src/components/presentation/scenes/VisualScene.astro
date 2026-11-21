@@ -1,0 +1,27 @@
+---
+// Rend un visuel de brique dans une slide. Le registre se construit tout seul
+// à partir de src/components/briques/ : un visuel créé pour une brique est
+// aussitôt disponible pour sa slide, sous le nom de son fichier.
+import type { RoutedSlide } from '../../../presentation/presentation-model';
+
+interface Props {
+  slide: RoutedSlide;
+}
+
+const modules = import.meta.glob('../../briques/*.astro', { eager: true });
+const registry = Object.fromEntries(
+  Object.entries(modules).map(([path, module]) => [
+    path.split('/').pop()!.replace('.astro', ''),
+    (module as { default: unknown }).default,
+  ]),
+);
+
+const { slide } = Astro.props;
+const { name, props = {} } = slide.visual.data as { name: string; props?: Record<string, unknown> };
+const Visual = registry[name] as any;
+if (!Visual) throw new Error(`Visuel de brique inconnu : ${name} (slide ${slide.id})`);
+---
+
+<div class="brick-content slide-brique">
+  <Visual {...props} />
+</div>

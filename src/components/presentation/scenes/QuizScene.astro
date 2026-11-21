@@ -1,0 +1,31 @@
+---
+// Une question, la salle vote à main levée, le formateur clique : la bonne
+// réponse s'allume et son explication s'affiche.
+import type { RoutedSlide } from '../../../presentation/presentation-model';
+
+interface Props {
+  slide: RoutedSlide;
+}
+const { slide } = Astro.props;
+const { question, options = [] } = slide.visual.data as {
+  question?: string;
+  options?: { label: string; correct?: boolean; why: string }[];
+};
+---
+
+<div class="slide-game" data-quiz>
+  {question && <p class="slide-game__prompt">{question}</p>}
+  <div class="slide-game__options">
+    {options.map((option) => (
+      <button type="button" data-correct={option.correct ? 'true' : 'false'} data-why={option.why}>{option.label}</button>
+    ))}
+  </div>
+  <p class="slide-game__why" aria-live="polite" data-quiz-why></p>
+  <noscript>
+    <ul>{options.map((option) => <li>{option.label} : {option.why}</li>)}</ul>
+  </noscript>
+</div>
+
+<script>
+  import './games';
+</script>

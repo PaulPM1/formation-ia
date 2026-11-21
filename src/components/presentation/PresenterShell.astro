@@ -1,7 +1,6 @@
 ---
 import { PRESENTATION_DECKS } from '../../presentation/manifests';
 import type { RoutedSlide } from '../../presentation/presentation-model';
-import ResourceRail from './scenes/ResourceRail.astro';
 import VisualRegistry from './VisualRegistry.astro';
 
 interface Props {
@@ -13,20 +12,30 @@ interface Props {
 const { slide, previous, next } = Astro.props;
 const trackLabels = { core: '', optional: 'Facultatif', recovery: 'Rattrapage' } as const;
 const slideTrackLabel = slide.track === 'core' ? null : trackLabels[slide.track];
+const layout = slide.visual.data.layout === 'side' ? 'side' : 'stack';
 ---
 
-<article class="presentation-stage presentation-slide" data-family={slide.family} data-track={slide.track} aria-labelledby="slide-title">
-  <header class="presentation-heading">
-    <p>
-      <span>{slide.brickId.toUpperCase()} · {slide.brickTitle}</span>
-      {slideTrackLabel && <span class="presentation-heading__track">{slideTrackLabel}</span>}
-    </p>
-    <h1 id="slide-title" tabindex="-1">{slide.claim}</h1>
-    {slide.support && <p class="presentation-support">{slide.support}</p>}
-  </header>
-  <VisualRegistry slide={slide} />
-  {slide.visual.key !== 'resource-rail' && <ResourceRail links={slide.links} />}
-</article>
+<div class="presentation-stage" data-family={slide.family} data-track={slide.track}>
+  <article class="presentation-slide" data-visual={slide.visual.key} data-layout={layout} aria-labelledby="slide-title">
+    <header class="presentation-heading">
+      <p class="presentation-kicker">
+        <b>{slide.brickId.toUpperCase()}</b>
+        <span>{slide.brickTitle}</span>
+        {slideTrackLabel && <span class="presentation-heading__track">{slideTrackLabel}</span>}
+      </p>
+      <h1 id="slide-title" tabindex="-1">{slide.claim}</h1>
+      {slide.support && <p class="presentation-support">{slide.support}</p>}
+      {slide.bullets && (
+        <ul class="presentation-bullets">
+          {slide.bullets.map((bullet, index) => <li style={`--i: ${index}`}>{bullet}</li>)}
+        </ul>
+      )}
+    </header>
+    <div class="slide-body">
+      <VisualRegistry slide={slide} />
+    </div>
+  </article>
+</div>
 
 <nav class="presentation-controls" aria-label="Navigation des slides">
   {previous
@@ -61,6 +70,11 @@ const slideTrackLabel = slide.track === 'core' ? null : trackLabels[slide.track]
   <h2 id="notes-title">Notes formateur</h2>
   <p>{slide.speaker.notes}</p>
   <p><strong>Transition :</strong> {slide.speaker.transition}</p>
+  {slide.links.length > 0 && (
+    <ul class="resource-links">
+      {slide.links.map((link) => <li><a href={link.href} target={link.target} rel={link.rel}>{link.label}</a></li>)}
+    </ul>
+  )}
   <button type="button" data-dialog-close>Fermer</button>
 </dialog>
 

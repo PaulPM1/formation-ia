@@ -5,13 +5,19 @@ export const SLIDE_ROLES = [
   'checkpoint', 'resources', 'transition',
 ] as const;
 
-export const SLIDE_VISUAL_KEYS = [
-  'mission-board', 'checkpoint', 'resource-rail',
-  'token-predictor', 'context-comparison', 'solution-comparison',
-  'solution-prioritizer', 'model-cost-guide', 'context-budget', 'verification-audit',
-  'setup-diagnostic', 'prompt-builder', 'ipmtr-loop',
-  'skill-anatomy', 'mcp-connection-map', 'trigger-timeline',
-] as const;
+/**
+ * Cinq formes de slide, pas une de plus :
+ * - `cover` : un titre seul, en grand ;
+ * - `visual` : un visuel de brique (`data.name`, fichier de
+ *   `src/components/briques/`), avec `data.props` et `data.layout` (`side`
+ *   pour un visuel étroit posé à droite des points) ;
+ * - `quiz` : une question, des réponses, une seule bonne ;
+ * - `sort` : des cartes à ranger dans deux cases ;
+ * - `demo` : la consigne d'une démonstration en direct.
+ */
+export const SLIDE_VISUAL_KEYS = ['cover', 'visual', 'quiz', 'sort', 'demo'] as const;
+
+export const MAX_BULLETS = 3;
 
 export type SlideRole = (typeof SLIDE_ROLES)[number];
 export type SlideVisualKey = (typeof SLIDE_VISUAL_KEYS)[number];
@@ -29,8 +35,11 @@ export type PresentationLink = {
 export type PresentationSlide = {
   id: string;
   role: SlideRole;
+  /** Le titre de la slide : une phrase courte, lue en deux secondes. */
   claim: string;
   support?: string;
+  /** Trois points au plus, quelques mots chacun. */
+  bullets?: string[];
   visual: { key: SlideVisualKey; data: Record<string, unknown> };
   links: PresentationLink[];
   speaker: { durationMinutes: number; notes: string; transition: string };

@@ -2,7 +2,9 @@
 // [data-step-to] y sautent, la lecture démarre quand le visuel entre à l'écran.
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-for (const root of document.querySelectorAll<HTMLElement>('[data-stepper]')) {
+const init = () => {
+for (const root of document.querySelectorAll<HTMLElement>('[data-stepper]:not([data-stepper-ready])')) {
+  root.dataset.stepperReady = '';
   const buttons = [...root.querySelectorAll<HTMLElement>('[data-step-to]')];
   const texts = [...root.querySelectorAll<HTMLElement>('[data-step-text]')];
   const replay = root.querySelector<HTMLButtonElement>('[data-step-replay]');
@@ -24,6 +26,7 @@ for (const root of document.querySelectorAll<HTMLElement>('[data-stepper]')) {
     if (replay) replay.hidden = true;
     show(1);
     timer = window.setInterval(() => {
+      if (!root.isConnected) return stop();
       const next = Number(root.dataset.step) + 1;
       if (next > last) stop();
       else show(next);
@@ -50,3 +53,8 @@ for (const root of document.querySelectorAll<HTMLElement>('[data-stepper]')) {
   );
   observer.observe(root);
 }
+};
+
+// Sur les slides, le ClientRouter remplace le <body> : on réinitialise à chaque page.
+init();
+document.addEventListener('astro:page-load', init);

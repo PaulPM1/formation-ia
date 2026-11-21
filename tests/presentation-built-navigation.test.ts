@@ -33,7 +33,7 @@ test('le HTML généré expose la navigation active sur l’index et une slide',
       readFile(path.join(outputDirectory, 'presenter/index.html'), 'utf8'),
       readFile(path.join(
         outputDirectory,
-        'presenter/a1/a1-opening/index.html',
+        'presenter/b2/b2-boucle/index.html',
       ), 'utf8'),
       readFile(path.join(outputDirectory, '404.html'), 'utf8'),
     ]);
