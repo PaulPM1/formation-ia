@@ -1,0 +1,31 @@
+---
+// Les boutons d'étape et la phrase qui accompagne chaque étape d'un visuel
+// animé. Le script (stepper.ts) pilote l'attribut data-step du parent.
+interface Props {
+  steps: { label: string; text: string }[];
+}
+const { steps } = Astro.props;
+---
+
+<figcaption class="step-rail">
+  <ol style={`--steps: ${steps.length}`}>
+    {steps.map((step, index) => (
+      <li>
+        <button type="button" data-step-to={index + 1} aria-current={index === steps.length - 1 ? 'true' : 'false'}>
+          <b>{index + 1}</b>
+          <span>{step.label}</span>
+        </button>
+      </li>
+    ))}
+  </ol>
+  <div aria-live="polite">
+    {steps.map((step, index) => (
+      <p data-step-text={index + 1} hidden={index !== steps.length - 1}>{step.text}</p>
+    ))}
+  </div>
+  <button type="button" class="step-replay" data-step-replay hidden>Rejouer</button>
+</figcaption>
+
+<script>
+  import './stepper';
+</script>

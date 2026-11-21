@@ -4,11 +4,6 @@ import { getCollection, render, type CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import {
   FAMILY_LABELS,
-  getStructureCompletion,
-  OWNER_LABELS,
-  PRIORITY_LABELS,
-  STATUS_LABELS,
-  TYPE_LABELS,
 } from '../../content/brick-view';
 
 export async function getStaticPaths() {
@@ -25,7 +20,6 @@ interface Props {
 
 const { brick } = Astro.props;
 const { Content } = await render(brick);
-const structure = getStructureCompletion(brick.body ?? '', brick.data.type);
 ---
 
 <BaseLayout
@@ -39,46 +33,11 @@ const structure = getStructureCompletion(brick.body ?? '', brick.data.type);
       <div class="detail-title">
         <p class="eyebrow">
           Bloc {brick.data.family.toUpperCase()} · {FAMILY_LABELS[brick.data.family]}
+          {brick.data.durationMinutes && ` · ${brick.data.durationMinutes} min`}
         </p>
         <h1><span>{brick.data.id.toUpperCase()}</span>{brick.data.title}</h1>
       </div>
     </header>
-
-    <dl class="brick-fiche">
-      <div>
-        <dt>Priorité</dt>
-        <dd>{PRIORITY_LABELS[brick.data.priority]}</dd>
-      </div>
-      <div>
-        <dt>Format</dt>
-        <dd>{TYPE_LABELS[brick.data.type]}</dd>
-      </div>
-      <div>
-        <dt>Durée</dt>
-        <dd>{brick.data.durationMinutes ? `${brick.data.durationMinutes} min` : 'À définir'}</dd>
-      </div>
-      <div>
-        <dt>Statut</dt>
-        <dd>{STATUS_LABELS[brick.data.status]}</dd>
-      </div>
-      <div>
-        <dt>Responsable</dt>
-        <dd>{OWNER_LABELS[brick.data.owner]}</dd>
-      </div>
-      <div class="structure-meter">
-        <div>
-          <label for="structure-progress">Structure</label>
-          <span>{structure.complete}/{structure.total}</span>
-        </div>
-        <progress
-          id="structure-progress"
-          value={structure.complete}
-          max={structure.total}
-        >
-          {structure.percentage}%
-        </progress>
-      </div>
-    </dl>
 
     <article class="brick-content">
       <Content />

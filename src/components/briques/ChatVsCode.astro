@@ -1,0 +1,91 @@
+---
+// La même demande dans les deux onglets : Chat répond, Code construit.
+import ClaudeApp from './ClaudeApp.astro';
+import Icon from './Icon.astro';
+---
+
+<figure class="ca-figure is-narrow cv">
+  <div class="cv-pair">
+    <div>
+      <ClaudeApp mode="chat" sidebar={false} title="Chat">
+        <div class="ca-thread">
+          <p class="ca-you">Fais-moi une page pour mes recettes.</p>
+          <div class="ca-claude">
+            <p class="ca-say">Voici le code de la page. Copiez-le dans un fichier :</p>
+            <p class="cv-code">&lt;h1&gt;Recettes&lt;/h1&gt;<br />&lt;ul&gt;<br />&nbsp;&nbsp;&lt;li&gt;Gratin…</p>
+          </div>
+        </div>
+      </ClaudeApp>
+      <figcaption><b>Chat</b> vous répond. Le reste est à vous.</figcaption>
+    </div>
+    <div>
+      <ClaudeApp mode="code" sidebar={false} title="Code">
+        <div class="ca-thread">
+          <p class="ca-you">Fais-moi une page pour mes recettes.</p>
+          <div class="ca-claude">
+            <p class="ca-tool"><i></i>Wrote 3 files</p>
+            <ul class="cv-tree">
+              <li><Icon name="folder" />mes-recettes</li>
+              <li><Icon name="file" />index.html</li>
+              <li><Icon name="file" />style.css</li>
+              <li><Icon name="file" />recettes.js</li>
+            </ul>
+          </div>
+        </div>
+      </ClaudeApp>
+      <figcaption><b>Code</b> construit dans votre dossier.</figcaption>
+    </div>
+  </div>
+</figure>
+
+<style>
+  .cv-pair {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .cv :global(.ca-thread) {
+    justify-content: flex-start;
+    min-block-size: 12.5rem;
+  }
+
+  .cv figcaption {
+    margin-block-start: 0.8rem;
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+
+  .cv .cv-code {
+    padding: 0.5rem 0.65rem;
+    border-radius: 8px;
+    background: #111110;
+    color: var(--app-soft);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+  }
+
+  .cv .cv-tree {
+    display: grid;
+    gap: 0.25rem;
+    margin: 0.2rem 0 0;
+    padding: 0.55rem 0.65rem;
+    border: 1px solid var(--app-line);
+    border-radius: 8px;
+    list-style: none;
+  }
+
+  .cv .cv-tree li {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--app-soft);
+    animation: ca-in 0.4s ease both;
+  }
+
+  .cv .cv-tree li:not(:first-child) { padding-inline-start: 1.1rem; }
+
+  @media (max-width: 30rem) {
+    .cv-pair { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

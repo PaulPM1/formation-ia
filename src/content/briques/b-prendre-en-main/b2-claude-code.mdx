@@ -15,44 +15,68 @@ learningObjective: "Ouvrir un dossier dans l'onglet Code, demander une première
 expectedOutcome: "Une page affichée dans l'aperçu, modifiée une fois à votre demande, et un fichier CLAUDE.md qui décrit votre projet."
 ---
 
+import ChatVsCode from '../../../components/briques/ChatVsCode.astro';
 import ClaudeCodeLoop from '../../../components/briques/ClaudeCodeLoop.astro';
+import ClaudeMemory from '../../../components/briques/ClaudeMemory.astro';
+import OpenFolder from '../../../components/briques/OpenFolder.astro';
+import PermissionCard from '../../../components/briques/PermissionCard.astro';
+import PromptCopy from '../../../components/briques/PromptCopy.astro';
 
 ## L'essentiel
 
-- Dans l'onglet **Code**, Claude ne se contente plus de répondre : il travaille dans un dossier de votre ordinateur, où il lit, écrit et lance les fichiers lui-même.
-- Votre rôle tient en trois gestes : demander, regarder, corriger.
-- Un fichier, `CLAUDE.md`, lui sert de mémoire d'une conversation à l'autre.
+Dans l'onglet **Code**, Claude travaille dans un dossier de votre ordinateur. Vous demandez, vous regardez, vous corrigez.
 
 <ClaudeCodeLoop />
 
-## Comprendre
-
-**Un dossier, pas une discussion.** Dans l'onglet Chat, Claude vous répond. Dans l'onglet Code, vous lui ouvrez un dossier et il y construit votre projet, fichier après fichier.
-
-**L'aperçu est votre juge.** Vous n'avez pas à lire le code. Vous regardez ce qui s'affiche et vous dites si c'est ce que vous vouliez.
-
-**Il demande avant d'agir.** Avant de lancer une commande ou d'installer un outil, Claude vous demande la permission. Lisez sa phrase, puis acceptez si elle correspond à ce que vous avez demandé.
-
-**`CLAUDE.md` est sa mémoire.** Une nouvelle conversation repart de zéro, sauf pour ce qui est écrit dans ce fichier. Votre projet, vos préférences, vos interdits : tout ce qui doit durer s'y trouve.
-
 ## À essayer
 
-1. Créez un dossier vide et ouvrez-le dans l'onglet **Code**, en session locale.
-2. Écrivez : « Crée une page qui présente mon plat préféré, avec un titre, une photo et la recette. Montre-la-moi dans l'aperçu. »
-3. Demandez un changement qui se voit : « Mets un fond plus chaleureux et le titre plus grand. »
-4. Écrivez : « Note dans un fichier CLAUDE.md ce qu'est ce projet et comment je veux que tu me parles. »
+**1. Ouvrez un dossier vide dans l'onglet Code.**
+
+<OpenFolder />
+
+**2. Demandez une première page.**
+
+<PromptCopy>Crée une page qui présente mon plat préféré, avec un titre, une photo et la recette. Montre-la-moi dans l'aperçu.</PromptCopy>
+
+**3. Demandez un changement qui se voit.**
+
+<PromptCopy>Mets un fond plus chaleureux et le titre plus grand.</PromptCopy>
+
+**4. Faites-lui écrire sa mémoire.**
+
+<PromptCopy>Note dans un fichier CLAUDE.md ce qu'est ce projet et comment je veux que tu me parles.</PromptCopy>
+
+## Comprendre
+
+<div class="idea">
+  <div>
+    <h3>Chat répond, Code construit</h3>
+    <p>La même demande, deux résultats. Dans Code, les fichiers existent vraiment, dans votre dossier.</p>
+  </div>
+  <ChatVsCode />
+</div>
+
+<div class="idea">
+  <div>
+    <h3>Il demande avant d'agir</h3>
+    <p>Avant de lancer une commande ou d'installer un outil, Claude attend votre accord.</p>
+  </div>
+  <PermissionCard />
+</div>
+
+### CLAUDE.md est sa mémoire
+
+<ClaudeMemory />
 
 <details class="hint">
   <summary>Pour aller plus loin</summary>
   <p><strong>Quand la conversation s'allonge.</strong> Claude perd le fil des longues conversations. Ouvrez-en une nouvelle dans le même dossier : <code>CLAUDE.md</code> suffit pour reprendre.</p>
-  <p><strong>Session locale ou session cloud.</strong> En local, le projet vit sur votre ordinateur et le résultat s'affiche tout de suite dans l'aperçu. En cloud, il vit chez Anthropic à partir d'un dépôt GitHub : rien à installer, mais vous ne voyez le résultat qu'une fois le projet mis en ligne.</p>
-  <p><strong>Les permissions.</strong> Vous pouvez laisser Claude modifier les fichiers sans demander à chaque fois. Gardez la demande de permission pour les commandes tant que vous débutez.</p>
   <p>Documentation officielle : <a href="https://code.claude.com/docs/en/desktop">Claude Code dans l'application de bureau</a>.</p>
 </details>
 
 <details class="hint">
   <summary>Notes formateur</summary>
-  <p><strong>Démonstration en direct, dix minutes.</strong> Partez d'un dossier vide, projeté. Faites la demande de l'étape 2 à voix haute avant de l'écrire, laissez le groupe lire la demande de permission avec vous, puis montrez l'aperçu. Demandez à la salle la correction de l'étape 3 : c'est elle qui dicte.</p>
+  <p><strong>Démonstration en direct, dix minutes.</strong> Partez d'un dossier vide, projeté. Faites la première demande à voix haute avant de l'écrire, laissez le groupe lire la demande de permission avec vous, puis montrez l'aperçu. Demandez à la salle la correction : c'est elle qui dicte.</p>
   <p><strong>À faire voir.</strong> Le dossier avant et après, dans l'explorateur de fichiers : les fichiers sont bien là, sur l'ordinateur. Puis une nouvelle conversation qui relit <code>CLAUDE.md</code>.</p>
   <p><strong>Pièges fréquents.</strong> Une demande qui contient cinq idées à la fois : faites-la découper. Une personne qui lit le code au lieu de regarder l'aperçu : ramenez-la à l'aperçu. Une permission acceptée sans être lue : relisez-la ensemble une fois.</p>
 </details>

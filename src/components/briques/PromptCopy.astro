@@ -1,0 +1,19 @@
+---
+// Une phrase à donner à Claude, avec son bouton pour la copier.
+---
+
+<div class="prompt-copy">
+  <p data-copy-text><slot /></p>
+  <button type="button" data-copy>Copier</button>
+</div>
+
+<script>
+  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-copy]')) {
+    button.addEventListener('click', async () => {
+      const text = button.parentElement?.querySelector('[data-copy-text]')?.textContent?.trim() ?? '';
+      await navigator.clipboard.writeText(text);
+      button.textContent = 'Copié';
+      window.setTimeout(() => (button.textContent = 'Copier'), 1600);
+    });
+  }
+</script>

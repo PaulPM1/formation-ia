@@ -1,0 +1,31 @@
+---
+// La demande de permission, en gros plan : le seul moment où il faut décider.
+import './claude-app.css';
+---
+
+<figure class="ca-figure is-narrow pc">
+  <div class="ca-window pc-window" aria-hidden="true">
+    <div class="ca-ask">
+      <p>Allow Claude to run this command?</p>
+      <code>npm install</code>
+      <p class="ca-ask-buttons"><em>Deny</em><em class="is-yes">Allow once</em><em>Always allow</em></p>
+    </div>
+    <span class="ca-pin pc-pin-1">1</span>
+    <span class="ca-pin pc-pin-2">2</span>
+  </div>
+  <ol class="ca-legend">
+    <li><span>Lisez ce que Claude veut faire.</span></li>
+    <li><span>Acceptez si cela correspond à votre demande. Sinon, refusez et demandez-lui pourquoi.</span></li>
+  </ol>
+</figure>
+
+<style>
+  .pc-window {
+    padding: 1.6rem 1.4rem 1.4rem 2.4rem;
+    overflow: visible;
+    font-size: 0.9rem;
+  }
+
+  .pc-pin-1 { inset: 1.9rem auto auto 0.5rem; }
+  .pc-pin-2 { inset: auto auto 1.75rem 0.5rem; }
+</style>

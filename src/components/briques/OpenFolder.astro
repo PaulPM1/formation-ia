@@ -1,0 +1,79 @@
+---
+// Où cliquer pour ouvrir son dossier dans l'onglet Code. Maquette fidèle à
+// l'écran « New session », avec quatre repères.
+import ClaudeApp from './ClaudeApp.astro';
+import Composer from './Composer.astro';
+import Icon from './Icon.astro';
+---
+
+<figure class="ca-figure of">
+  <div class="of-stage">
+    <ClaudeApp>
+      <div class="of-main">
+        <div class="of-menu">
+          <p class="is-on"><Icon name="laptop" />Local<Icon name="check" /></p>
+          <p><Icon name="cloud" />Cloud</p>
+          <p class="of-sep"><Icon name="folder" />Open folder…</p>
+        </div>
+        <Composer folder="mes-recettes" />
+      </div>
+    </ClaudeApp>
+    <span class="ca-pin of-pin-1">1</span>
+    <span class="ca-pin of-pin-2">2</span>
+    <span class="ca-pin of-pin-3">3</span>
+    <span class="ca-pin of-pin-4">4</span>
+  </div>
+  <ol class="ca-legend">
+    <li><span>Passez sur l’onglet <b>Code</b>, en haut à gauche.</span></li>
+    <li><span>Choisissez <b>Local</b> : le projet vit sur votre ordinateur.</span></li>
+    <li><span>Ouvrez votre dossier, même vide.</span></li>
+    <li><span>Écrivez votre demande.</span></li>
+  </ol>
+</figure>
+
+<style>
+  .of-stage { position: relative; }
+
+  .of-main {
+    display: grid;
+    align-content: end;
+    gap: 0.6rem;
+    min-block-size: 19rem;
+  }
+
+  .of-menu {
+    justify-self: start;
+    inline-size: 13rem;
+    margin-inline-start: 1rem;
+    padding: 0.3rem;
+    border: 1px solid var(--app-line);
+    border-radius: 10px;
+    background: var(--app-raise);
+    box-shadow: 0 0.6rem 1.4rem rgb(0 0 0 / 45%);
+  }
+
+  .of-menu p {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.55rem;
+    border-radius: 6px;
+  }
+
+  .of-menu p :global(.ca-icon:last-child:not(:first-child)) { margin-inline-start: auto; }
+  .of-menu .is-on { background: var(--app-on); }
+  .of .of-menu .of-sep {
+    margin-block-start: 0.3rem;
+    border-block-start: 1px solid var(--app-line);
+    border-radius: 0 0 6px 6px;
+  }
+
+  .of-pin-1 { inset: 1.9rem auto auto 7.6rem; }
+  .of-pin-2 { inset: auto auto 10.3rem 25.5rem; }
+  .of-pin-3 { inset: auto auto 6.05rem 25.5rem; }
+  .of-pin-4 { inset: auto 2rem 3rem auto; }
+
+  @media (max-width: 56rem) {
+    .of-pin-2, .of-pin-3 { inset-inline-start: 15rem; }
+  }
+</style>

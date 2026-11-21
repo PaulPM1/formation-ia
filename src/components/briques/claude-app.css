@@ -1,0 +1,531 @@
+/* Maquettes de l'application Claude pour les briques. Le thème sombre et la
+   disposition viennent des captures de l'application, pas du site : on doit
+   reconnaître l'outil qu'on ouvrira ensuite. */
+
+.ca-figure {
+  --app-bg: #1b1b1a;
+  --app-side: #222221;
+  --app-raise: #2c2c2a;
+  --app-on: #3a3a38;
+  --app-line: #363634;
+  --app-text: #ebe9e2;
+  --app-soft: #cfccc3;
+  --app-muted: #9a978e;
+  --app-accent: #d97757;
+  --app-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --app-serif: ui-serif, "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+
+  inline-size: min(64rem, 100vw - 2rem);
+  margin-block: 2.5rem;
+  margin-inline-start: 50%;
+  transform: translateX(-50%);
+}
+
+.ca-figure.is-narrow {
+  inline-size: 100%;
+  margin-inline-start: 0;
+  transform: none;
+}
+
+.ca-window {
+  position: relative;
+  border: 1px solid #000;
+  border-radius: 12px;
+  background: var(--app-bg);
+  box-shadow: 0 1.5rem 3rem rgb(22 34 29 / 28%), 0 0.25rem 0.75rem rgb(22 34 29 / 18%);
+  color: var(--app-text);
+  font-family: var(--app-sans);
+  font-size: 0.8rem;
+  line-height: 1.4;
+  overflow: hidden;
+}
+
+.ca-figure .ca-window :where(p, li) {
+  margin: 0;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.ca-icon {
+  flex: none;
+  inline-size: 1.05em;
+  block-size: 1.05em;
+}
+
+.ca-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.5rem 0.8rem;
+  border-block-end: 1px solid var(--app-line);
+  background: var(--app-side);
+}
+
+.ca-lights {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.ca-lights i {
+  inline-size: 0.7rem;
+  block-size: 0.7rem;
+  border-radius: 50%;
+  background: #ff5f57;
+}
+
+.ca-lights i:nth-child(2) { background: #febc2e; }
+.ca-lights i:nth-child(3) { background: #28c840; }
+
+.ca-mode {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 8px;
+  background: var(--app-raise);
+}
+
+.ca-mode span {
+  display: grid;
+  place-items: center;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  color: var(--app-muted);
+  font-size: 0.95rem;
+}
+
+.ca-mode .is-on {
+  background: var(--app-on);
+  color: var(--app-text);
+}
+
+.ca-title { color: var(--app-muted); }
+
+.ca-body {
+  display: grid;
+  grid-template-columns: 10.5rem minmax(0, 1fr);
+}
+
+.ca-no-side .ca-body { grid-template-columns: minmax(0, 1fr); }
+
+.ca-side {
+  padding: 0.6rem 0.45rem;
+  border-inline-end: 1px solid var(--app-line);
+  background: var(--app-side);
+}
+
+.ca-side p {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 7px;
+  color: var(--app-soft);
+  white-space: nowrap;
+}
+
+.ca-side .is-on {
+  background: var(--app-on);
+  color: var(--app-text);
+}
+
+.ca-figure .ca-side .ca-side-group {
+  margin-block-start: 0.9rem;
+  color: var(--app-muted);
+  font-size: 0.72rem;
+}
+
+.ca-side .ca-side-session {
+  display: block;
+  background: var(--app-raise);
+  color: var(--app-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ca-main {
+  display: grid;
+  min-inline-size: 0;
+}
+
+/* Conversation */
+
+.ca-talk {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-inline-size: 0;
+}
+
+.ca-thread {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1rem 1rem 0.7rem;
+  overflow: hidden;
+}
+
+.ca-you {
+  align-self: flex-end;
+  max-inline-size: 85%;
+  padding: 0.5rem 0.8rem;
+  border-radius: 12px;
+  background: var(--app-raise);
+}
+
+.ca-claude {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.ca-figure .ca-window .ca-say {
+  font-family: var(--app-serif);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.ca-tool {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--app-muted);
+  font-size: 0.76rem;
+}
+
+.ca-tool b {
+  color: var(--app-soft);
+  font-weight: 500;
+}
+
+.ca-tool i {
+  flex: none;
+  inline-size: 0.4rem;
+  block-size: 0.4rem;
+  border-radius: 50%;
+  background: #6fbf7f;
+}
+
+.ca-ask {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--app-accent);
+  border-radius: 10px;
+  background: var(--app-raise);
+}
+
+.brick-content .ca-window .ca-ask code {
+  border: 0;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  background: var(--app-bg);
+  color: var(--app-soft);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+}
+
+.ca-ask-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.ca-ask-buttons em {
+  padding: 0.2rem 0.65rem;
+  border: 1px solid var(--app-line);
+  border-radius: 6px;
+  font-style: normal;
+  font-weight: 500;
+}
+
+.ca-ask-buttons .is-yes {
+  border-color: var(--app-text);
+  background: var(--app-text);
+  color: #1f1e1d;
+}
+
+.ca-composer {
+  margin: 0 1rem 0.8rem;
+}
+
+.ca-field {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--app-line);
+  border-radius: 12px;
+  background: var(--app-raise);
+  color: var(--app-muted);
+}
+
+.ca-field span { flex: 1; }
+
+.ca-settings {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 0.9rem;
+  padding: 0.5rem 0.3rem 0;
+  color: var(--app-soft);
+  font-size: 0.74rem;
+}
+
+.ca-settings span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.ca-model { margin-inline-start: auto; }
+.ca-model i { color: var(--app-muted); font-style: normal; }
+
+/* Panneau à droite de la conversation : aperçu ou fichier ouvert */
+
+.ca-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  block-size: 25rem;
+}
+
+.ca-pane {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  border-inline-start: 1px solid var(--app-line);
+  background: var(--app-side);
+}
+
+.ca-pane-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.7rem;
+  border-block-end: 1px solid var(--app-line);
+  font-size: 0.74rem;
+}
+
+.ca-pane-bar em {
+  flex: 1;
+  padding: 0.12rem 0.6rem;
+  border-radius: 6px;
+  background: var(--app-raise);
+  color: var(--app-muted);
+  font-style: normal;
+}
+
+.ca-pane-empty {
+  place-self: center;
+  color: var(--app-muted);
+}
+
+.ca-enter,
+.ca-thread > *,
+.ca-claude > * {
+  animation: ca-in 0.4s ease both;
+}
+
+.ca-claude > :nth-child(2) { animation-delay: 0.35s; }
+.ca-claude > :nth-child(3) { animation-delay: 0.7s; }
+.ca-claude > :nth-child(4) { animation-delay: 1.05s; }
+
+@keyframes ca-in {
+  from { opacity: 0; transform: translateY(0.4rem); }
+}
+
+/* Étapes : ce qui n'est pas encore arrivé n'occupe pas de place. */
+
+[data-step="1"] :is(.from-2, .from-3, .from-4),
+[data-step="2"] :is(.from-3, .from-4),
+[data-step="3"] .from-4,
+[data-stepper]:not([data-step="1"]) .only-1,
+[data-stepper]:not([data-step="2"]) .only-2,
+[data-stepper]:not([data-step="1"], [data-step="2"]) .until-2 {
+  display: none;
+}
+
+/* Boutons d'étape et phrase d'accompagnement : au style du site. */
+
+.step-rail ol {
+  display: grid;
+  grid-template-columns: repeat(var(--steps), minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 1.4rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.brick-content .step-rail li { margin: 0; }
+
+.step-rail ol button {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  inline-size: 100%;
+  padding: 0.5rem 0.65rem;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-small);
+  font-weight: var(--weight-semibold);
+  text-align: start;
+  cursor: pointer;
+}
+
+.step-rail b {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  font-family: var(--font-display);
+}
+
+.step-rail button[aria-current="true"] { box-shadow: var(--shadow-block); }
+.step-rail button[aria-current="true"] b { background: var(--family-accent); }
+
+.step-rail button:focus-visible,
+.prompt-copy button:focus-visible {
+  outline: 0.22rem solid var(--brick-coral);
+  outline-offset: 0.15rem;
+}
+
+.brick-content .step-rail p {
+  min-block-size: 2.8em;
+  margin: 1rem 0 0;
+  font-size: var(--text-lede);
+  font-weight: var(--weight-medium);
+  line-height: 1.4;
+}
+
+.step-replay,
+.prompt-copy button {
+  padding: 0.3rem 0.8rem;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-sm);
+  background: var(--family-accent);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-small);
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+}
+
+/* Repères numérotés posés sur une maquette, et leur légende. */
+
+.ca-pin {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  inline-size: 1.7rem;
+  block-size: 1.7rem;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--brick-yellow);
+  box-shadow: 3px 3px 0 var(--ink);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.brick-content .ca-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0.6rem 1.5rem;
+  margin: 1.3rem 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: pin;
+}
+
+.brick-content .ca-legend li {
+  display: flex;
+  gap: 0.6rem;
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.45;
+  counter-increment: pin;
+}
+
+.ca-legend li::before {
+  display: grid;
+  place-items: center;
+  flex: none;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--brick-yellow);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 800;
+  content: counter(pin);
+}
+
+/* Phrase à copier */
+
+.prompt-copy {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  margin-block: 0.6rem 1rem;
+  padding: 0.8rem 0.9rem;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+.brick-content .prompt-copy p {
+  flex: 1;
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Vignettes de « Comprendre » : une idée, son image. */
+
+.idea {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 1.5rem 2rem;
+  align-items: center;
+  inline-size: min(64rem, 100vw - 2rem);
+  margin-block: 3rem;
+  margin-inline-start: 50%;
+  transform: translateX(-50%);
+}
+
+.brick-content .idea h3 { margin-block-start: 0; }
+.idea .ca-figure { inline-size: 100%; margin: 0; transform: none; }
+
+@media (max-width: 56rem) {
+  .ca-body { grid-template-columns: minmax(0, 1fr); }
+  .ca-side { display: none; }
+  .idea { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 40rem) {
+  .ca-split {
+    grid-template-columns: minmax(0, 1fr);
+    block-size: auto;
+  }
+  .ca-thread { min-block-size: 15rem; }
+  .ca-pane {
+    min-block-size: 17rem;
+    border-inline-start: 0;
+    border-block-start: 1px solid var(--app-line);
+  }
+  .step-rail ol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ca-model { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ca-figure * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

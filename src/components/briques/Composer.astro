@@ -1,0 +1,19 @@
+---
+// La zone de saisie de l'onglet Code, avec sa ligne de réglages.
+import Icon from './Icon.astro';
+
+interface Props {
+  placeholder?: string;
+  folder?: string;
+}
+const { placeholder = 'Describe a task or ask a question', folder = 'mes-recettes' } = Astro.props;
+---
+
+<div class="ca-composer">
+  <p class="ca-field"><Icon name="plus" /><span>{placeholder}</span><Icon name="mic" /></p>
+  <p class="ca-settings">
+    <span data-ca-env><Icon name="laptop" />Local</span>
+    <span data-ca-folder><Icon name="folder" />{folder}</span>
+    <span class="ca-model">Opus 5.5 <i>Medium</i></span>
+  </p>
+</div>

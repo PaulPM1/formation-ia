@@ -1,0 +1,69 @@
+---
+// CLAUDE.md, la mémoire du projet : une nouvelle conversation part de zéro,
+// Claude relit le fichier, et il sait de nouveau où vous en êtes.
+import ClaudeApp from './ClaudeApp.astro';
+import Composer from './Composer.astro';
+import Icon from './Icon.astro';
+import StepRail from './StepRail.astro';
+
+const steps = [
+  { label: 'Nouvelle conversation', text: 'Une nouvelle conversation ne se souvient de rien.' },
+  { label: 'Claude relit CLAUDE.md', text: 'Avant de répondre, il relit le fichier qui décrit votre projet.' },
+  { label: 'Il sait où vous en êtes', text: 'Ce qui est écrit dans CLAUDE.md dure. Le reste s’oublie.' },
+];
+---
+
+<figure class="ca-figure cm" data-stepper data-step="3">
+  <ClaudeApp sidebar={false} title="New session">
+    <div class="ca-split">
+      <div class="ca-talk">
+        <div class="ca-thread">
+          <p class="ca-you">On continue mon projet.</p>
+          <div class="ca-claude from-2">
+            <p class="ca-tool"><i></i>Read <b>CLAUDE.md</b></p>
+            <p class="ca-say from-3">Votre site de recettes de famille : la page d’accueil est faite. Prochaine étape, la fiche d’une recette. On s’y met ?</p>
+          </div>
+        </div>
+        <Composer placeholder="Reply to Claude" />
+      </div>
+
+      <div class="ca-pane">
+        <p class="ca-pane-bar"><Icon name="file" /><span>CLAUDE.md</span></p>
+        <div class="cm-file">
+          <p class="cm-h">Le projet</p>
+          <p>Un site pour garder les recettes de la famille.</p>
+          <p class="cm-h">Comment me parler</p>
+          <p>Simplement, sans jargon.</p>
+          <p class="cm-h">À ne jamais faire</p>
+          <p>Publier le nom des personnes.</p>
+          <p class="cm-h">Où on en est</p>
+          <p>Page d’accueil faite. Ensuite : la fiche d’une recette.</p>
+        </div>
+      </div>
+    </div>
+  </ClaudeApp>
+  <StepRail steps={steps} />
+</figure>
+
+<style>
+  .cm :global(.ca-split) { block-size: 21rem; }
+
+  .cm-file {
+    padding: 1rem 1.1rem;
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    transition: opacity 0.5s ease, box-shadow 0.5s ease;
+  }
+
+  .cm .cm-file .cm-h {
+    margin-block: 0.8rem 0.15rem;
+    color: var(--app-accent);
+    font-weight: 600;
+  }
+
+  .cm .cm-file .cm-h:first-child { margin-block-start: 0; }
+
+  /* Le fichier existe déjà à l'étape 1, mais Claude ne l'a pas encore lu. */
+  .cm[data-step="1"] .cm-file { opacity: 0.3; }
+  .cm[data-step="2"] .cm-file { box-shadow: inset 0 0 0 2px var(--app-accent); }
+</style>

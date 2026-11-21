@@ -1,0 +1,40 @@
+---
+// La fenêtre de l'application Claude, reprise des captures de Matthieu (thème
+// sombre, onglet Code). Chaque visuel de brique y glisse son contenu.
+import './claude-app.css';
+import Icon from './Icon.astro';
+
+interface Props {
+  mode?: 'chat' | 'code';
+  title?: string;
+  sidebar?: boolean;
+  folder?: string;
+  session?: string;
+}
+const { mode = 'code', title = 'New session', sidebar = true, folder = 'mes-recettes', session } = Astro.props;
+---
+
+<div class:list={['ca-window', { 'ca-no-side': !sidebar }]} aria-hidden="true">
+  <div class="ca-titlebar">
+    <span class="ca-lights"><i></i><i></i><i></i></span>
+    <span class="ca-mode" data-ca-mode>
+      <span class:list={{ 'is-on': mode === 'chat' }}><Icon name="chat" /></span>
+      <span class:list={{ 'is-on': mode === 'code' }}><Icon name="code" /></span>
+    </span>
+    <span class="ca-title">{title}</span>
+  </div>
+  <div class="ca-body">
+    {sidebar && (
+      <aside class="ca-side">
+        <p class="is-on"><Icon name="plus" />New</p>
+        <p><Icon name="search" />Search</p>
+        <p><Icon name="artifacts" />Artifacts</p>
+        <p><Icon name="clock" />Scheduled</p>
+        <p><Icon name="plug" />Plugins</p>
+        <p class="ca-side-group">{folder}</p>
+        {session && <p class="ca-side-session">{session}</p>}
+      </aside>
+    )}
+    <div class="ca-main"><slot /></div>
+  </div>
+</div>
