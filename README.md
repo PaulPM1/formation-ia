@@ -82,18 +82,12 @@ ajoutant ou en retouchant une slide :
    npm run typecheck
    npm run build
    npm run qa:presenter
-   npm run qa:block-b
-   npm run qa:block-b-wiki
    npm run qa:block-c
    ```
 
-`presentation:check` reste local : il valide les 83 slides actuellement,
+`presentation:check` reste local : il valide les 59 slides actuellement,
 ainsi que l’origine canonique du wiki, les identifiants de briques
 et les ancres produites par le moteur Markdown du site, sans requête réseau.
-
-`qa:block-b-wiki` vérifie les deux voies des fiches du Bloc B, leur persistance
-et leur repli sans JavaScript. Il contrôle aussi que le brief B3 est traité
-localement dans le navigateur, sans requête réseau après son chargement.
 
 ## Ajouter une brique
 
