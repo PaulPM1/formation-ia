@@ -1,14 +1,13 @@
 import {
   BRICK_FAMILIES,
-  COMMON_HEADING_REQUIREMENTS,
-  TYPE_HEADINGS,
+  requiredHeadingGroupsFor,
   headingRequirementIsMet,
   type BrickFrontmatter,
 } from './brick-model';
 
 export const FAMILY_LABELS = {
   a: "Comprendre l’IA",
-  b: 'Les interfaces',
+  b: 'Prendre Claude en main',
   c: 'Étendre et personnaliser',
   d: 'L’écosystème du développement',
   e: 'La méthode',
@@ -65,10 +64,7 @@ export function getStructureCompletion(
   const presentHeadings = new Set(
     Array.from(body.matchAll(/^##\s+(.+?)\s*$/gm), (match) => match[1]),
   );
-  const requiredHeadingGroups = [
-    ...COMMON_HEADING_REQUIREMENTS,
-    ...TYPE_HEADINGS[type].map((heading) => [heading] as const),
-  ];
+  const requiredHeadingGroups = requiredHeadingGroupsFor(presentHeadings, type);
   const complete = requiredHeadingGroups.filter((alternatives) =>
     headingRequirementIsMet(presentHeadings, alternatives),
   ).length;

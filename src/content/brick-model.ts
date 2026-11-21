@@ -46,6 +46,26 @@ export const TYPE_HEADINGS = {
   restitution: ['Consigne de restitution', 'Grille de feedback'],
 } as const satisfies Record<(typeof BRICK_TYPES)[number], readonly string[]>;
 
+// Format de la session 2 : peu de texte, un visuel, le reste replié. Une fiche
+// qui ouvre sur « L'essentiel » est jugée sur ces trois rubriques ; les autres
+// gardent l'ancien gabarit jusqu'à leur réécriture.
+export const SHORT_FORMAT_HEADINGS = [
+  ["L'essentiel"],
+  ['Comprendre'],
+  ['À essayer'],
+] as const;
+
+export function requiredHeadingGroupsFor(
+  headings: Set<string>,
+  type: (typeof BRICK_TYPES)[number],
+): readonly (readonly string[])[] {
+  if (headings.has(SHORT_FORMAT_HEADINGS[0][0])) return SHORT_FORMAT_HEADINGS;
+  return [
+    ...COMMON_HEADING_REQUIREMENTS,
+    ...TYPE_HEADINGS[type].map((heading) => [heading] as const),
+  ];
+}
+
 const nullableEditorialText = z.string().trim().min(1).nullable();
 
 export const brickFrontmatterSchema = z.object({
@@ -101,10 +121,7 @@ export function validateBrickDocuments(
 
     validDocuments.push({ ...document, data: parsed.data });
     const headings = findLevelTwoHeadings(document.body);
-    const requiredHeadingGroups = [
-      ...COMMON_HEADING_REQUIREMENTS,
-      ...TYPE_HEADINGS[parsed.data.type].map((heading) => [heading] as const),
-    ];
+    const requiredHeadingGroups = requiredHeadingGroupsFor(headings, parsed.data.type);
 
     for (const alternatives of requiredHeadingGroups) {
       if (!headingRequirementIsMet(headings, alternatives)) {

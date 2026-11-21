@@ -20,6 +20,7 @@ const DRAFTED_BRICK_IDS = [
   'a2',
   'a3',
   'a4',
+  'b2',
   'c1',
   'c2',
   'c3',
@@ -35,13 +36,13 @@ const DRAFTED_BRICK_IDS = [
 
 const DRAFTED_BRICK_OWNERS = new Set(['paul', 'matthieu', 'a-attribuer']);
 
-test('charge exactement les 15 briques fusionnées dans le bon ordre', async () => {
+test('charge exactement les 16 briques fusionnées dans le bon ordre', async () => {
   const documents = await loadBrickDocuments(contentDirectory);
   const ids = documents
     .toSorted((left, right) => Number(left.data.order) - Number(right.data.order))
     .map((document) => document.data.id);
 
-  assert.equal(documents.length, 15);
+  assert.equal(documents.length, 16);
   assert.deepEqual(ids, EXPECTED_IMPORTED_BRICK_IDS);
 });
 
@@ -146,4 +147,19 @@ test('les totaux affichés viennent de BRICK_COUNT', async () => {
     assert.doesNotMatch(source, /\b\d+ briques\b/, file);
     assert.doesNotMatch(source, /KIT \/ \d+/, file);
   }
+});
+
+test('une fiche au format court est jugée sur ses trois rubriques', async () => {
+  const documents = await loadBrickDocuments(contentDirectory);
+  const b2 = documents.find((document) => document.data.id === 'b2');
+  assert.ok(b2);
+  assert.deepEqual(validateBrickDocuments(documents), []);
+
+  const sansEssai = { ...b2, body: b2.body.replace('## À essayer', '## Autre') };
+  const issues = validateBrickDocuments(
+    documents.map((document) => (document === b2 ? sansEssai : document)),
+  );
+  assert.deepEqual(issues.map((issue) => issue.message), [
+    'Rubrique obligatoire manquante : À essayer',
+  ]);
 });

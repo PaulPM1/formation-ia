@@ -1,0 +1,420 @@
+---
+// Visuel principal de la brique B2 : la boucle demander, construire, regarder,
+// corriger, jouée dans une maquette de l'onglet Code. Sans JavaScript ou avec
+// les animations réduites, la maquette reste lisible et se pilote au clic.
+const steps = [
+  { label: 'Vous demandez', text: 'Vous décrivez ce que vous voulez, avec vos mots.' },
+  { label: 'Claude construit', text: 'Il lit le dossier, écrit les fichiers et lance le projet.' },
+  { label: 'Vous regardez', text: 'Le résultat s’affiche dans l’aperçu. Aucun code à lire.' },
+  { label: 'Vous corrigez', text: 'Vous dites ce qui ne va pas. Il corrige, et la boucle reprend.' },
+];
+---
+
+<figure class="cc-loop" data-cc-loop data-step="4">
+  <div class="cc-window" aria-hidden="true">
+    <div class="cc-bar">
+      <span class="cc-folder">mes-recettes</span>
+      <span class="cc-tabs"><span>Chat</span><span class="is-on">Code</span></span>
+    </div>
+
+    <div class="cc-panes">
+      <div class="cc-talk">
+        <p class="cc-msg cc-you">Crée une page qui présente mes recettes de famille.</p>
+        <ul class="cc-work from-2">
+          <li>Lit le dossier</li>
+          <li>Écrit 3 fichiers</li>
+          <li>Lance le projet</li>
+        </ul>
+        <p class="cc-msg cc-you from-4">Les photos plus grandes, et un fond plus chaud.</p>
+        <ul class="cc-work from-4">
+          <li>Modifie 1 fichier</li>
+        </ul>
+      </div>
+
+      <div class="cc-preview">
+        <p class="cc-preview-name">Aperçu</p>
+        <p class="cc-empty">Rien à voir pour l’instant.</p>
+        <div class="cc-page from-3">
+          <p class="cc-page-title">Recettes de famille</p>
+          <div class="cc-dishes">
+            <div><i></i><span>Gratin de mamie</span></div>
+            <div><i></i><span>Tarte aux pommes</span></div>
+            <div><i></i><span>Soupe au pistou</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <figcaption>
+    <ol class="cc-steps">
+      {steps.map((step, index) => (
+        <li>
+          <button type="button" data-cc-step={index + 1}>
+            <b>{index + 1}</b>
+            <span>{step.label}</span>
+          </button>
+        </li>
+      ))}
+    </ol>
+    <div class="cc-caption" aria-live="polite">
+      {steps.map((step, index) => (
+        <p data-cc-text={index + 1}>{step.text}</p>
+      ))}
+    </div>
+    <button type="button" class="cc-replay" data-cc-replay hidden>Rejouer</button>
+  </figcaption>
+</figure>
+
+<script>
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-cc-loop]')) {
+    const replay = root.querySelector<HTMLButtonElement>('[data-cc-replay]');
+    let timer: number | undefined;
+
+    const show = (step: number) => {
+      root.dataset.step = String(step);
+      for (const button of root.querySelectorAll<HTMLElement>('[data-cc-step]')) {
+        button.setAttribute('aria-current', String(button.dataset.ccStep === String(step)));
+      }
+    };
+    const stop = () => {
+      window.clearInterval(timer);
+      timer = undefined;
+      if (replay) replay.hidden = false;
+    };
+    const play = () => {
+      if (replay) replay.hidden = true;
+      show(1);
+      timer = window.setInterval(() => {
+        const next = Number(root.dataset.step) + 1;
+        if (next > 4) stop();
+        else show(next);
+      }, 3200);
+    };
+
+    for (const button of root.querySelectorAll<HTMLElement>('[data-cc-step]')) {
+      button.addEventListener('click', () => {
+        stop();
+        show(Number(button.dataset.ccStep));
+      });
+    }
+    replay?.addEventListener('click', play);
+
+    if (reduced) {
+      show(4);
+      continue;
+    }
+    // La boucle ne démarre que lorsqu'elle entre à l'écran : sinon elle se
+    // joue pendant que la personne lit encore le haut de la page.
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          observer.disconnect();
+          play();
+        }
+      },
+      { threshold: 0.5 },
+    );
+    observer.observe(root);
+  }
+</script>
+
+<style>
+  .cc-loop {
+    inline-size: min(58rem, 100vw - 2rem);
+    margin-block: 2.5rem;
+    margin-inline-start: 50%;
+    transform: translateX(-50%);
+  }
+
+  .cc-window {
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    box-shadow: var(--shadow-block-strong);
+    overflow: hidden;
+  }
+
+  .cc-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.55rem 0.9rem;
+    border-block-end: 2px solid var(--ink);
+    background: var(--family-accent);
+    font-size: var(--text-small);
+    font-weight: var(--weight-semibold);
+  }
+
+  .cc-folder::before {
+    display: inline-block;
+    inline-size: 0.95rem;
+    block-size: 0.7rem;
+    margin-inline-end: 0.45rem;
+    border: 2px solid var(--ink);
+    border-radius: 2px;
+    background: var(--surface);
+    content: "";
+  }
+
+  .cc-tabs {
+    display: flex;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    overflow: hidden;
+  }
+
+  .cc-tabs span {
+    padding: 0.1rem 0.6rem;
+  }
+
+  .cc-tabs .is-on {
+    background: var(--ink);
+    color: var(--surface);
+  }
+
+  .cc-panes {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    min-block-size: 19rem;
+  }
+
+  .cc-talk {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    padding: 1rem;
+    border-inline-end: 2px solid var(--ink);
+  }
+
+  .cc-loop .cc-msg {
+    max-inline-size: 22ch;
+    margin: 0;
+    padding: 0.55rem 0.75rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-md) var(--radius-md) 0 var(--radius-md);
+    background: var(--paper);
+    font-size: var(--text-small);
+    line-height: 1.4;
+    align-self: flex-end;
+  }
+
+  .cc-loop .cc-work {
+    display: grid;
+    gap: 0.3rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .cc-loop .cc-work li {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    line-height: 1.4;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+
+  .cc-work li::before {
+    display: inline-grid;
+    place-items: center;
+    inline-size: 1.1rem;
+    block-size: 1.1rem;
+    margin-inline-end: 0.5rem;
+    border: 1.5px solid var(--ink);
+    border-radius: 2px;
+    background: var(--brick-green);
+    font-size: 0.7rem;
+    content: "✓";
+  }
+
+  .cc-work li:nth-child(2) { transition-delay: 0.5s; }
+  .cc-work li:nth-child(3) { transition-delay: 1s; }
+
+  .cc-preview {
+    position: relative;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    background: var(--paper);
+  }
+
+  .cc-loop .cc-preview-name {
+    margin: 0;
+    padding: 0.3rem 0.9rem;
+    border-block-end: 1.5px solid var(--hairline);
+    color: var(--muted);
+    font-size: var(--text-label);
+    font-weight: var(--weight-semibold);
+  }
+
+  .cc-loop .cc-empty {
+    grid-area: 2 / 1;
+    place-self: center;
+    margin: 0;
+    color: var(--muted);
+    font-size: var(--text-small);
+    transition: opacity 0.3s ease;
+  }
+
+  .cc-page {
+    grid-area: 2 / 1;
+    padding: 1.1rem;
+    background: var(--surface);
+    transition: opacity 0.5s ease, transform 0.5s ease, background-color 0.6s ease;
+  }
+
+  .cc-loop .cc-page-title {
+    margin: 0 0 0.9rem;
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: var(--weight-display);
+    line-height: 1.1;
+  }
+
+  .cc-dishes {
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .cc-dishes div {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-size: var(--text-small);
+    font-weight: var(--weight-medium);
+  }
+
+  .cc-dishes i {
+    flex: none;
+    inline-size: 2rem;
+    block-size: 2rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-sm);
+    background: var(--brick-yellow);
+    transition: inline-size 0.6s ease, block-size 0.6s ease;
+  }
+
+  .cc-dishes div:nth-child(2) i { background: var(--brick-coral); }
+  .cc-dishes div:nth-child(3) i { background: var(--brick-green); }
+
+  /* Étape 4 : la correction se voit, les photos grandissent et le fond change. */
+  .cc-loop[data-step="4"] .cc-page { background: #ffe9c7; }
+  .cc-loop[data-step="4"] .cc-dishes i {
+    inline-size: 3.6rem;
+    block-size: 3.6rem;
+  }
+
+  /* Ce qui n'est pas encore arrivé à l'étape courante reste invisible. */
+  .cc-loop[data-step="1"] :is(.from-2, .from-3, .from-4),
+  .cc-loop[data-step="2"] :is(.from-3, .from-4),
+  .cc-loop[data-step="3"] .from-4,
+  .cc-loop[data-step="1"] .cc-work li,
+  .cc-loop:is([data-step="1"], [data-step="2"], [data-step="3"]) .cc-work.from-4 li {
+    opacity: 0;
+    transform: translateY(0.4rem);
+    transition-delay: 0s;
+  }
+
+  .cc-msg { transition: opacity 0.35s ease, transform 0.35s ease; }
+  .cc-loop:is([data-step="3"], [data-step="4"]) .cc-empty { opacity: 0; }
+
+  .cc-loop .cc-steps {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.5rem;
+    margin: 1.4rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .cc-loop .cc-steps li { margin: 0; }
+
+  .cc-steps button {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    inline-size: 100%;
+    padding: 0.5rem 0.65rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--ink);
+    font: inherit;
+    font-size: var(--text-small);
+    font-weight: var(--weight-semibold);
+    text-align: start;
+    cursor: pointer;
+  }
+
+  .cc-steps b {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+    border: 2px solid var(--ink);
+    border-radius: 50%;
+    font-family: var(--font-display);
+  }
+
+  .cc-steps button[aria-current="true"] { box-shadow: var(--shadow-block); }
+  .cc-steps button[aria-current="true"] b { background: var(--family-accent); }
+
+  .cc-steps button:focus-visible,
+  .cc-replay:focus-visible {
+    outline: 0.22rem solid var(--brick-coral);
+    outline-offset: 0.15rem;
+  }
+
+  .cc-caption {
+    display: grid;
+    margin-block-start: 1rem;
+  }
+
+  .cc-loop .cc-caption p {
+    grid-area: 1 / 1;
+    margin: 0;
+    font-size: var(--text-lede);
+    font-weight: var(--weight-medium);
+    line-height: 1.4;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .cc-loop[data-step="1"] .cc-caption p[data-cc-text="1"],
+  .cc-loop[data-step="2"] .cc-caption p[data-cc-text="2"],
+  .cc-loop[data-step="3"] .cc-caption p[data-cc-text="3"],
+  .cc-loop[data-step="4"] .cc-caption p[data-cc-text="4"] {
+    opacity: 1;
+  }
+
+  .cc-replay {
+    margin-block-start: 0.8rem;
+    padding: 0.35rem 0.8rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius-sm);
+    background: var(--family-accent);
+    font: inherit;
+    font-size: var(--text-small);
+    font-weight: var(--weight-semibold);
+    cursor: pointer;
+  }
+
+  @media (max-width: 40rem) {
+    .cc-panes { grid-template-columns: 1fr; }
+    .cc-talk {
+      border-inline-end: 0;
+      border-block-end: 2px solid var(--ink);
+    }
+    .cc-preview { min-block-size: 15rem; }
+    .cc-loop .cc-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cc-loop * { transition: none !important; }
+  }
+</style>
