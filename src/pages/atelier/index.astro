@@ -2,15 +2,11 @@
 import { getCollection } from 'astro:content';
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import ProjetCard from '../../components/ProjetCard.astro';
 import { formatBudgetMinutes } from '../../content/atelier-model';
 
 const stages = (await getCollection('atelier')).toSorted(
   (left, right) => left.data.order - right.data.order,
 );
-const projets = (await getCollection('projets'))
-  .filter((projet) => !projet.data.hidden)
-  .toSorted((left, right) => left.data.order - right.data.order);
 const bricks = await getCollection('briques');
 const brickTitles = new Map(bricks.map((brick) => [brick.data.id, brick.data.title]));
 
@@ -54,7 +50,6 @@ const weekend = [
         rythme, avec les formateurs à côté. Dimanche midi, vous le montrez.
       </p>
       <p class="hero-actions">
-        <a class="button" href="#catalogue">Voir les 5 projets</a>
         <a class="button button-light" href="#socle">Le socle commun</a>
       </p>
     </div>
@@ -79,27 +74,6 @@ const weekend = [
         </li>
       ))}
     </ol>
-  </section>
-
-  <section class="catalogue-section" id="catalogue" aria-labelledby="catalogue-titre">
-    <div class="section-heading">
-      <p class="eyebrow">Le catalogue</p>
-      <div>
-        <h2 id="catalogue-titre">Choisissez votre projet</h2>
-        <p class="section-lede">
-          C'est ici que se joue l'essentiel du week-end. Six projets, à
-          chacun sa matière et sa finalité. Chaque page donne le cahier des charges, les
-          étapes, les preuves de réussite et trois niveaux d'aide à ouvrir quand
-          vous bloquez. Choisissez celui dont vous avez déjà la matière première
-          sous la main : c'est le meilleur critère.
-        </p>
-      </div>
-    </div>
-    <div class="projet-grid">
-      {projets.map((projet) => (
-        <ProjetCard projet={projet} />
-      ))}
-    </div>
   </section>
 
   <section class="socle-section" id="socle" aria-labelledby="socle-titre">

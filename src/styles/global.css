@@ -1555,99 +1555,6 @@ progress::-moz-progress-bar {
   line-height: 1.5;
 }
 
-/* Atelier : catalogue de projets */
-
-[data-projet="assistant"] { --family-accent: var(--brick-yellow); }
-[data-projet="coach"] { --family-accent: var(--brick-blue); }
-[data-projet="radar"] { --family-accent: var(--brick-violet); }
-[data-projet="archiviste"] { --family-accent: var(--brick-green); }
-[data-projet="portfolio"] { --family-accent: var(--brick-coral); }
-
-.projet-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(21rem, 1fr));
-  gap: clamp(1.5rem, 3vw, 2rem);
-  margin-block-start: clamp(2rem, 5vw, 3rem);
-}
-
-.projet-card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.9rem;
-  padding: 1.75rem;
-  padding-block-start: 2.1rem;
-  overflow: hidden;
-  border: 2px solid var(--ink);
-  border-radius: var(--radius-md);
-  background: var(--surface);
-  transition: box-shadow 180ms ease, transform 180ms ease;
-}
-
-.projet-card::before {
-  position: absolute;
-  inset: 0 0 auto;
-  block-size: 0.55rem;
-  border-block-end: 2px solid var(--ink);
-  background: var(--family-accent);
-  content: "";
-}
-
-.projet-card:hover {
-  box-shadow: var(--shadow-block);
-  transform: translate(-0.1rem, -0.1rem);
-}
-
-.projet-card:focus-within {
-  box-shadow: var(--shadow-block);
-}
-
-.projet-card .card-kicker {
-  align-self: stretch;
-  margin: 0;
-}
-
-.projet-card h3 {
-  margin: 0;
-  font-size: clamp(1.4rem, 1.2rem + 0.7vw, 1.75rem);
-}
-
-.projet-card h3 a {
-  text-decoration: none;
-}
-
-.projet-card h3 a:hover {
-  text-decoration: underline;
-}
-
-.projet-tagline {
-  max-inline-size: 46ch;
-  margin: 0;
-  color: var(--muted);
-}
-
-.projet-difficulty {
-  margin: 0;
-}
-
-.badge[data-difficulty="accessible"] {
-  background: var(--brick-green);
-}
-
-.badge[data-difficulty="intermediaire"] {
-  background: var(--brick-yellow);
-}
-
-.badge[data-difficulty="ambitieux"] {
-  background: var(--brick-coral);
-}
-
-.projet-card .text-link {
-  margin-block-start: auto;
-  padding-block-start: 0.5rem;
-}
-
 /* Atelier : page projet */
 
 .projet-content .step-meta {
@@ -1799,10 +1706,6 @@ progress::-moz-progress-bar {
 
 @media (max-width: 43rem) {
   .weekend-track {
-    grid-template-columns: 1fr;
-  }
-
-  .projet-grid {
     grid-template-columns: 1fr;
   }
 }

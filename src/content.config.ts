@@ -3,7 +3,6 @@ import { glob } from 'astro/loaders';
 
 import { brickFrontmatterSchema } from './content/brick-model';
 import { atelierFrontmatterSchema } from './content/atelier-model';
-import { projetFrontmatterSchema } from './content/projet-model';
 
 const briques = defineCollection({
   loader: glob({ pattern: '**/*.mdx', base: './src/content/briques' }),
@@ -15,9 +14,4 @@ const atelier = defineCollection({
   schema: atelierFrontmatterSchema,
 });
 
-const projets = defineCollection({
-  loader: glob({ pattern: '**/*.mdx', base: './src/content/projets' }),
-  schema: projetFrontmatterSchema,
-});
-
-export const collections = { briques, atelier, projets };
+export const collections = { briques, atelier };
