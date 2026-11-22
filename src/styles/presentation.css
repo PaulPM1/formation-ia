@@ -370,6 +370,13 @@ a {
   transform: none;
 }
 
+/* Dans une slide, le texte des conversations grossit et la légende laisse la
+   place aux puces. */
+.slide-brique .ca-figure .ca-window { font-size: 0.95rem; }
+.slide-brique .ca-figure .ca-window .ca-say { font-size: 1.08rem; }
+.slide-brique .cfa figcaption,
+.slide-brique .sctl figcaption { display: none; }
+
 .presentation-slide[data-layout="side"] .slide-brique .ca-figure {
   inline-size: 100%;
   margin-inline-start: 0;
@@ -558,10 +565,6 @@ a {
     grid-template-rows: auto minmax(0, 1fr);
   }
 }
-
-/* Vidéoprojecteur : les maquettes grandissent avec l'écran. */
-@media (min-width: 100rem) { .slide-brique { zoom: 1.2; } }
-@media (min-width: 125rem) { .slide-brique { zoom: 1.5; } }
 
 @media (prefers-reduced-motion: reduce) {
   .presentation-stage * { animation: none !important; transition: none !important; }

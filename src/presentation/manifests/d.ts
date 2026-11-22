@@ -19,7 +19,7 @@ export const D_DECKS = [
         id: 'd2bis-avant', role: 'checkpoint',
         claim: 'Ce que vous avez déjà fait chez vous',
         bullets: ['Il vous manque une ligne ?', 'Levez la main maintenant'],
-        visual: { key: 'visual', data: { name: 'SetupBefore', layout: 'side' } },
+        visual: { key: 'visual', data: { name: 'SetupBefore' } },
         links: [wikiLink('d2-bis', 'à-essayer', 'La liste à vérifier')],
         speaker: { durationMinutes: 2, notes: "Lire la liste à voix haute, ligne par ligne. Le second formateur passe tout de suite voir les mains levées : personne ne doit rester bloqué ici.", transition: 'Tout est coché : voici ce que Claude va faire pour vous.' },
         accessibleDescription: 'La liste de ce qui est à faire chez soi avant la formation, à cocher.',

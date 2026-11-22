@@ -32,6 +32,7 @@ export const A_DECKS = [
       slide({
         id: 'a1-aplomb', role: 'claim',
         claim: 'Il se trompe avec aplomb',
+        bullets: ['Une date, un nom', 'Aucune hésitation', 'Rien ne dit que c’est vrai'],
         visual: { key: 'visual', data: { name: 'ConfidentAnswer', layout: 'side' } },
         links: [wikiLink('a1', 'comprendre', 'Il se trompe avec aplomb')],
         speaker: { durationMinutes: 1, notes: "Faire lire la réponse à voix haute. Demander : qu’est-ce qui, dans ce texte, vous dit si c’est vrai ? Rien. Couper court à « il ment » : il n’a aucune intention.", transition: 'Mettons-nous en situation.' },
@@ -184,6 +185,7 @@ export const A_DECKS = [
       slide({
         id: 'a4-forme', role: 'claim',
         claim: 'Bien écrit ne veut pas dire vrai',
+        bullets: ['Le même chiffre', 'Aucune source, des deux côtés', 'Seule la forme change'],
         visual: { key: 'visual', data: { name: 'SameClaimTwoLooks', layout: 'side' } },
         links: [wikiLink('a4', 'comprendre', 'Bien écrit ne veut pas dire vrai')],
         speaker: { durationMinutes: 1, notes: "Demander à la salle laquelle des deux versions elle croit le plus, puis révéler : même chiffre, aucune source dans les deux cas. Une source citée se vérifie aussi : on ouvre le lien.", transition: 'Faut-il alors tout vérifier ? Impossible.' },

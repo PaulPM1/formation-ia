@@ -25,3 +25,46 @@ if (!Visual) throw new Error(`Visuel de brique inconnu : ${name} (slide ${slide.
 <div class="brick-content slide-brique">
   <Visual {...props} />
 </div>
+
+<script>
+  // Le visuel prend toute la place libre de la slide, sur n'importe quel écran :
+  // on cherche le plus grand zoom qui ne dépasse ni en hauteur ni en largeur.
+  const fit = () => {
+    const brique = document.querySelector<HTMLElement>('.slide-brique');
+    const body = brique?.closest<HTMLElement>('.slide-body');
+    const slide = brique?.closest<HTMLElement>('.presentation-slide');
+    if (!brique || !body || !slide) return;
+
+    // Un visuel à étapes se mesure sur sa dernière étape, la plus haute.
+    const steppers = [...brique.querySelectorAll<HTMLElement>('[data-stepper]')];
+    const before = steppers.map((root) => root.dataset.step);
+    for (const root of steppers) root.dataset.step = String(root.querySelectorAll('[data-step-to]').length);
+
+    const controls = document.querySelector<HTMLElement>('.presentation-controls');
+    const bottom = window.innerHeight - (controls?.offsetHeight ?? 0) - 16;
+    const fits = (zoom: number) => {
+      brique.style.zoom = String(zoom);
+      const side = getComputedStyle(slide).gridTemplateColumns.includes(' ');
+      const top = side
+        ? slide.getBoundingClientRect().top + parseFloat(getComputedStyle(slide).paddingTop)
+        : body.getBoundingClientRect().top;
+      return body.getBoundingClientRect().height <= bottom - top && body.scrollWidth <= body.clientWidth + 1;
+    };
+
+    let low = 0.5;
+    let high = 2.4;
+    for (let turn = 0; turn < 8; turn += 1) {
+      const middle = (low + high) / 2;
+      if (fits(middle)) low = middle;
+      else high = middle;
+    }
+    brique.style.zoom = String(low);
+    steppers.forEach((root, index) => { root.dataset.step = before[index]; });
+  };
+
+  fit();
+  document.addEventListener('astro:page-load', fit);
+  window.addEventListener('resize', fit);
+  document.addEventListener('fullscreenchange', fit);
+  document.fonts.ready.then(fit);
+</script>

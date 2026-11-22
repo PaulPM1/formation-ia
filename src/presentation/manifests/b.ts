@@ -23,7 +23,6 @@ export const B_DECKS = [
       slide({
         id: 'b1-artefact', role: 'explanation',
         claim: "Vous parlez, l'objet apparaît à côté",
-        bullets: ['On répond, on ne recommence pas', 'Un fichier joint devient sa matière', "L'artefact change sous vos yeux"],
         visual: { key: 'visual', data: { name: 'ChatArtifactLoop' } },
         links: [wikiLink('b1', 'lessentiel', "L'artefact, pas à pas"), links.artifacts],
         speaker: { durationMinutes: 4, notes: "Laisser l'animation se jouer une fois sans parler, puis la rejouer en cliquant les étapes. Insister sur l'étape 4 : on ne refait pas la demande, on répond.", transition: 'Assez regardé : on le fait pour de vrai.' },
