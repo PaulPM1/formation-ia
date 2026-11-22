@@ -42,13 +42,17 @@ if (!Visual) throw new Error(`Visuel de brique inconnu : ${name} (slide ${slide.
 
     const controls = document.querySelector<HTMLElement>('.presentation-controls');
     const bottom = window.innerHeight - (controls?.offsetHeight ?? 0) - 16;
+    // Le titre et le corps entrent en glissant : on mesure sur les blocs qui ne
+    // bougent pas, sinon l'animation fausse le calcul.
+    const style = getComputedStyle(slide);
+    const side = style.gridTemplateColumns.includes(' ');
+    const heading = slide.querySelector<HTMLElement>('.presentation-heading');
+    const top = side || !heading
+      ? slide.getBoundingClientRect().top + parseFloat(style.paddingTop)
+      : heading.getBoundingClientRect().bottom + parseFloat(style.rowGap);
     const fits = (zoom: number) => {
       brique.style.zoom = String(zoom);
-      const side = getComputedStyle(slide).gridTemplateColumns.includes(' ');
-      const top = side
-        ? slide.getBoundingClientRect().top + parseFloat(getComputedStyle(slide).paddingTop)
-        : body.getBoundingClientRect().top;
-      return body.getBoundingClientRect().height <= bottom - top && body.scrollWidth <= body.clientWidth + 1;
+      return brique.getBoundingClientRect().height <= bottom - top && body.scrollWidth <= body.clientWidth + 1;
     };
 
     let low = 0.5;
