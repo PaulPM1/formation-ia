@@ -46,13 +46,13 @@ export function initWorkflow(root: HTMLElement, ruler: HTMLElement | null, lenis
     fitScenes();
   };
 
-  // Les maquettes gardent leur taille d'origine et se réduisent pour tenir dans la scène.
+  // Les maquettes gardent leur mise en page d'origine et s'agrandissent jusqu'à remplir la scène.
   const fitScenes = () => {
     root.querySelectorAll<HTMLElement>('.workflow__fit').forEach((fit) => {
       fit.style.scale = '1';
       const scene = fit.closest<HTMLElement>('.workflow__scene');
       if (!scene) return;
-      const ratio = Math.min(1, (scene.clientWidth * 0.9) / fit.offsetWidth, (scene.clientHeight * 0.78) / fit.offsetHeight);
+      const ratio = Math.min(1.5, (scene.clientWidth * 0.96) / fit.offsetWidth, (scene.clientHeight * (MOBILE.matches ? 0.6 : 0.92)) / fit.offsetHeight);
       fit.style.scale = String(ratio);
     });
   };
