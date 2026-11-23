@@ -27,7 +27,7 @@ const isFaq = Astro.url.pathname.startsWith('/faq');
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#ffbf3f" />
+    <meta name="theme-color" content="#0c0c0b" />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
@@ -36,20 +36,18 @@ const isFaq = Astro.url.pathname.startsWith('/faq');
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Inter:wght@100..900&family=Geist+Mono:wght@100..700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..700&display=swap"
       rel="stylesheet"
     />
     <title>{pageTitle}</title>
   </head>
-  <body>
+  <body class={isHome ? 'is-home' : undefined}>
     <a class="skip-link" href="#contenu">Aller au contenu</a>
     <header class="site-header">
       <nav class="site-nav" aria-label="Navigation principale">
-        <a class="brand" href="/" aria-label="Les briques du Vibe Coding — accueil">
-          <span class="brand-mark" aria-hidden="true">
-            <span></span><span></span><span></span>
-          </span>
-          <span class="brand-copy">Les briques <small>du Vibe Coding</small></span>
+        <a class="brand" href="/" aria-label="Les briques du Vibe Coding, accueil">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span class="brand-copy">Les briques du Vibe Coding</span>
         </a>
         <ul class="nav-links" role="list">
           <li><a href="/" aria-current={isHome ? 'page' : undefined}>Accueil</a></li>
@@ -65,7 +63,7 @@ const isFaq = Astro.url.pathname.startsWith('/faq');
     </main>
     <footer class="site-footer">
       <div class="footer-inner">
-        <p><strong>Les briques du Vibe Coding</strong><br />Un curriculum public, construit pour passer de l’idée au projet livré.</p>
+        <p><strong>Les briques du Vibe Coding</strong><br />De l’idée au projet en ligne, avec Claude.</p>
         <a href="/briques/">Explorer le programme <span aria-hidden="true">→</span></a>
       </div>
     </footer>

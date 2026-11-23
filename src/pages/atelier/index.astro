@@ -1,5 +1,6 @@
 ---
 import ClaudeCodeLoop from '../../components/briques/ClaudeCodeLoop.astro';
+import Composer from '../../components/briques/Composer.astro';
 import OpenFolder from '../../components/briques/OpenFolder.astro';
 import PromptCopy from '../../components/briques/PromptCopy.astro';
 import SaveToGitHub from '../../components/briques/SaveToGitHub.astro';
@@ -12,6 +13,15 @@ const moments = [
   { when: 'Samedi après-midi et dimanche', label: 'Vous construisez', core: true },
   { when: 'Ensuite, chez vous', label: 'Vous continuez', core: false },
 ];
+
+// Les cinq étapes, mises en scène comme le workflow de Ponder (Details, ponder-317708).
+const steps = [
+  { title: 'Préparez votre ordinateur', short: 'Préparer', visual: SetupInstall },
+  { title: 'Ouvrez un dossier vide dans l’onglet Code', short: 'Ouvrir', visual: OpenFolder },
+  { title: 'Racontez votre idée', short: 'Raconter', visual: SetupInterview, phrase: 'lance setup-projet' },
+  { title: 'Demandez, regardez, corrigez', short: 'Construire', visual: ClaudeCodeLoop, phrase: 'construis la première fonctionnalité' },
+  { title: 'Sauvegardez', short: 'Sauvegarder', visual: SaveToGitHub, phrase: 'Sauvegarde mon projet sur GitHub.' },
+];
 ---
 
 <BaseLayout
@@ -20,7 +30,6 @@ const moments = [
 >
   <header class="catalog-hero">
     <div>
-      <p class="eyebrow">L'atelier</p>
       <h1>C'est le moment de construire</h1>
       <p class="lede">
         Votre projet, votre idée. Claude s'occupe de la technique, et rien
@@ -40,59 +49,95 @@ const moments = [
     </ol>
   </section>
 
-  <article class="brick-content build-steps">
-    <h2><span>1</span>Préparez votre ordinateur</h2>
-    <p>Une phrase à coller, Claude installe tout. <a href="/briques/d2-bis/">La phrase est ici.</a></p>
-    <SetupInstall />
+  <section class="workflow" data-workflow aria-label="Les cinq étapes pour construire">
+    <div class="workflow__left">
+      <div class="workflow__sticky">
+        <ol class="workflow__list" role="list">
+          {steps.map((step, index) => (
+            <li class="workflow__item" data-step-list={index + 1}>
+              <h2>
+                <button type="button" class="workflow__head" data-step-go={index + 1}>
+                  <span class="workflow__num">{index + 1}</span>
+                  <span>{step.title}</span>
+                </button>
+              </h2>
+              <div class="workflow__desc-wrap">
+                <div class="workflow__desc">
+                  {index === 0 && <p>Une phrase à coller, Claude installe tout. <a href="/briques/d2-bis/">La phrase est ici.</a></p>}
+                  {index === 1 && <p>Ce dossier, c'est votre projet. <a href="/briques/b2/">Claude Code</a></p>}
+                  {index === 2 && <><PromptCopy>{step.phrase}</PromptCopy><p>Claude vous pose des questions, puis découpe l'idée avec vous. <a href="/briques/e3/">Lancer son projet</a></p></>}
+                  {index === 3 && <><PromptCopy>{step.phrase}</PromptCopy><p>Vous ne lisez pas de code : vous regardez le résultat. <a href="/briques/b2/">Claude Code</a></p></>}
+                  {index === 4 && <><PromptCopy>{step.phrase}</PromptCopy><p>À chaque chose qui marche. <a href="/briques/d2/">Sauvegarder sur GitHub</a>, puis <a href="/briques/d3/">mettre en ligne</a> quand vous voulez.</p></>}
+                </div>
+              </div>
+            </li>
+          ))}
+        </ol>
 
-    <h2><span>2</span>Ouvrez un dossier vide dans l'onglet Code</h2>
-    <p>Ce dossier, c'est votre projet. <a href="/briques/b2/">Claude Code</a></p>
-    <OpenFolder />
+        <div class="workflow__circles" aria-hidden="true">
+          {steps.map((step, index) => (
+            <button type="button" class="workflow__circle" data-step-go={index + 1} tabindex="-1">
+              <span class="workflow__ring">
+                <svg viewBox="0 0 60 60"><circle class="ring-track" cx="30" cy="30" r="26" /><circle class="ring-progress" cx="30" cy="30" r="26" /></svg>
+                <span>{index + 1}</span>
+              </span>
+              <span class="workflow__circle-label">{step.short}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
 
-    <h2><span>3</span>Racontez votre idée</h2>
-    <PromptCopy>lance setup-projet</PromptCopy>
-    <p>Claude vous pose des questions, puis découpe l'idée avec vous. <a href="/briques/e3/">Lancer son projet</a></p>
-    <SetupInterview />
+    <div class="workflow__right" inert>
+      {steps.map((step, index) => {
+        const Visual = step.visual;
+        return (
+          <div class="workflow__container" data-step={index + 1}>
+            <div class="workflow__scene">
+              <span class="workflow__lines"></span>
+              <span class="workflow__band"></span>
+              <div class="workflow__layer">
+                <div class="workflow__fit">
+                  {step.phrase && (
+                    <div class="workflow__composer ca-figure is-narrow" data-typewriter data-request={step.phrase}>
+                      <Composer />
+                    </div>
+                  )}
+                  <Visual />
+                </div>
+              </div>
+              <span class="workflow__overlay workflow__overlay--top"></span>
+              <span class="workflow__overlay workflow__overlay--bottom"></span>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </section>
 
-    <h2><span>4</span>Demandez, regardez, corrigez</h2>
-    <PromptCopy>construis la première fonctionnalité</PromptCopy>
-    <p>Vous ne lisez pas de code : vous regardez le résultat. <a href="/briques/b2/">Claude Code</a></p>
-    <ClaudeCodeLoop />
+  <div class="workflow-ruler" aria-hidden="true"></div>
 
-    <h2><span>5</span>Sauvegardez</h2>
-    <PromptCopy>Sauvegarde mon projet sur GitHub.</PromptCopy>
-    <p>
-      À chaque chose qui marche. <a href="/briques/d2/">Sauvegarder sur GitHub</a>,
-      puis <a href="/briques/d3/">mettre en ligne</a> quand vous voulez.
-    </p>
-    <SaveToGitHub />
-
-    <aside class="build-stuck">
-      <p><strong>Bloqué ?</strong> Collez le message d'erreur à Claude. Au deuxième échec, appelez un formateur.</p>
-      <a class="button" href="/faq/">Questions fréquentes</a>
-    </aside>
-  </article>
+  <aside class="build-stuck">
+    <p><strong>Bloqué ?</strong> Collez le message d'erreur à Claude. Au deuxième échec, appelez un formateur.</p>
+    <a class="button" href="/faq/">Questions fréquentes</a>
+  </aside>
 </BaseLayout>
 
+<script>
+  import Lenis from 'lenis';
+  import 'lenis/dist/lenis.css';
+  import { initWorkflow } from '../../scripts/workflow';
+
+  // Défilement fluide de Ponder (Lenis 1.3.23, mêmes options), coupé si le système demande moins d'animations.
+  const lenis = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ? null
+    : new Lenis({ autoRaf: true, autoToggle: true, anchors: true, allowNestedScroll: true });
+
+  const root = document.querySelector<HTMLElement>('[data-workflow]');
+  if (root) initWorkflow(root, document.querySelector<HTMLElement>('.workflow-ruler'), lenis);
+</script>
+
 <style>
-  .build-steps h2 {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-  }
-
-  .build-steps h2 span {
-    display: grid;
-    flex: none;
-    place-items: center;
-    inline-size: 2.4rem;
-    aspect-ratio: 1;
-    border: 2px solid var(--ink);
-    border-radius: 50%;
-    background: var(--brick-yellow);
-    font-size: 1.2rem;
-  }
-
   .build-stuck {
     display: flex;
     flex-wrap: wrap;
@@ -100,8 +145,8 @@ const moments = [
     justify-content: space-between;
     gap: 1rem;
     margin-block-start: 4rem;
-    padding: 1.25rem;
-    border: 3px solid var(--ink);
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--line);
     border-radius: var(--radius-md);
     background: var(--surface);
     box-shadow: var(--shadow-block);

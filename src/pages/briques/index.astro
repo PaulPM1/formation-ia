@@ -2,79 +2,75 @@
 import { getCollection } from 'astro:content';
 
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import {
-  getStructureCompletion,
-  groupBricksByFamily,
-  OWNER_LABELS,
-  PRIORITY_LABELS,
-  STATUS_LABELS,
-} from '../../content/brick-view';
+import Icon from '../../components/briques/Icon.astro';
+import { groupBricksByFamily, PRIORITY_LABELS } from '../../content/brick-view';
 import { BRICK_COUNT } from '../../content/brick-files';
 
-const bricks = await getCollection('briques');
-const groups = groupBricksByFamily(bricks);
+const groups = groupBricksByFamily(await getCollection('briques'));
+const bricks = groups.flatMap((group) => group.entries);
+
+// Hero animé repris d'Antimetal (Details) : deux rangées de 8 cartes décoratives.
+const TILE_COUNT = 16;
+const LOOP_SECONDS = 7;
+const FAMILY_ICONS = { a: 'chat', b: 'laptop', c: 'plug', d: 'code', e: 'check', f: 'folder' } as const;
+const tiles = Array.from({ length: TILE_COUNT }, (_, index) => bricks[index % bricks.length]);
+// Phase négative propre à chaque carte, répartie sur la boucle de 7 s (fixe d'un rendu à l'autre).
+const delay = (index: number) => `-${((index * 2.618) % LOOP_SECONDS).toFixed(3)}s`;
 ---
 
 <BaseLayout
   title={`Les ${BRICK_COUNT} briques`}
   description={`Le programme complet de la formation IA, organisé en cinq blocs et ${BRICK_COUNT} briques pédagogiques.`}
 >
-  <header class="catalog-hero">
-    <div>
-      <p class="eyebrow">Le plan de construction</p>
-      <h1>Les {BRICK_COUNT} briques pédagogiques</h1>
-      <p class="lede">
-        Six blocs pour passer des fondamentaux à un projet livré. Choisissez une
-        brique, attribuez-la, puis faites-la progresser de la rédaction à la validation.
-      </p>
-    </div>
-    <aside class="catalog-counter" aria-label={`${BRICK_COUNT} briques réparties en 5 blocs`}>
-      <strong>{BRICK_COUNT}</strong>
-      <span>briques</span>
-      <small>5 blocs · 1 parcours</small>
-    </aside>
+  <header class="catalog-hero catalog-hero--center">
+    <h1>Les {BRICK_COUNT} briques pédagogiques</h1>
+    <p class="lede">
+      Cinq blocs pour passer des fondamentaux à un projet livré. Choisissez une
+      brique pour commencer.
+    </p>
   </header>
 
-  <div class="catalog-groups">
-    {groups.map((group, groupIndex) => (
-      <section
-        class="family-section"
-        data-family={group.family}
-        aria-labelledby={`family-${group.family}`}
-      >
-        <header class="family-heading">
-          <span class="family-index" aria-hidden="true">0{groupIndex + 1}</span>
-          <div>
-            <p>Bloc {group.family.toUpperCase()}</p>
-            <h2 id={`family-${group.family}`}>{group.label}</h2>
-          </div>
-          <span class="family-count">{group.entries.length} briques</span>
+  <div class="brick-grid" aria-hidden="true">
+    <ul class="brick-grid__track">
+      {tiles.map((brick, index) => (
+        <li class="brick-tile" data-family={brick.data.family} style={`--animation-delay:${delay(index)}`}>
+          <span class="brick-tile__pill"></span>
+          <span class="brick-tile__icon-frame">
+            <span class="brick-tile__icon"><Icon name={FAMILY_ICONS[brick.data.family]} /></span>
+          </span>
+          <span class="brick-tile__label">{brick.data.title}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <div class="brick-catalog">
+    {groups.map((group) => (
+      <section class="family-block" data-family={group.family} aria-labelledby={`family-${group.family}`}>
+        <header class="family-block__head">
+          <span class="family-block__pill" aria-hidden="true"><Icon name={FAMILY_ICONS[group.family]} /></span>
+          <h2 id={`family-${group.family}`}>{group.label}</h2>
+          <p>{group.entries.length} briques</p>
         </header>
         <ol class="brick-list" role="list">
-          {group.entries.map((brick) => {
-            const structure = getStructureCompletion(brick.body ?? '', brick.data.type);
-            return (
-              <li>
-                <article class="brick-card" data-family={brick.data.family} data-priority={brick.data.priority}>
-                  <p class="card-kicker">
-                    <span>{brick.data.id.toUpperCase()}</span>
-                    <span>ordre {brick.data.order}</span>
-                  </p>
-                  <h3><a href={`/briques/${brick.data.id}/`}>{brick.data.title}</a></h3>
-                  <p class="meta-line">
-                    <span class="badge" data-priority={brick.data.priority}>
-                      {PRIORITY_LABELS[brick.data.priority]}
-                    </span>
-                    <span>{brick.data.durationMinutes ? `${brick.data.durationMinutes} min` : 'Durée à définir'}</span>
-                  </p>
-                  <div class="card-footer">
-                    <p>{STATUS_LABELS[brick.data.status]} · {OWNER_LABELS[brick.data.owner]}</p>
-                    <p class="structure-status">Structure {structure.complete}/{structure.total}</p>
-                  </div>
-                </article>
-              </li>
-            );
-          })}
+          {group.entries.map((brick) => (
+            <li>
+              <a
+                class="brick-card"
+                href={`/briques/${brick.data.id}/`}
+                data-family={brick.data.family}
+                data-priority={brick.data.priority}
+              >
+                <span class="brick-card__code">{brick.data.id.toUpperCase()}</span>
+                <span class="brick-card__title">{brick.data.title}</span>
+                <span class="brick-card__meta">
+                  {brick.data.priority !== 'socle' && <span class="brick-card__priority">{PRIORITY_LABELS[brick.data.priority]}</span>}
+                  {brick.data.durationMinutes ? <span>{brick.data.durationMinutes} min</span> : null}
+                </span>
+                <span class="brick-card__arrow" aria-hidden="true">→</span>
+              </a>
+            </li>
+          ))}
         </ol>
       </section>
     ))}
