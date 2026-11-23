@@ -17,7 +17,7 @@
    ========================================================================== */
 
 .faq-hero,
-.faq-groupes,
+.faq-layout,
 .carte-outils,
 .guides-grille,
 .cas-grille,
@@ -36,10 +36,7 @@
 }
 
 .faq-hero h1 {
-  display: inline-block;
   margin-block-end: 1.1rem;
-  /* Surlignage au feutre : le jaune de la famille, posé sous le mot. */
-  box-shadow: inset 0 -0.26em 0 var(--brick-yellow);
   font-size: var(--text-display-xl);
 }
 
@@ -50,10 +47,11 @@
   font-size: var(--text-lede);
 }
 
-/* --- Les questions courtes : repliées, une réponse et une phrase à copier -- */
+/* --- Les questions par thèmes : mise en page et accordéon d'Aave (Details, aave-05ea01) --- */
 
+/* Sur ordinateur, l'index collant remplace les raccourcis ; ils restent sur téléphone. */
 .faq-sauts {
-  display: flex;
+  display: none;
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-block-start: 1.5rem;
@@ -64,80 +62,167 @@
   align-items: center;
   gap: 0.45rem;
   padding: 0.45rem 0.8rem;
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
   border-radius: 999px;
   background: var(--surface);
-  font-weight: var(--weight-semibold);
+  font-size: var(--text-small);
   text-decoration: none;
 }
 
-.faq-sauts a:hover { background: var(--brick-yellow); }
-.faq-sauts svg, .faq-groupe h2 svg { flex: none; inline-size: 1.2em; block-size: 1.2em; }
+.faq-sauts svg { flex: none; inline-size: 1.2em; block-size: 1.2em; }
 
-.faq-groupes {
+.faq-layout {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
-  gap: clamp(1.5rem, 4vw, 2.5rem);
-  align-items: start;
-  margin-block-end: clamp(2.5rem, 6vw, 4rem);
+  grid-template-columns: minmax(0, 1fr) 234px;
+  column-gap: 72px;
+  margin-block-end: clamp(3rem, 7vw, 5rem);
 }
 
-.faq-groupe { min-inline-size: 0; scroll-margin-block-start: 5rem; }
+.faq-article {
+  min-inline-size: 0;
+  max-inline-size: 48rem;
+}
 
 .faq-groupe h2 {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin-block-end: 0.8rem;
-  font-size: var(--text-lede);
+  margin: 0 0 1.5rem;
+  padding-inline-start: 1rem;
+  font-size: 1.5rem;
+  letter-spacing: -0.03em;
+  line-height: 1.35;
+  scroll-margin-block-start: 6rem;
+}
+
+.faq-groupe + .faq-groupe h2 {
+  margin-block-start: 4.5rem;
+}
+
+.faq-accordion {
+  display: grid;
+  gap: 0.5rem;
 }
 
 .faq-question {
-  border-block-start: 2px solid var(--ink);
+  border-radius: 14px;
+  background: rgb(255 255 255 / 55%);
+  box-shadow: 0 0 0 1px rgb(18 18 17 / 4%);
 }
-
-.faq-question:last-child { border-block-end: 2px solid var(--ink); }
 
 .faq-question summary {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  padding-block: 0.8rem;
-  font-weight: var(--weight-semibold);
+  column-gap: 8px;
+  padding: 0.5rem 0.75rem 0.5rem 1rem;
+  font-size: 1.0625rem;
+  font-weight: var(--weight-medium);
+  letter-spacing: -0.015em;
+  line-height: 1.4;
   cursor: pointer;
   list-style: none;
 }
 
 .faq-question summary::-webkit-details-marker { display: none; }
 
-.faq-question summary::after {
-  flex: none;
-  content: "+";
-  font-family: var(--font-display);
-  font-size: 1.4rem;
-  line-height: 1;
+.faq-question summary:focus-visible {
+  border-radius: 14px;
+  outline-offset: -2px;
 }
 
-.faq-question[open] summary::after { content: "\2212"; }
-.faq-question[open] { padding-block-end: 1rem; }
-.faq-question > p { max-inline-size: 60ch; margin: 0 0 0.6rem; }
-.faq-question .prompt-copy p { flex: 1; margin: 0; }
+.faq-icon {
+  flex: none;
+  inline-size: 52px;
+  block-size: 52px;
+  margin-block: -0.5rem;
+  stroke: currentColor;
+}
+
+.faq-icon path {
+  transform-origin: 50% 50%;
+  transform-box: fill-box;
+}
+
+/* Sans JavaScript, une question ouverte affiche déjà son « moins ». */
+.faq-question[open]:not([data-open]) .faq-icon path:first-child { transform: rotate(180deg); }
+.faq-question[open]:not([data-open]) .faq-icon path:last-child { scale: 0; rotate: 80deg; }
+
+.faq-panel {
+  overflow: hidden;
+}
+
+.faq-content {
+  inline-size: calc(100% - 60px);
+  padding: 0 0 1.25rem 1rem;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.5;
+  letter-spacing: -0.011em;
+}
+
+.faq-content > p { margin: 0 0 0.75rem; }
+.faq-content .prompt-copy { margin-block: 0.25rem 0.75rem; border: 1px solid var(--line); }
+.faq-content .prompt-copy p { flex: 1; margin: 0; color: var(--ink); }
 
 .faq-lien {
   display: inline-block;
+  position: relative;
+  color: var(--ink);
   font-size: var(--text-small);
-  font-weight: var(--weight-semibold);
+  text-decoration: none;
 }
 
 .faq-lien::after { content: " \2192"; }
+
+.faq-index {
+  position: sticky;
+  inset-block-start: 100px;
+  align-self: start;
+  padding-inline-start: 32px;
+  border-inline-start: 1px solid var(--line);
+}
+
+.faq-index ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.faq-index a {
+  display: block;
+  padding-block-end: 16px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.35;
+  letter-spacing: -0.013em;
+  text-decoration: none;
+  transition: all 0.1s ease-in-out;
+}
+
+.faq-index a:hover { color: var(--ink); }
+
+.faq-index a[data-active="true"] {
+  color: var(--ink);
+  font-weight: var(--weight-medium);
+}
+
+@media (max-width: 768px) {
+  .faq-sauts { display: flex; }
+
+  .faq-layout {
+    grid-template-columns: 1fr;
+    row-gap: 48px;
+  }
+
+  .faq-index { display: none; }
+
+  .faq-question summary { padding: 0.25rem 0.5rem 0.25rem 0.85rem; font-size: 1rem; }
+}
 
 /* --- Carte des outils ---------------------------------------------------- */
 
 .carte-outils {
   margin-block-end: clamp(2.5rem, 6vw, 4rem);
   padding: clamp(1.25rem, 3vw, 2rem);
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
   border-radius: var(--radius-md);
   background: var(--surface);
   box-shadow: var(--shadow-block);
@@ -149,7 +234,6 @@
   font-size: var(--text-label);
   font-weight: var(--weight-semibold);
   letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
 }
 
 .outils-rangee {
@@ -168,7 +252,7 @@
   gap: 0.3rem;
   min-inline-size: 0;
   padding-block-start: 0.85rem;
-  border-block-start: 2px solid var(--ink);
+  border-block-start: 1px solid var(--line);
 }
 
 /* Sélecteur porté à deux classes : le logo est un <span>, et la règle de la
@@ -223,7 +307,7 @@
   block-size: 100%;
   min-block-size: 11rem;
   padding: clamp(1.1rem, 3vw, 1.6rem);
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
   /* Bandeau de couleur en tête de carte : la cible tactile fait tout le bloc. */
   border-block-start: 0.7rem solid var(--carte-accent, var(--brick-yellow));
   border-radius: var(--radius-md);
@@ -247,14 +331,14 @@
 }
 
 .guides-grille a:active {
-  box-shadow: 0.1rem 0.1rem 0 var(--ink);
+  box-shadow: var(--shadow-block);
   transform: translate(0.18rem, 0.18rem);
 }
 
 .guides-grille a strong {
   font-family: var(--font-display);
   font-size: var(--text-h3);
-  font-weight: var(--weight-display);
+  font-weight: var(--weight-medium);
   letter-spacing: var(--tracking-tight);
   line-height: 1.1;
 }
@@ -281,7 +365,7 @@
   column-gap: clamp(1rem, 3vw, 2.5rem);
   margin: 0;
   padding: 0;
-  border-block-start: 2px solid var(--ink);
+  border-block-start: 1px solid var(--line);
   list-style: none;
 }
 
@@ -301,7 +385,7 @@
   align-self: center;
   inline-size: 0.55rem;
   block-size: 0.55rem;
-  border: 1px solid var(--ink);
+  border: 1px solid var(--line);
   background: var(--brick-orange);
 }
 
@@ -318,8 +402,6 @@
   margin-inline-start: auto;
   color: var(--muted);
   font-size: var(--text-label);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
   white-space: nowrap;
 }
 
@@ -330,7 +412,7 @@
   max-inline-size: 52ch;
   margin-block-start: clamp(2.5rem, 6vw, 4rem);
   padding-block-start: 1rem;
-  border-block-start: 2px solid var(--ink);
+  border-block-start: 1px solid var(--line);
   color: var(--muted);
   font-size: var(--text-small);
 }
@@ -365,7 +447,7 @@
   max-inline-size: 52ch;
   margin-block: 1.25rem 0;
   padding: 0.85rem 1.05rem;
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
   border-inline-start: 0.55rem solid var(--brick-blue);
   border-radius: var(--radius-sm);
   background: var(--surface);
@@ -377,7 +459,6 @@
   font-weight: var(--weight-semibold);
   font-size: var(--text-label);
   letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
 }
 
 /* --- Ce que le guide suppose déjà en place ------------------------------- */
@@ -397,7 +478,6 @@
   font-weight: var(--weight-semibold);
   font-size: var(--text-label);
   letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
 }
 
 .guide-prerequis ul {
@@ -429,14 +509,13 @@
   gap: 0.25rem 0.9rem;
   margin-block-end: clamp(1.5rem, 4vw, 2.5rem);
   padding: 0.5rem 0.85rem;
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   background: var(--ink);
   color: var(--paper);
   font-size: var(--text-label);
   font-weight: var(--weight-semibold);
   letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
 }
 
 .guide-bandeau [data-bandeau-rang] {
@@ -445,7 +524,6 @@
 
 .guide-bandeau [data-bandeau-lieu] {
   margin-inline-start: auto;
-  letter-spacing: 0.04em;
   text-align: end;
 }
 
@@ -463,7 +541,7 @@
   gap: 0.9rem;
   margin-block: clamp(3rem, 8vw, 5rem) clamp(1.75rem, 4vw, 2.75rem);
   padding: 1.05rem 1.2rem;
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
   border-radius: var(--radius-md);
   background: var(--brick-yellow);
   box-shadow: var(--shadow-block-strong);
@@ -482,7 +560,7 @@
   flex: none;
   inline-size: 2.6rem;
   block-size: 2.6rem;
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   background: var(--surface);
   font-size: 1.5rem;
@@ -510,7 +588,7 @@
   /* Le bandeau collant ne doit jamais recouvrir la cible d'une ancre. */
   scroll-margin-block-start: 4.5rem;
   padding-block: clamp(2.25rem, 6vw, 3.5rem);
-  border-block-start: 2px solid var(--ink);
+  border-block-start: 1px solid var(--line);
 }
 
 .etape:first-of-type,
@@ -553,7 +631,6 @@
   font-size: var(--text-label);
   font-weight: var(--weight-semibold);
   letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
 }
 
 /* --- Danger : à lire avant d'agir --------------------------------------- */
@@ -564,7 +641,7 @@
   gap: 0.75rem;
   margin: 0;
   padding: 0.85rem 1.05rem;
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   background: var(--brick-coral);
   box-shadow: var(--shadow-block);
@@ -578,12 +655,12 @@
   flex: none;
   inline-size: 1.7rem;
   block-size: 1.7rem;
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
   border-radius: 50%;
   background: var(--paper);
   font-family: var(--font-display);
   font-size: 1.05rem;
-  font-weight: var(--weight-display);
+  font-weight: var(--weight-medium);
   line-height: 1;
 }
 
@@ -619,12 +696,12 @@
   place-items: center;
   inline-size: 2.1rem;
   block-size: 2.1rem;
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   background: var(--surface);
   font-family: var(--font-display);
   font-size: 1rem;
-  font-weight: var(--weight-display);
+  font-weight: var(--weight-medium);
   line-height: 1;
 }
 
@@ -643,7 +720,7 @@
   gap: 0.55rem;
   min-inline-size: 0;
   padding: 0.9rem 1.05rem;
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
   border-radius: var(--radius-md);
   background: var(--surface);
   background: color-mix(in srgb, var(--brick-yellow) 22%, var(--surface));
@@ -655,7 +732,6 @@
   font-weight: var(--weight-semibold);
   font-size: var(--text-label);
   letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
 }
 
 .etape-a-claude pre {
@@ -688,7 +764,7 @@
 .fichier {
   min-inline-size: 0;
   margin: 0;
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
   border-radius: var(--radius-md);
   background: var(--surface);
   box-shadow: var(--shadow-block);
@@ -696,14 +772,13 @@
 
 .fichier figcaption {
   padding: 0.45rem 0.85rem;
-  border-block-end: 2px solid var(--ink);
+  border-block-end: 1px solid var(--line);
   border-start-start-radius: calc(var(--radius-md) - 2px);
   border-start-end-radius: calc(var(--radius-md) - 2px);
   background: var(--ink);
   color: var(--paper);
   font-family: var(--font-mono);
   font-size: var(--text-label);
-  letter-spacing: 0.02em;
 }
 
 .fichier pre {
@@ -731,7 +806,7 @@
 .etape-preuve {
   margin: 0;
   padding: 0.85rem 1.05rem;
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
   border-inline-start: 0.55rem solid var(--brick-green);
   border-radius: var(--radius-sm);
   background: var(--surface);
@@ -746,7 +821,6 @@
   font-size: var(--text-label);
   font-weight: var(--weight-heading);
   letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
 }
 
 .etape-preuve strong::before,
@@ -817,13 +891,12 @@
   font-size: var(--text-label);
   font-weight: var(--weight-semibold);
   letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
 }
 
 .panne {
   scroll-margin-block-start: 4.5rem;
   margin-block-start: 0.6rem;
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   background: var(--surface);
 }
@@ -847,17 +920,17 @@
   flex: none;
   inline-size: 1.6rem;
   block-size: 1.6rem;
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
   border-radius: 50%;
   background: var(--paper);
   font-family: var(--font-display);
   font-size: 1rem;
-  font-weight: var(--weight-display);
+  font-weight: var(--weight-medium);
   line-height: 1;
 }
 
 .panne[open] > summary {
-  border-block-end: 2px solid var(--ink);
+  border-block-end: 1px solid var(--line);
 }
 
 .panne:target {
@@ -892,7 +965,7 @@
   min-inline-size: 0;
   margin: 0;
   padding: clamp(0.9rem, 2.5vw, 1.4rem);
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
   border-radius: var(--radius-md);
   background: var(--surface);
   box-shadow: var(--shadow-block);
@@ -928,7 +1001,6 @@
   font-weight: var(--weight-semibold);
   font-size: var(--text-label);
   letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
 }
 
 .arborescence-colonne ul {
@@ -969,7 +1041,6 @@
   display: inline-block;
   font-family: var(--font-body);
   font-size: var(--text-label);
-  letter-spacing: 0.02em;
   text-decoration: none;
 }
 
@@ -984,7 +1055,6 @@
   font-weight: var(--weight-semibold);
   font-size: var(--text-label);
   letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
 }
 
 .claude-bulle {
@@ -993,7 +1063,7 @@
   gap: 0.45rem;
   min-inline-size: 0;
   padding: 0.85rem 0.95rem;
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
   border-radius: var(--radius-md);
 }
 
@@ -1039,7 +1109,7 @@
   max-inline-size: 100%;
   /* La grille parente ne doit pas non plus étirer l'image à la colonne. */
   justify-self: start;
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   background: var(--paper);
 }
@@ -1083,8 +1153,6 @@
   content: attr(data-position);
   color: var(--muted);
   font-size: var(--text-label);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
 }
 
 .capture-source {
@@ -1117,7 +1185,7 @@
   gap: 0.2rem;
   min-inline-size: 0;
   padding: 0.85rem 0.7rem;
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   background: var(--paper);
   text-align: center;
@@ -1182,7 +1250,7 @@
   gap: 0.6rem;
   margin: 0;
   padding: 0.6rem 0.9rem;
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   background: var(--brick-coral);
   font-size: var(--text-small);
@@ -1205,7 +1273,7 @@
   min-block-size: 2.4rem;
   min-inline-size: 6rem;
   padding: 0.35rem 0.8rem;
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   background: var(--surface);
   color: var(--ink);
@@ -1214,7 +1282,6 @@
   font-size: var(--text-label);
   font-weight: var(--weight-semibold);
   letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
   transition: background 140ms ease;
 }
 
@@ -1265,10 +1332,6 @@
    ========================================================================== */
 
 @media (max-width: 43rem) {
-  .faq-hero h1 {
-    box-shadow: inset 0 -0.2em 0 var(--brick-yellow);
-  }
-
   .cas-guide {
     margin-inline-start: 1.3rem;
     white-space: normal;

@@ -5,76 +5,26 @@ import { BRICK_COUNT } from '../content/brick-files';
 
 <BaseLayout
   title="Les briques du Vibe Coding"
-  description={`Une formation pratique pour comprendre l’IA, construire avec Claude, puis livrer un projet concret en ${BRICK_COUNT} briques.`}
+  description={`Un week-end pour comprendre l’IA, prendre Claude en main et lancer votre propre projet, en ${BRICK_COUNT} briques.`}
 >
-  <section class="home-hero" aria-labelledby="home-title">
+  <section class="home-hero" data-ascii-wind aria-labelledby="home-title">
     <div class="home-copy">
-      <p class="eyebrow">Formation pratique · {BRICK_COUNT} briques · un week-end</p>
-      <h1 id="home-title">Les briques du <span>Vibe Coding</span></h1>
+      <h1 id="home-title">Les briques du Vibe Coding</h1>
       <p class="home-lede">
-        Comprendre ce que fait l’IA. Construire un outil qui vous ressemble.
-        Le versionner, le partager et savoir comment continuer.
+        Un week-end pour comprendre l’IA, prendre Claude en main
+        et lancer votre propre projet.
       </p>
-      <div class="hero-actions">
-        <a class="button button-primary" href="/briques/">Explorer les {BRICK_COUNT} briques <span aria-hidden="true">→</span></a>
-        <a class="text-link" href="/faq/">Bloqué sur une manipulation ? Les gestes en images</a>
-        <a class="text-link" href="#methode">Voir la méthode</a>
-      </div>
-      <ul class="home-facts" role="list">
-        <li><strong>01</strong><span>Comprendre</span></li>
-        <li><strong>02</strong><span>Construire</span></li>
-        <li><strong>03</strong><span>Livrer</span></li>
-      </ul>
+      <a class="button button-primary" href="/briques/">Découvrir les {BRICK_COUNT} briques</a>
     </div>
-
-    <div
-      class="hero-construction"
-      role="img"
-      aria-label="Trois briques empilées : comprendre, construire et livrer"
-    >
-      <div class="construction-tag" aria-hidden="true">KIT / {BRICK_COUNT}</div>
-      <div class="construction-block block-understand" aria-hidden="true">
-        <span>A</span> COMPRENDRE
-      </div>
-      <div class="construction-block block-build" aria-hidden="true">
-        <span>B</span> CONSTRUIRE
-      </div>
-      <div class="construction-block block-ship" aria-hidden="true">
-        <span>C</span> LIVRER
-      </div>
-      <div class="construction-disc" aria-hidden="true">IA</div>
-    </div>
-  </section>
-
-  <section class="home-method" id="methode" aria-labelledby="method-title">
-    <div class="section-heading">
-      <p class="eyebrow">Une progression concrète</p>
-      <h2 id="method-title">Pas un cours à regarder.<br />Un projet à construire.</h2>
-    </div>
-    <div class="method-grid">
-      <article>
-        <span class="method-number">01</span>
-        <h3>Une notion au bon moment</h3>
-        <p>Chaque concept arrive quand il débloque l’action suivante, avec une explication durable et une pratique guidée.</p>
-      </article>
-      <article>
-        <span class="method-number">02</span>
-        <h3>Un livrable à chaque étape</h3>
-        <p>Prompt, Artifact, dépôt GitHub puis mini-application : vous repartez avec des preuves concrètes de votre progression.</p>
-      </article>
-      <article>
-        <span class="method-number">03</span>
-        <h3>Un parcours qui reste utile</h3>
-        <p>Les {BRICK_COUNT} briques deviennent votre bibliothèque pour réviser, retrouver une commande et prolonger le projet après la formation.</p>
-      </article>
-    </div>
-  </section>
-
-  <section class="home-cta" aria-labelledby="cta-title">
-    <div>
-      <p class="eyebrow">Le plan de construction est prêt</p>
-      <h2 id="cta-title">Choisissez votre première brique.</h2>
-    </div>
-    <a class="button button-light" href="/briques/">Ouvrir le programme <span aria-hidden="true">↗</span></a>
   </section>
 </BaseLayout>
+
+<script>
+  import { initAsciiWind2 } from '../scripts/ascii-wind.js';
+
+  const root = document.querySelector<HTMLElement>('[data-ascii-wind]');
+  if (root) {
+    const stopAsciiWind2 = initAsciiWind2(root, 'wind');
+    window.addEventListener('pagehide', (event) => { if (!event.persisted) stopAsciiWind2(); });
+  }
+</script>

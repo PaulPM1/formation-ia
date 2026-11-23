@@ -26,20 +26,42 @@ const cas = collecterCas(GUIDES);
     </nav>
   </section>
 
-  <div class="faq-groupes">
-    {QUESTIONS.map((groupe) => (
-      <section class="faq-groupe" id={groupe.id} aria-labelledby={`titre-${groupe.id}`}>
-        <h2 id={`titre-${groupe.id}`}><EcoIcon name={groupe.icone as any} />{groupe.titre}</h2>
-        {groupe.questions.map((entree) => (
-          <details class="faq-question">
-            <summary>{entree.question}</summary>
-            <p>{entree.reponse}</p>
-            {entree.aClaude && <PromptCopy>{entree.aClaude}</PromptCopy>}
-            {entree.lien && <a class="faq-lien" href={entree.lien.href}>{entree.lien.label}</a>}
-          </details>
+  <div class="faq-layout">
+    <article class="faq-article">
+      {QUESTIONS.map((groupe) => (
+        <section class="faq-groupe" aria-labelledby={groupe.id}>
+          <h2 id={groupe.id}>{groupe.titre}</h2>
+          <div class="faq-accordion" data-faq-accordion>
+            {groupe.questions.map((entree, index) => (
+              <details class="faq-question" id={`${groupe.id}-${index + 1}`}>
+                <summary>
+                  <span>{entree.question}</span>
+                  <svg class="faq-icon" width="52" height="52" viewBox="0 0 52 52" aria-hidden="true" focusable="false">
+                    <path d="M19 25.5H26L33 25.5" stroke-width="2" stroke-linecap="round" />
+                    <path d="M26 18.5L26 25.5L26 32.5" stroke-width="2" stroke-linecap="round" />
+                  </svg>
+                </summary>
+                <div class="faq-panel">
+                  <div class="faq-content">
+                    <p>{entree.reponse}</p>
+                    {entree.aClaude && <PromptCopy>{entree.aClaude}</PromptCopy>}
+                    {entree.lien && <a class="faq-lien" href={entree.lien.href}>{entree.lien.label}</a>}
+                  </div>
+                </div>
+              </details>
+            ))}
+          </div>
+        </section>
+      ))}
+    </article>
+
+    <nav class="faq-index" aria-label="Thèmes">
+      <ul role="list">
+        {QUESTIONS.map((groupe) => (
+          <li><a href={`#${groupe.id}`} data-faq-link={groupe.id}>{groupe.titre}</a></li>
         ))}
-      </section>
-    ))}
+      </ul>
+    </nav>
   </div>
 
   <section class="guides-grille" aria-labelledby="titre-guides">
@@ -72,3 +94,9 @@ const cas = collecterCas(GUIDES);
 
   <CarteOutils outils={OUTILS} />
 </BaseLayout>
+
+<script>
+  import { initFaq } from '../../scripts/faq-accordion';
+
+  initFaq(document);
+</script>
