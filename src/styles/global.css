@@ -1411,8 +1411,9 @@ progress::-moz-progress-bar {
   padding: 3rem 2rem 2.625em 0;
 }
 
+/* La liste se centre dans la hauteur, au niveau de la maquette ; les cercles restent en bas. */
 .workflow__list {
-  margin: 0;
+  margin: auto 0;
   padding: 0;
   border-block-start: 1px dashed var(--line);
   list-style: none;
@@ -1482,7 +1483,6 @@ progress::-moz-progress-bar {
   display: flex;
   justify-content: space-between;
   gap: 0.5rem;
-  margin-block-start: auto;
 }
 
 .workflow__circle {
