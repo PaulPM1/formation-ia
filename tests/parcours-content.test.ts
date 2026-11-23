@@ -11,25 +11,25 @@ test('les manifestes livrés passent le validateur', () => {
 });
 
 test('les compteurs figés du contenu', () => {
-  assert.equal(GUIDES.length, 3);
-  assert.equal(GUIDES.reduce((total, guide) => total + guide.etapes.length, 0), 26);
+  assert.equal(GUIDES.length, 2);
+  assert.equal(GUIDES.reduce((total, guide) => total + guide.etapes.length, 0), 17);
   assert.equal(
     GUIDES.reduce(
       (total, guide) => total + guide.etapes.reduce((sous, etape) => sous + etape.pannes.length, 0),
       0,
     ),
-    12,
+    6,
   );
 });
 
 test('getGuide retrouve un guide par son identifiant', () => {
-  assert.equal(getGuide('naissance-projet')?.id, 'naissance-projet');
+  assert.equal(getGuide('mise-en-ligne')?.id, 'mise-en-ligne');
   assert.equal(getGuide('inconnu'), undefined);
 });
 
 test('la carte des outils est complète', () => {
   assert.deepEqual(
     OUTILS.map((outil) => outil.nom),
-    ['Wispr Flow', 'Typeless', 'VS Code', 'Claude Code', 'GitHub', 'Vercel'],
+    ['L’application Claude', 'GitHub', 'Vercel'],
   );
 });

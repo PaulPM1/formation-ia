@@ -106,15 +106,15 @@ export const CLE_API: Guide = {
     {
       id: 'preparer-le-coffre',
       titre: 'Demander à Claude de préparer le coffre',
-      lieu: 'vscode',
+      lieu: 'claude',
       gestes: [
-        { action: 'Ouvrez Claude dans VS Code.' },
+        { action: 'Ouvrez votre projet dans l’application Claude, onglet Code.' },
         { action: 'Envoyez-lui l’encadré plus haut, sans y mettre votre clé.' },
       ],
       aClaude:
         'Crée un fichier .env à la racine de ce projet, avec une ligne ANTHROPIC_API_KEY= et rien après le signe égal. Ajoute .env au fichier .gitignore.',
       preuve: {
-        visible: 'Un fichier .env apparaît dans la barre latérale.',
+        visible: 'Claude confirme qu’il a créé le fichier .env et qu’il ne partira pas sur GitHub.',
         sinon: 'Redemandez à Claude de vérifier son travail.',
       },
       visuel: {
@@ -128,13 +128,14 @@ export const CLE_API: Guide = {
     {
       id: 'coller-la-cle',
       titre: 'Coller la clé dans le fichier',
-      lieu: 'vscode',
+      lieu: 'claude',
       danger: 'Ne collez jamais votre clé dans la conversation avec Claude.',
       gestes: [
-        { action: 'Ouvrez le fichier .env.' },
+        { action: 'Envoyez l’encadré plus haut à Claude : le fichier s’ouvre sur votre ordinateur.' },
         { action: 'Collez votre clé juste après le signe égal, sans espace.' },
-        { action: 'Enregistrez.' },
+        { action: 'Enregistrez, puis fermez le fichier.' },
       ],
+      aClaude: 'Ouvre le fichier .env dans l’éditeur de texte de mon ordinateur, pour que j’y colle ma clé moi-même.',
       fichiers: [
         {
           chemin: '.env',
@@ -143,8 +144,8 @@ export const CLE_API: Guide = {
         },
       ],
       preuve: {
-        visible: 'Le nom .env s’affiche en grisé dans la barre latérale.',
-        sinon: 'Il n’est pas grisé : reprenez l’étape précédente avant d’aller plus loin.',
+        visible: 'La ligne se termine par votre clé, et le fichier est enregistré.',
+        sinon: 'Le fichier ne s’ouvre pas : redemandez à Claude de l’ouvrir.',
       },
       visuel: {
         key: 'arborescence',

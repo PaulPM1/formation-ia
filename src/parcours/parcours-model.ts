@@ -1,4 +1,4 @@
-export const LIEUX = ['machine', 'vscode', 'navigateur'] as const;
+export const LIEUX = ['machine', 'claude', 'navigateur'] as const;
 export type Lieu = (typeof LIEUX)[number];
 
 export const VISUEL_KEYS = ['capture', 'claude', 'arborescence', 'trois-lieux'] as const;

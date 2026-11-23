@@ -12,7 +12,7 @@ import {
 } from '../src/parcours/parcours-model';
 
 test('le lieu terminal n\'existe pas dans le modèle', () => {
-  assert.deepEqual([...LIEUX], ['machine', 'vscode', 'navigateur']);
+  assert.deepEqual([...LIEUX], ['machine', 'claude', 'navigateur']);
   assert.equal(LIEUX.includes('terminal' as never), false);
 });
 

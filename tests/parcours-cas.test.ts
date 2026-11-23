@@ -12,9 +12,9 @@ const guide: Guide = {
   prerequis: [],
   etapes: [
     {
-      id: 'ouvrir-dans-vscode',
+      id: 'ouvrir-le-dossier',
       titre: 'Ouvrir le dossier',
-      lieu: 'vscode',
+      lieu: 'claude',
       gestes: [{ action: 'Ouvrez le dossier.' }],
       preuve: { visible: 'Le nom apparaît.', sinon: 'Recommencez.' },
       visuel: { key: 'trois-lieux', accent: 'projet' },
@@ -59,10 +59,6 @@ test('chaque entrée pointe vers une ancre complète', () => {
  * assumée de la grille se répercute ici, en connaissance de cause.
  */
 const SYMPTOMES_FREQUENTS = [
-  'Je vois un seul fichier, pas mon dossier',
-  'Je ne trouve pas Claude Code',
-  'GitHub ne m’affiche aucun bloc d’instructions',
-  'Ma page GitHub reste vide',
   'Vercel n’affiche aucun de mes projets',
   'Vercel dit que le déploiement a échoué',
   'Mon site reste identique',

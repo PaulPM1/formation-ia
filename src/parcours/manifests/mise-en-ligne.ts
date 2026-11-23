@@ -4,7 +4,7 @@ export const MISE_EN_LIGNE: Guide = {
   id: 'mise-en-ligne',
   titre: 'Mettre votre site en ligne',
   promesse: 'De votre dépôt GitHub à une adresse que vous pouvez envoyer à n’importe qui.',
-  prerequis: ['Votre projet est sur GitHub'],
+  prerequis: ['Votre projet est sauvegardé sur GitHub'],
   etapes: [
     {
       id: 'compte-vercel',
@@ -150,7 +150,7 @@ export const MISE_EN_LIGNE: Guide = {
     {
       id: 'le-lien-permanent',
       titre: 'Voir le site se mettre à jour',
-      lieu: 'vscode',
+      lieu: 'claude',
       gestes: [
         { action: 'Envoyez l’encadré plus haut à Claude.' },
         { action: 'Attendez une minute, rouvrez votre site, rafraîchissez.' },

@@ -1,28 +1,49 @@
 ---
+import '../../components/briques/claude-app.css';
+import EcoIcon from '../../components/briques/EcoIcon.astro';
+import PromptCopy from '../../components/briques/PromptCopy.astro';
 import CarteOutils from '../../components/faq/CarteOutils.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { collecterCas } from '../../features/faq/cas';
 import { GUIDES, cheminGuide } from '../../parcours/manifests';
 import { OUTILS } from '../../parcours/outils';
+import { QUESTIONS } from '../../parcours/questions';
 
 const cas = collecterCas(GUIDES);
 ---
 
 <BaseLayout
   title="Questions fréquentes"
-  description="Les gestes en images pour créer votre projet, le mettre en ligne et lui donner une clé."
+  description="Les réponses courtes, la phrase à donner à Claude, et les écrans pas à pas pour mettre votre projet en ligne."
 >
   <section class="faq-hero">
     <h1>Questions fréquentes</h1>
-    <p class="faq-lede">
-      Les gestes en images, écran par écran. Trouvez votre cas, cliquez, regardez.
-    </p>
+    <p class="faq-lede">Trouvez votre question, copiez la phrase, donnez-la à Claude.</p>
+    <nav class="faq-sauts" aria-label="Aller à un thème">
+      {QUESTIONS.map((groupe) => (
+        <a href={`#${groupe.id}`}><EcoIcon name={groupe.icone as any} />{groupe.titre}</a>
+      ))}
+    </nav>
   </section>
 
-  <CarteOutils outils={OUTILS} />
+  <div class="faq-groupes">
+    {QUESTIONS.map((groupe) => (
+      <section class="faq-groupe" id={groupe.id} aria-labelledby={`titre-${groupe.id}`}>
+        <h2 id={`titre-${groupe.id}`}><EcoIcon name={groupe.icone as any} />{groupe.titre}</h2>
+        {groupe.questions.map((entree) => (
+          <details class="faq-question">
+            <summary>{entree.question}</summary>
+            <p>{entree.reponse}</p>
+            {entree.aClaude && <PromptCopy>{entree.aClaude}</PromptCopy>}
+            {entree.lien && <a class="faq-lien" href={entree.lien.href}>{entree.lien.label}</a>}
+          </details>
+        ))}
+      </section>
+    ))}
+  </div>
 
   <section class="guides-grille" aria-labelledby="titre-guides">
-    <h2 id="titre-guides">Je veux…</h2>
+    <h2 id="titre-guides">Les écrans, un par un</h2>
     <ul role="list">
       {GUIDES.map((guide) => (
         <li>
@@ -37,7 +58,7 @@ const cas = collecterCas(GUIDES);
 
   {cas.length > 0 && (
     <section class="cas-grille" aria-labelledby="titre-cas">
-      <h2 id="titre-cas">Ça coince ?</h2>
+      <h2 id="titre-cas">Ça coince pendant la mise en ligne ?</h2>
       <ul role="list">
         {cas.map((entree) => (
           <li>
@@ -49,9 +70,5 @@ const cas = collecterCas(GUIDES);
     </section>
   )}
 
-  <p class="faq-retour">
-    Le geste est ici, la règle est là : <a href="/briques/d4/">Sécurité et
-    bonnes pratiques</a>, avec les questions à poser à Claude pour vérifier un
-    projet.
-  </p>
+  <CarteOutils outils={OUTILS} />
 </BaseLayout>

@@ -1,126 +1,111 @@
 ---
-import { getCollection } from 'astro:content';
-
+import ClaudeCodeLoop from '../../components/briques/ClaudeCodeLoop.astro';
+import OpenFolder from '../../components/briques/OpenFolder.astro';
+import PromptCopy from '../../components/briques/PromptCopy.astro';
+import SaveToGitHub from '../../components/briques/SaveToGitHub.astro';
+import SetupInstall from '../../components/briques/SetupInstall.astro';
+import SetupInterview from '../../components/briques/SetupInterview.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { formatBudgetMinutes } from '../../content/atelier-model';
 
-const stages = (await getCollection('atelier')).toSorted(
-  (left, right) => left.data.order - right.data.order,
-);
-const bricks = await getCollection('briques');
-const brickTitles = new Map(bricks.map((brick) => [brick.data.id, brick.data.title]));
-
-const weekend = [
-  {
-    when: 'Vendredi après-midi',
-    label: 'Le socle commun, 2 h',
-    detail:
-      "Les outils en place, le dossier créé et versionné, les comptes GitHub et Vercel prêts, le projet choisi, son CLAUDE.md écrit par interview, un premier commit envoyé.",
-    core: false,
-  },
-  {
-    when: 'Samedi et dimanche matin',
-    label: 'Vous développez votre projet',
-    detail:
-      "Le cœur du week-end : vous construisez, à votre rythme, en suivant le cahier des charges de votre projet. Les formateurs circulent et débloquent.",
-    core: true,
-  },
-  {
-    when: 'Dimanche midi',
-    label: 'La restitution',
-    detail:
-      'La démonstration devant le groupe, en direct, puis le cadrage du projet suivant.',
-    core: false,
-  },
+const moments = [
+  { when: 'Samedi matin', label: 'On comprend, on prépare', core: false },
+  { when: 'Samedi après-midi et dimanche', label: 'Vous construisez', core: true },
+  { when: 'Ensuite, chez vous', label: 'Vous continuez', core: false },
 ];
 ---
 
 <BaseLayout
   title="Atelier"
-  description="Un socle technique commun, six projets au choix : construisez le vôtre sur un week-end."
+  description="Votre projet, votre idée : cinq étapes pour le construire avec Claude."
 >
   <header class="catalog-hero">
     <div>
       <p class="eyebrow">L'atelier</p>
-      <h1>Deux heures de socle, puis votre projet</h1>
+      <h1>C'est le moment de construire</h1>
       <p class="lede">
-        Vendredi après-midi, tout le monde installe le même socle : les outils,
-        un dossier versionné, les comptes, le projet choisi et son identité
-        écrite. Tout le reste du week-end sert à construire ce projet, à votre
-        rythme, avec les formateurs à côté. Dimanche midi, vous le montrez.
-      </p>
-      <p class="hero-actions">
-        <a class="button button-light" href="#socle">Le socle commun</a>
+        Votre projet, votre idée. Claude s'occupe de la technique, et rien
+        n'oblige à finir ce week-end.
       </p>
     </div>
-    <aside class="catalog-counter" aria-label="5 projets sur un week-end">
-      <strong>5</strong>
-      <span>projets</span>
-      <small>2 h de socle · 1 week-end</small>
-    </aside>
   </header>
 
-  <section class="weekend-section" aria-labelledby="deroule-titre">
-    <div class="section-heading">
-      <p class="eyebrow">Le déroulé</p>
-      <h2 id="deroule-titre">Le week-end en trois temps</h2>
-    </div>
+  <section class="weekend-section" aria-label="Le week-end en trois moments">
     <ol class="weekend-track" role="list">
-      {weekend.map((moment) => (
+      {moments.map((moment) => (
         <li class="weekend-step" data-core={moment.core ? 'true' : undefined}>
           <p class="weekend-when">{moment.when}</p>
           <p class="weekend-label">{moment.label}</p>
-          <p class="weekend-detail">{moment.detail}</p>
         </li>
       ))}
     </ol>
   </section>
 
-  <section class="socle-section" id="socle" aria-labelledby="socle-titre">
-    <div class="section-heading">
-      <p class="eyebrow">Commun à tous les projets</p>
-      <div>
-        <h2 id="socle-titre">Les deux moments communs</h2>
-        <p class="section-lede">
-          Le décollage du vendredi et la restitution du dimanche se déroulent au
-          même moment pour tout le monde. Entre les deux, chacun avance sur son
-          projet.
-        </p>
-      </div>
-    </div>
-    <ol class="stage-track" role="list" aria-label="Les deux moments communs du week-end">
-      {stages.map((stage) => (
-        <li class="stage-step" data-stage={stage.data.id}>
-          <span class="family-index" aria-hidden="true">0{stage.data.order}</span>
-          <article class="stage-card">
-            <p class="card-kicker">
-              <span>Tous ensemble</span>
-              <span>{stage.data.durationLabel} · ≈ {formatBudgetMinutes(stage.data.budgetMinutes)}</span>
-            </p>
-            <h3><a href={`/atelier/${stage.data.id}/`}>{stage.data.title}</a></h3>
-            <p class="stage-subtitle">{stage.data.subtitle}</p>
-            <dl class="stage-facts">
-              <div>
-                <dt>Le but</dt>
-                <dd>{stage.data.goal}</dd>
-              </div>
-            </dl>
-            <ul class="pill-list" role="list" aria-label="Briques mobilisées">
-              {stage.data.bricks.map((brickId) => (
-                <li>
-                  <a class="brick-pill" data-family={brickId.charAt(0)} href={`/briques/${brickId}/`}>
-                    <span aria-hidden="true">{brickId.toUpperCase()}</span>
-                    {brickTitles.get(brickId) ?? brickId.toUpperCase()}
-                  </a>
-                </li>
-              ))}
-            </ul>
-            <a class="text-link" href={`/atelier/${stage.data.id}/`}>
-              Voir le détail <span aria-hidden="true">→</span>
-            </a>
-          </article>
-        </li>
-      ))}
-    </ol>
-  </section>
+  <article class="brick-content build-steps">
+    <h2><span>1</span>Préparez votre ordinateur</h2>
+    <p>Une phrase à coller, Claude installe tout. <a href="/briques/d2-bis/">La phrase est ici.</a></p>
+    <SetupInstall />
+
+    <h2><span>2</span>Ouvrez un dossier vide dans l'onglet Code</h2>
+    <p>Ce dossier, c'est votre projet. <a href="/briques/b2/">Claude Code</a></p>
+    <OpenFolder />
+
+    <h2><span>3</span>Racontez votre idée</h2>
+    <PromptCopy>lance setup-projet</PromptCopy>
+    <p>Claude vous pose des questions, puis découpe l'idée avec vous. <a href="/briques/e3/">Lancer son projet</a></p>
+    <SetupInterview />
+
+    <h2><span>4</span>Demandez, regardez, corrigez</h2>
+    <PromptCopy>construis la première fonctionnalité</PromptCopy>
+    <p>Vous ne lisez pas de code : vous regardez le résultat. <a href="/briques/b2/">Claude Code</a></p>
+    <ClaudeCodeLoop />
+
+    <h2><span>5</span>Sauvegardez</h2>
+    <PromptCopy>Sauvegarde mon projet sur GitHub.</PromptCopy>
+    <p>
+      À chaque chose qui marche. <a href="/briques/d2/">Sauvegarder sur GitHub</a>,
+      puis <a href="/briques/d3/">mettre en ligne</a> quand vous voulez.
+    </p>
+    <SaveToGitHub />
+
+    <aside class="build-stuck">
+      <p><strong>Bloqué ?</strong> Collez le message d'erreur à Claude. Au deuxième échec, appelez un formateur.</p>
+      <a class="button" href="/faq/">Questions fréquentes</a>
+    </aside>
+  </article>
 </BaseLayout>
+
+<style>
+  .build-steps h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .build-steps h2 span {
+    display: grid;
+    flex: none;
+    place-items: center;
+    inline-size: 2.4rem;
+    aspect-ratio: 1;
+    border: 2px solid var(--ink);
+    border-radius: 50%;
+    background: var(--brick-yellow);
+    font-size: 1.2rem;
+  }
+
+  .build-stuck {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-block-start: 4rem;
+    padding: 1.25rem;
+    border: 3px solid var(--ink);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    box-shadow: var(--shadow-block);
+  }
+
+  .build-stuck p { margin: 0; }
+</style>

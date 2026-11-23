@@ -214,7 +214,7 @@ test('le bloc à coller contrôlé est bien celui qui est rendu', () => {
 
 test('le role d’un outil est plafonné à 100 caractères', () => {
   const outils: Outil[] = [
-    { nom: 'VS Code', logo: 'faq/outils/vscode.svg', role: 'a'.repeat(101) },
+    { nom: 'GitHub', logo: 'faq/outils/github.svg', role: 'a'.repeat(101) },
   ];
   const issues = validateOutils(outils);
   assert.equal(issues.length, 1);
@@ -223,7 +223,7 @@ test('le role d’un outil est plafonné à 100 caractères', () => {
 
 test('une carte d’outils correcte ne remonte rien', () => {
   const outils: Outil[] = [
-    { nom: 'VS Code', logo: 'faq/outils/vscode.svg', role: 'L’atelier : c’est là que votre projet vit.' },
+    { nom: 'GitHub', logo: 'faq/outils/github.svg', role: 'L’atelier : c’est là que votre projet vit.' },
   ];
   assert.deepEqual(validateOutils(outils), []);
 });

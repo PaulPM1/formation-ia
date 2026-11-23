@@ -2,13 +2,13 @@ import type { Etape, Guide, Lieu } from '../../parcours/parcours-model';
 
 const LIEU_LABEL: Record<Lieu, string> = {
   machine: 'Votre ordinateur',
-  vscode: 'VS Code',
+  claude: 'L’application Claude',
   navigateur: 'Votre navigateur',
 };
 
 const LIEU_CIBLE: Record<Lieu, string> = {
   machine: 'votre ordinateur',
-  vscode: 'VS Code',
+  claude: 'l’application Claude',
   navigateur: 'votre navigateur',
 };
 

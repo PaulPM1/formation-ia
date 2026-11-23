@@ -17,7 +17,7 @@ const etape = (id: string, lieu: Etape['lieu'], service?: string): Etape => ({
 
 test('le libellé combine le lieu et le service', () => {
   assert.equal(libelleLieu(etape('a', 'machine')), 'Votre ordinateur');
-  assert.equal(libelleLieu(etape('b', 'vscode')), 'VS Code');
+  assert.equal(libelleLieu(etape('b', 'claude')), 'L’application Claude');
   assert.equal(libelleLieu(etape('c', 'navigateur', 'GitHub')), 'Votre navigateur · GitHub');
 });
 
@@ -29,10 +29,10 @@ test('le marqueur ne s’affiche qu’à la rupture d’application', () => {
     prerequis: [],
     etapes: [
       etape('a', 'machine'),
-      etape('b', 'vscode'),
-      etape('c', 'vscode'),
+      etape('b', 'claude'),
+      etape('c', 'claude'),
       etape('d', 'navigateur', 'GitHub'),
     ],
   };
-  assert.deepEqual(changementsDeLieu(guide), [null, 'VS Code', null, 'votre navigateur']);
+  assert.deepEqual(changementsDeLieu(guide), [null, 'l’application Claude', null, 'votre navigateur']);
 });

@@ -28,7 +28,7 @@ npm run build          # validations puis génération du site statique
 ## Organisation du contenu
 
 Chaque brique possède son propre fichier dans `src/content/briques/`, regroupé
-par famille A à F. Le frontmatter contient l’identité, l’ordre, la priorité, la
+par famille A à E. Le frontmatter contient l’identité, l’ordre, la priorité, la
 durée, le type, le suivi éditorial et les prérequis de la brique.
 
 Le corps MDX fournit les rubriques à compléter. Les commentaires `{/* … */}`

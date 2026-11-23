@@ -2,24 +2,9 @@ import type { Outil } from './parcours-model';
 
 export const OUTILS: Outil[] = [
   {
-    nom: 'Wispr Flow',
-    logo: 'faq/outils/wispr-flow.svg',
-    role: 'Pour parler à votre ordinateur au lieu de taper',
-  },
-  {
-    nom: 'Typeless',
-    logo: 'faq/outils/typeless.svg',
-    role: 'La même chose, une autre option',
-  },
-  {
-    nom: 'VS Code',
-    logo: 'faq/outils/vscode.svg',
-    role: 'L’atelier : votre projet y vit et Claude y travaille',
-  },
-  {
-    nom: 'Claude Code',
+    nom: 'L’application Claude',
     logo: 'faq/outils/claude.svg',
-    role: 'Celui qui fait le travail technique à votre place',
+    role: 'Vous décrivez, elle construit votre projet et vous le montre',
   },
   {
     nom: 'GitHub',
